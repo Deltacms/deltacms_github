@@ -1,0 +1,10 @@
+[
+	"flatpickr.min.js",
+	"l10n/fr.js",
+	"l10n/es.js",
+	"l10n/pt.min.js",
+	"l10n/el.min.js",
+	"l10n/it.min.js",
+	"l10n/default.js",
+	"init.js"
+]

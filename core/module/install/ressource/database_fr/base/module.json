@@ -1,0 +1,202 @@
+{
+    "module": {
+        "blog": {
+            "config": {
+                "feeds": true,
+                "feedsLabel": "Syndication RSS",
+                "itemsperPage": 4,
+                "versionData": "6.7"
+            },
+            "texts": {
+                "NoComment": "Pas encore de commentaire",
+                "Write": "Ecrire un commentaire",
+                "Name": "Nom",
+                "Maxi": "Commentaire avec maximum",
+                "Cara": "caractères",
+                "Comment": "commentaire",
+                "CommentOK": "Commentaire déposé",
+                "Waiting": "Commentaire déposé en attente d'approbation",
+                "ArticleNoComment": "Cet article ne reçoit pas de commentaire",
+                "Connection": "Connexion",
+                "Edit": "Editer",
+                "Cancel": "Annuler",
+                "Send": "Envoyer",
+                "TinymceMaxi": "Vous avez atteint le maximum de",
+                "TinymceCara": "caractères restants",
+                "TinymceExceed": "Vous alliez dépasser le maximum de ",
+				"ReadMore": "Lire la suite"
+            },
+            "posts": {
+                "premier-article": {
+                    "closeComment": false,
+                    "comment": [],
+                    "content": "<p>Et eodem impetu Domitianum praecipitem per scalas itidem funibus constrinxerunt, eosque coniunctos per ampla spatia civitatis acri raptavere discursu. iamque artuum et membrorum divulsa conpage superscandentes corpora mortuorum ad ultimam truncata deformitatem velut exsaturati mox abiecerunt in flumen.<\/p><p>Ex his quidam aeternitati se commendari posse per statuas aestimantes eas ardenter adfectant quasi plus praemii de figmentis aereis sensu carentibus adepturi, quam ex conscientia honeste recteque factorum, easque auro curant inbracteari, quod Acilio Glabrioni delatum est primo, cum consiliis armisque regem superasset Antiochum. quam autem sit pulchrum exigua haec spernentem et minima ad ascensus verae gloriae tendere longos et arduos, ut memorat vates Ascraeus, Censorius Cato monstravit. qui interrogatus quam ob rem inter multos... statuam non haberet malo inquit ambigere bonos quam ob rem id non meruerim, quam quod est gravius cur inpetraverim mussitare.<\/p><p>Latius iam disseminata licentia onerosus bonis omnibus Caesar nullum post haec adhibens modum orientis latera cuncta vexabat nec honoratis parcens nec urbium primatibus nec plebeiis.<\/p>",
+                    "picture": "galerie\/toctoc\/b.jpg",
+                    "picturePosition": "left",
+                    "hidePicture": false,
+                    "pictureSize": 20,
+                    "publishedOn": 1639816735,
+                    "state": true,
+                    "title": "Premier article",
+                    "userId": "",
+                    "editConsent": "all",
+                    "commentMaxlength": "500",
+                    "commentApproved": false,
+                    "commentClose": false,
+                    "commentNotification": false,
+                    "commentGroupNotification": 1
+                },
+                "second-article": {
+                    "closeComment": false,
+                    "comment": [],
+                    "content": "<p>Et prima post Osdroenam quam, ut dictum est, ab hac descriptione discrevimus, Commagena, nunc Euphratensis, clementer adsurgit, Hierapoli, vetere Nino et Samosata civitatibus amplis inlustris.<\/p><p>Ob haec et huius modi multa, quae cernebantur in paucis, omnibus timeri sunt coepta. et ne tot malis dissimulatis paulatimque serpentibus acervi crescerent aerumnarum, nobilitatis decreto legati mittuntur: Praetextatus ex urbi praefecto et ex vicario Venustus et ex consulari Minervius oraturi, ne delictis supplicia sint grandiora, neve senator quisquam inusitato et inlicito more tormentis exponeretur.<\/p><p>Sed ut tum ad senem senex de senectute, sic hoc libro ad amicum amicissimus scripsi de amicitia. Tum est Cato locutus, quo erat nemo fere senior temporibus illis, nemo prudentior; nunc Laelius et sapiens (sic enim est habitus) et amicitiae gloria excellens de amicitia loquetur. Tu velim a me animum parumper avertas, Laelium loqui ipsum putes. C. Fannius et Q. Mucius ad socerum veniunt post mortem Africani; ab his sermo oritur, respondet Laelius, cuius tota disputatio est de amicitia, quam legens te ipse cognosces.<\/p>",
+                    "picture": "galerie\/grece\/port.jpg",
+                    "hidePicture": false,
+                    "picturePosition": "right",
+                    "pictureSize": 40,
+                    "publishedOn": 1639816823,
+                    "state": true,
+                    "title": "Second article",
+                    "userId": "",
+                    "editConsent": "all",
+                    "commentMaxlength": "500",
+                    "commentApproved": false,
+                    "commentClose": false,
+                    "commentNotification": false,
+                    "commentGroupNotification": 1
+                }
+            }
+        },
+        "galeries": {
+            "content": {
+                "toctoc": {
+                    "config": {
+                        "name": "Toctoc",
+                        "directory": "site\/file\/source\/galerie\/toctoc",
+                        "homePicture": "a.jpg",
+                        "sort": "SORT_ASC",
+                        "position": 0,
+                        "fullscreen": false
+                    },
+                    "legend": {
+                        "a.jpg": "",
+                        "b.jpg": "",
+                        "c.jpg": ""
+                    },
+                    "positions": []
+                },
+                "grece": {
+                    "config": {
+                        "name": "Grèce",
+                        "directory": "site\/file\/source\/galerie\/grece",
+                        "homePicture": "philosophe.jpg",
+                        "sort": "SORT_ASC",
+                        "position": 1,
+                        "fullscreen": false
+                    },
+                    "legend": {
+                        "chapiteaujpg": "Chapiteau",
+                        "philosophejpg": "Philosophe",
+                        "portjpg": "Port"
+                    },
+                    "positions": []
+                }
+            },
+            "theme": {
+                "thumbAlign": "center",
+                "thumbWidth": "18em",
+                "thumbHeight": "15em",
+                "thumbMargin": ".5em",
+                "thumbBorder": ".1em",
+                "thumbOpacity": ".7",
+                "thumbBorderColor": "rgba(221, 221, 221, 1)",
+                "thumbRadius": ".3em",
+                "thumbShadows": "1px 1px 10px",
+                "thumbShadowsColor": "rgba(125, 125, 125, 1)",
+                "legendHeight": ".375em",
+                "legendAlign": "center",
+                "legendTextColor": "rgba(255, 255, 255, 1)",
+                "legendBgColor": "rgba(0, 0, 0, .6)",
+                "style": "site\/data\/gallery\/galeries\/theme.css"
+            },
+            "config": {
+                "versionData": "4.4"
+            }
+        },
+        "deltacms": {
+            "url": "https:\/\/deltacms.fr\/",
+            "count": 1
+        },
+        "contact": {
+            "config": {
+                "button": "",
+                "captcha": true,
+                "group": 3,
+                "user": "",
+                "mail": "",
+                "pageId": "",
+                "subject": "",
+                "replyto": false,
+                "signature": "logo",
+                "logoUrl": "",
+                "logoWidth": "40",
+                "maxSizeUpload": "1000000",
+                "versionData": "4.9",
+                "uploadJpg": true,
+                "uploadPng": true,
+                "uploadPdf": false,
+                "uploadZip": false,
+                "uploadTxt": false
+            },
+            "data": [],
+            "input": [
+                {
+                    "name": "Adresse mail",
+                    "position": 1,
+                    "required": true,
+                    "type": "mail",
+                    "values": ""
+                },
+                {
+                    "name": "Sujet",
+                    "position": 2,
+                    "required": true,
+                    "type": "text",
+                    "values": ""
+                },
+                {
+                    "name": "Message",
+                    "position": 3,
+                    "required": true,
+                    "type": "textarea",
+                    "values": ""
+                },
+                {
+                    "name": "Pièce jointe",
+                    "position": 4,
+                    "required": false,
+                    "type": "file",
+                    "values": ""
+                }
+            ],
+            "draft": ""
+        },
+        "erreur404": {
+            "config": {
+                "previewLength": 100,
+                "resultHideContent": false,
+                "placeHolder": "Un ou plusieurs mots-clés séparés par un espace ou par +",
+                "submitText": "Rechercher",
+                "versionData": "3.4",
+                "nearWordText": "Mots approchants",
+                "successTitle": "Résultat de votre recherche",
+                "failureTitle": "Aucun résultat",
+                "commentFailureTitle": "Avez-vous pensé aux accents"
+            },
+            "theme": {
+                "keywordColor": "rgba(229, 229, 1, 1)",
+                "style": "site\/data\/search\/erreur404\/theme.css"
+            }
+        }
+    }
+}

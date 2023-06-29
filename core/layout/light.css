@@ -1,0 +1,16 @@
+/**
+ * This file is part of DeltaCMS.
+ */
+
+/**
+ * Éléments spécifiques
+ */
+
+/* Site */
+#site {
+	max-width: 600px !important;
+}
+
+section {
+	min-height: 0px;
+}

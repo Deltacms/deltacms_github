@@ -1,0 +1,10 @@
+/** @import url("site/data/admin.css"); */
+
+/** NE PAS EFFACER
+* admin.css
+*/
+
+#galleryEditLabelView {
+	color: red;
+	font-weight: bold;
+}

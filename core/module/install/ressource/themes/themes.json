@@ -1,0 +1,18 @@
+{
+    "defaut" : {
+        "name": "Hirondelles 100%",
+        "filename": "default"
+    },
+	"fluide": {
+	    "name": "Sans bannière 100%",
+        "filename": "theme_sansbanniere_fluide.zip"
+	},
+	"sombre": {
+	    "name": "Sombre Islande 100%",
+        "filename": "theme_sombre_islande_fluide.zip"	
+	},
+	"pablo_banniere_animee": {
+	    "name": "Bannière animèe 85%",
+        "filename": "theme_banniere_animee_85vw.zip"	
+	}
+}

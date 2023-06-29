@@ -1,0 +1,26 @@
+/**
+ * This file is part of DeltaCMS.
+ */
+
+
+/** NE PAS EFFACER
+* admin.css
+*/
+
+@media (max-width: 799px){
+	.submitPreview{
+		display: block;
+	}
+	.offsetPreview {
+		margin-left: 0;	
+	}
+}
+
+@media (min-width: 800px){
+	.submitPreview{
+		display: none;
+	}
+	.offsetPreview {
+		margin-left: 50%;	
+	}
+}

@@ -1,0 +1,10 @@
+[
+	"lib/codemirror.js",
+	"mode/css/css.js",
+	"mode/htmlembedded/htmlembedded.js",
+	"mode/htmlmixed/htmlmixed.js",
+	"mode/javascript/javascript.js",
+	"mode/php/php.js",	
+	"mode/xml/xml.js",
+	"init.js"
+]

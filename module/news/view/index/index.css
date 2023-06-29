@@ -1,0 +1,63 @@
+/**
+ * This file is part of DeltaCMS.
+ */
+
+ /*
+* Module news
+*/
+
+.newsFrame {
+	margin: 5px 5px 0px 5px !important;
+	min-height: 300px;
+	position: relative;
+}
+
+.newsFrame p {
+	margin: 5px 10px 5px 10px;
+}
+
+.newsFrame h1,h2 {
+	margin: 15px 10px;
+}
+
+.newsFrame h3, h4, h5, h6, pre {
+	margin: 5px 10px;
+}
+
+.newsContent {
+	overflow: hidden; /* les dépassements seront masqués */
+	clear: left;
+	margin-bottom: 40px;
+}
+
+.newsSuite {
+	font-style: italic;
+	font-weight: normal;
+}
+
+.newsSignature {
+	position: absolute;
+	bottom: 3px;
+	right: 10px;
+	font-style: italic;
+	font-weight: normal;
+	color: grey;
+}
+
+.newsTitle{
+	margin-left: 5px;
+}
+
+/*
+* Flux RSS
+*/
+#rssFeed {
+    text-align: right;
+    float: right;
+}
+#rssFeed p {
+    display: inline;
+    vertical-align: top;
+}
+
+

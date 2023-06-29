@@ -1,0 +1,19 @@
+/**
+ * This file is part of DeltaCMS.
+ */
+
+ #siteMap ul {
+    list-style: none ;
+    margin-left: .5em;
+    padding-left: 1em;
+    line-height: 1.5em;
+    font-size: 16px;
+}
+
+#siteMap ul > li::before {
+   content: "📄 ";
+}
+
+#siteMap li > ul > li::before {
+   content: "📃 ";
+}

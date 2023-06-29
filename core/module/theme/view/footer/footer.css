@@ -1,0 +1,19 @@
+/**
+ * This file is part of DeltaCMS.
+ */
+
+
+/** NE PAS EFFACER
+* admin.css
+*/
+
+/**
+* Titre zone TinyMCE
+*/
+.titleWysiwygContent {
+    font-family: "Oswald",sans-serif;
+    font-weight: bold;
+    text-transform: none;
+    font-size: 1.0em;
+    margin: 10px;
+}

@@ -1,0 +1,26 @@
+{
+    "locale": {
+        "homePageId": "inicio",
+        "page404": "erreur404",
+        "page403": "erreur403",
+        "page302": "mantenimiento-actual",
+        "legalPageId": "notas-legales",
+        "searchPageId": "investigacion",
+        "searchPageLabel": "Buscar",
+        "legalPageLabel": "Aviso legal",
+        "sitemapPageLabel": "Mapa del sitio",
+        "metaDescription": "DeltaCMS es un CMS sin base de datos que le permite crear y administrar fácilmente un sitio web sin ningún conocimiento de programación.",
+        "title": "DeltaCMS",
+        "captchaSimpleText": "Soy un humano",
+        "captchaSimpleHelp": "Marca esta casilla para demostrar que eres humano",
+        "cookies": {
+            "cookiesDeltaText": "Este sitio utiliza cookies necesarias para su funcionamiento, facilitan su funcionamiento, por ejemplo, al memorizar los datos de conexión, el idioma que ha elegido o la validación de este mensaje.",
+            "cookiesExtText": "",
+            "cookiesTitleText": "Administrar cookies",
+            "cookiesLinkMlText": "Consulta los avisos legales",
+            "cookiesCheckboxExtText": "",
+            "cookiesFooterText": "Cookies",
+            "cookiesButtonText": "He entendido"
+        }
+    }
+}

@@ -1,0 +1,18 @@
+/** NE PAS EFFACER
+* theme.css
+*/
+
+/* Commentez ces lignes pour conserver les valeurs du thème*/
+
+/* Couleurs du bouton retour*/
+.button {
+	background-color: rgba(176,176,176);
+	color: white;
+}
+.button:hover {
+	background-color: rgba(192,192,192);
+}
+/* Alignement du texte dans l'entête de la zone d'affichage*/
+.block h4 {
+	text-align: center;
+}

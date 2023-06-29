@@ -1,0 +1,138 @@
+/* Personnalisation des couleurs de l'agenda à associer avec votre thème*/
+
+/**/
+/*Bordures */
+/**/
+
+.fc-unthemed th,
+.fc-unthemed td,
+.fc-unthemed thead,
+.fc-unthemed tbody,
+.fc-unthemed .fc-divider,
+.fc-unthemed .fc-row,
+.fc-unthemed .fc-content,
+.fc-unthemed .fc-popover,
+.fc-unthemed .fc-list-view,
+.fc-unthemed .fc-list-heading td,
+.fc .fc-row .fc-content-skeleton td {
+  border-color: #ddd;
+}
+
+/**/
+/* Background */
+/**/
+
+/* Fond du bandeau boutons de l'agenda, commenté pour conserver la couleur du thème*/
+/*
+.fc-toolbar {
+	background-color : #ffffff;
+}
+*/
+
+/* Fond des cellules de la grille, commenté pour conserver la couleur du thème */
+/*
+.fc-day {
+	background-color : #ffffff;
+}
+*/
+
+/* Fond de la cellule sélectionnée (clic) */
+.fc-highlight {
+  background: #ffff54;
+  opacity: 0.3;
+}
+
+/* Fond de la cellule aujourd'hui */
+.fc-unthemed td .fc-today{
+	background-color : #F6F7F8;
+}
+
+/* Fond du bandeau supérieur des jours, commenté pour conserver la couleur du thème*/
+
+.fc th {
+	background-color : #F6F7F8;
+
+}
+
+
+/**/
+/* Textes */
+/**/
+
+/* Couleur de la valeur des jours, commenté pour conserver la couleur du thème*/
+/*table td {
+	color: rgba(33, 34, 35, 1);
+}*/
+
+/* Opacité pour les jours du mois passé ou futur*/
+.fc-day-top.fc-other-month{
+  opacity: 0.3;
+}
+
+
+/* Nom des jours dans la ligne supérieure, commenté pour conserver la couleur du thème*/
+table th{
+	color: rgba(33, 34, 35, 1);
+	/*font-weight: normal;*/
+	font-size: 1em;
+}
+
+/* font-size des jours dans la ligne supérieure et du mois dans le titre en petit écran */
+@media (max-width: 799px) {
+	.fc-center h2{
+		font-size: 1.2em;
+		text-align: center;
+	}
+	table th{
+		font-size: 8px;
+	}
+	.fc-button {
+		font-size: 10px !important;
+	}
+}
+
+/**/
+/* Boutons */
+/**/
+
+/* Couleurs bouton et texte non actif*/
+.fc-button-primary {
+  color: #fff;
+  background-color: #2C3E50;
+  border-color: #2C3E50;
+}
+
+/* Couleurs bouton et texte (non actif) au survol */
+.fc-button-primary:hover {
+  color: #fff;
+  background-color: #1a252f;
+  border-color: #1a252f;
+}
+
+/* Contour des boutons 'Aujourd'hui' et défilement après sélection*/
+.fc-button-primary:focus {
+  -webkit-box-shadow: 0 0 0 0.2rem rgba(76, 91, 106, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(76, 91, 106, 0.5);
+}
+
+/* Bouton 'Aujourd'hui' quand ce jour est affiché dans la grille */
+.fc-today-button.fc-button.fc-button-primary:disabled  {
+/*  color: #0000ff; /* color et background-color inopérant à cause de !important sur ces paramètres pour button::disabled dans common.css*/
+/*  background-color: #ff0000; */
+  border-color: #ff0000;
+}
+
+/* Bouton mois ou semaine actif (sélectionné) */
+.fc-button-primary:not(:disabled):active,
+.fc-button-primary:not(:disabled).fc-button-active {
+  color: #fff;
+  background-color: #151e27;
+  border-color: #151e27;
+}
+
+/* Contour des boutons mois et semaine*/
+.fc-button-primary:not(:disabled):active:focus,
+.fc-button-primary:not(:disabled).fc-button-active:focus {
+  -webkit-box-shadow: 0 0 0 0.2rem rgba(76, 91, 106, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(76, 91, 106, 0.5);
+}

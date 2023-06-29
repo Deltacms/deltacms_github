@@ -1,0 +1,10 @@
+
+.searchTitle {
+    font: caption;
+    font-style: italic;
+    margin-left: 1em;
+}
+
+.searchResult {
+    margin: .3em 0 .3em 1em;
+}

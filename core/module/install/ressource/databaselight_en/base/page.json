@@ -1,0 +1,30 @@
+{
+    "page": {
+        "home": {
+            "typeMenu": "text",
+            "iconUrl": "",
+            "disable": false,
+            "content": "home.html",
+            "hideTitle": true,
+            "homePageId": true,
+            "breadCrumb": false,
+            "metaDescription": "",
+            "metaTitle": "",
+            "moduleId": "",
+            "modulePosition": "bottom",
+            "parentPageId": "",
+            "position": 1,
+            "group": 0,
+			"groupEdit": 2,
+            "targetBlank": false,
+            "title": "Home",
+            "shortTitle": "Home",
+            "block": "12",
+            "barLeft": "",
+            "barRight": "",
+            "displayMenu": "none",
+            "hideMenuSide": false,
+            "hideMenuChildren": false
+        }
+    }
+}

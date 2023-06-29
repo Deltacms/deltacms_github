@@ -1,0 +1,679 @@
+/**
+ * This file is part of DeltaCMS.
+ * For full copyright and license information, please see the LICENSE
+ * file that was distributed with this source code.
+ * @author Sylvain Lelièvre <lelievresylvain@free.fr>
+ * @copyright Copyright (C) 2021, Sylvain Lelièvre
+ * @license GNU General Public License, version 3
+ * @link https://deltacms.fr/
+ *
+ * Delta was created from version 11.2.00.24 of ZwiiCMS
+ * @author Rémi Jean <remi.jean@outlook.com>
+ * @copyright Copyright (C) 2008-2018, Rémi Jean
+ * @author Frédéric Tempez <frederic.tempez@outlook.com>
+ * @copyright Copyright (C) 2018-2021, Frédéric Tempez
+ */
+
+var core = {};
+
+/**
+ * Crée un message d'alerte
+ */
+core.alert = function(text) {
+	var lightbox = lity(function($) {
+		return $("<div>")
+			.addClass("lightbox")
+			.append(
+				$("<span>").text(text),
+				$("<div>")
+					.addClass("lightboxButtons")
+					.append(
+						$("<a>")
+							.addClass("button")
+							.text("Ok")
+							.on("click", function() {
+								lightbox.close();
+							})
+					)
+			)
+	}(jQuery));
+	// Validation de la lightbox avec le bouton entrée
+	$(document).on("keyup", function(event) {
+		if(event.keyCode === 13) {
+			lightbox.close();
+		}
+	});
+	return false;
+};
+
+/**
+ * Génère des variations d'une couleur
+ */
+core.colorVariants = function(rgba) {
+	rgba = rgba.match(/\(+(.*)\)/);
+	rgba = rgba[1].split(", ");
+	return {
+		"normal": "rgba(" + rgba[0] + "," + rgba[1] + "," + rgba[2] + "," + rgba[3] + ")",
+		"darken": "rgba(" + Math.max(0, rgba[0] - 15) + "," + Math.max(0, rgba[1] - 15) + "," + Math.max(0, rgba[2] - 15) + "," + rgba[3] + ")",
+		"veryDarken": "rgba(" + Math.max(0, rgba[0] - 20) + "," + Math.max(0, rgba[1] - 20) + "," + Math.max(0, rgba[2] - 20) + "," + rgba[3] + ")",
+		//"text": core.relativeLuminanceW3C(rgba) > .22 ? "inherit" : "white"
+		"text": core.relativeLuminanceW3C(rgba) > .22 ? "#222" : "#DDD"
+	};
+};
+
+/**
+ * Crée un message de confirmation
+ */
+core.confirm = function(text, yesCallback, noCallback) {
+	var lightbox = lity(function($) {
+		return $("<div>")
+			.addClass("lightbox")
+			.append(
+				$("<span>").text(text),
+				$("<div>")
+					.addClass("lightboxButtons")
+					.append(
+						$("<a>")
+							.addClass("button grey")
+							.text(textConfirmNo)
+							.on("click", function() {
+								lightbox.options('button', true);
+								lightbox.close();
+								if(typeof noCallback !== "undefined") {
+									noCallback();
+								}
+						}),
+						$("<a>")
+							.addClass("button")
+							.text(textConfirmYes)
+							.on("click", function() {
+								lightbox.options('button', true);
+								lightbox.close();
+								if(typeof yesCallback !== "undefined") {
+									yesCallback();
+								}
+						})
+					)
+			)
+	}(jQuery));
+	// Callback lors d'un clic sur le fond et sur la croix de fermeture
+	lightbox.options('button', false);
+	$(document).on('lity:close', function(event, instance) {
+		if(
+			instance.options('button') === false
+			&& typeof noCallback !== "undefined"
+		) {
+			noCallback();
+		}
+	});
+	// Validation de la lightbox avec le bouton entrée
+	$(document).on("keyup", function(event) {
+		if(event.keyCode === 13) {
+			lightbox.close();
+			if(typeof yesCallback !== "undefined") {
+				yesCallback();
+			}
+		}
+	});
+	return false;
+};
+
+/**
+ * Scripts à exécuter en dernier
+ */
+core.end = function() {
+	/**
+	 * Modifications non enregistrées du formulaire
+	 */
+	var formDOM = $("form");
+	// Ignore :
+	// - TinyMCE car il gère lui même le message
+	// - Les champs avec data-no-dirty
+	var inputsDOM = formDOM.find("input:not([data-no-dirty]), select:not([data-no-dirty]), textarea:not(.editorWysiwyg):not([data-no-dirty])");
+	var inputSerialize = inputsDOM.serialize();
+	$(window).on("beforeunload", function() {
+		if(inputsDOM.serialize() !== inputSerialize) {
+			return "Les modifications que vous avez apportées ne seront peut-être pas enregistrées.";
+		}
+	});
+	formDOM.submit(function() {
+		$(window).off("beforeunload");
+	});
+};
+$(function() {
+	core.end();
+});
+
+/**
+ * Ajoute une notice
+ */
+core.noticeAdd = function(id, notice) {
+	$("#" + id + "Notice").text(notice).removeClass("displayNone");
+	$("#" + id).addClass("notice");
+};
+
+/**
+ * Supprime une notice
+ */
+core.noticeRemove = function(id) {
+	$("#" + id + "Notice").text("").addClass("displayNone");
+	$("#" + id).removeClass("notice");
+};
+
+/**
+ * Scripts à exécuter en premier
+ */
+core.start = function() {
+	
+	/* Décalage en petit écran de la bannière ou de la section si le menu burger est fixe et non caché
+	* n'opère pas sur les pages de configuration du thème
+	*/
+	$(window).on("resize", function() {
+		if($(window).width() < 800) {
+			// Variables du thème
+			var positionNav = <?php echo json_encode($this->getData(['theme', 'menu', 'position'])); ?>;
+			var burgerFixed = <?php echo json_encode($this->getData(['theme', 'menu', 'burgerFixed'])); ?>;
+			var namePage = <?php echo json_encode($this->getUrl(0)); ?>;
+			if( positionNav !=='hide' && burgerFixed === true && namePage !== 'theme'){
+				var positionHeader = <?php echo json_encode($this->getData(['theme', 'header', 'position'])); ?>;
+				var tinyHidden = <?php echo json_encode($this->getData(['theme', 'header', 'tinyHidden'])); ?>;
+				var homePageOnly = <?php echo json_encode($this->getData(['theme', 'header', 'homePageOnly'])); ?>;
+				// bannerMenuHeight et bannerMenuHeightSection transmis par core.php/showMenu()
+				var burgerOverlay = <?php echo json_encode($this->getData(['theme', 'menu', 'burgerOverlay'])); ?>;
+				var homePageId = <?php echo json_encode($this->getData(['locale', 'homePageId'])); ?>;	
+				var offsetBanner = "0";
+				if( burgerOverlay === false) offsetBanner = bannerMenuHeight;
+				// Si la bannière est visible la décaler
+				if( tinyHidden === false && ( homePageOnly === false || namePage === homePageId )){
+					$("#site.container header, header.container").css("padding-top",offsetBanner);
+				} else {
+					// sinon décaler la section
+					$("section").css("padding-top",bannerMenuHeightSection);
+				}
+				// Si la bannière est cachée décaler la section
+				if( positionHeader === 'hide'){
+					$("section").css("padding-top",bannerMenuHeightSection);
+				}
+			}
+		}
+	}).trigger("resize");
+	
+	/**
+	 * Remonter en haut au clic sur le bouton
+	 */
+	var backToTopDOM = $("#backToTop");
+	backToTopDOM.on("click", function() {
+		$("body, html").animate({scrollTop: 0}, "400");
+	});
+	/**
+	 * Affiche / Cache le bouton pour remonter en haut
+	 */
+	$(window).on("scroll", function() {
+		if($(this).scrollTop() > 200) {
+			backToTopDOM.fadeIn();
+		}
+		else {
+			backToTopDOM.fadeOut();
+		}
+	});
+	/**
+	 * Cache les notifications
+	 */
+	var notificationTimer;
+	$("#notification")
+		.on("mouseenter", function() {
+			clearTimeout(notificationTimer);
+			$("#notificationProgress")
+				.stop()
+				.width("100%");
+		})
+		.on("mouseleave", function() {
+			// Disparition de la notification
+			notificationTimer = setTimeout(function() {
+				$("#notification").fadeOut();
+			}, 3000);
+			// Barre de progression
+			$("#notificationProgress").animate({
+				"width": "0%"
+			}, 3000, "linear");
+		})
+		.trigger("mouseleave");
+	$("#notificationClose").on("click", function() {
+		clearTimeout(notificationTimer);
+		$("#notification").fadeOut();
+		$("#notificationProgress").stop();
+	});
+
+	/**
+	 * Traitement du formulaire cookies
+	 */
+	$("#cookieForm").submit(function(event){
+
+		// Varables des cookies
+		var samesite = "samesite=lax";
+		var getUrl   = window.location;
+		var domain   = "domain=" + getUrl.hostname;
+		// var path     = "path=" + getUrl.pathname.split('/')[1];
+		var e = new Date();
+		e.setFullYear(e.getFullYear() + 1);
+		var expires = "expires=" + e.toUTCString();
+
+		// Crée le cookie d'acceptation Cookies Externes (tiers) si le message n'est pas vide
+		var messageCookieExt = "<?php echo $this->getData(['locale', 'cookies', 'cookiesExtText']);?>";
+		// le message de consentement des cookies externes est défini en configuration, afficher la checkbox d'acceptation
+		if( messageCookieExt.length > 0){
+			// Traitement du retour de la checkbox
+			if ($("#cookiesExt").is(":checked")) {
+				// L'URL du serveur faut TRUE
+				//document.cookie = "DELTA_COOKIE_EXT_CONSENT=true;" + domain + ";" + path + ";" + samesite + ";" + expires;
+				document.cookie = "DELTA_COOKIE_EXT_CONSENT=true;" + domain + ";" + samesite + ";" + expires;
+			} else {
+				//document.cookie = "DELTA_COOKIE_EXT_CONSENT=false;" + domain + ";" + path + ";" + samesite + ";" + expires;
+				document.cookie = "DELTA_COOKIE_EXT_CONSENT=false;" + domain + ";" + samesite + ";" + expires;
+			}
+
+		}
+
+		// Stocke le cookie d'acceptation
+		//document.cookie = "DELTA_COOKIE_CONSENT=true;" + domain + ";" + path + ";" + samesite + ";" + expires;
+		document.cookie = "DELTA_COOKIE_CONSENT=true;" + domain + ";" + samesite + ";" + expires;
+	});
+
+
+	/**
+	 * Fermeture de la popup des cookies
+	 */
+	$("#cookieConsent .cookieClose").on("click", function() {
+		$('#cookieConsent').addClass("displayNone");
+	});
+
+	/**
+	 * Commande de gestion des cookies dans le footer
+	 */
+	 
+	 $("#footerLinkCookie").on("click", function() {
+		$("#cookieConsent").removeClass("displayNone");
+	});
+
+	/**
+	 * Affiche / Cache le menu en mode responsive
+	 */
+	 var menuDOM = $("#menu");
+	 $("#burgerIcon").on("click", function() {
+		 menuDOM.slideToggle();
+	 });
+	 $(window).on("resize", function() {
+		 if($(window).width() > 799) {
+			 menuDOM.css("display", "");
+		 }
+	 });
+
+	/**
+	 * Choix de page dans la barre de membre
+	 */
+	$("#barSelectPage").on("change", function() {
+		var pageUrl = $(this).val();
+		if(pageUrl) {
+			$(location).attr("href", pageUrl);
+		}
+	});
+	/**
+	 * Champs d'upload de fichiers
+	 */
+	// Mise à jour de l'affichage des champs d'upload
+	$(".inputFileHidden").on("change", function() {
+		var inputFileHiddenDOM = $(this);
+		var fileName = inputFileHiddenDOM.val();
+		if(fileName === "") {
+			fileName = textSelectFile;
+			$(inputFileHiddenDOM).addClass("disabled");
+		}
+		else {
+			$(inputFileHiddenDOM).removeClass("disabled");
+		}
+		inputFileHiddenDOM.parent().find(".inputFileLabel").text(fileName);
+	}).trigger("change");
+	// Suppression du fichier contenu dans le champ
+	$(".inputFileDelete").on("click", function() {
+		$(this).parents(".inputWrapper").find(".inputFileHidden").val("").trigger("change");
+	});
+	// Suppression de la date contenu dans le champ
+	$(".inputDateDelete").on("click", function() {
+		$(this).parents(".inputWrapper").find(".datepicker").val("").trigger("change");
+	});
+	// Confirmation de mise à jour
+	$("#barUpdate").on("click", function() {
+		return core.confirm( textUpdating, function() {
+			$(location).attr("href", $("#barUpdate").attr("href"));
+		});
+	});
+	// Confirmation de déconnexion
+	$("#barLogout").on("click", function() {
+		return core.confirm( textLogout, function() {
+			$(location).attr("href", $("#barLogout").attr("href"));
+		});
+	});
+	/**
+	 * Bloque la multi-soumission des boutons
+	 */
+	$("form").on("submit", function() {
+		$(this).find(".uniqueSubmission")
+			.addClass("disabled")
+			.prop("disabled", true)
+			.empty()
+			.append(
+				$("<span>").addClass("zwiico-spin animate-spin")
+			)
+	});
+	/**
+	 * Check adresse email
+	 */
+	$("[type=email]").on("change", function() {
+		var _this = $(this);
+		var pattern = /^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
+		if(pattern.test(_this.val())) {
+			core.noticeRemove(_this.attr("id"));
+		}
+		else {
+			core.noticeAdd(_this.attr("id"), textCheckMail);
+		}
+	});
+
+	/**
+	 * Iframes et vidéos responsives
+	 */
+	var elementDOM = $("iframe, video, embed, object");
+	// Calcul du ratio et suppression de la hauteur / largeur des iframes
+	elementDOM.each(function() {
+		var _this = $(this);
+		_this
+			.data("ratio", _this.height() / _this.width())
+			.data("maxwidth", _this.width())
+			.removeAttr("width height");
+	});
+	// Prend la largeur du parent et détermine la hauteur à l'aide du ratio lors du resize de la fenêtre
+	$(window).on("resize", function() {
+		elementDOM.each(function() {
+			var _this = $(this);
+			var width = _this.parent().first().width();
+			if (width > _this.data("maxwidth")){ width = _this.data("maxwidth");}
+			_this
+				.width(width)
+				.height(width * _this.data("ratio"));
+		});
+	}).trigger("resize");
+
+	/*
+	* Header responsive
+	*/
+	$(window).on("resize", function() {
+		var responsive = "<?php echo $this->getdata(['theme','header','imageContainer']);?>";
+		var feature = "<?php echo $this->getdata(['theme','header','feature']);?>";		
+		if ( (responsive === "cover" || responsive === "contain") && feature !== "feature" ) {
+			var widthpx = "<?php echo $this->getdata(['theme','site','width']);?>";
+			var width = widthpx.substr(0,widthpx.length-2);
+			var heightpx = "<?php echo $this->getdata(['theme','header','height']);?>";
+			var height = heightpx.substr(0,heightpx.length-2);
+			var ratio = width / height;
+			var feature = "<?php echo $this->getdata(['theme','header','feature']);?>";
+			if ( ($(window).width() / ratio) <= height) {
+				$("header").height( $(window).width() / ratio );
+				$("header").css("line-height", $(window).width() / ratio + "px");
+			}
+		}
+	}).trigger("resize");
+		
+	/* Positionnement vertical du bandeau du menu burger si il est fixe et si un utilisateur est connecté
+	*/
+	$(window).on("resize", function() {
+		if($(window).width() < 800) {
+			<?php if( $this->getData(['theme','menu', 'burgerFixed'])=== true){ ?>	
+				var barHeight = $(" #bar ").css("height");
+				$(".navfixedburgerconnected").css("top",barHeight);
+			<?php } ?>
+		}
+	}).trigger("resize");
+
+	/* En petit écran, affichage / masquage des items du sous-menu 
+	* ou signalisation que la page est désactivée par ouverture du sous-menu
+	*/
+	$(window).on("resize", function() {
+		if($(window).width() < 800) {
+			function displaySubPages( parentId ){
+				var select = "ul#_"+parentId+".navSub";
+				var select2 = 'nav #menu ul li #' + parentId + ' span.iconSubExistSmallScreen';
+				if( $(select).css("z-index") === "-1" ) {
+					$(select).css("z-index","1");
+					$(select).css("opacity","1");
+					$(select).css("padding-left","20px");
+					$(select).css("position","static");
+					$(select2).removeClass('zwiico-plus').addClass('zwiico-minus');
+				} else {
+					$(select).css("z-index","-1");
+					$(select).css("opacity","0");
+					$(select).css("position","absolute");	
+					$(select2).removeClass('zwiico-minus').addClass('zwiico-plus');				
+				}
+			}
+			$("nav #menu ul li span").click(function() {
+				// id de la page parent
+				var parentId = $(this).parents().attr("id");
+				displaySubPages( parentId);
+			});
+			$("nav #menu a.disabled-link").click(function() {
+				// id de la page parent
+				var parentId = $(this).parents().parents().attr("id");
+				displaySubPages( parentId);
+			});
+		}
+	}).trigger("resize");
+	
+	/*
+	* Largeur minimale des onglets principaux du menu et largeur du sous-menu égale à la largeur de l'onglet parent 
+	* sauf en petit écran 
+	*/
+	$(window).on("resize", function() {
+		if( $(window).width() > 799 ){
+			if( typeof parentPage !== "undefined" ){
+				var page=[];
+				if( '<?php echo $this->getData(['theme', 'menu', 'minWidthParentOrAll']); ?>' === ''){
+					page = parentPage;
+					// suppression d'un sous-menu depuis le dernier enregistrement de theme.css
+					$.each(allPage, function(index, value) {
+						// si la page n'est pas parent on repositionne min-width à auto
+						if( parentPage.includes( value ) === false ) $('nav li .' + value).css('min-width', 'auto');
+					});
+				} else{
+					page = allPage;
+				}
+				$.each(page, function(index, value) {
+					$('nav li .' + value).css('min-width', '<?php echo $this->getData(['theme', 'menu', 'minWidthTab']); ?>');
+					$('nav li ul li .'+value).css('width', $('.'+value).css('width'));
+					$('nav li.' + value).css('text-align', 'left');
+				});
+			}
+		}
+	}).trigger("resize");
+};
+
+
+core.start();
+
+/**
+ * Confirmation de suppression
+ */
+$("#pageDelete").on("click", function() {
+	var _this = $(this);
+	return core.confirm( textPageDelete, function() {
+		$(location).attr("href", _this.attr("href"));
+	});
+});
+
+/**
+ * Calcul de la luminance relative d'une couleur
+ */
+core.relativeLuminanceW3C = function(rgba) {
+	// Conversion en sRGB
+	var RsRGB = rgba[0] / 255;
+	var GsRGB = rgba[1] / 255;
+	var BsRGB = rgba[2] / 255;
+	// Ajout de la transparence
+	var RsRGBA = rgba[3] * RsRGB + (1 - rgba[3]);
+	var GsRGBA = rgba[3] * GsRGB + (1 - rgba[3]);
+	var BsRGBA = rgba[3] * BsRGB + (1 - rgba[3]);
+	// Calcul de la luminance
+	var R = (RsRGBA <= .03928) ? RsRGBA / 12.92 : Math.pow((RsRGBA + .055) / 1.055, 2.4);
+	var G = (GsRGBA <= .03928) ? GsRGBA / 12.92 : Math.pow((GsRGBA + .055) / 1.055, 2.4);
+	var B = (BsRGBA <= .03928) ? BsRGBA / 12.92 : Math.pow((BsRGBA + .055) / 1.055, 2.4);
+	return .2126 * R + .7152 * G + .0722 * B;
+};
+
+
+
+$(document).ready(function(){
+	/**
+	 * Affiche le sous-menu quand il est sticky
+	 */
+	$("nav").mouseenter(function(){
+		$("#navfixedlogout .navSub").css({ 'pointer-events' : 'auto' });
+		$("#navfixedconnected .navSub").css({ 'pointer-events' : 'auto' });
+	});
+	$("nav").mouseleave(function(){
+		$("#navfixedlogout .navSub").css({ 'pointer-events' : 'none' });
+		$("#navfixedconnected .navSub").css({ 'pointer-events' : 'none' });
+	});
+	
+	/**
+	 * Chargement paresseux des images et des iframes
+	 */
+	$("img,picture,iframe").attr("loading","lazy");
+
+	/**
+	 * Effet accordéon
+	 */
+	$('.accordion').each(function(e) {
+		// on stocke l'accordéon dans une variable locale
+		var accordion = $(this);
+		// on récupère la valeur data-speed si elle existe
+		var toggleSpeed = accordion.attr('data-speed') || 100;
+
+		// fonction pour afficher un élément
+		function open(item, speed) {
+			// on récupère tous les éléments, on enlève l'élément actif de ce résultat, et on les cache
+			accordion.find('.accordion-item').not(item).removeClass('active')
+				.find('.accordion-content').slideUp(speed);
+			// on affiche l'élément actif
+			item.addClass('active')
+				.find('.accordion-content').slideDown(speed);
+		}
+		function close(item, speed) {
+			accordion.find('.accordion-item').removeClass('active')
+				.find('.accordion-content').slideUp(speed);
+		}
+
+		// on initialise l'accordéon, sans animation
+		open(accordion.find('.active:first'), 0);
+
+		// au clic sur un titre...
+		accordion.on('click', '.accordion-title', function(ev) {
+			ev.preventDefault();
+			// Masquer l'élément déjà actif
+			if ($(this).closest('.accordion-item').hasClass('active')) {
+				close($(this).closest('.accordion-item'), toggleSpeed);
+			} else {
+				// ...on lance l'affichage de l'élément, avec animation
+				open($(this).closest('.accordion-item'), toggleSpeed);
+			}
+		});
+	});
+
+	/**
+	 * Icône du Menu Burger, couleur du bandeau burger et position du menu
+	 */
+	$("#burgerIcon").click(function() {
+		var changeIcon = $('#burgerIcon').children("span");
+		var bgColor = "<?php echo $this->getData(['theme', 'menu', 'burgerBannerColor']) ;?>";
+		var bgColorOpaque = bgColor.replace(/[^,]+(?=\))/, '1');
+		if ( $(changeIcon).hasClass('zwiico-menu') ) {
+			$(changeIcon).removeClass('zwiico-menu').addClass('zwiico-cancel');
+			$("nav #toggle").css("background-color",bgColorOpaque);
+		}
+		else {
+			$(changeIcon).addClass('zwiico-menu');
+			$("nav #toggle").css("background-color",bgColor);
+		};
+	});
+
+	/**
+	 * Active le système d'aide interne
+	 *
+	 */
+
+	$(".buttonHelp").click(function() {
+			$(".helpDisplayContent").slideToggle();
+			/**
+			if( $(".buttonHelp").css('opacity') > '0.75'){
+				$(".buttonHelp").css('opacity','0.5');
+			}
+			else{
+				$(".buttonHelp").css('opacity','1');
+			}
+			*/
+	});
+
+	$(".helpDisplayContent").click(function() {
+		$(".helpDisplayContent").slideToggle();
+	});
+
+	/**
+	* Remove ID Facebook from URL
+	 */
+	if(/^\?fbclid=/.test(location.search))
+		location.replace(location.href.replace(/\?fbclid.+/, ""));
+
+	/**
+	 * No translate Lity close
+	 */
+	 $(document).on('lity:ready', function(event, instance) {
+		$('.lity-close').addClass('notranslate');
+	});
+	
+	/**
+	* Bouton screenshot
+	*/
+	var dataURL = {};  
+	$('#screenshot').click(function() {  
+		html2canvas(document.querySelector("#main_screenshot")).then(canvas => {
+			dataURL = canvas.toDataURL('image/jpeg', 0.1);
+			console.log( dataURL);
+			$.ajax({  
+				type: "POST",
+				contentType:"application/x-www-form-urlencoded",    
+				url: "<?php echo helper::baseUrl(false); ?>core/vendor/screenshot/screenshot.php",   
+				data: {  
+					image: dataURL  
+				},  
+				dataType: "html" 				
+			});  
+		});
+	});
+		
+	/* Compteur de liens cliqués
+	* Fonctionne avec download_counter.php
+	* Les liens comptabilisés doivent avoir la class="clicked_link_count"
+	* Envoi au fichier download_counter.php la donnée url
+	*/
+	<?php if( $this->getData(['config', 'statislite', 'enable']) && is_file('site/data/statislite/module/download_counter/download_counter.php' ) ) { ?>
+	  $('.clicked_link_count').on('click', function(event) {
+		// Récupérer le chemin vers le fichier
+		var filePath = $(this).attr('href');
+		// Envoyer une requête AJAX pour enregistrer le téléchargement
+		$.ajax({
+		  type: 'POST',
+		  url: '/site/data/statislite/module/download_counter/download_counter.php',
+		  data: {'url': filePath},
+		});
+	  });
+	<?php } ?>
+		
+});

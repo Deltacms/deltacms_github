@@ -1,0 +1,26 @@
+{
+    "locale": {
+        "homePageId": "home",
+        "page302": "none",
+        "page403": "none",
+        "page404": "none",
+        "legalPageId": "none",
+        "searchPageId": "none",
+        "searchPageLabel": "Search",
+        "sitemapPageLabel": "Sitemap",
+        "legalPageLabel": "Legal Notices",
+        "metaDescription": "DeltaCMS is a database-less CMS that allows you to easily create and manage a website without any programming knowledge.",
+        "title": "DeltaCMS",
+		"captchaSimpleText": "I'am not a robot",
+        "captchaSimpleHelp": "Check this box to prove that you are human",
+        "cookies": {
+            "cookiesDeltaText": "This site uses cookies which are necessary for its operation. They enable it to function more smoothly, for example by memorising connection data, the language you have chosen or the validation of this message.",
+            "cookiesExtText": "",
+            "cookiesTitleText": "Managing cookies",
+            "cookiesLinkMlText": "Consult the legal notices",
+            "cookiesCheckboxExtText": "",
+            "cookiesFooterText": "Cookies",
+            "cookiesButtonText": "I understand"
+        }
+    }
+}

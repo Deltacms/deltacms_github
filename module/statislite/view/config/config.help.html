@@ -1,0 +1,20 @@
+<h2>STATISLITE</h2>
+<h3>Filtrage</h3>
+<p>Le filtrage permet d'éliminer des sessions ou des pages des statistiques. Il est réalisé en 2 étapes, un filtrage primaire commenté dans la configuration avancée
+et le filtrage secondaire paramétrable ici.</p>
+<p> * Le filtrage primaire est basé sur la reconnaissance de robots,d'IP appartenant à une liste, de pages appartenant à une autre liste,</P>
+<p> * Le filtrage secondaire est basé sur le comportement : temps passé sur une page, temps de visite, nombre de pages vues, utilisateurs exclus.</P>
+<p>Le réglage du 'Nombre minimum de pages vues' à 1 est déconseillé, dans ce cas aucun contrôle de temps ne peut opérer.</P>
+<h3>Sessions invalidées</h3>
+<p>Pour permettre d'ajuster les paramètres de filtrage une liste des 200 derniers robots et une liste des 200 dernières sessions invalidées sont disponibles, quand elles existent.</P>
+<h3>Mises à jour</h3>
+<p>Pour afficher la langue, le navigateur et le système d'exploitation de l'utilisateur, Statislite utilise 3 fichiers que vous pouvez compléter : langages.txt, navigateurs.txt et systemes.txt, ils sont situés dans le dossier site/data/statislite/module/.  
+Lors d'une mise à jour on peut vous signaler l'évolution de ces fichiers dans l'archive du module, pour faire la mise à jour depuis cette archive cochez la case 'Validation de la mise à jour', après avoir éventuellement sauvegardé ces fichiers.</P>
+<h3>Sauvegarde et initialisation</h3>
+<p>Les fichiers sont sauvegardés avec un nom formé par l'année, le mois, le jour, l'heure, les minutes, les secondes suivi de '_cumul.json'.</P>
+<p>Pour charger un fichier de statistiques sauvegardé, sélectionnez le dans la liste puis enregistrez la configuration.</p>
+<p>'Réinitialiser' supprime les statistiques, une copie automatique de précaution est réalisée avant.</p>
+<h3>Compteur de liens cliqués</h3>
+<p>Vous pouvez comptabiliser les clics réalisés sur certains liens. Pour cela le lien doit avoir la classe "clicked_link_count", il faut la sélectionner dans l'éditeur de lien de Tinymce (sélecteur 'Classe').</p>
+<h3>Plus</h3>
+<iframe title="statislite_FR" src="https://video.ploud.fr/videos/embed/8015ef01-5f02-4f06-aa07-8cfb1ba1a452" allowfullscreen="" sandbox="allow-same-origin allow-scripts allow-popups" width="560" height="315" frameborder="0"></iframe>

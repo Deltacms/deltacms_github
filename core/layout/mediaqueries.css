@@ -1,0 +1,344 @@
+/**
+ * This file is part of DeltaCMS.
+ */
+
+/*					Ecrans >= 800px					*/
+
+@media (min-width: 800px) {
+/* Barre de membre */
+	#bar #barLeft {
+	   float: left;
+	}
+	#bar #barRight {
+	   float: right;
+	   font-size: 12px;
+	}
+/* Bannière */
+	header {
+	   margin: 0;
+	}
+/* Items du menu */
+	.smallScreenFlags {
+	   display: none;
+	}
+	nav #menu {
+	   display: block;
+	}
+	nav li:hover ul {
+		z-index: 8;
+		opacity: 1;
+	}
+/* Barre de navigation fixe quand le menu est en-dehors du site et fixe*/
+	#navfixedlogout {
+		position: sticky;
+		top: 0;
+		z-index: 10;
+	}
+	#navfixedconnected {
+		top: 45px;
+		z-index: 10;
+		position: sticky;
+	}
+	nav .iconSubExistLargeScreen{
+		display:inline;
+		margin-left :5px;
+	}
+	nav .iconSubExistSmallScreen{
+		display:none;
+	}	
+/* Corps */
+	section {
+	   padding: 20px;
+	}
+/* Grille */
+	.col1 {
+	   width: 8.33333333%;
+	}
+	.col2 {
+	   width: 16.66666667%;
+	}
+	.col3 {
+	   width: 25%;
+	}
+	.col4 {
+	   width: 33.33333333%;
+	}
+	.col5 {
+	   width: 41.66666667%;
+	}
+	.col6 {
+	   width: 50%;
+	}
+	.col7 {
+	   width: 58.33333333%;
+	}
+	.col8 {
+	   width: 66.66666667%;
+	}
+	.col9 {
+	   width: 75%;
+	}
+	.col10 {
+	   width: 83.33333333%;
+	}
+	.col11 {
+	   width: 91.66666667%;
+	}
+	.col12 {
+	   width: 100%;
+	}
+	.offset1 {
+	   margin-left: 8.33333333%;
+	}
+	.offset2 {
+	   margin-left: 16.66666667%;
+	}
+	.offset3 {
+	   margin-left: 25%;
+	}
+	.offset4 {
+	   margin-left: 33.33333333%;
+	}
+	.offset5 {
+	   margin-left: 41.66666667%;
+	}
+	.offset6 {
+	   margin-left: 50%;
+	}
+	.offset7 {
+	   margin-left: 58.33333333%;
+	}
+	.offset8 {
+	   margin-left: 66.66666667%;
+	}
+	.offset9 {
+	   margin-left: 75%;
+	}
+	.offset10 {
+	   margin-left: 83.33333333%;
+	}
+	.offset11 {
+	   margin-left: 91.66666667%;
+	}
+}
+
+/*					Ecrans < 800px					*/
+
+@media (max-width: 799px) {
+/* Suppression des marges */
+	body {
+	   margin: 0 auto !important ;
+	}
+	body > header {
+	   margin: 0 auto !important ;
+	}
+	.tippy-tooltip {
+	   font-size: 0.8rem !important ;
+	}
+	section {
+	   padding-top: 10px;
+	   padding-right: 10px !important ;
+	   padding-left: 10px !important ;
+	   padding-bottom: 10px !important ;
+	}
+/* siteContainer */
+	.siteContainer {
+	   display: flex;
+	   flex-direction: column;
+	}
+	.siteContainer > #contentLeft {
+	   order: 1;
+	}
+	.siteContainer > #contentRight {
+	   order: 3;
+	}
+	.siteContainer > #contentSite {
+	   order: 2;
+	}
+/* Tableaux */
+	.table thead {
+	   font-size: 0.8em;
+	}
+/* Barre de membre */
+	#bar {
+	   text-align: center;
+	   margin: 0 auto !important ;
+	}
+	#bar ul {
+	   height: auto;
+	}
+	#bar #barSelectPage {
+	   width: 40%;
+	   font-size: 1em;
+	}
+	#bar #barLeft {
+	   font-size: 1.2em;
+	   float: none;
+	}
+	#bar #barRight {
+	   font-size: 1.4em;
+	}
+	#bar #displayUsername {
+	   display: none;
+	}
+/* Items du menu */
+	body > nav {
+	   margin: 0 auto !important ;
+	}
+	nav{
+		padding: 0;
+	}
+	nav .iconSubExistLargeScreen{
+		display:none;
+	}
+	nav .iconSubExistSmallScreen{
+		display:inline;
+		margin: auto 30vw auto auto;
+	}
+	nav a.disabled-link{
+		font-style:italic;
+	}
+	/*bandeau flex*/
+	nav #toggle {
+	   display: flex;
+	   align-items: center;
+	   float: none;		
+	}	
+	nav #toggle #burgerIcon{
+		flex-basis:20%;
+		text-align: right;
+	}
+	nav #toggle #burgerText{
+		flex-basis:80%;
+		text-align: left;
+		margin-left: 10px;
+	}
+	nav #toggle #burgerIcon1, nav #toggle #burgerIcon2 {
+		flex-basis:40%;
+		text-align: left;
+		margin-left: 10px;
+	}	
+	nav #menuLeft {
+	   display: block;
+	   float: none;
+	}
+	nav #menuLeft {
+	   flex-direction: column;
+	   float: none;
+	}
+	nav #menuRight {
+	   font-size: 2em;
+	}
+	nav #menu {
+	   display: none;
+	   text-align: left;
+	   width: 100%;
+	   height: auto;
+	   max-height: 80vh;
+	   float: left;
+	   overflow-x: hidden;
+       overflow-y: auto;
+	}
+	nav #menu a{
+		padding:10px 10px;
+	}
+	nav li {
+	   display: block;
+	}
+	.navfixedburgerconnected  {
+		position: fixed;
+		z-index: 11;
+		/*top: dans core.js.php*/
+		padding: 0px;
+		width:100%;
+	}
+	.navfixedburgerlogout{
+		position: fixed;
+		z-index: 10;
+		top: 0;
+		padding: 0px;
+		width:100%;
+	}
+	.navfixedburgerconnected  #menu, .navburgerconnected #menu{
+		height: auto;
+		max-height: 60vh;
+	}
+	.navfixedburgerconnected  #menu a, .navfixedburgerlogout #menu a{
+		padding: 10px 10px;
+	}
+/* Taille du menu hamburger */
+	nav .zwiico-menu {
+	   font-size: 1.5em;
+	}
+	nav .zwiico-cancel {
+	   font-size: 1.5em;
+	}
+/* Position du bloc dans le site sur les petits écrans */
+	.smallScreenFlags {
+	   display: inline-block;
+	   position: relative;
+	   /*left: 10px;*/
+	}
+	.smallScreenInline {
+	   display: inline-block;
+	}
+	.i18nFlag {
+	   width: 25px;
+	   /*margin: 0 10px 0 -10px;*/
+	}
+	.i18nFlagSelected {
+	   width: 30px;
+	   /*margin: 0 10px 0 -10px;*/
+	}
+	.zwiico-login {
+	   margin-right: 20px;
+	}
+/* Conserve le pied de page sur une ligne */
+	body > footer {
+	   margin: 0 auto !important ;
+	}
+	footer .col4 {
+	   width: 100%;
+	}
+	#footerCopyright,
+	#footerText,
+	#footerSocials {
+	   display: flex;
+	   justify-content: center;
+	}
+/* Message sur les cookies */
+	#cookieConsent {
+	   width: 90%;
+	}
+/* Bannière masquable en petit écran */
+	.bannerDisplay {
+	   display: none;
+	}
+/* Largeur du menu */
+	.navBodyWidth {
+		width: 100%;
+	}
+}
+
+/*					Autres tailles d'écrans					*/
+
+/* Tableau sur les écrans de petites tailles */
+@media (max-width: 668px) {
+	.table thead {
+	   display: none;
+	}
+}
+
+/* Tableau sur les écrans de très petites tailles */
+@media (max-width: 480px) {
+	.table tr {
+	   display: block;
+	   margin-bottom: 10px;
+	}
+	.table td {
+	   display: block;
+	   text-align: right;
+	   width: auto;
+	}
+}
+

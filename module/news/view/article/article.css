@@ -1,0 +1,17 @@
+
+/**
+ * This file is part of DeltaCMS.
+ */
+
+/*
+* Module news
+*/
+
+#rssFeed {
+    text-align: right;
+    float: right;
+}
+#rssFeed p {
+    display: inline;
+    vertical-align: top;
+}

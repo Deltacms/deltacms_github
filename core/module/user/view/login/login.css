@@ -1,0 +1,27 @@
+.userCheckBlue {
+	display: none;
+}
+.userOuter{
+	text-align: center;
+    margin: 0 auto;
+    width: 50%;
+	border-radius: 2px;
+	border: 1px solid;
+}
+
+@media screen and (max-width: 799px) {
+	.userOuter{
+		width: 100%;
+	}
+}
+
+.userInner{
+	display: inline-block;
+}
+
+#passwordLabel, #passwordIcon {
+   display: inline-flex;
+}
+#passwordIcon {
+    float: right;
+}

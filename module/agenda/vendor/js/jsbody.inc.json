@@ -1,0 +1,6 @@
+[
+	"packages/core/main.min.js",
+	"packages/interaction/main.min.js",
+	"packages/daygrid/main.min.js",
+	"packages/core/locales-all.js"
+]

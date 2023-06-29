@@ -1,0 +1,200 @@
+<?php
+// Lexique du module Blog en anglais
+$text['blog_view']['add'][0] = 'Back';
+$text['blog_view']['add'][1] = 'Save as draft';
+$text['blog_view']['add'][2] = 'Publish';
+$text['blog_view']['add'][3] = 'General information';
+$text['blog_view']['add'][4] = 'Title';
+$text['blog_view']['add'][5] = 'Optional image. Optimal size of cover image : ';
+$text['blog_view']['add'][6] = 'Cover image';
+$text['blog_view']['add'][7] = 'Width of image';
+$text['blog_view']['add'][8] = 'Position';
+$text['blog_view']['add'][9] = 'The text of the article is adapted around the image';
+$text['blog_view']['add'][10] = 'Hide image in article';
+$text['blog_view']['add'][11] = 'Publication options';
+$text['blog_view']['add'][12] = 'Author';
+$text['blog_view']['add'][13] = 'The article is not visible until after the scheduled publication date';
+$text['blog_view']['add'][14] = 'Date of publication';
+$text['blog_view']['add'][15] = 'Edit / Delete';
+$text['blog_view']['add'][16] = 'Users in higher groups have unrestricted access to the article';
+$text['blog_view']['add'][17] = 'Comments';
+$text['blog_view']['add'][18] = 'Close comments';
+$text['blog_view']['add'][19] = 'Moderator approval';
+$text['blog_view']['add'][20] = 'Choice of maximum number of characters for each comment in the article, including html formatting';
+$text['blog_view']['add'][21] = 'Characters per comment';
+$text['blog_view']['add'][22] = 'Email notification';
+$text['blog_view']['add'][23] = 'Optional image';
+// For Tinymce and Flatpickr
+$text['blog_view']['add'][24] = 'en_GB';
+$text['blog_view']['add'][25] = 'default';
+$text['blog_view']['comment'][0] = 'Return';
+$text['blog_view']['comment'][1] = 'Date';
+$text['blog_view']['comment'][2] = 'Content';
+$text['blog_view']['comment'][3] = 'Author';
+$text['blog_view']['comment'][4] = 'No comments';
+$text['blog_view']['config'][0] = 'Back';
+$text['blog_view']['config'][1] = 'Article';
+$text['blog_view']['config'][2] = 'Save';
+$text['blog_view']['config'][3] = 'Module settings';
+$text['blog_view']['config'][4] = 'RSS feed link';
+$text['blog_view']['config'][5] = 'Label text';
+$text['blog_view']['config'][6] = 'Articles per page';
+$text['blog_view']['config'][7] = 'Title';
+$text['blog_view']['config'][8] = 'Date published';
+$text['blog_view']['config'][9] = 'Status';
+$text['blog_view']['config'][10] = 'Comments';
+$text['blog_view']['config'][11] = 'No article';
+$text['blog_view']['config'][12] = 'Version No.';
+$text['blog_view']['config'][13] = 'Texts';
+$text['blog_view']['config'][14] = "Are you sure you want to delete this article ?";
+$text['blog_view']['config'][15] = 'Help';
+$text['blog_view']['config'][16] = 'module/blog/view/config/config.help_en.html';
+$text['blog_view']['edit'][0] = 'Back';
+$text['blog_view']['edit'][1] = 'Save as draft';
+$text['blog_view']['edit'][2] = 'Publish';
+$text['blog_view']['edit'][3] = 'General information';
+$text['blog_view']['edit'][4] = 'Title';
+$text['blog_view']['edit'][5] = 'Optional image. Optimal size of cover image : ';
+$text['blog_view']['edit'][6] = 'Cover image';
+$text['blog_view']['edit'][7] = 'Width of image';
+$text['blog_view']['edit'][8] = 'Position';
+$text['blog_view']['edit'][9] = 'The text of the article is adapted around the image';
+$text['blog_view']['edit'][10] = 'Hide image in article';
+$text['blog_view']['edit'][11] = 'Publication options';
+$text['blog_view']['edit'][12] = 'Author';
+$text['blog_view']['edit'][13] = 'The article is not visible until after the scheduled publication date';
+$text['blog_view']['edit'][14] = 'Date of publication';
+$text['blog_view']['edit'][15] = 'Edit / Delete';
+$text['blog_view']['edit'][16] = 'Users in higher groups have unrestricted access to the article';
+$text['blog_view']['edit'][17] = 'Comments';
+$text['blog_view']['edit'][18] = 'Close comments';
+$text['blog_view']['edit'][19] = 'Moderator approval';
+$text['blog_view']['edit'][20] = 'Choice of the maximum number of characters for each comment in the article, including html formatting.';
+$text['blog_view']['edit'][21] = 'Characters per comment';
+$text['blog_view']['edit'][22] = 'Email notification';
+$text['blog_view']['edit'][23] = 'Editors = editors + administrators<br/> Members = members + editors + administrators';
+// For Tinymce and Flatpickr
+$text['blog_view']['edit'][24] = 'en_GB';
+$text['blog_view']['edit'][25] = 'default';
+$text['blog_view']['indext'][0] = 'Read more';
+$text['blog_view']['indext'][1] = 'No article';
+$text['blog_view']['texts'][0] = 'Back';
+$text['blog_view']['texts'][1] = 'Adapt these texts into the language of your visitors';
+$text['blog_view']['texts'][2] = 'Save';
+$text['blog_view']['texts'][3] = 'No comment yet';
+$text['blog_view']['texts'][4] = 'Write a comment';
+$text['blog_view']['texts'][5] = 'Name';
+$text['blog_view']['texts'][6] = 'Comment with maximum';
+$text['blog_view']['texts'][7] = 'characters';
+$text['blog_view']['texts'][8] = 'comment';
+$text['blog_view']['texts'][9] = 'Comment filed';
+$text['blog_view']['texts'][10] = 'Comment submitted pending approval';
+$text['blog_view']['texts'][11] = 'This article does not receive comments';
+$text['blog_view']['texts'][13] = 'Login';
+$text['blog_view']['texts'][15] = 'Edit';
+$text['blog_view']['texts'][16] = 'Cancel';
+$text['blog_view']['texts'][17] = 'Send';
+$text['blog_view']['texts'][18] = 'You have reached the maximum of';
+$text['blog_view']['texts'][19] = 'characters left';
+$text['blog_view']['texts'][20] = 'You were about to exceed the maximum of ';
+$text['blog_view']['texts'][25] = 'Version no.';
+$text['blog_view']['texts'][26] ='Read more';
+$text['blog_view']['article'][0] = 'en_GB';				
+$text['blog']['config'][0] = 'Saved changes';
+$text['blog']['config'][1] = 'Module configuration';	
+$text['blog']['config'][2] = ' at ';
+$text['blog']['index'][0] = '<br/>A notification has been sent.';
+$text['blog']['index'][1] = '<br/> Notification error : ';
+$text['blog']['index'][4] = 'New comment submitted';
+$text['blog']['index'][5] = 'Hello';
+$text['blog']['index'][6] = 'The article ';
+$text['blog']['index'][7] = ' has received a new comment';
+$text['blog']['index'][8] = 'No comment yet';
+$text['blog']['index'][9] = 'Write a comment';
+$text['blog']['index'][10] = 'Name';
+$text['blog']['index'][11] = 'Comment with maximum';
+$text['blog']['index'][12] = 'characters';
+$text['blog']['index'][13] = 'Comment';
+$text['blog']['index'][14] = 'Comment filed';
+$text['blog']['index'][15] = 'Comment submitted pending approval';
+$text['blog']['index'][16] = 'This article does not receive comments';
+$text['blog']['index'][17] = 'Login';
+$text['blog']['index'][18] = 'Edit';
+$text['blog']['index'][19] = 'Cancel';
+$text['blog']['index'][20] = 'Send';
+$text['blog']['index'][21] = 'You have reached the maximum of';
+$text['blog']['index'][22] = 'Characters left';
+$text['blog']['index'][23] = 'You were about to exceed the maximum of';
+$text['blog']['index'][24] = 'Incorrect ';
+$text['blog']['index'][25] = ' Repeat and fill in the Captcha ';
+$text['blog']['edit'][0] = 'Unauthorised action';
+$text['blog']['edit'][1] = 'Changes saved';
+$text['blog']['delete'][0] = 'Unauthorised action';
+$text['blog']['delete'][1] = 'Article deleted';
+$text['blog']['commentApprove'][0] = 'Unauthorised action';
+$text['blog']['commentApprove'][1] = 'Comment approved';
+$text['blog']['commentApprove'][2] = 'Comment rejected';
+$text['blog']['texts'][0] = '';
+$text['blog']['texts'][1] = '';
+$text['blog']['texts'][2] = 'Texts visible to a visitor';
+$text['blog']['add'][0] = 'New article created';
+$text['blog']['add'][1] = 'New article';
+$text['blog']['comment'][0] = 'Delete all';
+$text['blog']['comment'][1] = 'Comment management : ';
+$text['blog']['commentDelete'][0] = 'Action not permitted';
+$text['blog']['commentDelete'][1] = 'Comment deleted';
+$text['blog']['commentDeleteAll'][0] = 'Action not allowed';
+$text['blog']['commentDeleteAll'][1] = 'Comments deleted';
+$states = [
+	false => 'Draft',
+	true => 'Published'
+];
+// Nombre d'objets par page
+$ItemsList = [
+	4 => '4 articles',
+	8 => '8 articles',
+	12 => '12 articles',
+	16 => '16 articles',
+	22 => '22  articles'
+];
+$pictureSizes = [
+	'20' => 'Very small',
+	'30' => 'Small',
+	'40' => 'Large',
+	'50' => 'Very large',
+	'100' => 'Full width',
+];
+$picturePositions = [
+	'left' => 'Left',
+	'right' => 'Right',
+];
+//Paramètre longueur maximale des commentaires en nb de caractères
+$commentLength = [
+	'500' => '500',
+	'1000' => '1000',
+	'2000' => '2000',
+	'5000' => '5000',
+	'10000' => '10000'
+];
+$groupEdits = [
+	self::GROUP_BANNED => 'Banned',
+	self::GROUP_MEMBER => 'Member',
+	self::GROUP_EDITOR => 'Editor',
+	self::GROUP_MODERATOR => 'Moderator',
+	self::GROUP_ADMIN => 'Administrator'
+];	
+$groupNews = [
+	self::GROUP_MEMBER => 'Member',
+	self::GROUP_EDITOR => 'Editor',
+	self::GROUP_MODERATOR => 'Moderator',
+	self::GROUP_ADMIN => 'Administrator'
+];
+// Permissions d'un article
+if( $param === 'blog_view' ) {
+	$articleConsent = [
+		$module::EDIT_ALL 			=> 'All groups',
+		$module::EDIT_GROUP 		=> 'Owner\'s group',
+		$module::EDIT_OWNER 		=> 'Owner'
+	];
+}
+?>

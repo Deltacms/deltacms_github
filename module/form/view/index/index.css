@@ -1,0 +1,48 @@
+/**
+ * This file is part of DeltaCMS.
+ */
+
+
+#formFileReset {
+	background-color: red;
+	border-width:1px;
+	border-color: orange;
+	font-size: 1.15em;
+	font-style: bold;
+	color: yellow; 
+}
+
+#formFileReset:hover {
+	background-color: orange;
+	border-color: orange;
+	font-style: normal;
+	color:black; 
+}
+
+.formInputFile {
+	padding: 9px;
+	border-radius: 2px;
+	border: 1px solid;
+}
+
+.formOuter{
+	text-align: center;
+    margin: 0 auto;
+    width: 50%;
+	border-radius: 2px;
+	border: 1px solid;
+}
+
+@media screen and (max-width: 799px) {
+	.formOuter{
+		width: 100%;
+	}
+}
+
+.formInner{
+	display: inline-block;
+}
+
+.formCheckBlue {
+	display: none;
+}

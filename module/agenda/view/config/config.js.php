@@ -1,0 +1,14 @@
+/**
+ * This file is part of DeltaCMS.
+ */
+
+
+/**
+ * Confirmation de suppression de tous les évènements
+ */
+$(".configSup").on("click", function() {
+	var _this = $(this);
+	return core.confirm( textConfirm, function() {
+		$(location).attr("href", _this.attr("href"));
+	});
+});
