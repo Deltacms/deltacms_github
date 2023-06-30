@@ -1804,9 +1804,6 @@ class common {
 				// Mise en page de l'item
 				$itemsLeft .= '<li>';
 				$pageDesactived = false;
-				/*if ( ( $this->getData(['page',$parentPageId,'disable']) === true AND $this->getUser('password') !== $this->getInput('DELTA_USER_PASSWORD')) 
-					OR ( $this->getData(['page',$parentPageId,'disable']) === true AND $this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD')AND $this->getUser('group') < self::GROUP_EDITOR ))
-				{*/
 				if (  $this->getData(['page',$parentPageId,'disable']) === true && $groupUser < 2 ){
 					$pageUrl = ($this->getData(['locale', 'homePageId']) === $this->getUrl(0)) ? helper::baseUrl(false)  :  helper::baseUrl() . $this->getUrl(0);
 					$itemsLeft .= '<div id="'.$parentPageId.'" class="box" style="display:flex; justify-content:space-between;"><div><a class="A ' . $active . $parentPageId . ' disabled-link">';
@@ -2006,7 +2003,8 @@ class common {
 				$items .= '<li class="menuSideChild">';
 				if ( $this->getData(['page',$parentPageId,'disable']) === true
 					AND $this->getUser('password') !== $this->getInput('DELTA_USER_PASSWORD')	) {
-						$items .= '<a href="'.$this->getUrl(1).'">';
+						$items .= '<a class="disabled-link">';
+						//$items .= '<a href="'.$this->getUrl(1).'">';	
 				} else {
 						$items .= '<a href="'. helper::baseUrl() . $parentPageId . '"' . $targetBlank .  $active .'>';
 				}

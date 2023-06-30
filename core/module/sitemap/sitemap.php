@@ -44,8 +44,8 @@ class sitemap extends common
 				$totalChild += 1;
 				if( $this->getData(['page', $childKey, 'disable']) === true ) $disableChild +=1;
 			}
-			// Ne pas afficher les pages masquées dans le menu latéral ou les pages désactivées sans sous-page active pour les clients < éditeur
-			if ($this->getData(['page',$parentId,'hideMenuSide']) === true || ( $this->getData(['page',$parentId,'disable']) && (empty($childIds) ||  $disableChild === $totalChild) && $groupUser < 2 ) ) {
+			// Ne pas afficher les pages désactivées sans sous-page active pour les clients < éditeur
+			if ( $this->getData(['page',$parentId,'disable']) && (empty($childIds) ||  $disableChild === $totalChild) && $groupUser < 2 )  {
 				continue;
 			}
             $items .= ' <li>';
@@ -54,7 +54,12 @@ class sitemap extends common
                     $items .= '<a href="' . $pageUrl .'">'  .$this->getData(['page', $parentId, 'title']) . '</a>';
                 } else {
                     // page désactivée
-                    $items .= $this->getData(['page', $parentId, 'title']);
+					if ( $groupUser < 2 ){
+						$items .= '<a class="disabled-link">'  .$this->getData(['page', $parentId, 'title']) . '</a>';	
+					} else {
+						$pageUrl = ($parentId !== $this->getData(['locale', 'homePageId'])) ? helper::baseUrl() . $parentId : helper::baseUrl(false);
+						$items .= '<a href="' . $pageUrl .'">'  .$this->getData(['page', $parentId, 'title']) . '</a>';	
+					}
                 }
                 // ou articles d'un blog
                 
@@ -81,14 +86,15 @@ class sitemap extends common
                 } 
                 
                 foreach ($childIds as $childId) {
-					// Passer les sous-pages masquées ou désactivées si client < éditeur
-					if ($this->getData(['page',$childId,'hideMenuSide']) === true || ( $this->getData(['page',$childId,'disable']) === true && $groupUser < 2)) {
+					// Passer les sous-pages désactivées si client < éditeur
+					if ( $this->getData(['page',$childId,'disable']) === true && $groupUser < 2 ) {
 						continue;
 					}
 					$items .= '<ul>';
 					// Sous-page
 					$items .= ' <li>';              
-					if ($this->getData(['page', $childId, 'disable']) === false && $this->getUser('group') >= $this->getData(['page', $parentId, 'group'])) {
+					if ( ($this->getData(['page', $childId, 'disable']) === false && $this->getUser('group') >= $this->getData(['page', $parentId, 'group'])) 
+						|| ( $this->getData(['page', $childId, 'disable']) === true && $groupUser >= 2)) {
 						$pageUrl = ($childId !== $this->getData(['locale', 'homePageId'])) ? helper::baseUrl() . $childId : helper::baseUrl(false) ;
 						$items .= '<a href="' . $pageUrl . '">' . $this->getData(['page', $childId, 'title']) . '</a>';
 					} else {

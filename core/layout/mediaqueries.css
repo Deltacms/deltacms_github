@@ -195,7 +195,7 @@
 		display:inline;
 		margin: auto 30vw auto auto;
 	}
-	nav a.disabled-link{
+	a.disabled-link{
 		font-style:italic;
 	}
 	/*bandeau flex*/
