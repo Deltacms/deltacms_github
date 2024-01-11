@@ -18,7 +18,7 @@
  
 class form extends common {
 
-	const VERSION = '4.9';
+	const VERSION = '5.1';
 	const REALNAME = 'Formulaire';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -31,8 +31,7 @@ class form extends common {
 		'delete' => self::GROUP_MODERATOR,
 		'deleteall' => self::GROUP_MODERATOR,
 		'index' => self::GROUP_VISITOR,
-		'export2csv' => self::GROUP_MODERATOR,
-		'output2csv' => self::GROUP_MODERATOR
+		'export2csv' => self::GROUP_MODERATOR
 	];
 
 	public static $data = [];
@@ -85,8 +84,8 @@ class form extends common {
 			$this->setData(['module', $this->getUrl(0), 'config', 'uploadTxt',false]);
 			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','4.1']);
 		}
-		if( version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '4.9', '<') ){
-			$this->setData(['module', $this->getUrl(0), 'config', 'versionData', '4.9']);
+		if( version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '5.1', '<') ){
+			$this->setData(['module', $this->getUrl(0), 'config', 'versionData', '5.1']);
 		}
 	}
 	
@@ -95,162 +94,192 @@ class form extends common {
 	 * Configuration
 	 */
 	public function config() {
-		// Lexique
-		$param = '';
-		include('./module/form/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_form.php');
-		// Liste des utilisateurs
-		$userIdsFirstnames = helper::arrayCollumn($this->getData(['user']), 'firstname');
-		ksort($userIdsFirstnames);
-		self::$listUsers [] = '';
-		foreach($userIdsFirstnames as $userId => $userFirstname) {
-			self::$listUsers [] =  $userId;
-		}
-		// Soumission du formulaire
-		if($this->isPost()) {
-			// Configuration
-			$this->setData([
-				'module',
-				$this->getUrl(0),
-				'config',
-				[
-					'button' => $this->getInput('formConfigButton'),
-					'captcha' => $this->getInput('formConfigCaptcha', helper::FILTER_BOOLEAN),
-					'group' => $this->getInput('formConfigGroup', helper::FILTER_INT),
-					'user' =>  self::$listUsers [$this->getInput('formConfigUser', helper::FILTER_INT)],
-					'mail' => $this->getInput('formConfigMail') ,
-					'pageId' => $this->getInput('formConfigPageIdToggle', helper::FILTER_BOOLEAN) === true ? $this->getInput('formConfigPageId', helper::FILTER_ID) : '',
-					'subject' => $this->getInput('formConfigSubject'),
-					'replyto' => $this->getInput('formConfigMailReplyTo', helper::FILTER_BOOLEAN),
-					'signature' => $this->getInput('formConfigSignature'),
-					'logoUrl' => $this->getInput('formConfigLogo'),
-					'logoWidth' => $this->getInput('formConfigLogoWidth'),
-					'maxSizeUpload' => $this->getInput('formConfigMaxSize'),
-					'versionData' => self::VERSION,
-					'uploadJpg' => $this->getInput('formConfigUploadJpg', helper::FILTER_BOOLEAN),
-					'uploadPng' => $this->getInput('formConfigUploadPng', helper::FILTER_BOOLEAN),
-					'uploadPdf' => $this->getInput('formConfigUploadPdf', helper::FILTER_BOOLEAN),
-					'uploadZip' => $this->getInput('formConfigUploadZip', helper::FILTER_BOOLEAN),
-					'uploadTxt' => $this->getInput('formConfigUploadTxt', helper::FILTER_BOOLEAN)
-				]
-			]);
-			// Génération des données vides
-			if ($this->getData(['module', $this->getUrl(0), 'data']) === null) {
-				$this->setData(['module', $this->getUrl(0), 'data', []]);
-			}
-			// Génération des champs
-			$inputs = [];
-			foreach($this->getInput('formConfigPosition', null) as $index => $position) {
-				$inputs[] = [
-					'name' => htmlspecialchars_decode($this->getInput('formConfigName[' . $index . ']'),ENT_QUOTES),
-					'position' => helper::filter($position, helper::FILTER_INT),
-					'required' => $this->getInput('formConfigRequired[' . $index . ']', helper::FILTER_BOOLEAN),
-					'type' => $this->getInput('formConfigType[' . $index . ']'),
-					'values' => $this->getInput('formConfigValues[' . $index . ']')
-				];
-			}
-			$this->setData(['module', $this->getUrl(0), 'input', $inputs]);
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < form::$actions['config'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
-				'notification' => $text['form']['config'][0],
-				'redirect' => helper::baseUrl() . $this->getUrl(),
-				'state' => true
+				'access' => false
+			]);	
+		} else {
+			// Lexique
+			$param = '';
+			include('./module/form/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_form.php');
+			// Liste des utilisateurs
+			$userIdsFirstnames = helper::arrayCollumn($this->getData(['user']), 'firstname');
+			ksort($userIdsFirstnames);
+			self::$listUsers [] = '';
+			foreach($userIdsFirstnames as $userId => $userFirstname) {
+				self::$listUsers [] =  $userId;
+			}
+			// Soumission du formulaire
+			if($this->isPost()) {
+				// Configuration
+				$this->setData([
+					'module',
+					$this->getUrl(0),
+					'config',
+					[
+						'button' => $this->getInput('formConfigButton'),
+						'captcha' => $this->getInput('formConfigCaptcha', helper::FILTER_BOOLEAN),
+						'group' => $this->getInput('formConfigGroup', helper::FILTER_INT),
+						'user' =>  self::$listUsers [$this->getInput('formConfigUser', helper::FILTER_INT)],
+						'mail' => $this->getInput('formConfigMail') ,
+						'pageId' => $this->getInput('formConfigPageIdToggle', helper::FILTER_BOOLEAN) === true ? $this->getInput('formConfigPageId', helper::FILTER_ID) : '',
+						'subject' => $this->getInput('formConfigSubject'),
+						'replyto' => $this->getInput('formConfigMailReplyTo', helper::FILTER_BOOLEAN),
+						'signature' => $this->getInput('formConfigSignature'),
+						'logoUrl' => $this->getInput('formConfigLogo'),
+						'logoWidth' => $this->getInput('formConfigLogoWidth'),
+						'maxSizeUpload' => $this->getInput('formConfigMaxSize'),
+						'versionData' => self::VERSION,
+						'uploadJpg' => $this->getInput('formConfigUploadJpg', helper::FILTER_BOOLEAN),
+						'uploadPng' => $this->getInput('formConfigUploadPng', helper::FILTER_BOOLEAN),
+						'uploadPdf' => $this->getInput('formConfigUploadPdf', helper::FILTER_BOOLEAN),
+						'uploadZip' => $this->getInput('formConfigUploadZip', helper::FILTER_BOOLEAN),
+						'uploadTxt' => $this->getInput('formConfigUploadTxt', helper::FILTER_BOOLEAN)
+					]
+				]);
+				// Génération des données vides
+				if ($this->getData(['module', $this->getUrl(0), 'data']) === null) {
+					$this->setData(['module', $this->getUrl(0), 'data', []]);
+				}
+				// Génération des champs
+				$inputs = [];
+				foreach($this->getInput('formConfigPosition', null) as $index => $position) {
+					$inputs[] = [
+						'name' => htmlspecialchars_decode($this->getInput('formConfigName[' . $index . ']'),ENT_QUOTES),
+						'position' => helper::filter($position, helper::FILTER_INT),
+						'required' => $this->getInput('formConfigRequired[' . $index . ']', helper::FILTER_BOOLEAN),
+						'type' => $this->getInput('formConfigType[' . $index . ']'),
+						'values' => $this->getInput('formConfigValues[' . $index . ']')
+					];
+				}
+				$this->setData(['module', $this->getUrl(0), 'input', $inputs]);
+				// Valeurs en sortie
+				$this->addOutput([
+					'notification' => $text['form']['config'][0],
+					'redirect' => helper::baseUrl() . $this->getUrl(),
+					'state' => true
+				]);
+			}
+			// Liste des pages
+			foreach($this->getHierarchy(null, false) as $parentPageId => $childrenPageIds) {
+				self::$pages[$parentPageId] = $this->getData(['page', $parentPageId, 'title']);
+				foreach($childrenPageIds as $childKey) {
+					self::$pages[$childKey] = '&nbsp;&nbsp;&nbsp;&nbsp;' . $this->getData(['page', $childKey, 'title']);
+				}
+			}
+			// Valeurs en sortie
+			$this->addOutput([
+				'title' => $text['form']['config'][1],
+				'vendor' => [
+					'html-sortable',
+					'flatpickr'
+				],
+				'view' => 'config'
 			]);
 		}
-		// Liste des pages
-		foreach($this->getHierarchy(null, false) as $parentPageId => $childrenPageIds) {
-			self::$pages[$parentPageId] = $this->getData(['page', $parentPageId, 'title']);
-			foreach($childrenPageIds as $childKey) {
-				self::$pages[$childKey] = '&nbsp;&nbsp;&nbsp;&nbsp;' . $this->getData(['page', $childKey, 'title']);
-			}
-		}
-		// Valeurs en sortie
-		$this->addOutput([
-			'title' => $text['form']['config'][1],
-			'vendor' => [
-				'html-sortable',
-				'flatpickr'
-			],
-			'view' => 'config'
-		]);
 	}
 
 	/**
 	 * Données enregistrées
 	 */
 	public function data() {
-		// Lexique
-		$param = '';
-		include('./module/form/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_form.php');
-		$data = $this->getData(['module', $this->getUrl(0), 'data']);
-		if($data) {
-			// Pagination
-			$pagination = helper::pagination($data, $this->getUrl(),self::ITEMSPAGE);
-			// Liste des pages
-			self::$pages = $pagination['pages'];
-			// Inverse l'ordre du tableau
-			$dataIds = array_reverse(array_keys($data));
-			$data = array_reverse($data);
-			// Données en fonction de la pagination
-			for($i = $pagination['first']; $i < $pagination['last']; $i++) {
-				$content = '';
-				foreach($data[$i] as $input => $value) {
-					$content .= $input . ' : ' . $value . '<br>';
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < form::$actions['data'] ) {
+			// Valeurs en sortie
+			$this->addOutput([
+				'access' => false
+			]);	
+		} else {
+			// Lexique
+			$param = '';
+			include('./module/form/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_form.php');
+			$data = $this->getData(['module', $this->getUrl(0), 'data']);
+			if($data) {
+				// Pagination
+				$pagination = helper::pagination($data, $this->getUrl(),self::ITEMSPAGE);
+				// Liste des pages
+				self::$pages = $pagination['pages'];
+				// Inverse l'ordre du tableau
+				$dataIds = array_reverse(array_keys($data));
+				$data = array_reverse($data);
+				// Données en fonction de la pagination
+				for($i = $pagination['first']; $i < $pagination['last']; $i++) {
+					$content = '';
+					foreach($data[$i] as $input => $value) {
+						$content .= $input . ' : ' . $value . '<br>';
+					}
+					self::$data[] = [
+						$content,
+						template::button('formDataDelete' . $dataIds[$i], [
+							'class' => 'formDataDelete buttonRed',
+							'href' => helper::baseUrl() . $this->getUrl(0) . '/delete/' . $dataIds[$i]  . '/' . $_SESSION['csrf'],
+							'value' => template::ico('cancel')
+						])
+					];
 				}
-				self::$data[] = [
-					$content,
-					template::button('formDataDelete' . $dataIds[$i], [
-						'class' => 'formDataDelete buttonRed',
-						'href' => helper::baseUrl() . $this->getUrl(0) . '/delete/' . $dataIds[$i]  . '/' . $_SESSION['csrf'],
-						'value' => template::ico('cancel')
-					])
-				];
 			}
+			// Valeurs en sortie
+			$this->addOutput([
+				'title' => $text['form']['data'][0],
+				'view' => 'data'
+			]);
 		}
-		// Valeurs en sortie
-		$this->addOutput([
-			'title' => $text['form']['data'][0],
-			'view' => 'data'
-		]);
 	}
 
 	/**
 	 * Export CSV
 	 */
 	public function export2csv() {
-		// Lexique
-		$param = '';
-		include('./module/form/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_form.php');	
-		// Jeton incorrect
-		if ($this->getUrl(2) !== $_SESSION['csrf']) {
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < form::$actions['export2csv'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
-				'redirect' => helper::baseUrl()  . $this->getUrl(0) . '/data',
-				'notification' => $text['form']['export2csv'][0]
-			]);
+				'access' => false
+			]);	
 		} else {
-			$data = $this->getData(['module', $this->getUrl(0), 'data']);
-			if ($data !== []) {
-				$csvfilename = 'data-'.date('dmY').'-'.date('hm').'-'.rand(10,99).'.csv';
-				if (!file_exists(self::FILE_DIR.'source/data')) {
-					mkdir(self::FILE_DIR.'source/data', 0755);
-				}
-				$fp = fopen(self::FILE_DIR.'source/data/'.$csvfilename, 'w');
-				fputcsv($fp, array_keys($data[1]), ';','"');
-				foreach ($data as $fields) {
-					fputcsv($fp, $fields, ';','"');
-				}
-				fclose($fp);
+			// Lexique
+			$param = '';
+			include('./module/form/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_form.php');	
+			// Jeton incorrect
+			if ($this->getUrl(2) !== $_SESSION['csrf']) {
 				// Valeurs en sortie
 				$this->addOutput([
-					'notification' => $text['form']['export2csv'][1].$csvfilename,
-					'redirect' => helper::baseUrl() . $this->getUrl(0) .'/data',
-					'state' => true
+					'redirect' => helper::baseUrl()  . $this->getUrl(0) . '/data',
+					'notification' => $text['form']['export2csv'][0]
 				]);
 			} else {
-				$this->addOutput([
-					'notification' => $text['form']['export2csv'][2],
-					'redirect' => helper::baseUrl() . $this->getUrl(0) .'/data'
-				]);
+				$data = $this->getData(['module', $this->getUrl(0), 'data']);
+				if ($data !== []) {
+					$csvfilename = 'data-'.date('dmY').'-'.date('hm').'-'.rand(10,99).'.csv';
+					if (!file_exists(self::FILE_DIR.'source/data')) {
+						mkdir(self::FILE_DIR.'source/data', 0755);
+					}
+					$fp = fopen(self::FILE_DIR.'source/data/'.$csvfilename, 'w');
+					fputcsv($fp, array_keys($data[1]), ';','"');
+					foreach ($data as $fields) {
+						fputcsv($fp, $fields, ';','"');
+					}
+					fclose($fp);
+					// Valeurs en sortie
+					$this->addOutput([
+						'notification' => $text['form']['export2csv'][1].$csvfilename,
+						'redirect' => helper::baseUrl() . $this->getUrl(0) .'/data',
+						'state' => true
+					]);
+				} else {
+					$this->addOutput([
+						'notification' => $text['form']['export2csv'][2],
+						'redirect' => helper::baseUrl() . $this->getUrl(0) .'/data'
+					]);
+				}
 			}
 		}
 	}
@@ -260,35 +289,45 @@ class form extends common {
 	 * Suppression
 	 */
 	public function deleteall() {
-		// Lexique
-		$param = '';
-		include('./module/form/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_form.php');
-		// Jeton incorrect
-		if ($this->getUrl(2) !== $_SESSION['csrf']) {
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < form::$actions['deleteall'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
-				'redirect' => helper::baseUrl()  . $this->getUrl(0) . '/data',
-				'notification' => $text['form']['deleteall'][0]
-			]);
+				'access' => false
+			]);	
 		} else {
-			$data = ($this->getData(['module', $this->getUrl(0), 'data']));
-			if (count($data) > 0 ) {
-				// Suppression multiple
-				for ($i = 1; $i <= count($data) ; $i++) {
-					echo $this->deleteData(['module', $this->getUrl(0), 'data', $i]);
-				}
+			// Lexique
+			$param = '';
+			include('./module/form/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_form.php');
+			// Jeton incorrect
+			if ($this->getUrl(2) !== $_SESSION['csrf']) {
 				// Valeurs en sortie
 				$this->addOutput([
-					'redirect' => helper::baseUrl() . $this->getUrl(0) . '/data',
-					'notification' => $text['form']['deleteall'][1],
-					'state' => true
+					'redirect' => helper::baseUrl()  . $this->getUrl(0) . '/data',
+					'notification' => $text['form']['deleteall'][0]
 				]);
 			} else {
-				// Valeurs en sortie
-				$this->addOutput([
-					'redirect' => helper::baseUrl() . $this->getUrl(0) . '/data',
-					'notification' => $text['form']['deleteall'][2]
-				]);
+				$data = ($this->getData(['module', $this->getUrl(0), 'data']));
+				if (count($data) > 0 ) {
+					// Suppression multiple
+					for ($i = 1; $i <= count($data) ; $i++) {
+						echo $this->deleteData(['module', $this->getUrl(0), 'data', $i]);
+					}
+					// Valeurs en sortie
+					$this->addOutput([
+						'redirect' => helper::baseUrl() . $this->getUrl(0) . '/data',
+						'notification' => $text['form']['deleteall'][1],
+						'state' => true
+					]);
+				} else {
+					// Valeurs en sortie
+					$this->addOutput([
+						'redirect' => helper::baseUrl() . $this->getUrl(0) . '/data',
+						'notification' => $text['form']['deleteall'][2]
+					]);
+				}
 			}
 		}
 	}
@@ -298,33 +337,43 @@ class form extends common {
 	 * Suppression
 	 */
 	public function delete() {
-		// Lexique
-		$param = '';
-		include('./module/form/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_form.php');
-		// Jeton incorrect
-		if ($this->getUrl(3) !== $_SESSION['csrf']) {
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < form::$actions['delete'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
-				'redirect' => helper::baseUrl()  . $this->getUrl(0) . '/data',
-				'notification' => $text['form']['delete'][0]
-			]);
+				'access' => false
+			]);	
 		} else {
-			// La donnée n'existe pas
-			if($this->getData(['module', $this->getUrl(0), 'data', $this->getUrl(2)]) === null) {
+			// Lexique
+			$param = '';
+			include('./module/form/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_form.php');
+			// Jeton incorrect
+			if ($this->getUrl(3) !== $_SESSION['csrf']) {
 				// Valeurs en sortie
 				$this->addOutput([
-					'access' => false
+					'redirect' => helper::baseUrl()  . $this->getUrl(0) . '/data',
+					'notification' => $text['form']['delete'][0]
 				]);
-			}
-			// Suppression
-			else {
-				$this->deleteData(['module', $this->getUrl(0), 'data', $this->getUrl(2)]);
-				// Valeurs en sortie
-				$this->addOutput([
-					'redirect' => helper::baseUrl() . $this->getUrl(0) . '/data',
-					'notification' => $text['form']['delete'][1],
-					'state' => true
-				]);
+			} else {
+				// La donnée n'existe pas
+				if($this->getData(['module', $this->getUrl(0), 'data', $this->getUrl(2)]) === null) {
+					// Valeurs en sortie
+					$this->addOutput([
+						'access' => false
+					]);
+				}
+				// Suppression
+				else {
+					$this->deleteData(['module', $this->getUrl(0), 'data', $this->getUrl(2)]);
+					// Valeurs en sortie
+					$this->addOutput([
+						'redirect' => helper::baseUrl() . $this->getUrl(0) . '/data',
+						'notification' => $text['form']['delete'][1],
+						'state' => true
+					]);
+				}
 			}
 		}
 	}
@@ -342,6 +391,17 @@ class form extends common {
 		$param = '';
 		$detectBot ='';
 		include('./module/form/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_form.php');
+		// Création du brouillon s'il n'existe pas
+		if( !isset($_SESSION['draft'])){
+			$_SESSION['draft'] = [];
+			$_SESSION['draft']['mail'] = "";
+			$_SESSION['draft']['textarea'] = "";
+			$_SESSION['draft']['datetime'] = null;
+			$_SESSION['draft']['checkbox'] = [];
+			$_SESSION['draft']['select'] = [];
+			$_SESSION['draft']['text'] = [];
+			$_SESSION['draft']['file'] = "";			
+		}
 		// Soumission du formulaire
 		if($this->isPost()) {
 			// $notice concerne la pièce jointe et le captcha
@@ -372,61 +432,51 @@ class form extends common {
 				}
 			}
 			
-			// Création du brouillon s'il n'existe pas
-			if( $this->getData(['module', $this->getUrl(0), 'draft']) === "" ){
-				$this->setData([
-					'module',
-					$this->getUrl(0), 
-					'draft',
-					[
-						'mail' => "",
-						'textarea' => "",
-						'datetime' => null,
-						'checkbox' => false,
-						'select' => "",
-						'text' => "",
-						'file' =>""
-					]
-				]);
-			}
 			// Mise à jour du brouillon
+			$textIndex = 0; $selectIndex=0; $checkboxIndex=0;
 			for( $index = 0; $index <= count($this->getData(['module', $this->getUrl(0), 'input'])); $index++){
 				switch ($this->getData(['module', $this->getUrl(0), 'input', $index, 'type'])){
 					case self::TYPE_MAIL:
-						$this->setData(['module', $this->getUrl(0), 'draft', 'mail', $this->getInput('formInput[' . $index . ']',helper::FILTER_MAIL)]);
+						$_SESSION['draft']['mail'] = $this->getInput('formInput[' . $index . ']',helper::FILTER_MAIL);
 						break;
 					case self::TYPE_TEXTAREA:
-						$this->setData(['module', $this->getUrl(0), 'draft', 'textarea', $this->getInput('formInput[' . $index . ']',helper::FILTER_STRING_LONG)]);
+						$_SESSION['draft']['textarea'] = $this->getInput('formInput[' . $index . ']',helper::FILTER_STRING_LONG_NOSTRIP);
 						break;
 					case self::TYPE_DATETIME:
 						$dateTime = time();
 						if( $this->getInput('formInput[' . $index . ']') !== "" && $this->getInput('formInput[' . $index . ']') !== null) $dateTime = $this->getInput('formInput[' . $index . ']',helper::FILTER_DATETIME, true);
-						$this->setData(['module', $this->getUrl(0), 'draft', 'datetime', $dateTime]);
+						$_SESSION['draft']['datetime'] = $dateTime;
 						break;
 					case self::TYPE_CHECKBOX:
-						//$this->setData(['module', $this->getUrl(0), 'draft', 'checkbox', $this->getInput('formInput[' . $index . ']',helper::FILTER_BOOLEAN)]);
+						$_SESSION['draft']['checkbox'][$checkboxIndex] = $this->getInput('formInput[' . $index . ']',helper::FILTER_BOOLEAN);
+						$checkboxIndex++;
 						break;
 					case self::TYPE_SELECT:
-						$this->setData(['module', $this->getUrl(0), 'draft', 'select', $this->getInput('formInput[' . $index . ']')]);
+						$_SESSION['draft']['select'][$selectIndex] = $this->getInput('formInput[' . $index . ']');
+						$selectIndex++;
 						break;
 					case self::TYPE_TEXT:
-						$this->setData(['module', $this->getUrl(0), 'draft', 'text', $this->getInput('formInput[' . $index . ']')]);
+						$_SESSION['draft']['text'][$textIndex] = $this->getInput('formInput[' . $index . ']');
+						$textIndex++;
 						break;
 					case self::TYPE_FILE:
-						$this->setData(['module', $this->getUrl(0), 'draft', 'file', basename($_FILES["fileToUpload"]["name"]) ]);
+						$_SESSION['draft']['file'] = basename($_FILES["fileToUpload"]["name"]);
 						break;
 					default:
 						$filter = helper::FILTER_STRING_SHORT;						
 				}
 			}
-			$this->setData(['module', $this->getUrl(0), 'draft', 'draftTime', time() ]);
 			
 			// Préparation du contenu du mail
 			$data = [];
 			$replyTo = null;
 			$content = '';
 			$file_name = '';			
-			foreach($this->getData(['module', $this->getUrl(0), 'input']) as $index => $input) {			
+			foreach($this->getData(['module', $this->getUrl(0), 'input']) as $index => $input) {
+
+				$filter = helper::FILTER_STRING_SHORT;
+				if( $input['type'] === 'textarea') $filter = helper::FILTER_STRING_LONG_NOSTRIP;
+				
 				$value = $this->getInput('formInput[' . $index . ']', $filter, $input['required']) === true ? 'X' : $this->getInput('formInput[' . $index . ']', $filter, $input['required']);
 				//  premier champ email ajouté au mail en reply si option active
 				if ($this->getData(['module', $this->getUrl(0), 'config', 'replyto']) === true &&
@@ -508,8 +558,7 @@ class form extends common {
 						}
 					}
 				}
-				
-				
+								
 				// Préparation des données pour la création dans la base
 				$data[$this->getData(['module', $this->getUrl(0), 'input', $index, 'name'])] = $value;
 				// Préparation des données pour le mail
@@ -581,7 +630,16 @@ class form extends common {
 				$redirect = helper::baseUrl() . $this->getUrl(0);
 				if ( $this->getData(['module', $this->getUrl(0), 'config', 'pageId']) !== '') $redirect = helper::baseUrl() . $this->getData(['module', $this->getUrl(0), 'config', 'pageId']);
 				// Effacement des données provisoires
-				$this->setData(['module', $this->getUrl(0), 'draft', '']);
+				if( self::$inputNotices === [] ){
+					$_SESSION['draft'] = [];
+					$_SESSION['draft']['mail'] = "";
+					$_SESSION['draft']['textarea'] = "";
+					$_SESSION['draft']['datetime'] = null;
+					$_SESSION['draft']['checkbox'] = [];
+					$_SESSION['draft']['select'] = [];
+					$_SESSION['draft']['text'] = [];
+					$_SESSION['draft']['file'] = "";					
+				}
 			} else {
 				$sent = false;	
 			}
@@ -596,25 +654,20 @@ class form extends common {
 				'redirect' => $redirect,
 				'state' => ($sent === true ? true : false),
 				'vendor' => [
-					'flatpickr'
+					'flatpickr',
+					'tinymce'
 				]
 			]);
 		}
 		
-		// Effacement des données provisoires trop anciennes
-		if( null !== $this->getData(['module', $this->getUrl(0), 'draft', 'draftTime']) && ($this->getData(['module', $this->getUrl(0), 'draft', 'draftTime']) + 300) < time() ){
-			$this->setData(['module', $this->getUrl(0), 'draft', '']);
-			$this->addOutput([
-				'redirect' => helper::baseUrl() . $this->getUrl(0)
-			]);
-		}
 		// Valeurs en sortie
 		$this->addOutput([
 			'showBarEditButton' => true,
 			'showPageContent' => true,
 			'view' => 'index',
 			'vendor' => [
-				'flatpickr'
+				'flatpickr',
+				'tinymce'
 			],
 		]);
 	}

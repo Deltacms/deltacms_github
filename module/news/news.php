@@ -18,7 +18,7 @@
 
 class news extends common {
 
-	const VERSION = '4.7';
+	const VERSION = '4.8';
 	const REALNAME = 'News';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -108,264 +108,47 @@ class news extends common {
 	 * Ajout d'un article
 	 */
 	public function add() {
-		// Lexique
-		include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_news.php');
-		// Soumission du formulaire
-		if($this->isPost()) {
-			// Crée la news
-			$newsId = helper::increment($this->getInput('newsAddTitle', helper::FILTER_ID), (array) $this->getData(['module', $this->getUrl(0), 'posts']));
-			$publishedOn = $this->getInput('newsAddPublishedOn', helper::FILTER_DATETIME, true);
-			$publishedOff = $this->getInput('newsAddPublishedOff' ) ? $this->getInput('newsAddPublishedOff', helper::FILTER_DATETIME) : '';
-			$this->setData(['module', $this->getUrl(0),'posts', $newsId, [
-				'content' => $this->getInput('newsAddContent', null),
-				'publishedOn' => $publishedOn,
-				'publishedOff' => $publishedOff,
-				'state' => $this->getInput('newsAddState', helper::FILTER_BOOLEAN),
-				'title' => $this->getInput('newsAddTitle', helper::FILTER_STRING_SHORT, true),
-				'userId' => $this->getInput('newsAddUserId', helper::FILTER_ID, true)
-			]]);
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < news::$actions['add'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
-				'redirect' => helper::baseUrl() . $this->getUrl(0) . '/config',
-				'notification' => $text['news']['add'][0],
-				'state' => true
-			]);
-		}
-		// Liste des utilisateurs
-		self::$users = helper::arrayCollumn($this->getData(['user']), 'firstname');
-		ksort(self::$users);
-		foreach(self::$users as $userId => &$userFirstname) {
-			$userFirstname = $userFirstname . ' ' . $this->getData(['user', $userId, 'lastname']);
-		}
-		unset($userFirstname);
-		// Valeurs en sortie
-		$this->addOutput([
-			'title' => $text['news']['add'][1],
-			'vendor' => [
-				'flatpickr',
-				'tinymce'
-			],
-			'view' => 'add'
-		]);
-	}
-
-	/**
-	 * Configuration
-	 */
-	public function config() {
-		// Lexique
-		include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_news.php');
-		// Mise à jour des données de module
-		$this->update();
-
-		// Soumission du formulaire
-		if($this->isPost()) {
-
-			// Générer la feuille de CSS
-			$style =  '.newsFrame {';
-			$style .= 'border: solid ' . $this->getInput('newsThemeBorderColor')  . ' ' . $this->getInput('newsThemeBorderWidth',helper::FILTER_STRING_SHORT) . ';';
-			$style .= 'border-radius:' . $this->getInput('newsBorderRadius',helper::FILTER_STRING_SHORT).';';
-			$style .= 'box-shadow:' . $this->getInput('newsBorderShadows',helper::FILTER_STRING_SHORT).';';
-			$style .= 'background-color:' . $this->getInput('newsThemeBackgroundColor') . ';';
-			$style .= '}';
-			
-			// Dossier de l'instance
-			if (!is_dir(self::DATADIRECTORY . $this->getUrl(0))) {
-				mkdir (self::DATADIRECTORY . $this->getUrl(0), 0755, true);
-			}
-
-			$success = file_put_contents(self::DATADIRECTORY . $this->getUrl(0) . '/theme.css', $style );
-
-			// Fin feuille de style
-
-			$this->setData(['module', $this->getUrl(0), 'theme',[
-				'style'       => $success ? self::DATADIRECTORY . $this->getUrl(0) . '/theme.css' : '',
-				'borderColor' => $this->getInput('newsThemeBorderColor'),
-				'borderWidth'	  => $this->getInput('newsThemeBorderWidth',helper::FILTER_STRING_SHORT),
-				'backgroundColor' => $this->getInput('newsThemeBackgroundColor'),
-				'borderRadius' => $this->getInput('newsBorderRadius',helper::FILTER_STRING_SHORT),
-				'borderShadows' => $this->getInput('newsBorderShadows',helper::FILTER_STRING_SHORT)
-			]]);
-
-			$this->setData(['module', $this->getUrl(0), 'config',[
-				'feeds' 	 => $this->getInput('newsConfigShowFeeds',helper::FILTER_BOOLEAN),
-				'feedsLabel' => $this->getInput('newsConfigFeedslabel',helper::FILTER_STRING_SHORT),
-				'itemsperPage' => $this->getInput('newsConfigItemsperPage', helper::FILTER_INT,true),
-				'itemsperCol' => $this->getInput('newsConfigItemsperCol', helper::FILTER_INT,true),
-				'height' => $this->getInput('newsConfigHeight', helper::FILTER_INT,true),
-				'versionData' => $this->getData(['module', $this->getUrl(0), 'config', 'versionData']),
-				'hiddeTitle' => $this->getInput('newsThemeTitle',helper::FILTER_BOOLEAN),
-				'hideMedia' => $this->getInput('newsThemeMedia',helper::FILTER_BOOLEAN),
-				'sameHeight' => $this->getInput('newsThemeSameHeight',helper::FILTER_BOOLEAN),
-				'noMargin' => $this->getInput('newsThemeNoMargin',helper::FILTER_BOOLEAN)
-			]]);
-
-
-			// Valeurs en sortie
-			$this->addOutput([
-				'redirect' => helper::baseUrl() . $this->getUrl(0) . '/config',
-				'notification' => $text['news']['config'][0],
-				'state' => true
-			]);
+				'access' => false
+			]);	
 		} else {
-			// Ids des news par ordre de publication
-			$newsIds = array_keys(helper::arrayCollumn($this->getData(['module', $this->getUrl(0), 'posts']), 'publishedOn', 'SORT_DESC'));
-			// Pagination
-			$pagination = helper::pagination($newsIds, $this->getUrl(),$this->getData(['module', $this->getUrl(0), 'config', 'itemsperPage']) );
-			// Liste des pages
-			self::$pages = $pagination['pages'];
-			// News en fonction de la pagination
-			// Pour les dates suivant la langue d'administration
-			if( function_exists('datefmt_create') && function_exists('datefmt_create') && extension_loaded('intl') ){
-				$lang = $text['news']['config'][4]; 
-				$zone = $text['news']['config'][5];
-				$fmt = datefmt_create(
-					$lang,
-					IntlDateFormatter::LONG,
-					IntlDateFormatter::SHORT,
-					$zone,
-					IntlDateFormatter::GREGORIAN
-				);
-			}
-			for($i = $pagination['first']; $i < $pagination['last']; $i++) {
-				// Met en forme le tableau
-				if( function_exists('datefmt_create') && function_exists('datefmt_create') && extension_loaded('intl') ){
-					$dateOn = datefmt_format($fmt, strtotime( date('Y/m/d H:i:s',$this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOn']))));
-				} else {
-					$dateOn = mb_detect_encoding(date('d/m/Y',  $this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOn'])), 'UTF-8', true)
-							? date('d/m/Y', $this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOn']))
-							: utf8_encode(date('d/m/Y', $this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOn'])));
-					$dateOn .= $text['news']['config'][3];
-					$dateOn .= mb_detect_encoding(date('H:i',  $this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOn'])), 'UTF-8', true)
-							? date('H:i', $this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOn']))
-							: utf8_encode(date('H:i', $this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOn'])));
-				}
-				if ($this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOff'])) {
-					if( function_exists('datefmt_create') && function_exists('datefmt_create') && extension_loaded('intl') ){
-						$dateOff = datefmt_format($fmt, strtotime( date('Y/m/d H:i:s',$this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOff']))));
-					} else {
-						$dateOff = mb_detect_encoding(date('d/m/Y',  $this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOff'])), 'UTF-8', true)
-							? date('d/m/Y', $this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOff']))
-							: utf8_encode(date('d/m/Y', $this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOff'])));
-						$dateOff .=	$text['news']['config'][3];
-						$dateOff .= mb_detect_encoding(date('H:i',  $this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOff'])), 'UTF-8', true)
-							? date('H:i', $this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOff']))
-							: utf8_encode(date('H:i', $this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOff'])));						
-					}
-				} else {
-					$dateOff = $text['news']['config'][1];
-				}
-				self::$news[] = [
-					$this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'title']),
-					$dateOn,
-					$dateOff,
-					$states[$this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'state'])],
-					template::button('newsConfigEdit' . $newsIds[$i], [
-						'href' => helper::baseUrl() . $this->getUrl(0) . '/edit/' . $newsIds[$i]. '/' . $_SESSION['csrf'],
-						'value' => template::ico('pencil')
-					]),
-					template::button('newsConfigDelete' . $newsIds[$i], [
-						'class' => 'newsConfigDelete buttonRed',
-						'href' => helper::baseUrl() . $this->getUrl(0) . '/delete/' . $newsIds[$i] . '/' . $_SESSION['csrf'],
-						'value' => template::ico('cancel'),
-						'disabled' => $this->getUser('group') >= self::GROUP_MODERATOR ? false : true
-					])
-				];
-			}
-			// Valeurs en sortie
-			$this->addOutput([
-				'title' => $text['news']['config'][2],
-				'view' => 'config',
-				'vendor' => [
-					'tinycolorpicker'
-				]
-			]);
-		}
-	}
-
-	/**
-	 * Suppression
-	 */
-	public function delete() {
-		// Lexique
-		include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_news.php');		
-		// La news n'existe pas
-		if($this->getData(['module', $this->getUrl(0),'posts', $this->getUrl(2)]) === null) {
-			// Valeurs en sortie
-			$this->addOutput([
-				'access' => false
-			]);
-		}
-		// Jeton incorrect
-		elseif ($this->getUrl(3) !== $_SESSION['csrf']) {
-			// Valeurs en sortie
-			$this->addOutput([
-				'redirect' => helper::baseUrl()  . $this->getUrl(0) . '/config',
-				'notification' => $text['news']['delete'][0]
-			]);
-		}
-		// Suppression
-		else {
-			$this->deleteData(['module', $this->getUrl(0),'posts', $this->getUrl(2)]);
-			// Valeurs en sortie
-			$this->addOutput([
-				'redirect' => helper::baseUrl() . $this->getUrl(0) . '/config',
-				'notification' => $text['news']['delete'][1],
-				'state' => true
-			]);
-		}
-	}
-
-	/**
-	 * Édition
-	 */
-	public function edit() {
-		// Lexique
-		include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_news.php');	
-		// Jeton incorrect
-		if ($this->getUrl(3) !== $_SESSION['csrf']) {
-			// Valeurs en sortie
-			$this->addOutput([
-				'redirect' => helper::baseUrl() . $this->getUrl(0) . '/config',
-				'notification' => $text['news']['edit'][0]
-			]);
-		}
-		// La news n'existe pas
-		if($this->getData(['module', $this->getUrl(0),'posts', $this->getUrl(2)]) === null) {
-			// Valeurs en sortie
-			$this->addOutput([
-				'access' => false
-			]);
-		}
-		// La news existe
-		else {
+			// Lexique
+			include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_news.php');
 			// Soumission du formulaire
 			if($this->isPost()) {
-				// Si l'id a changée
-				$newsId = $this->getInput('newsEditTitle', helper::FILTER_ID, true);
-				if($newsId !== $this->getUrl(2)) {
-					// Incrémente le nouvel id de la news
-					$newsId = helper::increment($newsId, $this->getData(['module', $this->getUrl(0), 'posts']));
-					// Supprime l'ancien news
-					$this->deleteData(['module', $this->getUrl(0),'posts', $this->getUrl(2)]);
-				}
-				$publishedOn = $this->getInput('newsEditPublishedOn', helper::FILTER_DATETIME, true);
-				$publishedOff = $this->getInput('newsEditPublishedOff' ) ? $this->getInput('newsEditPublishedOff', helper::FILTER_DATETIME) : '';
+				// Crée la news
+				$newsId = helper::increment($this->getInput('newsAddTitle', helper::FILTER_ID), (array) $this->getData(['module', $this->getUrl(0), 'posts']));
+				$publishedOn = $this->getInput('newsAddPublishedOn', helper::FILTER_DATETIME, true);
+				$publishedOff = $this->getInput('newsAddPublishedOff' ) ? $this->getInput('newsAddPublishedOff', helper::FILTER_DATETIME) : '';
 				$this->setData(['module', $this->getUrl(0),'posts', $newsId, [
-					'content' => $this->getInput('newsEditContent', null),
+					'content' => $this->getInput('newsAddContent', null),
 					'publishedOn' => $publishedOn,
-					'publishedOff' => $publishedOff < $publishedOn ? '' : $publishedOff,
-					'state' => $this->getInput('newsEditState', helper::FILTER_BOOLEAN),
-					'title' => $this->getInput('newsEditTitle', helper::FILTER_STRING_SHORT, true),
-					'userId' => $this->getInput('newsEditUserId', helper::FILTER_ID, true)
+					'publishedOff' => $publishedOff,
+					'state' => $this->getInput('newsAddState', helper::FILTER_BOOLEAN),
+					'title' => $this->getInput('newsAddTitle', helper::FILTER_STRING_SHORT, true),
+					'userId' => $this->getInput('newsAddUserId', helper::FILTER_ID, true)
 				]]);
 				// Valeurs en sortie
 				$this->addOutput([
 					'redirect' => helper::baseUrl() . $this->getUrl(0) . '/config',
-					'notification' => $text['news']['edit'][1],
+					'notification' => $text['news']['add'][0],
 					'state' => true
 				]);
 			}
+			// Mise à jour ou création du fichier site/data/news/themeNews.css
+			$style =  '.editorWysiwyg{';
+			$style .= 'background-color:' . $this->getData(['module', $this->getUrl(0), 'theme', 'backgroundColor']) . ';';
+			$style .= '}';
+			$style .= '.editorWysiwyg a{ color:'. $this->getData(['module', $this->getUrl(0), 'theme', 'linkColor']) .'}';
+			$style .= 'p{ color:'. $this->getData(['module', $this->getUrl(0), 'theme', 'textColor']) .'}';
+			$style .= 'h1, h2, h3, h4, h5, h6{ color:'. $this->getData(['module', $this->getUrl(0), 'theme', 'titleColor']) .'}';
+			file_put_contents(self::DATADIRECTORY . 'themeNews.css', $style );
+
 			// Liste des utilisateurs
 			self::$users = helper::arrayCollumn($this->getData(['user']), 'firstname');
 			ksort(self::$users);
@@ -375,13 +158,295 @@ class news extends common {
 			unset($userFirstname);
 			// Valeurs en sortie
 			$this->addOutput([
-				'title' => $this->getData(['module', $this->getUrl(0),'posts', $this->getUrl(2), 'title']),
+				'title' => $text['news']['add'][1],
 				'vendor' => [
 					'flatpickr',
 					'tinymce'
 				],
-				'view' => 'edit'
+				'view' => 'add'
 			]);
+		}
+	}
+
+	/**
+	 * Configuration
+	 */
+	public function config() {
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < news::$actions['config'] ) {
+			// Valeurs en sortie
+			$this->addOutput([
+				'access' => false
+			]);	
+		} else {
+			// Lexique
+			include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_news.php');
+			// Mise à jour des données de module
+			$this->update();
+
+			// Soumission du formulaire
+			if($this->isPost()) {
+
+				// Générer la feuille de CSS
+				$style =  '.newsFrame {';
+				$style .= 'border: solid ' . $this->getInput('newsThemeBorderColor')  . ' ' . $this->getInput('newsThemeBorderWidth',helper::FILTER_STRING_SHORT) . ';';
+				$style .= 'border-radius:' . $this->getInput('newsBorderRadius',helper::FILTER_STRING_SHORT).';';
+				$style .= 'box-shadow:' . $this->getInput('newsBorderShadows',helper::FILTER_STRING_SHORT).';';
+				$style .= 'background-color:' . $this->getInput('newsThemeBackgroundColor') . ';';
+				$style .= 'color:' . $this->getInput('newsThemeTextColor') . ';';
+				$style .= '}';
+				$style .= '.newsFrame a{ color:'. $this->getInput('newsThemeLinkColor') .'}';
+				$style .= '.newsFrame h1,.newsFrame h2,.newsFrame h3,.newsFrame h4,.newsFrame h5,.newsFrame h6{ color:'. $this->getInput('newsThemeTitleColor') .'}';
+				$style .= '.newsSignature { color:' . $this->getInput('newsThemeSignatureColor') . ';';
+				
+				// Dossier de l'instance
+				if (!is_dir(self::DATADIRECTORY . $this->getUrl(0))) {
+					mkdir (self::DATADIRECTORY . $this->getUrl(0), 0755, true);
+				}
+
+				$success = file_put_contents(self::DATADIRECTORY . $this->getUrl(0) . '/theme.css', $style );
+
+				// Fin feuille de style
+
+				$this->setData(['module', $this->getUrl(0), 'theme',[
+					'style'       => $success ? self::DATADIRECTORY . $this->getUrl(0) . '/theme.css' : '',
+					'borderColor' => $this->getInput('newsThemeBorderColor'),
+					'borderWidth'	  => $this->getInput('newsThemeBorderWidth',helper::FILTER_STRING_SHORT),
+					'backgroundColor' => $this->getInput('newsThemeBackgroundColor'),
+					'textColor' => $this->getInput('newsThemeTextColor'),
+					'titleColor' => $this->getInput('newsThemeTitleColor'),
+					'linkColor' => $this->getInput('newsThemeLinkColor'),
+					'signatureColor' => $this->getInput('newsThemeSignatureColor'),
+					'borderRadius' => $this->getInput('newsBorderRadius',helper::FILTER_STRING_SHORT),
+					'borderShadows' => $this->getInput('newsBorderShadows',helper::FILTER_STRING_SHORT)
+				]]);
+
+				$this->setData(['module', $this->getUrl(0), 'config',[
+					'feeds' 	 => $this->getInput('newsConfigShowFeeds',helper::FILTER_BOOLEAN),
+					'feedsLabel' => $this->getInput('newsConfigFeedslabel',helper::FILTER_STRING_SHORT),
+					'itemsperPage' => $this->getInput('newsConfigItemsperPage', helper::FILTER_INT,true),
+					'itemsperCol' => $this->getInput('newsConfigItemsperCol', helper::FILTER_INT,true),
+					'height' => $this->getInput('newsConfigHeight', helper::FILTER_INT,true),
+					'versionData' => $this->getData(['module', $this->getUrl(0), 'config', 'versionData']),
+					'hiddeTitle' => $this->getInput('newsThemeTitle',helper::FILTER_BOOLEAN),
+					'hideMedia' => $this->getInput('newsThemeMedia',helper::FILTER_BOOLEAN),
+					'sameHeight' => $this->getInput('newsThemeSameHeight',helper::FILTER_BOOLEAN),
+					'noMargin' => $this->getInput('newsThemeNoMargin',helper::FILTER_BOOLEAN)
+				]]);
+
+
+				// Valeurs en sortie
+				$this->addOutput([
+					'redirect' => helper::baseUrl() . $this->getUrl(0) . '/config',
+					'notification' => $text['news']['config'][0],
+					'state' => true
+				]);
+			} else {
+				// Ids des news par ordre de publication
+				$newsIds = array_keys(helper::arrayCollumn($this->getData(['module', $this->getUrl(0), 'posts']), 'publishedOn', 'SORT_DESC'));
+				// Pagination
+				$pagination = helper::pagination($newsIds, $this->getUrl(),$this->getData(['module', $this->getUrl(0), 'config', 'itemsperPage']) );
+				// Liste des pages
+				self::$pages = $pagination['pages'];
+				// News en fonction de la pagination
+				// Pour les dates suivant la langue d'administration
+				if( function_exists('datefmt_create') && function_exists('datefmt_create') && extension_loaded('intl') ){
+					$lang = $text['news']['config'][4]; 
+					$zone = $text['news']['config'][5];
+					$fmt = datefmt_create(
+						$lang,
+						IntlDateFormatter::LONG,
+						IntlDateFormatter::SHORT,
+						$zone,
+						IntlDateFormatter::GREGORIAN
+					);
+				}
+				for($i = $pagination['first']; $i < $pagination['last']; $i++) {
+					// Met en forme le tableau
+					if( function_exists('datefmt_create') && function_exists('datefmt_create') && extension_loaded('intl') ){
+						$dateOn = datefmt_format($fmt, strtotime( date('Y/m/d H:i:s',$this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOn']))));
+					} else {
+						$dateOn = mb_detect_encoding(date('d/m/Y',  $this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOn'])), 'UTF-8', true)
+								? date('d/m/Y', $this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOn']))
+								: utf8_encode(date('d/m/Y', $this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOn'])));
+						$dateOn .= $text['news']['config'][3];
+						$dateOn .= mb_detect_encoding(date('H:i',  $this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOn'])), 'UTF-8', true)
+								? date('H:i', $this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOn']))
+								: utf8_encode(date('H:i', $this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOn'])));
+					}
+					if ($this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOff'])) {
+						if( function_exists('datefmt_create') && function_exists('datefmt_create') && extension_loaded('intl') ){
+							$dateOff = datefmt_format($fmt, strtotime( date('Y/m/d H:i:s',$this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOff']))));
+						} else {
+							$dateOff = mb_detect_encoding(date('d/m/Y',  $this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOff'])), 'UTF-8', true)
+								? date('d/m/Y', $this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOff']))
+								: utf8_encode(date('d/m/Y', $this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOff'])));
+							$dateOff .=	$text['news']['config'][3];
+							$dateOff .= mb_detect_encoding(date('H:i',  $this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOff'])), 'UTF-8', true)
+								? date('H:i', $this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOff']))
+								: utf8_encode(date('H:i', $this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOff'])));						
+						}
+					} else {
+						$dateOff = $text['news']['config'][1];
+					}
+					self::$news[] = [
+						$this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'title']),
+						$dateOn,
+						$dateOff,
+						$states[$this->getData(['module', $this->getUrl(0),'posts', $newsIds[$i], 'state'])],
+						template::button('newsConfigEdit' . $newsIds[$i], [
+							'href' => helper::baseUrl() . $this->getUrl(0) . '/edit/' . $newsIds[$i]. '/' . $_SESSION['csrf'],
+							'value' => template::ico('pencil')
+						]),
+						template::button('newsConfigDelete' . $newsIds[$i], [
+							'class' => 'newsConfigDelete buttonRed',
+							'href' => helper::baseUrl() . $this->getUrl(0) . '/delete/' . $newsIds[$i] . '/' . $_SESSION['csrf'],
+							'value' => template::ico('cancel'),
+							'disabled' => $this->getUser('group') >= self::GROUP_MODERATOR ? false : true
+						])
+					];
+				}
+				// Valeurs en sortie
+				$this->addOutput([
+					'title' => $text['news']['config'][2],
+					'view' => 'config',
+					'vendor' => [
+						'tinycolorpicker'
+					]
+				]);
+			}
+		}
+	}
+
+	/**
+	 * Suppression
+	 */
+	public function delete() {
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < news::$actions['delete'] ) {
+			// Valeurs en sortie
+			$this->addOutput([
+				'access' => false
+			]);	
+		} else {
+			// Lexique
+			include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_news.php');		
+			// La news n'existe pas
+			if($this->getData(['module', $this->getUrl(0),'posts', $this->getUrl(2)]) === null) {
+				// Valeurs en sortie
+				$this->addOutput([
+					'access' => false
+				]);
+			}
+			// Jeton incorrect
+			elseif ($this->getUrl(3) !== $_SESSION['csrf']) {
+				// Valeurs en sortie
+				$this->addOutput([
+					'redirect' => helper::baseUrl()  . $this->getUrl(0) . '/config',
+					'notification' => $text['news']['delete'][0]
+				]);
+			}
+			// Suppression
+			else {
+				$this->deleteData(['module', $this->getUrl(0),'posts', $this->getUrl(2)]);
+				// Valeurs en sortie
+				$this->addOutput([
+					'redirect' => helper::baseUrl() . $this->getUrl(0) . '/config',
+					'notification' => $text['news']['delete'][1],
+					'state' => true
+				]);
+			}
+		}
+	}
+
+	/**
+	 * Édition
+	 */
+	public function edit() {
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < news::$actions['edit'] ) {
+			// Valeurs en sortie
+			$this->addOutput([
+				'access' => false
+			]);	
+		} else {
+			// Lexique
+			include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_news.php');	
+			// Jeton incorrect
+			if ($this->getUrl(3) !== $_SESSION['csrf']) {
+				// Valeurs en sortie
+				$this->addOutput([
+					'redirect' => helper::baseUrl() . $this->getUrl(0) . '/config',
+					'notification' => $text['news']['edit'][0]
+				]);
+			}
+			// La news n'existe pas
+			if($this->getData(['module', $this->getUrl(0),'posts', $this->getUrl(2)]) === null) {
+				// Valeurs en sortie
+				$this->addOutput([
+					'access' => false
+				]);
+			}
+			// La news existe
+			else {
+				// Soumission du formulaire
+				if($this->isPost()) {
+					// Si l'id a changée
+					$newsId = $this->getInput('newsEditTitle', helper::FILTER_ID, true);
+					if($newsId !== $this->getUrl(2)) {
+						// Incrémente le nouvel id de la news
+						$newsId = helper::increment($newsId, $this->getData(['module', $this->getUrl(0), 'posts']));
+						// Supprime l'ancien news
+						$this->deleteData(['module', $this->getUrl(0),'posts', $this->getUrl(2)]);
+					}
+					$publishedOn = $this->getInput('newsEditPublishedOn', helper::FILTER_DATETIME, true);
+					$publishedOff = $this->getInput('newsEditPublishedOff' ) ? $this->getInput('newsEditPublishedOff', helper::FILTER_DATETIME) : '';
+					$this->setData(['module', $this->getUrl(0),'posts', $newsId, [
+						'content' => $this->getInput('newsEditContent', null),
+						'publishedOn' => $publishedOn,
+						'publishedOff' => $publishedOff < $publishedOn ? '' : $publishedOff,
+						'state' => $this->getInput('newsEditState', helper::FILTER_BOOLEAN),
+						'title' => $this->getInput('newsEditTitle', helper::FILTER_STRING_SHORT, true),
+						'userId' => $this->getInput('newsEditUserId', helper::FILTER_ID, true)
+					]]);
+					// Valeurs en sortie
+					$this->addOutput([
+						'redirect' => helper::baseUrl() . $this->getUrl(0) . '/config',
+						'notification' => $text['news']['edit'][1],
+						'state' => true
+					]);
+				}
+				// Mise à jour ou création du fichier site/data/news/themeNews.css
+				$style =  '.editorWysiwyg{';
+				$style .= 'background-color:' . $this->getData(['module', $this->getUrl(0), 'theme', 'backgroundColor']) . ';';
+				$style .= '}';
+				$style .= '.editorWysiwyg a{ color:'. $this->getData(['module', $this->getUrl(0), 'theme', 'linkColor']) .'}';
+				$style .= 'p{ color:'. $this->getData(['module', $this->getUrl(0), 'theme', 'textColor']) .'}';
+				$style .= 'h1, h2, h3, h4, h5, h6{ color:'. $this->getData(['module', $this->getUrl(0), 'theme', 'titleColor']) .'}';
+				file_put_contents(self::DATADIRECTORY . 'themeNews.css', $style );
+				// Liste des utilisateurs
+				self::$users = helper::arrayCollumn($this->getData(['user']), 'firstname');
+				ksort(self::$users);
+				foreach(self::$users as $userId => &$userFirstname) {
+					$userFirstname = $userFirstname . ' ' . $this->getData(['user', $userId, 'lastname']);
+				}
+				unset($userFirstname);
+				// Valeurs en sortie
+				$this->addOutput([
+					'title' => $this->getData(['module', $this->getUrl(0),'posts', $this->getUrl(2), 'title']),
+					'vendor' => [
+						'flatpickr',
+						'tinymce'
+					],
+					'view' => 'edit'
+				]);
+			}
 		}
 	}
 
@@ -567,7 +632,7 @@ class news extends common {
 		$versionData = $this->getData(['module',$this->getUrl(0),'config', 'versionData' ]);
 
 		// le module n'est pas initialisé
-		if ($versionData === null) {
+		if ($versionData === null || !file_exists(self::DATADIRECTORY . $this->getUrl(0)  . '/theme.css')) {
 			$this->init();
 		}
 		$versionData = $this->getData(['module',$this->getUrl(0),'config', 'versionData' ]);
@@ -594,10 +659,15 @@ class news extends common {
 			$this->setData(['module',$this->getUrl(0),'config', 'hideMedia', false ]);
 			$this->setData(['module',$this->getUrl(0),'config', 'versionData', '4.5' ]);	
 		}
-		// Mise à jour 4.7
-		if (version_compare($versionData, '4.7', '<') ) {
+		// Mise à jour 4.8
+		if (version_compare($versionData, '4.8', '<') ) {
+			// Nouvelles couleurs par défaut en configuration
+			$this->setData(['module', $this->getUrl(0), 'theme','textColor', $this->getData(['theme', 'text', 'textColor' ]) ]);
+			$this->setData(['module', $this->getUrl(0), 'theme','linkColor', $this->getData(['theme', 'text', 'linkColor' ]) ]);
+			$this->setData(['module', $this->getUrl(0), 'theme','titleColor', $this->getData(['theme', 'title', 'textColor' ]) ]);
+			$this->setData(['module', $this->getUrl(0), 'theme','signatureColor', $this->getData(['theme', 'text', 'textColor' ]) ]);
 			// Mettre à jour la version
-			$this->setData(['module',$this->getUrl(0),'config', 'versionData', '4.7' ]);	
+			$this->setData(['module',$this->getUrl(0),'config', 'versionData', '4.8' ]);	
 		}
 	}
 
@@ -618,6 +688,13 @@ class news extends common {
 			$this->setData(['module', $this->getUrl(0), 'theme', init::$defaultTheme]);
 			$this->setData(['module', $this->getUrl(0), 'theme', 'style', self::DATADIRECTORY .   $this->getUrl(0) . '/theme.css' ]);
 		}
+		
+		// Couleurs initialisées à celles du site
+		$this->setData(['module', $this->getUrl(0), 'theme', 'backgroundColor', $this->getData(['theme', 'site', 'backgroundColor' ]) ]);
+		$this->setData(['module', $this->getUrl(0), 'theme', 'textColor', $this->getData(['theme', 'text', 'textColor' ]) ]);
+		$this->setData(['module', $this->getUrl(0), 'theme', 'linkColor', $this->getData(['theme', 'text', 'linkColor' ]) ]);
+		$this->setData(['module', $this->getUrl(0), 'theme', 'titleColor', $this->getData(['theme', 'title', 'textColor' ]) ]);
+		$this->setData(['module', $this->getUrl(0), 'theme', 'signatureColor', $this->getData(['theme', 'text', 'textColor' ]) ]);
 
 		// Dossier de l'instance
 		if (!is_dir(self::DATADIRECTORY . $this->getUrl(0) )) {
@@ -630,7 +707,11 @@ class news extends common {
 			$style =  '.newsFrame {';
 			$style .= 'border:' .  $this->getData(['module', $this->getUrl(0), 'theme', 'borderStyle' ]) . ' ' .$this->getData(['module', $this->getUrl(0), 'theme', 'borderColor' ])  . ' ' . $this->getData(['module', $this->getUrl(0), 'theme', 'borderWidth' ]) . ';';
 			$style .= 'background-color:' . $this->getData(['module', $this->getUrl(0), 'theme', 'backgroundColor' ]) . ';';
+			$style .= 'color:' . $this->getData(['module', $this->getUrl(0), 'theme','textColor']) . ';';
 			$style .= '}';
+			$style .= '.newsFrame a{ color:'. $this->getData(['module', $this->getUrl(0), 'theme', 'linkColor' ]) .'}';
+			$style .= '.newsFrame h1,.newsFrame h2,.newsFrame h3,.newsFrame h4,.newsFrame h5,.newsFrame h6{ color:'. $this->getData(['module', $this->getUrl(0), 'theme', 'titleColor' ]) .'}';
+			$style .= '.newsSignature { color:' . $this->getData(['module', $this->getUrl(0), 'theme', 'signatureColor' ]) . ';';
 			
 			// Sauver la feuille de style
 			file_put_contents(self::DATADIRECTORY . $this->getUrl(0) . '/theme.css' , $style );

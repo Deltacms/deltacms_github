@@ -38,14 +38,14 @@ class template {
     * @return string
     */
     public static function captcha($nameId, $classWrapper) {
-	
+
 		$html = '<div id="' . $nameId . 'Wrapper" class="captcha inputWrapper ' . $classWrapper. '">';
 		$html .= '<img src="core/vendor/captcha/captcha.php" alt="Captcha" id="captcha">';
-		$html .= '<input name="codeCaptcha" type="text" size="9" style="position:relative;top:-40px;left:-10px;">';	
+		$html .= '<input name="codeCaptcha" type="text" size="9" style="position:relative;top:-40px;left:-10px;">';
 		$html .= '<img src="core/vendor/captcha/reload.png" alt="" style="cursor:pointer;position:relative;top:-30px;left:10px;width:24px;height:auto;"';
-		$html .= ' onclick="document.images.captcha.src=\'core/vendor/captcha/captcha.php?id=\'+Math.round(Math.random(0)*1000)">';	
-		$html .= '</div>'; 
-		
+		$html .= ' onclick="document.images.captcha.src=\'core/vendor/captcha/captcha.php?id=\'+Math.round(Math.random(0)*1000)">';
+		$html .= '</div>';
+
         // Retourne le html
         return $html;
     }
@@ -71,7 +71,7 @@ class template {
             'name' => $nameId,
 			'required' => false
         ], $attributes);
-		
+
         // Sauvegarde des données en cas d'erreur
         if($attributes['before'] AND array_key_exists($attributes['id'], common::$inputBefore)) {
             $attributes['checked'] = (bool) common::$inputBefore[$attributes['id']];
@@ -98,7 +98,7 @@ class template {
 				$value,
 				helper::sprintAttributes($attributes)
 			);
-		
+
 		}
         // Label
         $html .= self::label($attributes['id'], '<span>' . $label . '</span>', [
@@ -257,7 +257,7 @@ class template {
         // Retourne le html
         return $html;
     }
-	
+
     /**
     * Ferme un formulaire
     * @return string
@@ -344,38 +344,21 @@ class template {
     * @return string
     */
     public static function ico($ico, $margin = '', $animate = false, $fontSize = '1em') {
-        return '<span class="zwiico-' . $ico . ($margin ? ' zwiico-margin-' . $margin : '') . ($animate ? ' animate-spin' : '') . '" style="font-size:' . $fontSize . '"><!----></span>';
+        return '<span class="delta-ico-' . $ico . ($margin ? ' delta-ico-margin-' . $margin : '') . ($animate ? ' animate-spin' : '') . '" style="font-size:' . $fontSize . '"><!----></span>';
     }
 
         /**
     * Crée un drapeau du site courant
     * @param string $langId Id de la langue à affiche ou site pour la langue traduite courante
-    * @param string $size fixe la largeur du drapeau 
+    * @param string $size fixe la largeur du drapeau
     * @return string
     */
     public static function flag($langId, $size = 'auto') {
-	/*
-        switch ($langId) {
-            case '':
-                $lang = 'fr';
-                break;
-            case in_array($langId,['fr', 'de', 'en', 'es', 'it', 'nl', 'pt', 'el', 'da', 'fi', 'ga', 'sv']):
-                $lang = $langId;
-                break;
-            case 'site':
-                if ( isset($_COOKIE['DELTA_I18N_SITE'])
-    	        ) {
-                    $lang = $_COOKIE['DELTA_I18N_SITE'];
-                } else {
-                    $lang = 'fr';
-                }
-        }
-	*/
 		$lang = $langId;
-		if( ! file_exists( 'core/vendor/i18n/png/' . $lang . '.png')) $lang = 'blanc'; 
+		if( ! file_exists( 'core/vendor/i18n/png/' . $lang . '.png')) $lang = 'blanc';
 		$text = $lang;
 		if ($text === 'blanc') $text = 'Your language';
-        return '<img class="flag" src="' . helper::baseUrl(false) . 'core/vendor/i18n/png/' . $lang . '.png" 
+        return '<img class="flag" src="' . helper::baseUrl(false) . 'core/vendor/i18n/png/' . $lang . '.png"
                 width="' . $size .'"
                 height="' . $size .'"
                 title="' . $text .'" />';

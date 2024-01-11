@@ -30,14 +30,7 @@ $text['core']['router'][2] = ' is opened by the user ';
 $text['core']['router'][3] = 'Access denied';
 $text['core']['router'][4] = 'You are not authorised to view this page (error 403)';
 $text['core']['router'][5] = 'Page unavailable';
-$text['core']['router'][6] = 'Oops! The requested page does not exist or cannot be found (error 404)';
-$groupWhoIs = [
-	0 => 'visitor',
-	1 => 'member',
-	2 => 'editor',
-	3 => 'moderator',
-	4 => 'administrator'
-];
+$text['core']['router'][6] = 'The requested page does not exist or cannot be found (error 404)';
 // core.js.php
 $text['core_js'][0] = "Updating ?";
 // Select File

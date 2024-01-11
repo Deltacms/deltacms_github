@@ -23,8 +23,8 @@ $( document).ready(function() {
             complete: function(){
                 $("#configBackupSubmit").removeClass("disabled").prop("disabled", false);
                 $("#configBackupSubmit").removeClass("uniqueSubmission").prop("uniqueSubmission", false);
-                $("#configBackupSubmit span").removeClass("zwiico-spin animate-spin");
-                $("#configBackupSubmit span").addClass("zwiico-check zwiico-margin-right").text("Sauvegarder");
+                $("#configBackupSubmit span").removeClass("delta-ico-spin animate-spin");
+                $("#configBackupSubmit span").addClass("delta-ico-check delta-ico-margin-right").text("Sauvegarder");
             }
         });
     });

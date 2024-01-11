@@ -13,7 +13,7 @@ $char2 = mt_rand( 0, strlen($chars) - 1 );
 $_SESSION['captcha'] = md5((int)$char1 + (int)$char2);
 
 // polices utilisées
-$fonts = glob('polices/*.woff');
+$fonts = glob('polices/*.ttf');
 // création de l'image captcha
 $image = imagecreatefrompng('captcha.png');
 // couleurs des caractères
@@ -26,9 +26,9 @@ $colors = array ( imagecolorallocate($image,  238, 238, 238),
                   imagecolorallocate($image, 255, 255, 51) );
 // positions, polices, caractères et couleurs randomisées
 imagettftext($image, 28, -10, 7, 50, random($colors), ABSPATH .'/'. random($fonts), $char1);
-imagettftext($image, 28, 0, 50, 50, random($colors), ABSPATH .'/'. 'polices/Eskiula.woff', '+');
+imagettftext($image, 28, 0, 50, 50, random($colors), ABSPATH .'/'. 'polices/Eskiula.ttf', '+');
 imagettftext($image, 28, -35, 75, 50, random($colors), ABSPATH .'/'. random($fonts), $char2);
-imagettftext($image, 28, 0, 125, 50, random($colors), ABSPATH .'/'. 'polices/Eskiula.woff', '=');
+imagettftext($image, 28, 0, 125, 50, random($colors), ABSPATH .'/'. 'polices/Eskiula.ttf', '=');
 
 header('Content-Type: image/png');
 imagepng($image);

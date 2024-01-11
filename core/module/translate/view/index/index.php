@@ -77,43 +77,6 @@ include('./core/module/translate/lang/'. $this->getData(['config', 'i18n', 'lang
 	</div>
 	<div class="row">
 		<div class="col12">
-			<div class="block">
-			<div class="blockTitle"><?php echo $text['core_translate_view']['index'][7]; ?></div>
-				<?php if( ! array_key_exists( $this->getData(['config', 'i18n' , 'langBase']), self::$i18nListSiteOnly)) { ?>
-				<div class="row">
-					<div class="col6">
-						<?php echo template::checkbox('translateScriptGoogle', true, $text['core_translate_view']['index'][8], [
-								'checked' => $this->getData(['config','i18n', 'scriptGoogle']),
-								'help' => $text['core_translate_view']['index'][9]
-							]); ?>
-					</div>
-					<div class="col6">
-						<?php echo template::checkbox('translateAutoDetect', true, $text['core_translate_view']['index'][10], [
-							'checked' => $this->getData(['config','i18n', 'autoDetect']),
-							'class' => 'translateGoogleScriptOption',
-							'help'   => $text['core_translate_view']['index'][11]
-						]); ?>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col6">
-						<?php echo template::checkbox('translateCredits', true, $text['core_translate_view']['index'][12], [
-							'checked' => $this->getData(['config','i18n', 'showCredits']),
-							'class' => 'translateGoogleScriptOption',
-							'help' => $text['core_translate_view']['index'][13]
-						]); ?>
-					</div>
-				</div>
-				<?php }else { ?>
-					<div class="row"><div class="col6">
-					<?php echo $text['core_translate_view']['index'][17]; ?>
-					</div></div>
-				<?php } ?>
-			</div>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col12">
 			<div class="block" id="flagsWrapper">
 			<div class="blockTitle"><?php echo $text['core_translate_view']['index'][14]; ?></div>
 				<div class="row">

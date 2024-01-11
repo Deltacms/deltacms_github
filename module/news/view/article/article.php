@@ -64,4 +64,14 @@ include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) .
 			</div>
 		<?php endif; ?>
 	</div>
+	
+	<!--Bouton Retour sur la page active-->
+	<div class="col2">	
+		<?php echo template::button('newsArticleBack', [
+			'href' => helper::baseUrl() . $_SESSION['pageActive'],
+			'ico' => 'left',
+			'value' => $text['news_view']['article'][2]
+		]); ?>
+	</div>
+	
 </div>

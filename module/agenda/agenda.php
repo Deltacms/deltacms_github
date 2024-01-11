@@ -36,7 +36,7 @@ class agenda extends common {
 		'index' => self::GROUP_VISITOR
 	];
 
-	const VERSION = '5.9';	
+	const VERSION = '6.0';	
 	const REALNAME = 'Agenda';
 	const DELETE = true;
 	const UPDATE = '4.1';
@@ -116,9 +116,11 @@ class agenda extends common {
 			copy( './module/agenda/ressource/file/source/agenda/adresses/.htaccess', './site/file/source/agenda/adresses/.htaccess');
 			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','5.2']);
 		}
-		// Mise à jour vers la version 5.9
-		if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '5.9', '<') ) {	
-			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','5.9']);
+		// Mise à jour vers la version 6.0
+		if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '6.0', '<') ) {	
+			// Couleur de la grille
+			$this->setData(['module', $this->getUrl(0),'config', 'gridColor', 'rgba(146, 52, 101, 1)']);
+			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','6.0']);
 		}
 	}
 	
@@ -126,195 +128,210 @@ class agenda extends common {
 	 * Configuration Paramètrage
 	 */
 	public function config() {
-		// Lexique
-		include('./module/agenda/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_agenda.php');
-		// Mise à jour des données de module
-		$this->update();
-		
-		// Soumission du formulaire
-		if($this->isPost()) {
-			$notification = $text['agenda']['config'][6];
-			$state = true;
-			$fichier_restaure = $this->getInput('config_restaure');
-			$fichier_sauve = $this->getInput('config_sauve');
-			$droit_creation = $this->getInput('config_droit_creation');
-			$droit_limite = $this->getInput('config_droit_limite', helper::FILTER_BOOLEAN);
-			$fichier_ics = $this->getInput('config_fichier_ics');
-			$largeur_maxi = $this->getInput('config_MaxiWidth'); 
-			$fichier_csv_txt = $this->getInput('config_fichier_csv_txt');
-				
-			//Sauvegarder l'agenda
-			if ($fichier_sauve !=''){
-				$json_sauve = file_get_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'/events.json');
-				file_put_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'_sauve/'.$fichier_sauve.'.json', $json_sauve);
-			}
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < agenda::$actions['config'] ) {
+			// Valeurs en sortie
+			$this->addOutput([
+				'access' => false
+			]);	
+		} else {
+			// Lexique
+			include('./module/agenda/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_agenda.php');
+			// Mise à jour des données de module
+			$this->update();
 			
-			//Charger un agenda sauvegardé
-			if (strpos($fichier_restaure,'.json') !== false){
-								
-				//Remplacement par le fichier de restauration
-				$json_restaure = file_get_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'_sauve/'. $fichier_restaure);
-				file_put_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'/events.json', $json_restaure);
+			// Soumission du formulaire
+			if($this->isPost()) {
+				$notification = $text['agenda']['config'][6];
+				$state = true;
+				$fichier_restaure = $this->getInput('config_restaure');
+				$fichier_sauve = $this->getInput('config_sauve');
+				$droit_creation = $this->getInput('config_droit_creation');
+				$droit_limite = $this->getInput('config_droit_limite', helper::FILTER_BOOLEAN);
+				$fichier_ics = $this->getInput('config_fichier_ics');
+				$largeur_maxi = $this->getInput('config_MaxiWidth'); 
+				$fichier_csv_txt = $this->getInput('config_fichier_csv_txt');
+				$gridColor = $this->getInput('config_gridColor');
+					
+				//Sauvegarder l'agenda
+				if ($fichier_sauve !=''){
+					$json_sauve = file_get_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'/events.json');
+					file_put_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'_sauve/'.$fichier_sauve.'.json', $json_sauve);
+				}
 				
-				//Sauvegarde dans data_sauve de l'agenda chargé
-				$this->sauve($json_restaure);
+				//Charger un agenda sauvegardé
+				if (strpos($fichier_restaure,'.json') !== false){
+									
+					//Remplacement par le fichier de restauration
+					$json_restaure = file_get_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'_sauve/'. $fichier_restaure);
+					file_put_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'/events.json', $json_restaure);
+					
+					//Sauvegarde dans data_sauve de l'agenda chargé
+					$this->sauve($json_restaure);
+					
+					//Valeurs en sortie après prise en compte du formulaire 
+					$this->addOutput([
+						'notification' => $text['agenda']['config'][7],
+						'redirect' => helper::baseUrl() . $this->getUrl(0),
+						'state' => true
+					]);
+				}
 				
-				//Valeurs en sortie après prise en compte du formulaire 
+				//Ajouter des évènements contenus dans le fichier ics
+				if (strpos($fichier_ics,'.ics') !== false){
+					$tableau = $this->getIcsEventsAsArray(self::DATAFILE.'ics/'.$fichier_ics);
+					foreach($tableau as $key=>$value){
+						$evenement_texte = '';
+						$date_debut = '';
+						$date_fin = '';
+						$begin = '';
+						$end = '';
+						$clef_fin ='';
+						foreach($value as $key2=>$value2){
+							if($key2 == "BEGIN"){
+								$begin = $value2;
+							}
+							if($key2 == "SUMMARY"){
+								$evenement_texte = $value2;
+							}
+							if(strpos($key2,"DTSTART") !== false){
+								$date_debut = $value2;
+								$clef_debut = $key2;
+							}
+							if(strpos($key2,"DTEND") !== false){
+								$date_fin = $value2;
+								$clef_fin = $key2;
+							}
+							if($key2 == "END"){
+								$end = $value2;
+							}
+						}
+						
+						//Si un évènement VEVENT est trouvé, avec summary et dtstart présents, on ajoute cet évènement à l'agenda
+						if ($evenement_texte != '' && strpos($begin,'VEVENT')!==false && $date_debut!=='' ){
+							if($date_fin == '') {
+								$date_fin = $date_debut; 
+								$clef_fin = $clef_debut;
+							}
+							$evenement_texte = $this->modif_texte($evenement_texte);
+							//Modifier date format ics yyyymmddThhmm... ou yyyymmdd vers format fullcalendar yyyy-mm-ddThh:mm
+							$date_debut = $this->modif_date($date_debut, $clef_debut);
+							$date_fin = $this->modif_date($date_fin, $clef_fin);
+						
+							//Valeurs par défaut pour l'import ics fond blanc, texte noir, lecture visiteur, modification éditeur
+							$this->nouvel_evenement($evenement_texte,$date_debut,$date_fin,'white','black','0','2', '0', '', '', '');			
+						}
+					}
+				}
+				
+				// Ajouter un carnet d'adresses
+				if (strpos($fichier_csv_txt,'.csv') !== false || strpos($fichier_csv_txt,'.txt') !== false){
+					$adresses = file_get_contents(self::DATAFILE.'adresses/'.$fichier_csv_txt);
+					if( strrchr($adresses, '@') && ! strrchr($adresses, ';')){
+						copy(self::DATAFILE.'adresses/'.$fichier_csv_txt, self::DATAMODULE.'adresses/'.$fichier_csv_txt);
+					}
+					else{
+						$notification = $text['agenda']['config'][8];
+						$state = false;	
+					}
+				}
+				
+				//Mise à jour des données de configuration liées aux droits et à l'affichage
+				$this->setData(['module', $this->getUrl(0), 'config', [
+					'droit_creation' => intval($droit_creation),
+					'droit_limite' => $droit_limite,
+					'maxiWidth' => $largeur_maxi,
+					'gridColor' => $gridColor,
+					'versionData' => $this->getData(['module', $this->getUrl(0), 'config', 'versionData'])
+				]]);
+				$this->setData(['module', $this->getUrl(0), 'texts',[
+					'configTextButtonBack' => $this->getInput('configTextButtonBack'),
+					'configTextDateStart' => $this->getInput('configTextDateStart'),
+					'configTextDateEnd' =>$this->getInput('configTextDateEnd')
+					]
+				]);
+			
+				//Valeurs en sortie
 				$this->addOutput([
-					'notification' => $text['agenda']['config'][7],
+					'notification' => $notification,
 					'redirect' => helper::baseUrl() . $this->getUrl(0),
-					'state' => true
+					'state' => $state
 				]);
 			}
-			
-			//Ajouter des évènements contenus dans le fichier ics
-			if (strpos($fichier_ics,'.ics') !== false){
-				$tableau = $this->getIcsEventsAsArray(self::DATAFILE.'ics/'.$fichier_ics);
-				foreach($tableau as $key=>$value){
-					$evenement_texte = '';
-					$date_debut = '';
-					$date_fin = '';
-					$begin = '';
-					$end = '';
-					$clef_fin ='';
-					foreach($value as $key2=>$value2){
-						if($key2 == "BEGIN"){
-							$begin = $value2;
-						}
-						if($key2 == "SUMMARY"){
-							$evenement_texte = $value2;
-						}
-						if(strpos($key2,"DTSTART") !== false){
-							$date_debut = $value2;
-							$clef_debut = $key2;
-						}
-						if(strpos($key2,"DTEND") !== false){
-							$date_fin = $value2;
-							$clef_fin = $key2;
-						}
-						if($key2 == "END"){
-							$end = $value2;
-						}
+			else{
+				// Fichiers sauvegardés
+				if(is_dir(self::DATAMODULE.'data/'.$this->getUrl(0).'_sauve')) {
+					$dir=self::DATAMODULE.'data/'.$this->getUrl(0).'_sauve';
+					$values = scandir($dir);
+					self::$savedFiles=[];
+					$values[0] = $text['agenda']['config'][0];
+					unset($values[array_search('..', $values)]);
+					if (count($values) <= 1){
+						self::$savedFiles = array(0 => $text['agenda']['config'][1]. self::DATAMODULE.'/data');
 					}
-					
-					//Si un évènement VEVENT est trouvé, avec summary et dtstart présents, on ajoute cet évènement à l'agenda
-					if ($evenement_texte != '' && strpos($begin,'VEVENT')!==false && $date_debut!=='' ){
-						if($date_fin == '') {
-							$date_fin = $date_debut; 
-							$clef_fin = $clef_debut;
-						}
-						$evenement_texte = $this->modif_texte($evenement_texte);
-						//Modifier date format ics yyyymmddThhmm... ou yyyymmdd vers format fullcalendar yyyy-mm-ddThh:mm
-						$date_debut = $this->modif_date($date_debut, $clef_debut);
-						$date_fin = $this->modif_date($date_fin, $clef_fin);
-					
-						//Valeurs par défaut pour l'import ics fond blanc, texte noir, lecture visiteur, modification éditeur
-						$this->nouvel_evenement($evenement_texte,$date_debut,$date_fin,'white','black','0','2', '0', '', '', '');			
+					else{
+						//Modifier les clefs (qui sont les valeurs de retour du formulaire avec 'config_restaure') avec clef = valeur
+						self::$savedFiles = array_combine($values,$values);
 					}
 				}
+				else {
+					self::$savedFiles = array(0 => $text['agenda']['config'][2].self::DATAMODULE.$text['agenda']['config'][3]);
+				}
+				// Fichiers ics
+				if(is_dir(self::DATAFILE.'ics')) {
+					$dir=self::DATAFILE.'ics';
+					$values = scandir($dir);
+					$values[0] = $text['agenda']['config'][0];
+					unset($values[array_search('..', $values)]);
+					if (count($values) <= 1){
+						self::$icsFiles = array(0 => $text['agenda']['config'][1].self::DATAFILE.'ics');
+					}
+					else{
+						//Modifier les clefs (qui sont les valeurs de retour du formulaire avec 'config_fichier_ics') avec clef = valeur
+						self::$icsFiles = array_combine($values,$values);
+					}
+				}
+				else {
+					self::$icsFiles = array(0 => $text['agenda']['config'][2].self::DATAFILE.$text['agenda']['config'][4]);
+				}
+				// Fichiers csv ou txt
+				if(is_dir(self::DATAFILE.'adresses')) {
+					$dir=self::DATAFILE.'adresses';
+					$values = scandir($dir);
+					$values[0] = $text['agenda']['config'][0];
+					unset($values[array_search('..', $values)]);
+					// Supprimer les $values qui ne sont pas csv ou txt
+					for($i=2; $i <= count($values); $i++){
+						if ( pathinfo($dir.'/'.$values[$i],PATHINFO_EXTENSION) !== 'txt' && pathinfo($dir.'/'.$values[$i],PATHINFO_EXTENSION) !== 'csv') unset($values[$i]);	
+					}
+					if (count($values) <= 1){
+						self::$csvFiles = array(0 => $text['agenda']['config'][1].self::DATAFILE.'adresses');
+					}
+					else{
+						//Modifier les clefs (qui sont les valeurs de retour du formulaire avec 'config_fichier_csv_txt') avec clef = valeur
+						self::$csvFiles = array_combine($values,$values);
+					}
+				}
+				else {
+					self::$csvFiles = array(0 => $text['agenda']['config'][2].self::DATAFILE.$text['agenda']['config'][5]);
+				}
+				
+				// Copie des fichiers ics entre les dossiers self::DATAFILE.ics et self::DATAMODULE.ics pour export
+				$this->custom_copy(self::DATAFILE.'ics', self::DATAMODULE.'ics');
+				$this->custom_copy(self::DATAMODULE.'ics', self::DATAFILE.'ics');
+				
+				// Valeurs en sortie hors soumission du formulaire
+				$this->addOutput([
+					'showBarEditButton' => true,
+					'showPageContent' => false,
+					'vendor' => [
+						'tinycolorpicker'
+					],
+					'view' => 'config'
+				]);
 			}
-			
-			// Ajouter un carnet d'adresses
-			if (strpos($fichier_csv_txt,'.csv') !== false || strpos($fichier_csv_txt,'.txt') !== false){
-				$adresses = file_get_contents(self::DATAFILE.'adresses/'.$fichier_csv_txt);
-				if( strrchr($adresses, '@') && ! strrchr($adresses, ';')){
-					copy(self::DATAFILE.'adresses/'.$fichier_csv_txt, self::DATAMODULE.'adresses/'.$fichier_csv_txt);
-				}
-				else{
-					$notification = $text['agenda']['config'][8];
-					$state = false;	
-				}
-			}
-			
-			//Mise à jour des données de configuration liées aux droits et à l'affichage
-			$this->setData(['module', $this->getUrl(0), 'config', [
-				'droit_creation' => intval($droit_creation),
-				'droit_limite' => $droit_limite,
-				'maxiWidth' => $largeur_maxi,
-				'versionData' => $this->getData(['module', $this->getUrl(0), 'config', 'versionData'])
-			]]);
-			$this->setData(['module', $this->getUrl(0), 'texts',[
-				'configTextButtonBack' => $this->getInput('configTextButtonBack'),
-				'configTextDateStart' => $this->getInput('configTextDateStart'),
-				'configTextDateEnd' =>$this->getInput('configTextDateEnd')
-				]
-			]);
-		
-			//Valeurs en sortie
-			$this->addOutput([
-				'notification' => $notification,
-				'redirect' => helper::baseUrl() . $this->getUrl(0),
-				'state' => $state
-			]);
-		}
-		else{
-			// Fichiers sauvegardés
-			if(is_dir(self::DATAMODULE.'data/'.$this->getUrl(0).'_sauve')) {
-				$dir=self::DATAMODULE.'data/'.$this->getUrl(0).'_sauve';
-				$values = scandir($dir);
-				self::$savedFiles=[];
-				$values[0] = $text['agenda']['config'][0];
-				unset($values[array_search('..', $values)]);
-				if (count($values) <= 1){
-					self::$savedFiles = array(0 => $text['agenda']['config'][1]. self::DATAMODULE.'/data');
-				}
-				else{
-					//Modifier les clefs (qui sont les valeurs de retour du formulaire avec 'config_restaure') avec clef = valeur
-					self::$savedFiles = array_combine($values,$values);
-				}
-			}
-			else {
-				self::$savedFiles = array(0 => $text['agenda']['config'][2].self::DATAMODULE.$text['agenda']['config'][3]);
-			}
-			// Fichiers ics
-			if(is_dir(self::DATAFILE.'ics')) {
-				$dir=self::DATAFILE.'ics';
-				$values = scandir($dir);
-				$values[0] = $text['agenda']['config'][0];
-				unset($values[array_search('..', $values)]);
-				if (count($values) <= 1){
-					self::$icsFiles = array(0 => $text['agenda']['config'][1].self::DATAFILE.'ics');
-				}
-				else{
-					//Modifier les clefs (qui sont les valeurs de retour du formulaire avec 'config_fichier_ics') avec clef = valeur
-					self::$icsFiles = array_combine($values,$values);
-				}
-			}
-			else {
-				self::$icsFiles = array(0 => $text['agenda']['config'][2].self::DATAFILE.$text['agenda']['config'][4]);
-			}
-			// Fichiers csv ou txt
-			if(is_dir(self::DATAFILE.'adresses')) {
-				$dir=self::DATAFILE.'adresses';
-				$values = scandir($dir);
-				$values[0] = $text['agenda']['config'][0];
-				unset($values[array_search('..', $values)]);
-				// Supprimer les $values qui ne sont pas csv ou txt
-				for($i=2; $i <= count($values); $i++){
-					if ( pathinfo($dir.'/'.$values[$i],PATHINFO_EXTENSION) !== 'txt' && pathinfo($dir.'/'.$values[$i],PATHINFO_EXTENSION) !== 'csv') unset($values[$i]);	
-				}
-				if (count($values) <= 1){
-					self::$csvFiles = array(0 => $text['agenda']['config'][1].self::DATAFILE.'adresses');
-				}
-				else{
-					//Modifier les clefs (qui sont les valeurs de retour du formulaire avec 'config_fichier_csv_txt') avec clef = valeur
-					self::$csvFiles = array_combine($values,$values);
-				}
-			}
-			else {
-				self::$csvFiles = array(0 => $text['agenda']['config'][2].self::DATAFILE.$text['agenda']['config'][5]);
-			}
-			
-			// Copie des fichiers ics entre les dossiers self::DATAFILE.ics et self::DATAMODULE.ics pour export
-			$this->custom_copy(self::DATAFILE.'ics', self::DATAMODULE.'ics');
-			$this->custom_copy(self::DATAMODULE.'ics', self::DATAFILE.'ics');
-			
-			// Valeurs en sortie hors soumission du formulaire
-			$this->addOutput([
-				'showBarEditButton' => true,
-				'showPageContent' => false,
-				'view' => 'config'
-			]);
 		}
 	}
 	
@@ -332,65 +349,76 @@ class agenda extends common {
 	 * Suppression d'un évènement
 	 */
 	public function delete($lid, $sauve, $json) {
-		// Lexique
-		include('./module/agenda/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_agenda.php');
-		$json_initial = $json;
-		//$pos1 et $pos2 sont les délimiteurs de la partie à supprimer
-		$pos1 = strpos($json, '{"id":'.$lid);
-		// si $pos1 non trouvé pas d'effacement
-		if ( $pos1 !== false ){
-			$pos2 = strpos($json, '}', $pos1);
-			//Premier évènement ?
-			if ($pos1 < 2) {
-				//Premier ! et dernier évènement ?
-				if (strlen($json) < $pos2 + 4){
-					$json ='[]';
+		// Autorisation si groupe autorisé à modifier l'evt $lid
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		$json = file_get_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'/events.json');
+		$tableau = json_decode($json, true);
+		if( $group < $tableau[$lid]['groupe_mod'] ) {
+			// Valeurs en sortie
+			$this->addOutput([
+				'access' => false
+			]);	
+		} else {
+			// Lexique
+			include('./module/agenda/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_agenda.php');
+			$json_initial = $json;
+			//$pos1 et $pos2 sont les délimiteurs de la partie à supprimer
+			$pos1 = strpos($json, '{"id":'.$lid);
+			// si $pos1 non trouvé pas d'effacement
+			if ( $pos1 !== false ){
+				$pos2 = strpos($json, '}', $pos1);
+				//Premier évènement ?
+				if ($pos1 < 2) {
+					//Premier ! et dernier évènement ?
+					if (strlen($json) < $pos2 + 4){
+						$json ='[]';
+					}
+					else{
+						$json = substr_replace($json,'{},',$pos1, $pos2-$pos1+2);
+					}
 				}
 				else{
-					$json = substr_replace($json,'{},',$pos1, $pos2-$pos1+2);
+					$json = substr_replace($json,',{}',$pos1-1, $pos2-$pos1+2);
 				}
-			}
-			else{
-				$json = substr_replace($json,',{}',$pos1-1, $pos2-$pos1+2);
-			}
-			
-			//Enregistrer le nouveau fichier json
-			//file_put_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'/events.json', $json);
-			
-			//Enregistrer le json et sauvegarder dans data_sauve si suppression de l'évènement et non modification
-			if ($sauve == true){
-				file_put_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'/events.json', $json);
-				$this->sauve($json);
 				
-				// Emission d'un mailing éventuel en récupérant les valeurs dans le $json initial
-				$tableau = json_decode($json_initial, true);
-				$mailing_val = '0';
-				$mailing_adresses = $text['agenda']['delete'][0];
-				// Si la clef 'mailing_val' existe dans events.json (version >=3.0) lire mailing_val et mailing_adresses
-				if( isset( $tableau[$lid]['mailing_val'] )){
-					$mailing_val = $tableau[$lid]['mailing_val'];
-					$mailing_adresses = $tableau[$lid]['mailing_adresses'];
-					self::$sujet_mailing = $text['agenda']['delete'][1];
+				//Enregistrer le nouveau fichier json
+				//file_put_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'/events.json', $json);
+				
+				//Enregistrer le json et sauvegarder dans data_sauve si suppression de l'évènement et non modification
+				if ($sauve == true){
+					file_put_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'/events.json', $json);
+					$this->sauve($json);
+					
+					// Emission d'un mailing éventuel en récupérant les valeurs dans le $json initial
+					$tableau = json_decode($json_initial, true);
+					$mailing_val = '0';
+					$mailing_adresses = $text['agenda']['delete'][0];
+					// Si la clef 'mailing_val' existe dans events.json (version >=3.0) lire mailing_val et mailing_adresses
+					if( isset( $tableau[$lid]['mailing_val'] )){
+						$mailing_val = $tableau[$lid]['mailing_val'];
+						$mailing_adresses = $tableau[$lid]['mailing_adresses'];
+						self::$sujet_mailing = $text['agenda']['delete'][1];
+					}
+					$evenement_texte = $text['agenda']['delete'][2].$tableau[$lid]['title'];
+					$date_debut = $tableau[$lid]['start'];
+					$date_fin = $tableau[$lid]['end'];
+					if( $mailing_val === '1') $this->mailing($evenement_texte, $date_debut, $date_fin, $mailing_val, $mailing_adresses);	
+					//Valeurs en sortie si suppression demandée et réalisée
+					$this->addOutput([
+							'notification' => $text['agenda']['delete'][3],
+							'redirect' => helper::baseUrl() . $this->getUrl(0),
+							'state' => true
+					]);
 				}
-				$evenement_texte = $text['agenda']['delete'][2].$tableau[$lid]['title'];
-				$date_debut = $tableau[$lid]['start'];
-				$date_fin = $tableau[$lid]['end'];
-				if( $mailing_val === '1') $this->mailing($evenement_texte, $date_debut, $date_fin, $mailing_val, $mailing_adresses);	
-				//Valeurs en sortie si suppression demandée et réalisée
-				$this->addOutput([
-						'notification' => $text['agenda']['delete'][3],
-						'redirect' => helper::baseUrl() . $this->getUrl(0),
-						'state' => true
-				]);
+				else{
+					return $json;
+				}
 			}
 			else{
 				return $json;
 			}
 		}
-		else{
-			return $json;
-		}
-		
 	}
 	
 	
@@ -398,122 +426,151 @@ class agenda extends common {
 	 * Suppression de tous les évènements
 	 */
 	public function deleteall() {
-		// Lexique
-		include('./module/agenda/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_agenda.php');
-		//Sauvegarde dans data de l'agenda actuel bien qu'il soit déjà sauvegardé dans data_sauve
-		$json = file_get_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'/events.json');
-		file_put_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'/events_'.date('YmdHis').'.json', $json);
-		
-		//Enregistrer le nouveau fichier json vide
-		$json='[]';	
-		file_put_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'/events.json', $json);
-		
-		//Valeurs en sortie
-		$this->addOutput([
-				'notification' => $text['agenda']['deleteall'][0],
-				'redirect' => helper::baseUrl() . $this->getUrl(0),
-				'state' => true
-		]);
-	
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < agenda::$actions['deleteall'] ) {
+			// Valeurs en sortie
+			$this->addOutput([
+				'access' => false
+			]);	
+		} else {
+			// Lexique
+			include('./module/agenda/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_agenda.php');
+			//Sauvegarde dans data de l'agenda actuel bien qu'il soit déjà sauvegardé dans data_sauve
+			$json = file_get_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'/events.json');
+			file_put_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'/events_'.date('YmdHis').'.json', $json);
+			
+			//Enregistrer le nouveau fichier json vide
+			$json='[]';	
+			file_put_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'/events.json', $json);
+			
+			//Valeurs en sortie
+			$this->addOutput([
+					'notification' => $text['agenda']['deleteall'][0],
+					'redirect' => helper::baseUrl() . $this->getUrl(0),
+					'state' => true
+			]);
+		}
 	}
 	
 	/*
 	* Gestion des catégories
 	*/
 	public function categories(){
-		// Lexique
-		include('./module/agenda/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_agenda.php');
-		// Soumission du formulaire
-		if($this->isPost()) {
-			
-			// Ajout ou modification d'une catégorie
-			if( $this->getInput('categorie_name') !== ''){
-				$name = $this->getInput('categorie_name');
-				$fond = $this->getInput('categorie_couleur_fond');
-				$texte = $this->getInput('categorie_couleur_texte');
-				$json = file_get_contents(self::DATAMODULE.'categories/categories.json');
-				$tabcat = json_decode($json,true);
-				$unsetkey = '';
-				foreach($tabcat as $key=>$value){
-					if($value['name'] === $name){
-						unset( $value);
-						$unsetkey = $key;
-					}
-				}
-				$unsetkey === '' ? $indice = count($tabcat) : $indice = $unsetkey;
-				$tabcat[$indice]['name'] = $name;
-				$tabcat[$indice]['backgroundcolor'] = $fond;
-				$tabcat[$indice]['textcolor'] = $texte;
-				$tabcatjson = json_encode($tabcat);
-				file_put_contents(self::DATAMODULE.'categories/categories.json', $tabcatjson);
-			}
-			
-			// Validation du choix par catégorie enregistré dans module.json
-			$valcategories = $this->getInput('val_categories', helper::FILTER_BOOLEAN);
-			//Mise à jour de la validation du choix des couleurs par catégorie
-			$this->setData(['module', $this->getUrl(0), 'categories', [
-				'valCategories' => $valcategories
-			]]);
-		
-			//Valeurs en sortie
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < agenda::$actions['categories'] ) {
+			// Valeurs en sortie
 			$this->addOutput([
-					'notification' => $text['agenda']['categories'][0],
-					'redirect' => helper::baseUrl() . $this->getUrl(),
-					'state' => true
+				'access' => false
+			]);	
+		} else {
+			// Lexique
+			include('./module/agenda/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_agenda.php');
+			// Soumission du formulaire
+			if($this->isPost()) {
+				
+				// Ajout ou modification d'une catégorie
+				if( $this->getInput('categorie_name') !== ''){
+					$name = $this->getInput('categorie_name');
+					$fond = $this->getInput('categorie_couleur_fond');
+					$texte = $this->getInput('categorie_couleur_texte');
+					$json = file_get_contents(self::DATAMODULE.'categories/categories.json');
+					$tabcat = json_decode($json,true);
+					$unsetkey = '';
+					foreach($tabcat as $key=>$value){
+						if($value['name'] === $name){
+							unset( $value);
+							$unsetkey = $key;
+						}
+					}
+					$unsetkey === '' ? $indice = count($tabcat) : $indice = $unsetkey;
+					$tabcat[$indice]['name'] = $name;
+					$tabcat[$indice]['backgroundcolor'] = $fond;
+					$tabcat[$indice]['textcolor'] = $texte;
+					$tabcatjson = json_encode($tabcat);
+					file_put_contents(self::DATAMODULE.'categories/categories.json', $tabcatjson);
+				}
+				
+				// Validation du choix par catégorie enregistré dans module.json
+				$valcategories = $this->getInput('val_categories', helper::FILTER_BOOLEAN);
+				//Mise à jour de la validation du choix des couleurs par catégorie
+				$this->setData(['module', $this->getUrl(0), 'categories', [
+					'valCategories' => $valcategories
+				]]);
+			
+				//Valeurs en sortie
+				$this->addOutput([
+						'notification' => $text['agenda']['categories'][0],
+						'redirect' => helper::baseUrl() . $this->getUrl(),
+						'state' => true
+				]);
+			}
+			// Préparation du tableau d'affichage des catégories : nom, couleur du fond, couleur du texte
+			$json = file_get_contents(self::DATAMODULE.'categories/categories.json');
+			$tabcat = json_decode($json,true);
+			foreach( $tabcat as $key=>$value ){
+				self::$tabCategories[] = [
+					$value['name'],
+					$value['backgroundcolor'],
+					$value['textcolor'],
+					$value['name'] !== 'Défaut' ?
+								template::button('categorieDelete' . $key, [
+										'class' => 'buttonRed',
+										'href' => helper::baseUrl() . $this->getUrl(0) . '/categorieDelete/' . $key,
+										'value' => template::ico('cancel')
+									])
+								: '',
+				];
+			}
+			// Valeurs en sortie hors soumission du formulaire
+			$this->addOutput([
+				'showBarEditButton' => true,
+				'showPageContent' => false,
+				'vendor' => [
+					'tinycolorpicker'
+				],
+				'view' => 'categorie'
 			]);
 		}
-		// Préparation du tableau d'affichage des catégories : nom, couleur du fond, couleur du texte
-		$json = file_get_contents(self::DATAMODULE.'categories/categories.json');
-		$tabcat = json_decode($json,true);
-		foreach( $tabcat as $key=>$value ){
-			self::$tabCategories[] = [
-				$value['name'],
-				$value['backgroundcolor'],
-				$value['textcolor'],
-				$value['name'] !== 'Défaut' ?
-							template::button('categorieDelete' . $key, [
-									'class' => 'buttonRed',
-									'href' => helper::baseUrl() . $this->getUrl(0) . '/categorieDelete/' . $key,
-									'value' => template::ico('cancel')
-								])
-							: '',
-			];
-		}
-		// Valeurs en sortie hors soumission du formulaire
-		$this->addOutput([
-			'showBarEditButton' => true,
-			'showPageContent' => false,
-			'vendor' => [
-				'tinycolorpicker'
-			],
-			'view' => 'categorie'
-		]);
 	}
 	
 	/*
 	* Suppression d'une catégorie
 	*/
 	public function categorieDelete(){
-		// Lexique
-		include('./module/agenda/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_agenda.php');		
-		$json = file_get_contents(self::DATAMODULE.'categories/categories.json');
-		$tabcat = json_decode($json,true);
-		$name = $tabcat[$this->getUrl(2)]['name'];
-		unset($tabcat[$this->getUrl(2)]);
-		$ii = 0;
-		$tab = [];
-		foreach($tabcat as $key=>$value){
-			$tab[$ii] = $value;
-			$ii++;
-		}	
-		$tabcatjson = json_encode($tab);
-		file_put_contents(self::DATAMODULE.'categories/categories.json', $tabcatjson);
-		//Valeurs en sortie
-		$this->addOutput([
-				'notification' => $text['agenda']['categorieDelete'][0].$name.$text['agenda']['categorieDelete'][1],
-				'redirect' => helper::baseUrl() . $this->getUrl(0).'/categories/',
-				'state' => true
-		]);
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < agenda::$actions['categorieDelete'] ) {
+			// Valeurs en sortie
+			$this->addOutput([
+				'access' => false
+			]);	
+		} else {
+			// Lexique
+			include('./module/agenda/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_agenda.php');		
+			$json = file_get_contents(self::DATAMODULE.'categories/categories.json');
+			$tabcat = json_decode($json,true);
+			$name = $tabcat[$this->getUrl(2)]['name'];
+			unset($tabcat[$this->getUrl(2)]);
+			$ii = 0;
+			$tab = [];
+			foreach($tabcat as $key=>$value){
+				$tab[$ii] = $value;
+				$ii++;
+			}	
+			$tabcatjson = json_encode($tab);
+			file_put_contents(self::DATAMODULE.'categories/categories.json', $tabcatjson);
+			//Valeurs en sortie
+			$this->addOutput([
+					'notification' => $text['agenda']['categorieDelete'][0].$name.$text['agenda']['categorieDelete'][1],
+					'redirect' => helper::baseUrl() . $this->getUrl(0).'/categories/',
+					'state' => true
+			]);
+		}
 	}
 	
 	/**
@@ -835,6 +892,7 @@ class agenda extends common {
 							'droit_creation' => 2,
 							'droit_limite' => true,
 							'maxiWidth' => '800',
+							'gridColor' => 'rgba(146, 52, 101, 1)',
 							'versionData' => self::VERSION
 						],
 						'categories' => [
@@ -859,14 +917,14 @@ class agenda extends common {
 					]);	
 				}
 				else{
-					//le module existe dans le json, détection du changement de nom de la page pour renommer les dossiers
+					//le module existe dans le json, détection du changement de nom de la page pour copier les dossiers avec leur nouveau nom
 					if(! is_dir(self::DATAMODULE.'data/'.$this->getUrl(0))){
 						$oldname = $this->getData(['module', $this->getUrl(0), 'name']);
 						$newname = $this->getUrl(0);
-						rename( self::DATAMODULE.'data/'.$oldname, self::DATAMODULE.'data/'.$newname);
-						rename( self::DATAMODULE.'data/'.$oldname.'_visible' , self::DATAMODULE.'data/'.$newname.'_visible');
-						rename( self::DATAMODULE.'data/'.$oldname.'_sauve' , self::DATAMODULE.'data/'.$newname.'_sauve');
-						rename( self::DATAMODULE.'data/'.$oldname.'_affiche' , self::DATAMODULE.'data/'.$newname.'_affiche');						
+						$this->copyDir( self::DATAMODULE.'data/'.$oldname, self::DATAMODULE.'data/'.$newname);
+						$this->copyDir( self::DATAMODULE.'data/'.$oldname.'_visible' , self::DATAMODULE.'data/'.$newname.'_visible');
+						$this->copyDir( self::DATAMODULE.'data/'.$oldname.'_sauve' , self::DATAMODULE.'data/'.$newname.'_sauve');
+						$this->copyDir( self::DATAMODULE.'data/'.$oldname.'_affiche' , self::DATAMODULE.'data/'.$newname.'_affiche');						
 						$this->addOutput([
 								'notification' => $text['agenda']['index'][1],
 								'state' => true

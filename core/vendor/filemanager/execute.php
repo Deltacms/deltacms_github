@@ -1,4 +1,7 @@
 <?php
+//Supprime les erreurs de dépréciations
+error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
+
 $config = include 'config/config.php';
 
 include 'include/utils.php';

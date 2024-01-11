@@ -69,7 +69,7 @@ class init extends common {
 			]
 		],
 		'core' => [
-			'dataVersion' => 4501,
+			'dataVersion' => 4504,
 			'lastBackup' => 0,
 			'lastClearTmp' => 0,
 			'lastAutoUpdate' => 0,
@@ -86,9 +86,14 @@ class init extends common {
 			'searchPageLabel' => 'Rechercher',
 			'sitemapPageLabel' => 'Plan du site',
 			'legalPageLabel' => 'Mentions légales',
+			'visitorLabel' => 'Visiteur',
+			'memberLabel' => 'Membre',
+			'editorLabel' => 'Editeur',
+			'moderatorLabel' => 'Modérateur',
+			'administratorLabel' => 'Administrateur',
 			'metaDescription' => 'DeltaCMS est un CMS sans base de données qui permet de créer et gérer facilement un site web sans aucune connaissance en programmation.',
 			'title' => 'DeltaCMS',
-			'captchaSimpleText' => 'Je ne suis pas un robot',
+			'captchaSimpleText' => 'Je suis un humain',
 			'captchaSimpleHelp' => 'Cochez cette case pour prouver que vous êtes humain',
 			'cookies' => [
 				'cookiesDeltaText' => 'Ce site utilise des cookies nécessaires à son fonctionnement, ils permettent de fluidifier son fonctionnement par exemple en mémorisant les données de connexion, la langue que vous avez choisie ou la validation de ce message.',
@@ -98,6 +103,10 @@ class init extends common {
 				'cookiesCheckboxExtText' => '',
 				'cookiesFooterText' => 'Cookies',
 				'cookiesButtonText' => 'J\'ai compris'
+			],
+			'menuBurger' => [
+            'burgerLeftIconLink' => 'accueil',
+            'burgerCenterIconLink' => 'recherche'
 			]
 		],
 		'page' => [

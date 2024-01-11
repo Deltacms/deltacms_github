@@ -63,7 +63,7 @@ $text['form']['deleteall'][1] = 'Datos eliminados';
 $text['form']['deleteall'][2] = 'No hay datos para eliminar';
 $text['form']['delete'][0] = 'Acción no permitida';
 $text['form']['delete'][1] = 'Datos eliminados';
-$text['form']['índex'][0] = 'Captcha no válido';
+$text['form']['index'][0] = 'Captcha no válido';
 $text['form']['index'][1] = 'Nuevo mensaje de su sitio';
 $text['form']['index'][2] = 'Nuevo mensaje de la página "';
 $text['form']['index'][3] = 'Formulario enviado';
@@ -78,6 +78,8 @@ $text['form']['index'][11] = 'El archivo adjunto no es un documento zip';
 $text['form']['index'][12] = ' Complete el Captcha ';
 // Initialisation de flatpickr
 $lang_flatpickr = 'es';
+// Langue d'administration pour tinymce
+$lang_admin = 'es';
 // Selects
 $signature = [
 	'text' => 'Nombre del sitio',

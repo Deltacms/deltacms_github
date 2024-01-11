@@ -1,4 +1,5 @@
 [
 	"packages/core/main.min.css",
-	"packages/daygrid/main.min.css"
+	"packages/daygrid/main.min.css",
+	"../../view/index/index.css"
 ]

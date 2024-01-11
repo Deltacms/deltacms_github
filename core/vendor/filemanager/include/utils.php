@@ -134,11 +134,13 @@ function checkRelativePath($path){
 * @return boolean is it an upload dir?
 */
 function isUploadDir($path, $config){
-	$upload_dir = $config['current_path'];
-	$thumbs_dir = $config['thumbs_base_path'];
-	if (realpath($path) === realpath($upload_dir) || realpath($path) === realpath($thumbs_dir))
-	{
-		return true;
+	if( isset($config['current_path']) && isset($config['current_path'])){
+		$upload_dir = $config['current_path'];
+		$thumbs_dir = $config['thumbs_base_path'];
+		if (realpath($path) === realpath($upload_dir) || realpath($path) === realpath($thumbs_dir))
+		{
+			return true;
+		}
 	}
 	return false;
 }

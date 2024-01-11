@@ -41,7 +41,7 @@ function protectModule() {
 * Paramètres par défaut au chargement
 */
 $( document ).ready(function() {
-	
+
 	/*
 	* Enleve le menu fixe en édition de page
 	*/
@@ -222,8 +222,8 @@ $( document ).ready(function() {
 		$("#pageEditHideMenuChildrenWrapper").addClass("disabled");
 		$("#pageEditHideMenuChildrenWrapper").slideDown();
 	}
-	
-	// Animation des boutons zwiico-help lien vers la documentation
+
+	// Animation des boutons delta-ico-help lien vers la documentation
 	var colorButton = <?php echo "'".$this->getData(['admin', 'backgroundColorButtonHelp'])."'"; ?> ;
 	var blockButton = <?php echo "'".$this->getData(['admin', 'backgroundBlockColor'])."'"; ?> ;
     $(".helpDisplayButton").mouseenter(function(){
@@ -232,7 +232,7 @@ $( document ).ready(function() {
     $(".helpDisplayButton").mouseleave(function(){
         $(this).css("background-color", blockButton);
     });
-	
+
 
 });
 
@@ -424,7 +424,7 @@ pageEditBlockDOM.on("change", function() {
 				$("#pageEditbreadCrumbWrapper").slideDown();
 			}
 			if ($("#pageEditModuleId").val() === "") {
-				$("#pageEditModuleConfig").addClass("disabled");	
+				$("#pageEditModuleConfig").addClass("disabled");
 			} else {
 				$("#pageEditModuleConfig").removeClass("disabled");
 			}
@@ -540,8 +540,8 @@ $("#pageEditParentPageId").on("change", function() {
 	} else {
 		echo 'text1 = "No mostrar";' ;
 		echo 'text2 = "Al principio";' ;
-		echo 'text3 = "Después \"";' ;		
-	}?>	
+		echo 'text3 = "Después \"";' ;
+	}?>
 	positionDOM.empty().append(
 		$("<option>").val(0).text(text1),
 		$("<option>").val(1).text(text2)

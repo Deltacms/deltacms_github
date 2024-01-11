@@ -1,17 +1,16 @@
 /**
- * Voici une feuille de style type, bien entendu vous pouvez ajouter
- * ou supprimer des propriétés CSS en fonction de vos besoins.
- */
+ * Voici une feuille de style type, bien entendu vous pouvez ajouter ou supprimer des propriétés CSS en fonction de vos besoins.*/
+/* Here is a typical style sheet, of course you can add or remove CSS properties according to your needs.*/
+
+/* Pour activer la popup de recherche positionner le curseur dans la zone d'édition puis Ctrl + F ou Cmd + F */
+/* To activate the search popup position the cursor in the editing area then Ctrl + F or Cmd + F */
 
 /**
  * Éléments principaux
  */
 
 
-/*
-* Grille du site
-* Barres et page
-*/
+/* Grille du site, barres et page */
 #contentLeft {
 }
 #contentRight {
@@ -43,8 +42,7 @@ nav a:hover {
 nav a.active {
 }
 
-/* Menu latéral */
-/* aspect des puces */
+/* Menu latéral, aspect des puces */
 ul #menuSide  {
 }
 /* Block menu à droite */
@@ -53,7 +51,6 @@ ul #menuSide  {
 /* Block menu à gauche */
 #menuSideLeft {
 }
-
 
 /* Bas de page */
 footer {
@@ -85,10 +82,7 @@ footer #footersiteRight, #footerbodyRight {
  */
 
 /* Titres */
-h1,
-h2,
-h3,
-h4 {
+h1, h2, h3, h4 {
 }
 
 /* Liens */
@@ -146,96 +140,68 @@ select:hover,
 textarea:hover {
 }
 
-/* Modules News et Blog */
-
-.blogDate {
-}
-
-.blogPicture {
-}
-
-.blogPicture img {
-}
-
-.blogComment {
-}
-
-.blogTitle {
-}
-
-.blogContent {
-}
-
-.newsTitle {
-    /*background-color: grey;*/
-}
-
-.newsContent {
-}
-
-.newsSignature {
-    color: 	#404040;
-}
-
-/* Consentement aux cookies */
-
-/*
-#cookieConsent {
-  width: 80%;
-  color: #FFF;
-  background: #212223;
-  opacity: 0.9;
-}
-
-#cookieConsent a{
-  color : yellow;
-}
-
-#cookieConsent h3{
-  color : red;
-}
-
-#cookieConsentConfirm {
-  background: rgba(0,0,255,1);
-  color: rgba(255,255,255,1);
-}
-
-#cookieConsentConfirm:hover {
-  background: rgba(0,50,255,1);
-  color: rgba(255,255,255,1);
-}
-
-*/
-
-/* Titre sous image */
-
+/* Titre sous image Caption */
 /*
 figure.image {
-  display: inline-block;
-  border: 1px solid gray;
-  margin: 0 6px;
-  background-color: #f5f2f0;
-}
-
-figure.align-center {
-    display: table;
-    margin:auto;
-}
-
-figure.align-left {
-  float: left;
-}
-
-figure.align-right {
-  float: right;
 }
 
 figure.image img {
-  margin: 0;
 }
 
 figure.image figcaption {
-  margin: 4px;
-  text-align: center;
 }
 */
+
+/* Consentement aux cookies */
+/*
+#cookieConsent {
+}
+#cookieConsent a{
+}
+#cookieConsent h3{
+}
+#cookieConsentConfirm {
+}
+#cookieConsentConfirm:hover {
+}
+*/
+
+/* Gabarit Color box */
+.colorbox-0 {
+	color: #F7F6CF;
+	background-color: #5784BA; 
+}
+.colorbox-0 a {
+	color: #FFBF66;
+}
+.colorbox-0 h2, .colorbox-0 h3{
+	color: #F4CFDF;
+}
+
+
+/**
+ * Modules de page par ordre alphabétique
+ */
+
+/* Module Album photo : Cases contenant les vignettes */
+.galleryPicture, .galleryGalleryPicture {
+/*exemple background-color: green;*/
+}
+.galleryPicture:hover, .galleryGalleryPicture:hover {
+/*exemple background-color: yellow;*/
+}
+
+/* Module Blog */
+.blogDate {
+}
+.blogPicture {
+}
+.blogPicture img {
+}
+.blogComment {
+}
+.blogTitle {
+}
+.blogContent {
+}
+

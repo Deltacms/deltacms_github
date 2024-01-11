@@ -144,6 +144,12 @@ else{
 							'value' => $this->getData(['module', $this->getUrl(0), 'texts', 'ReadMore'])
 						]); ?>
 					</div>
+					<div class="col4">
+						<?php echo template::text('blogTextsBack', [
+							'label' => $text['blog_view']['texts'][27],
+							'value' => $this->getData(['module', $this->getUrl(0), 'texts', 'Back'])
+						]); ?>
+					</div>
 				</div>
 			</div>
 		</div>

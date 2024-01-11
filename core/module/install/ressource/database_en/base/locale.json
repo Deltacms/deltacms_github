@@ -9,6 +9,11 @@
         "searchPageLabel": "Search",
         "legalPageLabel": "Legal notice",
         "sitemapPageLabel": "Site map",
+		"visitorLabel": "Visitor",
+		"memberLabel": "Member",
+		"editorLabel": "Editor",
+		"moderatorLabel": "Moderator",
+		"administratorLabel": "Administrator",
         "metaDescription": "DeltaCMS is a database-less CMS that allows you to easily create and manage a website without any programming knowledge.",
         "title": "DeltaCMS",
 		"captchaSimpleText": "I'am not a robot",
@@ -21,6 +26,10 @@
             "cookiesCheckboxExtText": "",
             "cookiesFooterText": "Cookies",
             "cookiesButtonText": "I understand"
+        },
+		"menuBurger": {
+            "burgerLeftIconLink": "home",
+            "burgerCenterIconLink": "recherche"
         }
     }
 }

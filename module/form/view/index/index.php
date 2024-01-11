@@ -13,15 +13,42 @@ if( isset( $_SESSION['langFrontEnd'])){
 $lang_flatpickr = in_array($lang_base, $arrayFlatpickr) ? $lang_base : 'default';
 ?><script>var lang_flatpickr = "<?php echo $lang_flatpickr; ?>";</script><?php
 
+// Adaptation de la langue dans tinymce pour la rédaction d'un message en fonction de la langue de la page, originale ou en traduction rédigée
+$lang = $this->getData(['config', 'i18n', 'langBase']);
+if ( !empty($_COOKIE["DELTA_I18N_SITE"])) {
+	if( $this->getInput('DELTA_I18N_SITE') !== 'base' ) $lang = $this->getInput('DELTA_I18N_SITE');
+}
+$lang_page = $lang;
+switch ($lang) {
+	case 'en' :
+		$lang_page = 'en_GB';
+		break;
+	case 'pt' :
+		$lang_page = 'pt_PT';
+		break;
+	case 'sv' :
+		$lang_page = 'sv_SE';
+		break;
+	case 'fr' :
+		$lang_page = 'fr_FR';
+		break;
+}
+// Si la langue n'est pas supportée par Tinymce la langue d'administration est utilisée
+if( ! file_exists( 'core/vendor/tinymce/langs/'.$lang_page.'.js' )){
+	$lang_page = $lang_admin;
+}
+echo '<script> var lang_admin = "'.$lang_page.'"; </script>';
+
 if($this->getData(['module', $this->getUrl(0), 'input'])): ?>
 	<?php echo template::formOpenFile('formForm'); ?>
 		<div class="humanBot">
-		<?php foreach($this->getData(['module', $this->getUrl(0), 'input']) as $index => $input): ?>
+		<?php $textIndex=0; $selectIndex=0; $checkboxIndex=0;
+		foreach($this->getData(['module', $this->getUrl(0), 'input']) as $index => $input): ?>
 			<?php if($input['type'] === $module::TYPE_MAIL): ?>
 				<?php echo template::mail('formInput[' . $index . ']', [
 					'id' => 'formInput_' . $index,
 					'label' => $input['name'],
-					'value' => $this->getData([ 'module', $this->getUrl(0), 'draft', 'mail'])
+					'value' => $_SESSION['draft']['mail']
 				]); ?>
 			<?php elseif($input['type'] === $module::TYPE_SELECT): ?>
 				<?php
@@ -33,30 +60,35 @@ if($this->getData(['module', $this->getUrl(0), 'input'])): ?>
 				<?php echo template::select('formInput[' . $index . ']', $values, [
 					'id' => 'formInput_' . $index,
 					'label' => $input['name'],
-					'selected' => $values[$this->getData([ 'module', $this->getUrl(0), 'draft', 'select'])]
-				]); ?>
+					'selected' => isset($_SESSION['draft']['select'][$selectIndex])? $values[$_SESSION['draft']['select'][$selectIndex]] : ''
+				]); 
+				$selectIndex++; ?>
 			<?php elseif($input['type'] === $module::TYPE_TEXT): ?>
 				<?php echo template::text('formInput[' . $index . ']', [
 					'id' => 'formInput_' . $index,
 					'label' => $input['name'],
-					'value' => $this->getData([ 'module', $this->getUrl(0), 'draft', 'text'])
-				]); ?>
+					'value' => isset($_SESSION['draft']['text'][$textIndex]) ? $_SESSION['draft']['text'][$textIndex] : ''
+				]); 
+				$textIndex++; ?>
 			<?php elseif($input['type'] === $module::TYPE_TEXTAREA): ?>
 				<?php echo template::textarea('formInput[' . $index . ']', [
 					'id' => 'formInput_' . $index,
 					'label' => $input['name'],
-					'value' => $this->getData([ 'module', $this->getUrl(0), 'draft', 'textarea'])
+					'value' => $_SESSION['draft']['textarea'],
+					'class' => 'editorWysiwygComment',
+					'noDirty' => true
 				]); ?>
 			<?php elseif($input['type'] === $module::TYPE_DATETIME): ?>
 				<?php echo template::date('formInput[' . $index . ']', [
 					'id' => 'formInput_' . $index,
 					'label' => $input['name'],
-					'value' => $this->getData([ 'module', $this->getUrl(0), 'draft', 'datetime'])		
+					'value' => $_SESSION['draft']['datetime']		
 				]); ?>
-			<?php elseif($input['type'] === $module::TYPE_CHECKBOX): ?>
-				<?php echo template::checkbox('formInput[' . $index . ']', true, $input['name'], [
-					'checked' => $this->getData([ 'module', $this->getUrl(0), 'draft', 'checkbox'])
-				]); ?>	
+			<?php elseif($input['type'] === $module::TYPE_CHECKBOX): 
+				echo template::checkbox('formInput[' . $index . ']', true, $input['name'], [
+					'checked' => isset($_SESSION['draft']['checkbox'][$checkboxIndex]) ? $_SESSION['draft']['checkbox'][$checkboxIndex] : false	
+				]); 
+				$checkboxIndex++; ?>	
 			<?php elseif($input['type'] === $module::TYPE_FILE): ?>	
 				<label class='formLabel'> <?php echo $input['name']; ?> </label>
 				<div class="formInputFile">

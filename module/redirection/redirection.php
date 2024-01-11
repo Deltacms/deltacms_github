@@ -34,24 +34,34 @@ class redirection extends common {
 	 * Configuration
 	 */
 	public function config() {
-		// Lexique
-		include('./module/redirection/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_redirection.php');
-
-		// Soumission du formulaire
-		if($this->isPost()) {
-			$this->setData(['module', $this->getUrl(0), 'url', $this->getInput('redirectionConfigUrl', helper::FILTER_URL, true)]);
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < redirection::$actions['config'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
-				'redirect' => helper::baseUrl() . $this->getUrl(),
-				'notification' => $text['redirection']['config'][0],
-				'state' => true
+				'access' => false
+			]);	
+		} else {
+			// Lexique
+			include('./module/redirection/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_redirection.php');
+
+			// Soumission du formulaire
+			if($this->isPost()) {
+				$this->setData(['module', $this->getUrl(0), 'url', $this->getInput('redirectionConfigUrl', helper::FILTER_URL, true)]);
+				// Valeurs en sortie
+				$this->addOutput([
+					'redirect' => helper::baseUrl() . $this->getUrl(),
+					'notification' => $text['redirection']['config'][0],
+					'state' => true
+				]);
+			}
+			// Valeurs en sortie
+			$this->addOutput([
+				'title' => $text['redirection']['config'][1],
+				'view' => 'config'
 			]);
 		}
-		// Valeurs en sortie
-		$this->addOutput([
-			'title' => $text['redirection']['config'][1],
-			'view' => 'config'
-		]);
 	}
 
 	/**

@@ -11,6 +11,7 @@
 	//Fullcalendar : instanciation, initialisations
 	<?php $listeLocale = 'af, ar, bg, bs, ca, cs, da, de, el, en, es, et, eu, fa, fi, fr, gl, he, hi, hr, hu, id, is, it, ja, ka, kk, ko, lb, lt, lv, mk, ms, nb, nl, nn, pl, pt, ro, ru, sk, sl ,sq, sr, sv, th, tr, uk, vi, zh';
 	$valid_locale = $this->getData(['config', 'i18n', 'langBase']) ;
+	if( isset( $_SESSION['langFrontEnd']) && isset( $_SESSION['translationType']) && $_SESSION['translationType'] === 'site' ) $valid_locale =  $_SESSION['langFrontEnd'];
 	if( strpos( $listeLocale, $valid_locale ) === false ) $valid_locale = $this->getData(['config', 'i18n', 'langAdmin']);
 	?>
 	var calendarEl = document.getElementById('calendar');
@@ -58,26 +59,11 @@
 			var wclient = document.body.clientWidth,
 				largeur_pour_cent,
 				largeur,
-				largeur_section,
 				wsection = getComputedStyle(site).width,
-				wcalcul;
-			switch (wsection)
-			{
-				case '750px':
-					largeur_section = 750;
-					break;
-				case '960px':
-					largeur_section = 960;
-					break;
-				case '1170px':
-					largeur_section = 1170;
-					break;
-				default:
-					largeur_section = wclient;
-			}
-						
-			// 20 pour les margin du body / html, 40 pour le padding intérieur dans section	
-			if(wclient > largeur_section + 20) {wcalcul = largeur_section-40} else {wcalcul = wclient-40};
+				wcalcul;	
+				
+			// 20 pour les margin du body / html, 40 pour le padding intérieur dans section			
+			wcalcul = wsection.replace('px','')-40;
 			largeur_pour_cent = Math.floor(100*(maxwidth/wcalcul));
 			if(largeur_pour_cent > 100) { largeur_pour_cent=100;}
 			largeur=largeur_pour_cent.toString() + "%";

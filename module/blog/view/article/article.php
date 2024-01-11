@@ -115,6 +115,18 @@ if( function_exists('datefmt_create') && function_exists('datefmt_format') && ex
 			</div>
 		<?php endif; ?>
 	</div>
+	
+	
+	<!--Bouton Retour sur la page active-->
+	<div class="col2">	
+		<?php echo template::button('blogArticleBack', [
+			'href' => helper::baseUrl() . $_SESSION['pageActive'],
+			'ico' => 'left',
+			'value' => $this->getData(['module', $this->getUrl(0), 'texts', 'Back'])
+		]); ?>
+	</div>
+	
+	
 </div>
 <?php if($this->getData(['module', $this->getUrl(0), 'posts', $this->getUrl(1), 'commentClose'])): ?>
 	<p><?php echo $this->getData(['module', $this->getUrl(0), 'texts', 'ArticleNoComment']); ?></p>
@@ -215,9 +227,6 @@ if( function_exists('datefmt_create') && function_exists('datefmt_format') && ex
 		</div>
 	<?php echo template::formClose(); ?>
 <?php endif;?>
-
-<div class="pourTests"></div>
-
 
 <div class="row">
 	<div class="col12">

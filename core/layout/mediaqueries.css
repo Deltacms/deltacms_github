@@ -28,6 +28,10 @@
 		z-index: 8;
 		opacity: 1;
 	}
+/* correction du padding pour les sous-menu */
+	#menu .navSub a{
+		padding-bottom: 5px;
+	}
 /* Barre de navigation fixe quand le menu est en-dehors du site et fixe*/
 	#navfixedlogout {
 		position: sticky;
@@ -39,13 +43,17 @@
 		z-index: 10;
 		position: sticky;
 	}
+	#navfixedconnected .navSub,
+	#navfixedlogout .navSub {
+		pointer-events: none;
+	}
 	nav .iconSubExistLargeScreen{
 		display:inline;
 		margin-left :5px;
 	}
 	nav .iconSubExistSmallScreen{
 		display:none;
-	}	
+	}
 /* Corps */
 	section {
 	   padding: 20px;
@@ -136,7 +144,6 @@
 	   font-size: 0.8rem !important ;
 	}
 	section {
-	   padding-top: 10px;
 	   padding-right: 10px !important ;
 	   padding-left: 10px !important ;
 	   padding-bottom: 10px !important ;
@@ -154,6 +161,10 @@
 	}
 	.siteContainer > #contentSite {
 	   order: 2;
+	}
+/* Suppression des arrondis du site */
+	#site  {
+		border-radius: 0;
 	}
 /* Tableaux */
 	.table thead {
@@ -195,6 +206,10 @@
 		display:inline;
 		margin: auto 30vw auto auto;
 	}
+	nav  .delta-ico-plus, nav .delta-ico-minus{
+		cursor: pointer;
+		padding: 8px;
+	}
 	a.disabled-link{
 		font-style:italic;
 	}
@@ -202,10 +217,10 @@
 	nav #toggle {
 	   display: flex;
 	   align-items: center;
-	   float: none;		
-	}	
+	   float: none;
+	}
 	nav #toggle #burgerIcon{
-		flex-basis:20%;
+		flex-basis:20vw;
 		text-align: right;
 	}
 	nav #toggle #burgerText{
@@ -214,10 +229,10 @@
 		margin-left: 10px;
 	}
 	nav #toggle #burgerIcon1, nav #toggle #burgerIcon2 {
-		flex-basis:40%;
+		flex-basis:40vw;
 		text-align: left;
-		margin-left: 10px;
-	}	
+		padding-left: 10px;
+	}
 	nav #menuLeft {
 	   display: block;
 	   float: none;
@@ -267,10 +282,10 @@
 		padding: 10px 10px;
 	}
 /* Taille du menu hamburger */
-	nav .zwiico-menu {
+	nav .delta-ico-menu {
 	   font-size: 1.5em;
 	}
-	nav .zwiico-cancel {
+	nav .delta-ico-cancel {
 	   font-size: 1.5em;
 	}
 /* Position du bloc dans le site sur les petits écrans */
@@ -290,8 +305,12 @@
 	   width: 30px;
 	   /*margin: 0 10px 0 -10px;*/
 	}
-	.zwiico-login {
+	.delta-ico-login {
 	   margin-right: 20px;
+	}
+/* Menu latéral */
+	li.menuSideChild {
+		line-height: 2;
 	}
 /* Conserve le pied de page sur une ligne */
 	body > footer {

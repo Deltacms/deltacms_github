@@ -1,16 +1,67 @@
 # Changelog
 
+## Version 4.5.04 de Deltacms
+- Modifications :
+	- Agenda 6.0 : la couleur de la grille est réglable en configuration,
+	- News 4.8 : en configuration paramétrage des couleurs pour le texte, les titres, les liens et la signature,
+	- Captcha : polices truetype pour compatibilité avec d'anciennes compilations d'une librairie PHP,
+	- Form 5.1 : le brouillon est maintenant mémorisé par des variables de session.
+- Corrections :
+	- News 4.8 : en édition des news les couleurs paramétrées sont visibles dans l'éditeur Tinymce,
+	- Form 5.1 : le brouillon peut mémoriser et restituer plusieurs champs texte, case à cocher et sélection.
+- Sur le site :
+	- Bonus / Modules : Livre d'or (Guestbook), ce module permet également de déposer des commentaires sur une page standard.
+
+## Version 4.5.03 de Deltacms
+- Modifications :
+	- Mise à jour des icônes,
+	- Gabarits de page : Color box, une boîte colorée, sans marge en petit écran, couleurs paramétrables dans l'éditeur CSS, 
+	- Thème / Editeur CSS : ajout d'une pipette à couleurs et d'une popup de recherche dans l'éditeur,
+	- Album Photo en version 4.5 : mise à jour des fichiers d'aide et du tri des galeries, prise en compte du nouveau jeu d'icônes
+	- Form 5.0 : Saisie et mise en forme des messages avec Tinymce,
+- Corrections :
+	- Form 5.0 : la longueur des messages n'est plus limitée à 500 caractères.
+- Sur le site :
+	- Bonus / Vidéos : module album photo,
+	- Bonus / Vidéos : saisie dans Tinymce avec les gabarits blocs, grilles et effet accordeon,
+	- Bonus / Vidéos : saisie dans Tinymce avec le gabarit color box,
+	- Bonus / Scripts : Script dans head ou dans body limité à certaines pages.
+
+## Version 4.5.02 de Deltacms
+- Modifications :
+	- Theme / site : suppression des arrondis autour du site en petit écran.
+	- Thèmes livrés : un nouveau thème vert sombre (theme_vert_sombre_fluide.zip),
+	- Album Photo en version 4.3.2 : amélioration générale de l'interface, les vignettes sont plus grandes, les couleurs de bordure et de texte adoptent celles du thème en place. Les originaux des images réorientées sont désormais sauvegardés, un message informatif s'affiche lors du traitement des images, ajout des fichiers d'aide.
+- Corrections :
+	- Theme / Menu / Burger : les liens associés aux icônes gauche et centrale du bandeau burger sont valides pour toutes les langues du site,
+	- Thèmes livrés : mise à jour du thème sombre islande (theme_sombre_islande_fluide.zip).
+
 ## Version 4.5.01 de Deltacms
 - Modifications :
 	- Une troisième langue d'administration est disponible : espagnol / castillan,
 	- Thème / Menu : le menu en petit écran (burger) dispose maintenant de ses propres paramètres,
+	- Modules du coeur et de page : renforcement de la sécurité,
+	- Module de type galerie: 'Album' remplace 'Gallery', les vignettes respectent le format des photos, 'Album' permet de géo-localiser sur quatre cartes disponibles les photos qui intègrent la balise EXIF GPS, et de donner leur altitude 
+	- Module mis à jour : Gallery n'est plus distribué dans le zip d'installation ou dans les mises à jour en ligne. La version 4.4 est disponible en téléchargement sur https://deltacms.fr/modules, la mise à jour est conseillée,
+	- Langues : la traduction automatique est supprimée, ce qui parachève la dégooglisation de Deltacms,
 	- Edition de page / emplacement dans le menu : une page désactivée est signalée par le curseur 'not-allowed' et par une typographie italique en petit écran, son lien est inactif,
 	- Nouveaux gabarits pour l'éditeur Tinymce : accordéon à 3 et 4 paragraphes,
-	- Statislite 4.8 : comptage des liens cliqués pour lesquels la class 'clicked_link_count' a été ajoutée par l'éditeur de liens de Tinymce.
-- Corrections : 
-	- Statislite / configuration : erreur qui effaçait l'information 'configuration validée',
+	- Configuration / recherche d'une mise à jour : le serveur n'utilise plus son cache pour lire le fichier de version,
+	- Statislite 4.8 : comptage des liens cliqués pour lesquels la class 'clicked_link_count' a été ajoutée par l'éditeur de liens de Tinymce,
+	- Agenda 5.9 : la langue de l'agenda s'adapte automatiquement à la traduction rédigée,
+	- Blog 6.8 et News 4.7 : les dates s'adaptent automatiquement à la traduction rédigée, amélioration de la navigation entre les articles,
+	- Theme / Footer : amélioration, 'Qui est en ligne ?' s'affiche dans la langue de rédaction du site avec les labels réglables dans Configuration / Localisation.
+	- Scripts : les fichiers body.inc.html et head.inc.html sont renommés body.inc.php et head.inc.php,
+	- Modules mis à jour : Snipcart, Modèle, Galerie GPS, Gallery sont disponible en téléchargement sur https://deltacms.fr/modules, la mise à jour est conseillée.
+- Correction : 
+	- Langues : la langue originale de rédaction du site choisie à l'installation peut être modifiée
 	- Slider 4.8 / Configuration : les liens sur les images étaient modifiés au changement de l'ordre des pages.
 
+## Version 4.4.10 de Deltacms
+- Modifications :
+	- Changement d'hébergeur pour les vidéos,
+	- Suspension de la traduction automatique.
+	
 ## Version 4.4.09 de Deltacms
 - Corrections : 
 	- Statislite / configuration : erreur qui effaçait l'information 'configuration validée',
@@ -293,6 +344,6 @@
 	- Export de théme, sauvegarde des images de la bannière personnalisée
 	- Import de thème, modification du nom des fichiers importés pour éviter l'écrasement des fichiers de même nom.
 
-Deltacms a été créé à partir de la version 11.2.00.24 de ZwiiCMS, les versions 1.x.xx et 2.x.xx de Deltacms n'ont pas été distribuées.
+Deltacms a été créé à partir de la version 11.2.00.24 de ZwiiCMS publié sous licence GNU GPL V3, les versions 1.x.xx et 2.x.xx de Deltacms n'ont pas été distribuées.
 
 

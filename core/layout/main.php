@@ -32,7 +32,7 @@ else { echo '<html lang="'.$lang.'">'; }
 					AND $this->getData(['module', $this->getUrl(0), 'config', 'feeds']) === TRUE ): ?>
 			<link rel="alternate" type="application/rss+xml" href="'<?php echo helper::baseUrl(). $this->getUrl(0) . '/rss';?>" title="fLUX rss">
 		<?php endif;
-		if (file_exists(self::DATA_DIR .'head.inc.html')) include(self::DATA_DIR .'head.inc.html'); ?>
+		if (file_exists(self::DATA_DIR .'head.inc.php')) include(self::DATA_DIR .'head.inc.php'); ?>
 	</head>
 	<body>
 		<?php //Barre d'administration

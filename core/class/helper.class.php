@@ -17,6 +17,7 @@ class helper {
 	const FILTER_STRING_SHORT = 9;
 	const FILTER_TIMESTAMP = 10;
 	const FILTER_URL = 11;
+	const FILTER_STRING_LONG_NOSTRIP = 12;
 
 
 
@@ -48,19 +49,22 @@ class helper {
 	}
 
 	/**
-	 * Fonction pour récupérer le numéro de version en ligne et le catalogue des modules
+	 * Fonction pour récupérer le numéro de version en ligne
 	 * @param string $url à récupérer
 	 * @return mixed données récupérées
 	 */
 
 	public static function urlGetContents ($url) {
-		// Ejecter free.fr
-		if (strpos(self::baseUrl(),'free.fr') > 0 ){
-			return false;
-		}
-		if(function_exists('file_get_contents') &&
-				ini_get('allow_url_fopen') ){
-				$url_get_contents_data = file_get_contents($url); // Masquait un warning éventuel
+		if(function_exists('file_get_contents') && ini_get('allow_url_fopen') ){
+				//Ne pas utiliser de cache serveur pour lire le fichier de version
+				$opts = array(
+				  'http'=>array(
+					'method'=>"GET",
+					'header'=>"Cache-Control: no-cache, must-revalidate\r\n"."Pragma: no-cache\r\n"."Expires: 0\r\n"
+				  )
+				);
+				$context = stream_context_create($opts);	
+				$url_get_contents_data = file_get_contents($url, false, $context);
 			}elseif(function_exists('curl_version')){
 				$ch = curl_init();
 				curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -373,6 +377,9 @@ class helper {
 			case self::FILTER_STRING_LONG:
 				// $text = mb_substr(filter_var($text, FILTER_SANITIZE_STRING), 0, 500000);
 				$text = mb_substr( strip_tags($text) , 0, 500000);
+				break;
+			case self::FILTER_STRING_LONG_NOSTRIP:
+				$text = mb_substr( $text , 0, 500000);
 				break;
 			case self::FILTER_STRING_SHORT:
 				// $text = mb_substr(filter_var($text, FILTER_SANITIZE_STRING), 0, 500);

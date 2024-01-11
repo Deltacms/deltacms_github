@@ -5,7 +5,7 @@
                 "feeds": true,
                 "feedsLabel": "Sindicación RSS",
                 "itemsperPage": 6,
-                "versionData": "6.7"
+                "versionData": "6.8"
             },
             "texts": {
                 "NoComment": "Aún no hay comentarios",
@@ -24,13 +24,14 @@
                 "TinymceMaxi": "Has alcanzado el máximo de",
                 "TinymceCara": "caracteres restantes",
                 "TinymceExceed": "Ibas a exceder el máximo por",
-                "ReadMore": "Leer más"
+                "ReadMore": "Leer más",
+                "Back": "Atrás"
             },
             "posts": {
                 "segundo-articulo": {
                     "comment": [],
                     "content": "<p>Et prima post Osdroenam quam, ut dictum est, ab hac descriptione discrevimus, Commagena, nunc Euphratensis, clementer adsurgit, Hierapoli, vetere Nino et Samosata civitatibus amplis inlustris.<\/p>\r\n<p>Ob haec et huius modi multa, quae cernebantur in paucis, omnibus timeri sunt coepta. et ne tot malis dissimulatis paulatimque serpentibus acervi crescerent aerumnarum, nobilitatis decreto legati mittuntur: Praetextatus ex urbi praefecto et ex vicario Venustus et ex consulari Minervius oraturi, ne delictis supplicia sint grandiora, neve senator quisquam inusitato et inlicito more tormentis exponeretur.<\/p>\r\n<p>Sed ut tum ad senem senex de senectute, sic hoc libro ad amicum amicissimus scripsi de amicitia. Tum est Cato locutus, quo erat nemo fere senior temporibus illis, nemo prudentior; nunc Laelius et sapiens (sic enim est habitus) et amicitiae gloria excellens de amicitia loquetur. Tu velim a me animum parumper avertas, Laelium loqui ipsum putes. C. Fannius et Q. Mucius ad socerum veniunt post mortem Africani; ab his sermo oritur, respondet Laelius, cuius tota disputatio est de amicitia, quam legens te ipse cognosces.<\/p>",
-                    "picture": "galerie\/grece\/port.jpg",
+                    "picture": "galerie\/geotag\/estaens_2.jpg",
                     "hidePicture": false,
                     "pictureSize": "40",
                     "picturePosition": "right",
@@ -67,7 +68,7 @@
         },
         "deltacms": {
             "url": "https:\/\/deltacms.fr\/",
-            "count": 3
+            "count": 4
         },
         "erreur404": {
             "config": {
@@ -117,7 +118,7 @@
                 "logoUrl": "",
                 "logoWidth": "40",
                 "maxSizeUpload": "500000",
-                "versionData": "4.9",
+                "versionData": "5.1",
                 "uploadJpg": true,
                 "uploadPng": true,
                 "uploadPdf": false,
@@ -157,61 +158,40 @@
             ],
             "draft": ""
         },
-        "galeria": {
-            "content": {
-                "toctoc": {
-                    "config": {
-                        "name": "Toctoc",
-                        "directory": "site\/file\/source\/galerie\/toctoc",
-                        "homePicture": "a.jpg",
-                        "sort": "SORT_ASC",
-                        "position": 0,
-                        "fullscreen": false
-                    },
-                    "legend": {
-                        "a.jpg": "",
-                        "b.jpg": "",
-                        "c.jpg": ""
-                    },
-                    "positions": []
+        "album-de-fotos": {
+            "toque-toque": {
+                "config": {
+                    "name": "Toque toque",
+                    "directory": "site\/file\/source\/galerie\/toctoc",
+                    "homePicture": "a.jpg",
+                    "sort": "SORT_ASC",
+                    "position": 0
                 },
-                "grecia": {
-                    "config": {
-                        "name": "Grecia",
-                        "directory": "site\/file\/source\/galerie\/grece",
-                        "homePicture": "philosophe.jpg",
-                        "sort": "SORT_ASC",
-                        "position": null,
-                        "fullScreen": false
-                    },
-                    "legend": {
-                        "chapiteaujpg": "Capitel",
-                        "philosophejpg": "Filósofo",
-                        "portjpg": "Puerto"
-                    },
-                    "positions": null
-                }
+                "legend": {
+                    "ajpg": "",
+                    "bjpg": "",
+                    "cjpg": ""
+                },
+                "order": []
             },
-            "theme": {
-                "thumbAlign": "center",
-                "thumbWidth": "18em",
-                "thumbHeight": "15em",
-                "thumbMargin": ".5em",
-                "thumbBorder": ".1em",
-                "thumbOpacity": ".7",
-                "thumbBorderColor": "rgba(221, 221, 221, 1)",
-                "thumbRadius": ".3em",
-                "thumbShadows": "1px 1px 10px",
-                "thumbShadowsColor": "rgba(125, 125, 125, 1)",
-                "legendHeight": ".375em",
-                "legendAlign": "center",
-                "legendTextColor": "rgba(255, 255, 255, 1)",
-                "legendBgColor": "rgba(0, 0, 0, .6)",
-                "style": "site\/data\/gallery\/galeria\/theme.css"
+            "geolocalizacion": {
+                "config": {
+                    "name": "Geolocalización",
+                    "directory": "site\/file\/source\/galerie\/geotag",
+                    "homePicture": "estaens_2.jpg",
+                    "sort": "SORT_ASC",
+                    "position": 2
+                },
+                "legend": {
+                    "estaens_1jpg": "",
+                    "estaens_2jpg": "",
+                    "estaens_3jpg": ""
+                },
+                "order": []
             },
-            "config": {
-                "versionData": "4.4"
-            }
+			"config": {
+				"versionData": "4.5"
+			}
         }
     }
 }

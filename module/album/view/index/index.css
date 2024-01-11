@@ -1,0 +1,52 @@
+section > * {
+	box-sizing: border-box;
+	padding: 0;
+}
+section > .row > .col3 {
+	padding: 5px;
+	vertical-align: middle;
+}
+.galleryPicture {
+	box-sizing: content-box;
+	padding: 6px 0 2px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+	text-align: center;
+	background-color: rgba(0, 0, 0, 0);
+	transition: background-color 1.3s ease;
+}
+.galleryPicture:hover {
+	background-color: rgba(255, 255, 255, 0.3);
+}
+.galleryName {
+	line-height: 1.20;
+	font-size: 0.85em;
+}
+.galleryPicture > figure > img {
+	max-height: 100%;
+	max-width: 96%;
+	object-fit: contain;
+}
+figure, figcaption {
+	border: none;
+	margin: 0;
+	padding: 0;
+}
+/* styles adaptatifs */
+@media (min-width: 1920px) {
+.galleryPicture > figure > img {
+	max-height: 200px;
+}
+}
+@media (max-width: 799px) {
+section > .row {
+ 	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-evenly;
+}
+section > .row > .col3 {
+	flex: 0 0 50%;
+}
+}

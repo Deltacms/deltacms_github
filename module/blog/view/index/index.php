@@ -22,6 +22,9 @@ if( function_exists('datefmt_create') && function_exists('datefmt_format') && ex
 if($module::$articles): ?>
 	<div class="row">
 		<div class="col12">
+			<?php // Mémorisation da la page active
+			$_SESSION['pageActive'] = $this->getUrl(); ?>
+	
 			<?php foreach($module::$articles as $articleId => $article): ?>
 				<div class="row rowArticle">
 					<?php if(  $this->getData(['module', $this->getUrl(0), 'posts', $articleId, 'picture']) !=='' ){ ?>

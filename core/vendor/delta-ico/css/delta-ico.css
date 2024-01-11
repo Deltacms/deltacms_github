@@ -1,0 +1,98 @@
+@font-face {
+  font-family: 'delta-ico';
+       src: url('../font/delta-ico.woff2?32340763') format('woff2');
+       src: url('../font/delta-ico.woff?32340763') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+ [class^="delta-ico-"]:before, [class*=" delta-ico-"]:before {
+  font-family: "delta-ico";
+  font-style: normal;
+  font-weight: normal;
+  speak: never;
+
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  margin-right: .2em;
+  text-align: center;
+  /* opacity: .8; */
+
+  /* For safety - reset parent styles, that can break glyph codes*/
+  font-variant: normal;
+  text-transform: none;
+
+  /* fix buttons height, for twitter bootstrap */
+  line-height: 1em;
+
+  /* Animation center compensation - margins should be symmetric */
+  /* remove if not needed */
+  margin-left: .2em;
+
+  /* you can be more comfortable with increased icons size */
+  /* font-size: 120%; */
+
+  /* Font smoothing. That was taken from TWBS */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Uncomment for 3D effect */
+  /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
+}
+
+.delta-ico-plus-circled:before { content: '\2191'; } /* '↑' */
+.delta-ico-logout:before { content: '\e800'; } /* '' */
+.delta-ico-plus:before { content: '\e801'; } /* '' */
+.delta-ico-cancel:before { content: '\e802'; } /* '' */
+.delta-ico-help:before { content: '\e803'; } /* '' */
+.delta-ico-minus:before { content: '\e804'; } /* '' */
+.delta-ico-gear:before { content: '\e805'; } /* '' */
+.delta-ico-pencil:before { content: '\e806'; } /* '' */
+.delta-ico-up:before { content: '\e807'; } /* '' */
+.delta-ico-eye:before { content: '\e808'; } /* '' */
+.delta-ico-download:before { content: '\e809'; } /* '' */
+.delta-ico-folder:before { content: '\e80a'; } /* '' */
+.delta-ico-users:before { content: '\e80b'; } /* '' */
+.delta-ico-left:before { content: '\e80c'; } /* '' */
+.delta-ico-mail:before { content: '\e80d'; } /* '' */
+.delta-ico-user:before { content: '\e80e'; } /* '' */
+.delta-ico-update:before { content: '\e80f'; } /* '' */
+.delta-ico-home:before { content: '\e810'; } /* '' */
+.delta-ico-trash:before { content: '\e811'; } /* '' */
+.delta-ico-down:before { content: '\e812'; } /* '' */
+.delta-ico-comment:before { content: '\e813'; } /* '' */
+.delta-ico-chat:before { content: '\e814'; } /* '' */
+.delta-ico-eye-off:before { content: '\e815'; } /* '' */
+.delta-ico-down-open:before { content: '\e816'; } /* '' */
+.delta-ico-upload:before { content: '\e817'; } /* '' */
+.delta-ico-cogs:before { content: '\e818'; } /* '' */
+.delta-ico-left-open:before { content: '\e819'; } /* '' */
+.delta-ico-down-big:before { content: '\e81a'; } /* '' */
+.delta-ico-cog-alt:before { content: '\e81b'; } /* '' */
+.delta-ico-up-big:before { content: '\e81c'; } /* '' */
+.delta-ico-clone:before { content: '\e81d'; } /* '' */
+.delta-ico-minus-circled:before { content: '\e81e'; } /* '' */
+.delta-ico-check:before { content: '\e81f'; } /* '' */
+.delta-ico-github:before { content: '\e820'; } /* '' */
+.delta-ico-login:before { content: '\e821'; } /* '' */
+.delta-ico-lock:before { content: '\e822'; } /* '' */
+.delta-ico-mimi:before { content: '\e823'; } /* '' */
+.delta-ico-divide:before { content: '\e824'; } /* '' */
+.delta-ico-flag:before { content: '\e825'; } /* '' */
+.delta-ico-search:before { content: '\e826'; } /* '' */
+.delta-ico-spin:before { content: '\e831'; } /* '' */
+.delta-ico-twitter:before { content: '\f099'; } /* '' */
+.delta-ico-facebook:before { content: '\f09a'; } /* '' */
+.delta-ico-menu:before { content: '\f0c9'; } /* '' */
+.delta-ico-sort:before { content: '\f0dc'; } /* '' */
+.delta-ico-mail-alt:before { content: '\f0e0'; } /* '' */
+.delta-ico-linkedin:before { content: '\f0e1'; } /* '' */
+.delta-ico-download-cloud:before { content: '\f0ed'; } /* '' */
+.delta-ico-upload-cloud:before { content: '\f0ee'; } /* '' */
+.delta-ico-code:before { content: '\f121'; } /* '' */
+.delta-ico-puzzle:before { content: '\f12e'; } /* '' */
+.delta-ico-youtube:before { content: '\f167'; } /* '' */
+.delta-ico-instagram:before { content: '\f16d'; } /* '' */
+.delta-ico-brush:before { content: '\f1fc'; } /* '' */
+.delta-ico-pinterest:before { content: '\f231'; } /* '' */

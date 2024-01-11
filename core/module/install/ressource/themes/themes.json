@@ -12,7 +12,11 @@
         "filename": "theme_sombre_islande_fluide.zip"	
 	},
 	"pablo_banniere_animee": {
-	    "name": "Bannière animèe 85%",
+	    "name": "Bannière animèe 85vw",
         "filename": "theme_banniere_animee_85vw.zip"	
+	},
+	"vert": {
+	    "name": "Vert sombre 100%",
+        "filename": "theme_sombre_vert_fluide.zip"
 	}
 }

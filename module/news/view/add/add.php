@@ -5,7 +5,7 @@ include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) .
 // Passage de la langue d'administration à Tinymce et flatpickr
 $lang_admin = $text['news_view']['add'][12];
 $lang_flatpickr = $text['news_view']['add'][13];
-?><script> var lang_admin = "<?php echo $lang_admin; ?>";	var lang_flatpickr = "<?php echo $lang_flatpickr; ?>";</script>
+?><script> var lang_admin = "<?php echo $lang_admin; ?>";	var lang_flatpickr = "<?php echo $lang_flatpickr; ?>";var newsAddEdit = true;</script>
 
 <?php echo template::formOpen('newsAddForm'); ?>
 	<div class="row">

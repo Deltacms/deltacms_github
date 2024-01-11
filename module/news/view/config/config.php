@@ -118,21 +118,50 @@ echo template::formOpen('newsConfig'); ?>
 						]); ?>
 					</div>
 					<div class="col4">
+						<?php echo template::text('newsThemeTextColor', [
+							'class' => 'colorPicker',
+							'label' => $text['news_view']['config'][36],
+							'value' => $this->getData(['module', $this->getUrl(0),'theme', 'textColor'])
+						]); ?>
+					</div>
+					<div class="col4">
+						<?php echo template::text('newsThemeTitleColor', [
+							'class' => 'colorPicker',
+							'label' => $text['news_view']['config'][37],
+							'value' => $this->getData(['module', $this->getUrl(0),'theme', 'titleColor'])
+						]); ?>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col4">
+						<?php echo template::text('newsThemeLinkColor', [
+							'class' => 'colorPicker',
+							'label' => $text['news_view']['config'][38],
+							'value' => $this->getData(['module', $this->getUrl(0),'theme', 'linkColor'])
+						]); ?>
+					</div>
+					<div class="col4">
+						<?php echo template::text('newsThemeSignatureColor', [
+							'class' => 'colorPicker',
+							'label' => $text['news_view']['config'][39],
+							'value' => $this->getData(['module', $this->getUrl(0),'theme', 'signatureColor'])
+						]); ?>
+					</div>
+					<div class="col4">
 						<?php echo template::text('newsThemeBorderColor', [
 							'class' => 'colorPicker',
-							'help' => $text['news_view']['config'][13],
 							'label' => $text['news_view']['config'][14],
 							'value' => $this->getData(['module', $this->getUrl(0),'theme', 'borderColor'])
 						]); ?>
 					</div>
+				</div>
+				<div class="row">
 					<div class="col4">
 						<?php echo template::select('newsThemeBorderWidth', $borderWidth, [
 							'label' => $text['news_view']['config'][12],
 							'selected' => $this->getData(['module', $this->getUrl(0),'theme', 'borderWidth'])
 						]); ?>
 					</div>
-				</div>
-				<div class="row">
 					<div class="col4">
 						<?php echo template::select('newsBorderRadius', $newsRadius, [
 							'label' => $text['news_view']['config'][22],

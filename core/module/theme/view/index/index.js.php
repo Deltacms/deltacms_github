@@ -92,15 +92,17 @@ $("section")
 <?php } ?>
 
 /* Décalage de la bannière ou de la section particulier à cette page
-* petit écran et menu burger fixe et non caché
+* en petit écran
 */
 if($(window).width() < 800) {
+	// Annulation des décalages réalisés par theme.css ou core.js.php
+	$("section").css("padding-top","10px");
+	$("#site.container header, header.container").css("padding-top","0");
 	// Variables du thème
 	var positionNav = <?php echo json_encode($this->getData(['theme', 'menu', 'position'])); ?>;
 	var positionHeader = <?php echo json_encode($this->getData(['theme', 'header', 'position'])); ?>;
 	var tinyHidden = <?php echo json_encode($this->getData(['theme', 'header', 'tinyHidden'])); ?>;
-	var bannerMenuHeight = $("nav #toggle").css("height");
-	bannerMenuHeightSection = ( parseInt( bannerMenuHeight.replace("px","") ) + 10 ).toString() + "px";
+	// bannerMenuHeight et bannerMenuHeightSection transmis par core.php / showMenu()
 	var burgerFixed = <?php echo json_encode($this->getData(['theme', 'menu', 'burgerFixed'])); ?>;
 	var burgerOverlay = <?php echo json_encode($this->getData(['theme', 'menu', 'burgerOverlay'])); ?>;
 	if( positionNav !=='hide' && burgerFixed === true){

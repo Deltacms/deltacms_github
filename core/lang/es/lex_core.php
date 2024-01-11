@@ -30,14 +30,7 @@ $text['core']['router'][2] = 'es abierto por el usuario';
 $text['core']['router'][3] = 'Acceso denegado';
 $text['core']['router'][4] = 'No está autorizado para ver esta página (error 403)';
 $text['core']['router'][5] = 'Página no disponible';
-$text['core']['router'][6] = '¡Vaya! La página solicitada no existe o no se encuentra (error 404)';
-$groupWhoIs = [
-	0 => 'visitante',
-	1 => 'miembro',
-	2 => 'editor',
-	3 => 'moderador',
-	4 => 'administrador'
-];
+$text['core']['router'][6] = 'La página solicitada no existe o no se encuentra (error 404)';
 // core.js.php
 $text['core_js'][0] = "¿Realizar actualización?";
 // Seleccione Archivo

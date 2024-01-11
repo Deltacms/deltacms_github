@@ -70,11 +70,19 @@ else {
 
 <div class="block">
 	<div class="blockTitle"><?php echo $text['agenda_view']['config'][4]; ?></div>
-		<div class="col4">
+		<div class="col3">
 			<?php echo template::select('config_MaxiWidth', $maxwidth,[
 				'help' => $text['agenda_view']['config'][10],
 				'label' => $text['agenda_view']['config'][11],
 				'selected' => $this->getData(['module', $this->getUrl(0),'config', 'maxiWidth'])
+			]); ?>
+		</div>
+		<div class="col3 offset3">
+			<?php echo template::text('config_gridColor', [
+				'class' => 'colorPicker',
+				'help' => $text['agenda_view']['config'][38],
+				'label' => $text['agenda_view']['config'][39],
+				'value' => $this->getData(['module', $this->getUrl(0),'config', 'gridColor'])
 			]); ?>
 		</div>
 </div>

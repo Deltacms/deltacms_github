@@ -145,6 +145,41 @@ if ($this->getData(['core', 'dataVersion']) < 4501) {
 	$this->deleteData(['theme', 'menu', 'burgerLogo']);
 	$this->deleteData(['theme', 'menu', 'heightLogo']);
 	$this->deleteData(['theme', 'menu', 'widthLogo']);
+	$this->setData([ 'theme', 'update', true]);
+	$this->setData(['config', 'i18n', 'scriptGoogle', false]);
+	$this->setData(['config', 'i18n', 'showCredits', false]);
+	$this->setData(['config', 'i18n', 'autoDetect', false]);
+	switch ( $this->getData(['config', 'i18n', 'langAdmin']) ){
+		case 'fr':
+			$groupWhoIs = [ 0=>'Visiteur', 1=>'Membre', 2=>'Editeur', 3=>'Modérateur', 4=>'Administrateur' ];
+		break;
+		case 'en':
+			$groupWhoIs = [ 0=>'Visitor', 1=>'Member', 2=>'Editor', 3=>'Moderator', 4=>'Administrator' ];
+		break;
+		case 'es':
+			$groupWhoIs = [ 0=>'Visitante', 1=>'Miembro', 2=>'Editor', 3=>'Moderador', 4=>'Administrador' ];
+		break;
+	}
+	$this->setData(['locale', 'visitorLabel', $groupWhoIs[0] ]);
+	$this->setData(['locale', 'memberLabel', $groupWhoIs[1] ]);
+	$this->setData(['locale', 'editorLabel', $groupWhoIs[2] ]);
+	$this->setData(['locale', 'moderatorLabel', $groupWhoIs[3] ]);
+	$this->setData(['locale', 'administratorLabel', $groupWhoIs[4] ]);
+	if( is_file('./site/data/body.inc.html')) rename('./site/data/body.inc.html', './site/data/body.inc.php' );
+	if( is_file('./site/data/head.inc.html')) rename('./site/data/head.inc.html', './site/data/head.inc.php' );
 	$this->setData(['core', 'dataVersion', 4501]);
+}
+if ($this->getData(['core', 'dataVersion']) < 4502) {
+	// Déplacement et renommage des variables Burger Icon Link
+	$this->setData(['locale', 'menuBurger', [
+		'burgerLeftIconLink' => $this->getData(['theme', 'menu','burgerIconLink1']) ,
+		'burgerCenterIconLink' => $this->getData(['theme', 'menu','burgerIconLink2'])
+	]]);
+	$this->deleteData(['theme', 'menu', 'burgerIconLink1']);
+	$this->deleteData(['theme', 'menu', 'burgerIconLink2']);
+	$this->setData(['core', 'dataVersion', 4502]);
+}
+if ($this->getData(['core', 'dataVersion']) < 4504) {
+	$this->setData(['core', 'dataVersion', 4504]);
 }
 ?>

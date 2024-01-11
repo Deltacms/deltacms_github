@@ -30,14 +30,7 @@ $text['core']['router'][2] = ' est ouverte par l\'utilisateur ';
 $text['core']['router'][3] = 'Accès interdit';
 $text['core']['router'][4] = 'Vous n\'êtes pas autorisé à consulter cette page (erreur 403)';
 $text['core']['router'][5] = 'Page indisponible';
-$text['core']['router'][6] = 'Oups ! La page demandée n\'existe pas ou est introuvable (erreur 404)';
-$groupWhoIs = [
-	0 => 'visiteur',
-	1 => 'membre',
-	2 => 'éditeur',
-	3 => 'modérateur',
-	4 => 'administrateur'
-];
+$text['core']['router'][6] = 'La page demandée n\'existe pas ou est introuvable (erreur 404)';
 // core.js.php
 $text['core_js'][0] = "Effectuer la mise à jour ?";
 // Select File

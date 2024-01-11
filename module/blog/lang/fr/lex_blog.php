@@ -99,6 +99,7 @@ $text['blog_view']['texts'][19] ='caractères restants';
 $text['blog_view']['texts'][20] ='Vous alliez dépasser le maximum de ';
 $text['blog_view']['texts'][25] ='Version n°';
 $text['blog_view']['texts'][26] ='Lire la suite';
+$text['blog_view']['texts'][27] ='Retour';
 $text['blog_view']['article'][0] = 'fr_FR';
 $text['blog']['config'][0] = 'Modifications enregistrées';
 $text['blog']['config'][1] = 'Configuration du module';

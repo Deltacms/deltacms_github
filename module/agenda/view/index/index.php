@@ -1,5 +1,11 @@
 <!-- Agenda dans une div pour contrôler la taille-->
-<div id="index_wrapper" style=" margin:0 auto;">
+<style>
+	#index_wrapper {
+		--grid_color : <?php echo $this->getData(['module', $this->getUrl(0),'config', 'gridColor']); ?>;
+		margin:0 auto;
+	}
+</style>
+<div id="index_wrapper">
 	<!--Affiche l'agenda-->
 	<br>
 	<div id='calendar'> </div>

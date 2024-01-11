@@ -1,19 +1,21 @@
 <?php
-
 /**
  * This file is part of DeltaCMS.
  * For full copyright and license information, please see the LICENSE
  * file that was distributed with this source code.
- * @author Sylvain Lelièvre <lelievresylvain@free.fr>
- * @copyright Copyright (C) 2021, Sylvain Lelièvre
+ * @author Sylvain Lelièvre
+ * @copyright 2021 © Sylvain Lelièvre
+ * @author Lionel Croquefer
+ * @copyright 2022 © Lionel Croquefer
  * @license GNU General Public License, version 3
  * @link https://deltacms.fr/
+ * @contact https://deltacms.fr/contact
  *
  * Delta was created from version 11.2.00.24 of ZwiiCMS
  * @author Rémi Jean <remi.jean@outlook.com>
- * @copyright Copyright (C) 2008-2018, Rémi Jean
+ * @copyright 2008-2018 © Rémi Jean
  * @author Frédéric Tempez <frederic.tempez@outlook.com>
- * @copyright Copyright (C) 2018-2021, Frédéric Tempez
+ * @copyright 2018-2021 © Frédéric Tempez
  */
 
 class user extends common {
@@ -47,257 +49,81 @@ class user extends common {
 	 * Ajout
 	 */
 	public function add() {
-		// Lexique
-		include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
-		// Soumission du formulaire
-		if($this->isPost()) {
-			$check=true;
-			// L'identifiant d'utilisateur est indisponible
-			$userId = $this->getInput('userAddId', helper::FILTER_ID, true);
-			if($this->getData(['user', $userId])) {
-				self::$inputNotices['userAddId'] = $text['core_user']['add'][0];
-				$check=false;
-			}
-			// Double vérification pour le mot de passe
-			if($this->getInput('userAddPassword', helper::FILTER_STRING_SHORT, true) !== $this->getInput('userAddConfirmPassword', helper::FILTER_STRING_SHORT, true)) {
-				self::$inputNotices['userAddConfirmPassword'] = $text['core_user']['add'][1];
-				$check = false;
-			}
-			// Crée l'utilisateur
-			$userFirstname = $this->getInput('userAddFirstname', helper::FILTER_STRING_SHORT, true);
-			$userLastname = $this->getInput('userAddLastname', helper::FILTER_STRING_SHORT, true);
-			$userMail = $this->getInput('userAddMail', helper::FILTER_MAIL, true);
-
-			// Stockage des données
-			$this->setData([
-				'user',
-				$userId,
-				[
-					'firstname' => $userFirstname,
-					'forgot' => 0,
-					'group' => $this->getInput('userAddGroup', helper::FILTER_INT, true),
-					'lastname' => $userLastname,
-					'pseudo' => $this->getInput('userAddPseudo', helper::FILTER_STRING_SHORT, true),
-					'signature' => $this->getInput('userAddSignature', helper::FILTER_INT, true),
-					'mail' => $userMail,
-					'password' => $this->getInput('userAddPassword', helper::FILTER_PASSWORD, true),
-					"connectFail" => null,
-					"connectTimeout" => null,
-					"accessUrl" => null,
-					"accessTimer" => null,
-					"accessCsrf" => null,
-					"files" => $this->getInput('userAddFiles', helper::FILTER_BOOLEAN),
-					"redirectPageId" => $this->getInput('userRedirectPageId', helper::FILTER_STRING_SHORT)
-				]
-			]);
-
-			// Envoie le mail
-			$sent = true;
-			if($this->getInput('userAddSendMail', helper::FILTER_BOOLEAN) && $check === true) {
-				$sent = $this->sendMail(
-					$userMail,
-					$text['core_user']['add'][2] . $this->getData(['locale', 'title']),
-					$text['core_user']['add'][3].'<strong>' . $userFirstname . ' ' . $userLastname . '</strong>,<br><br>' .
-					$text['core_user']['add'][4] . $this->getData(['locale', 'title']) . $text['core_user']['add'][5].'<br><br>' .
-					'<strong>'.$text['core_user']['add'][6].'</strong> ' . $this->getInput('userAddId') . '<br>' .
-					'<small>'.$text['core_user']['add'][7].'</small>',
-					null
-				);
-			}
-			// Valeurs en sortie
-			$this->addOutput([
-				'redirect' => helper::baseUrl() . 'user',
-				'notification' => $sent === true ? $text['core_user']['add'][8] : $sent,
-				'state' => $sent === true ? true : null
-			]);
-		}
-		// Générer la liste des pages disponibles
-		$redirectPage = array( 'noRedirect'=> array( 'title'=>$text['core_user']['add'][10]));
-		self::$pagesList = $this->getData(['page']);
-		foreach(self::$pagesList as $page => $pageId) {
-			if ($this->getData(['page',$page,'block']) === 'bar' ||
-				$this->getData(['page',$page,'disable']) === true ||
-				$this->getData(['page',$page,'title']) === null ) {
-				unset(self::$pagesList[$page]);
-			}
-		}
-		self::$pagesList = array_merge( $redirectPage, self::$pagesList);
-		// Valeurs en sortie
-		$this->addOutput([
-			'title' => $text['core_user']['add'][9],
-			'view' => 'add'
-		]);
-	}
-
-	/**
-	 * Suppression
-	 */
-	public function delete() {
-		// Lexique
-		include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
-		// Accès refusé
-		if(
-			// L'utilisateur n'existe pas
-			$this->getData(['user', $this->getUrl(2)]) === null
-			// Groupe insuffisant
-			AND ($this->getUrl('group') < self::GROUP_MODERATOR)
-		) {
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < user::$actions['add'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);
-		}
-		// Jeton incorrect
-		elseif ($this->getUrl(3) !== $_SESSION['csrf']) {
-			// Valeurs en sortie
-			$this->addOutput([
-				'redirect' => helper::baseUrl() . 'user',
-				'notification' => $text['core_user']['delete'][0]
-			]);
-		}
-		// Bloque la suppression de son propre compte
-		elseif($this->getUser('id') === $this->getUrl(2)) {
-			// Valeurs en sortie
-			$this->addOutput([
-				'redirect' => helper::baseUrl() . 'user',
-				'notification' => $text['core_user']['delete'][1]
-			]);
-		}
-		// Suppression
-		else {
-			$this->deleteData(['user', $this->getUrl(2)]);
-			// Valeurs en sortie
-			$this->addOutput([
-				'redirect' => helper::baseUrl() . 'user',
-				'notification' => $text['core_user']['delete'][2],
-				'state' => true
-			]);
-		}
-	}
-
-	/**
-	 * Édition
-	 */
-	public function edit() {
-		// Lexique
-		include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
-
-		if ($this->getUrl(3) !== $_SESSION['csrf'] &&
-			$this->getUrl(4) !== $_SESSION['csrf']) {
-			// Valeurs en sortie
-			$this->addOutput([
-				'redirect' => helper::baseUrl() . 'user',
-				'notification' => $text['core_user']['edit'][0]
-			]);
-		}
-		// Accès refusé
-		if(
-			// L'utilisateur n'existe pas
-			$this->getData(['user', $this->getUrl(2)]) === null
-			// Droit d'édition
-			AND (
-				// Impossible de s'auto-éditer
-				(
-					$this->getUser('id') === $this->getUrl(2)
-					AND $this->getUrl('group') <= self::GROUP_VISITOR
-				)
-				// Impossible d'éditer un autre utilisateur
-				OR ($this->getUrl('group') < self::GROUP_MODERATOR)
-			)
-		) {
-			// Valeurs en sortie
-			$this->addOutput([
-				'access' => false
-			]);
-		}
-		// Accès autorisé
-		else {
+			]);	
+		} else {	
+			// Lexique
+			include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
 			// Soumission du formulaire
 			if($this->isPost()) {
+				$check=true;
+				// L'identifiant d'utilisateur est indisponible
+				$userId = $this->getInput('userAddId', helper::FILTER_ID, true);
+				if($this->getData(['user', $userId])) {
+					self::$inputNotices['userAddId'] = $text['core_user']['add'][0];
+					$check=false;
+				}
 				// Double vérification pour le mot de passe
-				$newPassword = $this->getData(['user', $this->getUrl(2), 'password']);
-				if($this->getInput('userEditNewPassword')) {
-					// L'ancien mot de passe est correct
-					if(password_verify($this->getInput('userEditOldPassword'), $this->getData(['user', $this->getUrl(2), 'password']))) {
-						// La confirmation correspond au mot de passe
-						if($this->getInput('userEditNewPassword') === $this->getInput('userEditConfirmPassword')) {
-							$newPassword = $this->getInput('userEditNewPassword', helper::FILTER_PASSWORD, true);
-							// Déconnexion de l'utilisateur si il change le mot de passe de son propre compte
-							if($this->getUser('id') === $this->getUrl(2)) {
-								helper::deleteCookie('DELTA_USER_ID');
-								helper::deleteCookie('DELTA_USER_PASSWORD');
-							}
-						}
-						else {
-							self::$inputNotices['userEditConfirmPassword'] = $text['core_user']['edit'][1];
-						}
-					}
-					else {
-						self::$inputNotices['userEditOldPassword'] = $text['core_user']['edit'][1];
-					}
+				if($this->getInput('userAddPassword', helper::FILTER_STRING_SHORT, true) !== $this->getInput('userAddConfirmPassword', helper::FILTER_STRING_SHORT, true)) {
+					self::$inputNotices['userAddConfirmPassword'] = $text['core_user']['add'][1];
+					$check = false;
 				}
-				// Modification du groupe
-				if(
-					$this->getUser('group') === self::GROUP_ADMIN
-					AND $this->getUrl(2) !== $this->getUser('id')
-				) {
-					$newGroup = $this->getInput('userEditGroup', helper::FILTER_INT, true);
-				}
-				else {
-					$newGroup = $this->getData(['user', $this->getUrl(2), 'group']);
-				}
-				// Modification de nom Prénom
-				if($this->getUser('group') === self::GROUP_ADMIN){
-					$newfirstname = $this->getInput('userEditFirstname', helper::FILTER_STRING_SHORT, true);
-					$newlastname = $this->getInput('userEditLastname', helper::FILTER_STRING_SHORT, true);
-				}
-				else{
-					$newfirstname = $this->getData(['user', $this->getUrl(2), 'firstname']);
-					$newlastname = $this->getData(['user', $this->getUrl(2), 'lastname']);
-				}
-				// Modifie l'utilisateur
+				// Crée l'utilisateur
+				$userFirstname = $this->getInput('userAddFirstname', helper::FILTER_STRING_SHORT, true);
+				$userLastname = $this->getInput('userAddLastname', helper::FILTER_STRING_SHORT, true);
+				$userMail = $this->getInput('userAddMail', helper::FILTER_MAIL, true);
+
+				// Stockage des données
 				$this->setData([
 					'user',
-					$this->getUrl(2),
+					$userId,
 					[
-						'firstname' => $newfirstname,
+						'firstname' => $userFirstname,
 						'forgot' => 0,
-						'group' => $newGroup,
-						'lastname' => $newlastname,
-						'pseudo' => $this->getInput('userEditPseudo', helper::FILTER_STRING_SHORT, true),
-						'signature' => $this->getInput('userEditSignature', helper::FILTER_INT, true),
-						'mail' => $this->getInput('userEditMail', helper::FILTER_MAIL, true),
-						'password' => $newPassword,
-						'connectFail' => $this->getData(['user',$this->getUrl(2),'connectFail']),
-						'connectTimeout' => $this->getData(['user',$this->getUrl(2),'connectTimeout']),
-						'accessUrl' => $this->getData(['user',$this->getUrl(2),'accessUrl']),
-						'accessTimer' => $this->getData(['user',$this->getUrl(2),'accessTimer']),
-						'accessCsrf' => $this->getData(['user',$this->getUrl(2),'accessCsrf']),
-						'files' => $this->getInput('userEditFiles', helper::FILTER_BOOLEAN),
-						'redirectPageId' => $this->getInput('userRedirectPageId', helper::FILTER_STRING_SHORT)
+						'group' => $this->getInput('userAddGroup', helper::FILTER_INT, true),
+						'lastname' => $userLastname,
+						'pseudo' => $this->getInput('userAddPseudo', helper::FILTER_STRING_SHORT, true),
+						'signature' => $this->getInput('userAddSignature', helper::FILTER_INT, true),
+						'mail' => $userMail,
+						'password' => $this->getInput('userAddPassword', helper::FILTER_PASSWORD, true),
+						"connectFail" => null,
+						"connectTimeout" => null,
+						"accessUrl" => null,
+						"accessTimer" => null,
+						"accessCsrf" => null,
+						"files" => $this->getInput('userAddFiles', helper::FILTER_BOOLEAN),
+						"redirectPageId" => $this->getInput('userRedirectPageId', helper::FILTER_STRING_SHORT)
 					]
 				]);
-				// Redirection spécifique si l'utilisateur change son mot de passe
-				if($this->getUser('id') === $this->getUrl(2) AND $this->getInput('userEditNewPassword')) {
-					$redirect = helper::baseUrl() . 'user/login/' . str_replace('/', '_', $this->getUrl());
-				}
-				// Redirection si retour en arrière possible
-				elseif($this->getUser('group') === self::GROUP_ADMIN) {
-					$redirect = helper::baseUrl() . 'user';
-				}
-				// Redirection normale
-				else {
-					$redirect = helper::baseUrl();
+
+				// Envoie le mail
+				$sent = true;
+				if($this->getInput('userAddSendMail', helper::FILTER_BOOLEAN) && $check === true) {
+					$sent = $this->sendMail(
+						$userMail,
+						$text['core_user']['add'][2] . $this->getData(['locale', 'title']),
+						$text['core_user']['add'][3].'<strong>' . $userFirstname . ' ' . $userLastname . '</strong>,<br><br>' .
+						$text['core_user']['add'][4] . $this->getData(['locale', 'title']) . $text['core_user']['add'][5].'<br><br>' .
+						'<strong>'.$text['core_user']['add'][6].'</strong> ' . $this->getInput('userAddId') . '<br>' .
+						'<small>'.$text['core_user']['add'][7].'</small>',
+						null
+					);
 				}
 				// Valeurs en sortie
 				$this->addOutput([
-					'redirect' => $redirect,
-					'notification' => $text['core_user']['edit'][2],
-					'state' => true
+					'redirect' => helper::baseUrl() . 'user',
+					'notification' => $sent === true ? $text['core_user']['add'][8] : $sent,
+					'state' => $sent === true ? true : null
 				]);
 			}
 			// Générer la liste des pages disponibles
-			$redirectPage = array( 'noRedirect'=> array( 'title'=> $text['core_user']['edit'][3]) );
+			$redirectPage = array( 'noRedirect'=> array( 'title'=>$text['core_user']['add'][10]));
 			self::$pagesList = $this->getData(['page']);
 			foreach(self::$pagesList as $page => $pageId) {
 				if ($this->getData(['page',$page,'block']) === 'bar' ||
@@ -309,9 +135,215 @@ class user extends common {
 			self::$pagesList = array_merge( $redirectPage, self::$pagesList);
 			// Valeurs en sortie
 			$this->addOutput([
-				'title' => $this->getData(['user', $this->getUrl(2), 'firstname']) . ' ' . $this->getData(['user', $this->getUrl(2), 'lastname']),
-				'view' => 'edit'
+				'title' => $text['core_user']['add'][9],
+				'view' => 'add'
 			]);
+		}
+	}
+
+	/**
+	 * Suppression
+	 */
+	public function delete() {
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < user::$actions['delete'] ) {
+			// Valeurs en sortie
+			$this->addOutput([
+				'access' => false
+			]);	
+		} else {	
+			// Lexique
+			include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
+			// Accès refusé
+			if(
+				// L'utilisateur n'existe pas
+				$this->getData(['user', $this->getUrl(2)]) === null
+				// Groupe insuffisant
+				AND ($this->getUrl('group') < self::GROUP_MODERATOR)
+			) {
+				// Valeurs en sortie
+				$this->addOutput([
+					'access' => false
+				]);
+			}
+			// Jeton incorrect
+			elseif ($this->getUrl(3) !== $_SESSION['csrf']) {
+				// Valeurs en sortie
+				$this->addOutput([
+					'redirect' => helper::baseUrl() . 'user',
+					'notification' => $text['core_user']['delete'][0]
+				]);
+			}
+			// Bloque la suppression de son propre compte
+			elseif($this->getUser('id') === $this->getUrl(2)) {
+				// Valeurs en sortie
+				$this->addOutput([
+					'redirect' => helper::baseUrl() . 'user',
+					'notification' => $text['core_user']['delete'][1]
+				]);
+			}
+			// Suppression
+			else {
+				$this->deleteData(['user', $this->getUrl(2)]);
+				// Valeurs en sortie
+				$this->addOutput([
+					'redirect' => helper::baseUrl() . 'user',
+					'notification' => $text['core_user']['delete'][2],
+					'state' => true
+				]);
+			}
+		}
+	}
+
+	/**
+	 * Édition
+	 */
+	public function edit() {
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < user::$actions['edit'] ) {
+			// Valeurs en sortie
+			$this->addOutput([
+				'access' => false
+			]);	
+		} else {	
+			// Lexique
+			include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
+
+			if ($this->getUrl(3) !== $_SESSION['csrf'] &&
+				$this->getUrl(4) !== $_SESSION['csrf']) {
+				// Valeurs en sortie
+				$this->addOutput([
+					'redirect' => helper::baseUrl() . 'user',
+					'notification' => $text['core_user']['edit'][0]
+				]);
+			}
+			// Accès refusé
+			if(
+				// L'utilisateur n'existe pas
+				$this->getData(['user', $this->getUrl(2)]) === null
+				// Droit d'édition
+				AND (
+					// Impossible de s'auto-éditer
+					(
+						$this->getUser('id') === $this->getUrl(2)
+						AND $this->getUrl('group') <= self::GROUP_VISITOR
+					)
+					// Impossible d'éditer un autre utilisateur
+					OR ($this->getUrl('group') < self::GROUP_MODERATOR)
+				)
+			) {
+				// Valeurs en sortie
+				$this->addOutput([
+					'access' => false
+				]);
+			}
+			// Accès autorisé
+			else {
+				// Soumission du formulaire
+				if($this->isPost()) {
+					// Double vérification pour le mot de passe
+					$newPassword = $this->getData(['user', $this->getUrl(2), 'password']);
+					if($this->getInput('userEditNewPassword')) {
+						// L'ancien mot de passe est correct
+						if(password_verify($this->getInput('userEditOldPassword'), $this->getData(['user', $this->getUrl(2), 'password']))) {
+							// La confirmation correspond au mot de passe
+							if($this->getInput('userEditNewPassword') === $this->getInput('userEditConfirmPassword')) {
+								$newPassword = $this->getInput('userEditNewPassword', helper::FILTER_PASSWORD, true);
+								// Déconnexion de l'utilisateur si il change le mot de passe de son propre compte
+								if($this->getUser('id') === $this->getUrl(2)) {
+									helper::deleteCookie('DELTA_USER_ID');
+									helper::deleteCookie('DELTA_USER_PASSWORD');
+								}
+							}
+							else {
+								self::$inputNotices['userEditConfirmPassword'] = $text['core_user']['edit'][1];
+							}
+						}
+						else {
+							self::$inputNotices['userEditOldPassword'] = $text['core_user']['edit'][1];
+						}
+					}
+					// Modification du groupe
+					if(
+						$this->getUser('group') === self::GROUP_ADMIN
+						AND $this->getUrl(2) !== $this->getUser('id')
+					) {
+						$newGroup = $this->getInput('userEditGroup', helper::FILTER_INT, true);
+					}
+					else {
+						$newGroup = $this->getData(['user', $this->getUrl(2), 'group']);
+					}
+					// Modification de nom Prénom
+					if($this->getUser('group') === self::GROUP_ADMIN){
+						$newfirstname = $this->getInput('userEditFirstname', helper::FILTER_STRING_SHORT, true);
+						$newlastname = $this->getInput('userEditLastname', helper::FILTER_STRING_SHORT, true);
+					}
+					else{
+						$newfirstname = $this->getData(['user', $this->getUrl(2), 'firstname']);
+						$newlastname = $this->getData(['user', $this->getUrl(2), 'lastname']);
+					}
+					// Modifie l'utilisateur
+					$this->setData([
+						'user',
+						$this->getUrl(2),
+						[
+							'firstname' => $newfirstname,
+							'forgot' => 0,
+							'group' => $newGroup,
+							'lastname' => $newlastname,
+							'pseudo' => $this->getInput('userEditPseudo', helper::FILTER_STRING_SHORT, true),
+							'signature' => $this->getInput('userEditSignature', helper::FILTER_INT, true),
+							'mail' => $this->getInput('userEditMail', helper::FILTER_MAIL, true),
+							'password' => $newPassword,
+							'connectFail' => $this->getData(['user',$this->getUrl(2),'connectFail']),
+							'connectTimeout' => $this->getData(['user',$this->getUrl(2),'connectTimeout']),
+							'accessUrl' => $this->getData(['user',$this->getUrl(2),'accessUrl']),
+							'accessTimer' => $this->getData(['user',$this->getUrl(2),'accessTimer']),
+							'accessCsrf' => $this->getData(['user',$this->getUrl(2),'accessCsrf']),
+							'files' => $this->getInput('userEditFiles', helper::FILTER_BOOLEAN),
+							'redirectPageId' => $this->getInput('userRedirectPageId', helper::FILTER_STRING_SHORT)
+						]
+					]);
+					// Redirection spécifique si l'utilisateur change son mot de passe
+					if($this->getUser('id') === $this->getUrl(2) AND $this->getInput('userEditNewPassword')) {
+						$redirect = helper::baseUrl() . 'user/login/' . str_replace('/', '_', $this->getUrl());
+					}
+					// Redirection si retour en arrière possible
+					elseif($this->getUser('group') === self::GROUP_ADMIN) {
+						$redirect = helper::baseUrl() . 'user';
+					}
+					// Redirection normale
+					else {
+						$redirect = helper::baseUrl();
+					}
+					// Valeurs en sortie
+					$this->addOutput([
+						'redirect' => $redirect,
+						'notification' => $text['core_user']['edit'][2],
+						'state' => true
+					]);
+				}
+				// Générer la liste des pages disponibles
+				$redirectPage = array( 'noRedirect'=> array( 'title'=> $text['core_user']['edit'][3]) );
+				self::$pagesList = $this->getData(['page']);
+				foreach(self::$pagesList as $page => $pageId) {
+					if ($this->getData(['page',$page,'block']) === 'bar' ||
+						$this->getData(['page',$page,'disable']) === true ||
+						$this->getData(['page',$page,'title']) === null ) {
+						unset(self::$pagesList[$page]);
+					}
+				}
+				self::$pagesList = array_merge( $redirectPage, self::$pagesList);
+				// Valeurs en sortie
+				$this->addOutput([
+					'title' => $this->getData(['user', $this->getUrl(2), 'firstname']) . ' ' . $this->getData(['user', $this->getUrl(2), 'lastname']),
+					'view' => 'edit'
+				]);
+			}
 		}
 	}
 
@@ -365,34 +397,44 @@ class user extends common {
 	 * Liste des utilisateurs
 	 */
 	public function index() {
-		// Lexique
-		include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < user::$actions['index'] ) {
+			// Valeurs en sortie
+			$this->addOutput([
+				'access' => false
+			]);	
+		} else {	
+			// Lexique
+			include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
 
-		$userIdsFirstnames = helper::arrayCollumn($this->getData(['user']), 'firstname');
-		ksort($userIdsFirstnames);
-		foreach($userIdsFirstnames as $userId => $userFirstname) {
-			if ($this->getData(['user', $userId, 'group'])) {
-				self::$users[] = [
-					$userId,
-					$userFirstname . ' ' . $this->getData(['user', $userId, 'lastname']),
-					$groups[$this->getData(['user', $userId, 'group'])],
-					template::button('userEdit' . $userId, [
-						'href' => helper::baseUrl() . 'user/edit/' . $userId . '/back/'. $_SESSION['csrf'],
-						'value' => template::ico('pencil')
-					]),
-					template::button('userDelete' . $userId, [
-						'class' => 'userDelete buttonRed',
-						'href' => helper::baseUrl() . 'user/delete/' . $userId. '/' . $_SESSION['csrf'],
-						'value' => template::ico('cancel')
-					])
-				];
+			$userIdsFirstnames = helper::arrayCollumn($this->getData(['user']), 'firstname');
+			ksort($userIdsFirstnames);
+			foreach($userIdsFirstnames as $userId => $userFirstname) {
+				if ($this->getData(['user', $userId, 'group'])) {
+					self::$users[] = [
+						$userId,
+						$userFirstname . ' ' . $this->getData(['user', $userId, 'lastname']),
+						$groups[$this->getData(['user', $userId, 'group'])],
+						template::button('userEdit' . $userId, [
+							'href' => helper::baseUrl() . 'user/edit/' . $userId . '/back/'. $_SESSION['csrf'],
+							'value' => template::ico('pencil')
+						]),
+						template::button('userDelete' . $userId, [
+							'class' => 'userDelete buttonRed',
+							'href' => helper::baseUrl() . 'user/delete/' . $userId. '/' . $_SESSION['csrf'],
+							'value' => template::ico('cancel')
+						])
+					];
+				}
 			}
+			// Valeurs en sortie
+			$this->addOutput([
+				'title' => $text['core_user']['index'][0],
+				'view' => 'index'
+			]);
 		}
-		// Valeurs en sortie
-		$this->addOutput([
-			'title' => $text['core_user']['index'][0],
-			'view' => 'index'
-		]);
 	}
 
 	/**
@@ -581,22 +623,32 @@ class user extends common {
 	 * Déconnexion
 	 */
 	public function logout() {
-		// Lexique
-		include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
-		// Ne pas effacer l'identifiant mais seulement le mot de passe
-		if (array_key_exists('DELTA_USER_LONGTIME',$_COOKIE)
-			AND $_COOKIE['DELTA_USER_LONGTIME'] !== 'true' ) {
-			helper::deleteCookie('DELTA_USER_ID');
-			helper::deleteCookie('DELTA_USER_LONGTIME');
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < user::$actions['logout'] ) {
+			// Valeurs en sortie
+			$this->addOutput([
+				'access' => false
+			]);	
+		} else {	
+			// Lexique
+			include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
+			// Ne pas effacer l'identifiant mais seulement le mot de passe
+			if (array_key_exists('DELTA_USER_LONGTIME',$_COOKIE)
+				AND $_COOKIE['DELTA_USER_LONGTIME'] !== 'true' ) {
+				helper::deleteCookie('DELTA_USER_ID');
+				helper::deleteCookie('DELTA_USER_LONGTIME');
+			}
+			helper::deleteCookie('DELTA_USER_PASSWORD');
+			session_destroy();
+			// Valeurs en sortie
+			$this->addOutput([
+				'notification' => $text['core_user']['logout'][0],
+				'redirect' => helper::baseUrl(false),
+				'state' => true
+			]);
 		}
-		helper::deleteCookie('DELTA_USER_PASSWORD');
-		session_destroy();
-		// Valeurs en sortie
-		$this->addOutput([
-			'notification' => $text['core_user']['logout'][0],
-			'redirect' => helper::baseUrl(false),
-			'state' => true
-		]);
 	}
 
 	/**
@@ -662,128 +714,138 @@ class user extends common {
 	 * Importation CSV d'utilisateurs
 	 */
 	public function import() {
-		// Lexique
-		include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
-		// Soumission du formulaire
-		$notification = '';
-		$success = true;
-		if($this->isPost()) {
-			// Lecture du CSV et construction du tableau
-			$file = $this->getInput('userImportCSVFile',helper::FILTER_STRING_SHORT, true);
-			$filePath = self::FILE_DIR . 'source/' . $file;
-			if ($file AND file_exists($filePath)) {
-				// Analyse et extraction du CSV
-				$rows   = array_map(function($row) {   return str_getcsv($row, $this->getInput('userImportSeparator') ); }, file($filePath));
-				$header = array_shift($rows);
-				$csv    = array();
-				foreach($rows as $row) {
-					$csv[] = array_combine($header, $row);
-				}
-				// Traitement des données
-				foreach($csv as $item ) {
-					// Données valides
-					if( array_key_exists('id', $item)
-					AND array_key_exists('prenom',$item)
-					AND array_key_exists('nom',$item)
-					AND array_key_exists('groupe',$item)
-					AND array_key_exists('email',$item)
-					AND $item['nom']
-					AND $item['prenom']
-					AND $item['id']
-					AND $item['email']
-					AND $item['groupe']
-					) {
-						// Validation du groupe
-						$item['groupe'] = (int) $item['groupe'];
-						$item['groupe'] =   ( $item['groupe'] >= self::GROUP_BANNED AND $item['groupe'] <= self::GROUP_ADMIN )
-											  ? $item['groupe'] : 1;
-						// L'utilisateur existe
-						if ( $this->getData(['user',helper::filter($item['id'] , helper::FILTER_ID)]))
-						{
-							// Notification du doublon
-							$item['notification'] = template::ico('cancel');
-							// Création du tableau de confirmation
-							self::$users[] = [
-								helper::filter($item['id'] , helper::FILTER_ID),
-								$item['nom'],
-								$item['prenom'],
-								$groups[$item['groupe']],
-								$item['prenom'],
-								helper::filter($item['email'] , helper::FILTER_MAIL),
-								$item['notification']
-							];
-							// L'utilisateur n'existe pas
-						} else {
-							// Nettoyage de l'identifiant
-							$userId = helper::filter($item['id'] , helper::FILTER_ID);
-							// Enregistre le user
-							$create = $this->setData([
-								'user',
-								$userId, [
-									'firstname' => $item['prenom'],
-									'forgot' => 0,
-									'group' => $item['groupe'] ,
-									'lastname' => $item['nom'],
-									'mail' => $item['email'],
-									'pseudo' => $item['prenom'],
-									'signature' => 1, // Pseudo
-									'password' => uniqid(), // A modifier à la première connexion
-									"connectFail" => null,
-									"connectTimeout" => null,
-									"accessUrl" => null,
-									"accessTimer" => null,
-									"accessCsrf" => null
-							]]);
-							// Icône de notification
-							$item['notification'] = $create  ? template::ico('check') : template::ico('cancel');
-							// Envoi du mail
-							if ($create
-								AND $this->getInput('userImportNotification',helper::FILTER_BOOLEAN) === true) {
-								$sent = $this->sendMail(
-									$item['email'],
-									$text['core_user']['import'][0] . $this->getData(['locale', 'title']),
-									$text['core_user']['import'][0].' <strong>' . $item['prenom'] . ' ' . $item['nom'] . '</strong>,<br><br>' .
-									$text['core_user']['import'][2]. $this->getData(['locale', 'title']) . $text['core_user']['import'][3].'<br><br>' .
-									'<strong>'.$text['core_user']['import'][4].'</strong> ' . $userId . '<br>' .
-									'<small>'.$text['core_user']['import'][5].'</small>'
-								);
-								if ($sent === true) {
-									// Mail envoyé changement de l'icône
-									$item['notification'] = template::ico('mail') ;
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < user::$actions['import'] ) {
+			// Valeurs en sortie
+			$this->addOutput([
+				'access' => false
+			]);	
+		} else {	
+			// Lexique
+			include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
+			// Soumission du formulaire
+			$notification = '';
+			$success = true;
+			if($this->isPost()) {
+				// Lecture du CSV et construction du tableau
+				$file = $this->getInput('userImportCSVFile',helper::FILTER_STRING_SHORT, true);
+				$filePath = self::FILE_DIR . 'source/' . $file;
+				if ($file AND file_exists($filePath)) {
+					// Analyse et extraction du CSV
+					$rows   = array_map(function($row) {   return str_getcsv($row, $this->getInput('userImportSeparator') ); }, file($filePath));
+					$header = array_shift($rows);
+					$csv    = array();
+					foreach($rows as $row) {
+						$csv[] = array_combine($header, $row);
+					}
+					// Traitement des données
+					foreach($csv as $item ) {
+						// Données valides
+						if( array_key_exists('id', $item)
+						AND array_key_exists('prenom',$item)
+						AND array_key_exists('nom',$item)
+						AND array_key_exists('groupe',$item)
+						AND array_key_exists('email',$item)
+						AND $item['nom']
+						AND $item['prenom']
+						AND $item['id']
+						AND $item['email']
+						AND $item['groupe']
+						) {
+							// Validation du groupe
+							$item['groupe'] = (int) $item['groupe'];
+							$item['groupe'] =   ( $item['groupe'] >= self::GROUP_BANNED AND $item['groupe'] <= self::GROUP_ADMIN )
+												  ? $item['groupe'] : 1;
+							// L'utilisateur existe
+							if ( $this->getData(['user',helper::filter($item['id'] , helper::FILTER_ID)]))
+							{
+								// Notification du doublon
+								$item['notification'] = template::ico('cancel');
+								// Création du tableau de confirmation
+								self::$users[] = [
+									helper::filter($item['id'] , helper::FILTER_ID),
+									$item['nom'],
+									$item['prenom'],
+									$groups[$item['groupe']],
+									$item['prenom'],
+									helper::filter($item['email'] , helper::FILTER_MAIL),
+									$item['notification']
+								];
+								// L'utilisateur n'existe pas
+							} else {
+								// Nettoyage de l'identifiant
+								$userId = helper::filter($item['id'] , helper::FILTER_ID);
+								// Enregistre le user
+								$create = $this->setData([
+									'user',
+									$userId, [
+										'firstname' => $item['prenom'],
+										'forgot' => 0,
+										'group' => $item['groupe'] ,
+										'lastname' => $item['nom'],
+										'mail' => $item['email'],
+										'pseudo' => $item['prenom'],
+										'signature' => 1, // Pseudo
+										'password' => uniqid(), // A modifier à la première connexion
+										"connectFail" => null,
+										"connectTimeout" => null,
+										"accessUrl" => null,
+										"accessTimer" => null,
+										"accessCsrf" => null
+								]]);
+								// Icône de notification
+								$item['notification'] = $create  ? template::ico('check') : template::ico('cancel');
+								// Envoi du mail
+								if ($create
+									AND $this->getInput('userImportNotification',helper::FILTER_BOOLEAN) === true) {
+									$sent = $this->sendMail(
+										$item['email'],
+										$text['core_user']['import'][0] . $this->getData(['locale', 'title']),
+										$text['core_user']['import'][0].' <strong>' . $item['prenom'] . ' ' . $item['nom'] . '</strong>,<br><br>' .
+										$text['core_user']['import'][2]. $this->getData(['locale', 'title']) . $text['core_user']['import'][3].'<br><br>' .
+										'<strong>'.$text['core_user']['import'][4].'</strong> ' . $userId . '<br>' .
+										'<small>'.$text['core_user']['import'][5].'</small>'
+									);
+									if ($sent === true) {
+										// Mail envoyé changement de l'icône
+										$item['notification'] = template::ico('mail') ;
+									}
 								}
+								// Création du tableau de confirmation
+								self::$users[] = [
+									$userId,
+									$item['nom'],
+									$item['prenom'],
+									$groups[$item['groupe']],
+									$item['prenom'],
+									$item['email'],
+									$item['notification']
+								];
 							}
-							// Création du tableau de confirmation
-							self::$users[] = [
-								$userId,
-								$item['nom'],
-								$item['prenom'],
-								$groups[$item['groupe']],
-								$item['prenom'],
-								$item['email'],
-								$item['notification']
-							];
 						}
 					}
-				}
-				if (empty(self::$users)) {
-					$notification =  $text['core_user']['import'][6] ;
-					$success = false;
+					if (empty(self::$users)) {
+						$notification =  $text['core_user']['import'][6] ;
+						$success = false;
+					} else {
+						$notification =  $text['core_user']['import'][7] ;
+						$success = true;
+					}
 				} else {
-					$notification =  $text['core_user']['import'][7] ;
-					$success = true;
+					$notification = $text['core_user']['import'][8];
+					$success = false;
 				}
-			} else {
-				$notification = $text['core_user']['import'][8];
-				$success = false;
 			}
+			// Valeurs en sortie
+			$this->addOutput([
+				'title' => $text['core_user']['import'][9],
+				'view' => 'import',
+				'notification' => $notification,
+				'state' => $success
+			]);
 		}
-		// Valeurs en sortie
-		$this->addOutput([
-			'title' => $text['core_user']['import'][9],
-			'view' => 'import',
-			'notification' => $notification,
-			'state' => $success
-		]);
 	}
 
 }

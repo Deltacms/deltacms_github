@@ -1,7 +1,7 @@
 /* Personnalisation des couleurs de l'agenda à associer avec votre thème*/
 
 /**/
-/*Bordures */
+/*Bordures ne pas modifier, cette couleur est réglable dans la configuration de l'agenda*/
 /**/
 
 .fc-unthemed th,
@@ -15,7 +15,7 @@
 .fc-unthemed .fc-list-view,
 .fc-unthemed .fc-list-heading td,
 .fc .fc-row .fc-content-skeleton td {
-  border-color: #ddd;
+  border-color: var(--grid_color, yellow);
 }
 
 /**/
@@ -44,7 +44,7 @@
 
 /* Fond de la cellule aujourd'hui */
 .fc-unthemed td .fc-today{
-	background-color : #F6F7F8;
+	/*background-color : #F6F7F8;*/
 }
 
 /* Fond du bandeau supérieur des jours, commenté pour conserver la couleur du thème*/

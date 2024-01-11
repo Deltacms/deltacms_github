@@ -23,7 +23,7 @@ echo template::formOpen('configScript'); ?>
     <div class="row">
         <div class="col12">
             <?php echo template::textarea('configScriptHead', [
-                'value' => file_exists( self::DATA_DIR . 'head.inc.html') ? file_get_contents (self::DATA_DIR . 'head.inc.html') : '' ,
+                'value' => file_exists( self::DATA_DIR . 'head.inc.php') ? file_get_contents (self::DATA_DIR . 'head.inc.php') : '' ,
                 'class' => 'editor'
             ]); ?>
         </div>
@@ -33,7 +33,7 @@ echo template::formOpen('configScript'); ?>
     <div class="row">
         <div class="col12">
             <?php echo template::textarea('configScriptBody', [
-                'value' => file_exists( self::DATA_DIR . 'body.inc.html') ? file_get_contents (self::DATA_DIR . 'body.inc.html') : '' ,
+                'value' => file_exists( self::DATA_DIR . 'body.inc.php') ? file_get_contents (self::DATA_DIR . 'body.inc.php') : '' ,
                 'class' => 'editor'
             ]); ?>
         </div>

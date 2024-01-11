@@ -6,5 +6,7 @@
 	"mode/javascript/javascript.js",
 	"mode/php/php.js",	
 	"mode/xml/xml.js",
-	"init.js"
+	"init.js",
+	"addon/search/search.js",
+	"addon/search/searchcursor.js"
 ]

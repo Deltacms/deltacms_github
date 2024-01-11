@@ -1,23 +1,22 @@
 
-# DeltaCMS 4.5.01
+# DeltaCMS 4.5.04
 
 DeltaCMS est un CMS sans base de données (flat-file) qui permet de créer et gérer facilement un site web sans aucune connaissance en programmation.
 L'administration du site est trilingue espagnol (castillan), anglais ou français, le site peut être rédigé dans une langue quelconque.
-2 modes de traduction sont proposés : traduction rédigée, assistée (conseillée) ou à défaut traduction automatique par script.
+Vous pourrez réaliser une traduction rédigée dans la langue de votre choix.
 
 DeltaCMS is a database-less (flat-file) CMS that allows you to easily create and manage a website without any programming knowledge.
 The administration of the site is trilingual Spanish, English or French, the site can be written in any language.
-2 translation modes are available: written and assisted translation (recommended) or automatic translation by script.
+You will be able to produce a translation written in the language of your choice.
 
 DeltaCMS es un CMS sin base de datos (flat-file) que permite crear y administrar fácilmente un sitio web sin ningún conocimiento de programación.
 La administración del sitio es trilingüe español (castellano), inglés o francés, el sitio puede ser escrito en cualquier idioma.
-Hay 2 modos de traducción disponibles: traducción escrita, asistida (recomendada) o traducción automática por script.
+Podrás realizar una traducción escrita en el idioma de tu elección.
 
 [Site](http://deltacms.fr/)
 
-DeltaCMS a été créé à partir de ZwiiCMS 11.2.00.24
+DeltaCMS a été créé à partir de ZwiiCMS 11.2.00.24 publié sous licence GNU GPL V3
 
-[ZwiiCMS](https://forge.chapril.org/fredtempez/ZwiiCMS)
 
 ## Configuration recommandée
 
@@ -67,9 +66,9 @@ En cas de difficulté avec la nouvelle version, il suffira de téléverser la sa
 
 [R] module                 Modules de page
   [R] agenda	           Agenda
+  [R] album                Album photo
   [R] blog                 Blog
   [R] form                 Gestionnaire de formulaires
-  [R] gallery              Galerie
   [R] news                 Nouvelles
   [R] redirection          Redirection
   [R] search               Recherche
@@ -85,7 +84,7 @@ En cas de difficulté avec la nouvelle version, il suffira de téléverser la sa
       [F] locale.json       Données du site propres à la langue
       [R] content          Dossier des contenus de page
         [F] accueil.html   Exemple contenu de la page d'accueil
-    [R] *modules*          Un dossier par module, exemple [R]search [R]gallery [R]agenda, pour les données du module
+    [R] *modules*          Un dossier par module, exemple [R]search [R]agenda, pour les données du module
     [F] admin.css          Thème des pages d'administration
     [F] admin.json         Données de thème des pages d'administration
     [F] blacklist.json     Journalisation des tentatives de connexion avec des comptes inconnus

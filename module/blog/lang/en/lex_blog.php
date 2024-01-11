@@ -99,6 +99,7 @@ $text['blog_view']['texts'][19] = 'characters left';
 $text['blog_view']['texts'][20] = 'You were about to exceed the maximum of ';
 $text['blog_view']['texts'][25] = 'Version no.';
 $text['blog_view']['texts'][26] ='Read more';
+$text['blog_view']['texts'][27] ='Back';
 $text['blog_view']['article'][0] = 'en_GB';				
 $text['blog']['config'][0] = 'Saved changes';
 $text['blog']['config'][1] = 'Module configuration';	

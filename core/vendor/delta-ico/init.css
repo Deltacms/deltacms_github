@@ -1,0 +1,29 @@
+[class^="delta-ico-"],
+[class*=" delta-ico-"] {
+	line-height: 0;
+}
+[class^="delta-ico-"]:before,
+[class*=" delta-ico-"]:before {
+	margin: 0;
+}
+.delta-ico-margin-left:before {
+	/*margin-left: .4em;*/
+}
+.delta-ico-margin-right:before {
+	margin-right: .4em;
+}
+.delta-ico-margin-all:before {
+	margin: 0 .4em;
+}
+.animate-spin {
+	animation: spin 2s infinite linear;
+	display: inline-block;
+}
+@-moz-keyframes spin, @-webkit-keyframes spin, @-o-keyframes spin, @-ms-keyframes spin, @keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(359deg);
+	}
+}

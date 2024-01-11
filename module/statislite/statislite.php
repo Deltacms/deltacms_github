@@ -32,7 +32,7 @@ class statislite extends common {
 		'conversionTime' => self::GROUP_VISITOR
 	];
 	
-	const VERSION = '4.8';	
+	const VERSION = '4.9';	
 	const REALNAME = 'Statislite';
 	const DELETE = true;
 	const UPDATE = '2.6';
@@ -96,135 +96,151 @@ class statislite extends common {
 			if( !is_dir( self::DATAMODULE.'/download_counter' ))mkdir( self::DATAMODULE.'/download_counter', 0755);
 			copy('./module/statislite/ressource/download_counter/download_counter.php', self::DATAMODULE.'/download_counter/download_counter.php');
 			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','4.7']);
-		}			
+		}
+		// Version 4.9
+		if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '4.9', '<') ) {	
+			if( !is_dir( self::DATAMODULE.'/download_counter' ))mkdir( self::DATAMODULE.'/download_counter', 0755);
+			copy('./module/statislite/ressource/download_counter/download_counter.php', self::DATAMODULE.'/download_counter/download_counter.php');
+			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','4.9']);
+		}
 	}
 	
 	/**
 	 * Configuration
 	 */
 	public function config() {
-		// Lexique
-		include('./module/statislite/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_statislite.php');
-			
-		// Détection d'un changement de nom de la page statistique pour mettre à jour listeQS
-		if( is_file( self::$fichiers_json.'filtre_primaire.json')){
-			$json = file_get_contents(self::$fichiers_json.'filtre_primaire.json');
-			$fp = json_decode($json, true);
-			$PageStat = 0;
-			if(isset( $fp['listeQS'])){
-				if( ! empty($fp['listeQS'])){
-					foreach( $fp['listeQS'] as $key=>$PageQS){
-						if( $PageQS == $this->getUrl(0) ) $PageStat = 1;
-					}
-				}
-				if( $PageStat === 0 ){
-					$fp['listeQS'][count($fp['listeQS'])] = $this->getUrl(0);
-					// Suppression des pages inconnues de la listeQS
-					$i=0;
-					foreach($this->getData(['page']) as $key=>$page){
-						self::$listePages[$i] = $this->getData(['page', $key, 'title']);
-						$i++;
-					}
-					foreach( $fp['listeQS'] as $keyQS=>$PageQS){
-						$noexist = true;
-						foreach( self::$listePages as $keyPage=>$Page){
-							$Pagemod = strtolower(str_replace(' ','-',$Page));
-							if( $PageQS === $Pagemod) $noexist = false;
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < statislite::$actions['config'] ) {
+			// Valeurs en sortie
+			$this->addOutput([
+				'access' => false
+			]);	
+		} else {
+			// Lexique
+			include('./module/statislite/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_statislite.php');
+				
+			// Détection d'un changement de nom de la page statistique pour mettre à jour listeQS
+			if( is_file( self::$fichiers_json.'filtre_primaire.json')){
+				$json = file_get_contents(self::$fichiers_json.'filtre_primaire.json');
+				$fp = json_decode($json, true);
+				$PageStat = 0;
+				if(isset( $fp['listeQS'])){
+					if( ! empty($fp['listeQS'])){
+						foreach( $fp['listeQS'] as $key=>$PageQS){
+							if( $PageQS == $this->getUrl(0) ) $PageStat = 1;
 						}
-						if( $noexist ) unset( $fp['listeQS'][$keyQS]);
+					}
+					if( $PageStat === 0 ){
+						$fp['listeQS'][count($fp['listeQS'])] = $this->getUrl(0);
+						// Suppression des pages inconnues de la listeQS
+						$i=0;
+						foreach($this->getData(['page']) as $key=>$page){
+							self::$listePages[$i] = $this->getData(['page', $key, 'title']);
+							$i++;
+						}
+						foreach( $fp['listeQS'] as $keyQS=>$PageQS){
+							$noexist = true;
+							foreach( self::$listePages as $keyPage=>$Page){
+								$Pagemod = strtolower(str_replace(' ','-',$Page));
+								if( $PageQS === $Pagemod) $noexist = false;
+							}
+							if( $noexist ) unset( $fp['listeQS'][$keyQS]);
+						}
 					}
 				}
 			}
-		}
-		else{
-			$json = '{}';
-			$fp= json_decode($json, true);
-			$fp['robots'] = array( 'ua' => 0, 'ip'=> 0);
-			$fp['listeIP'] = [];
-			$fp['listeQS'] = array( 0 => $this->getUrl(0));
-			$fp['listeBot'] = [];			
-		}
-		$json = json_encode($fp);
-		file_put_contents(self::$fichiers_json.'filtre_primaire.json',$json);	
-		
-		// Soumission du formulaire
-		if($this->isPost()) {
-			$this->setData(['module', $this->getUrl(0), 'config',[
-				'timeVisiteMini' => $this->getInput('statisliteConfigTimeVisiteMini', helper::FILTER_STRING_SHORT, true),
-				'timePageMini' => $this->getInput('statisliteConfigTimePageMini', helper::FILTER_STRING_SHORT, true),
-				'nbPageMini' => $this->getInput('statisliteConfigNbPageMini', helper::FILTER_STRING_SHORT, true),
-				'usersExclus' => $this->getInput('statisliteConfigUsersExclus', helper::FILTER_STRING_SHORT, true),
-				'nbEnregSession' => $this->getInput('statisliteConfigNbEnregSession', helper::FILTER_STRING_SHORT, true),
-				'geolocalisation' => $this->getInput('statisliteConfigGeolocalisation', helper::FILTER_BOOLEAN),
-				'nbaffipagesvues' => $this->getInput('statisliteConfigNbAffiPagesVues'), 
-				'nbaffilangues' => $this->getInput('statisliteConfigNbAffiLangues'), 
-				'nbaffinavigateurs' => $this->getInput('statisliteConfigNbAffiNavigateurs'),
-				'nbaffise' => $this->getInput('statisliteConfigNbAffiSe'),
-				'nbaffipays' => $this->getInput('statisliteConfigNbAffiPays'),
-				'nbaffidates' => $this->getInput('statisLiteConfigNbAffiDates'),
-				'config' => true,
-				'versionData' => $this->getData(['module', $this->getUrl(0), 'config', 'versionData'])
-			]]);
-			// Validation des statistiques
-			$this->setData(['config', 'statislite', 'enable', true]);
+			else{
+				$json = '{}';
+				$fp= json_decode($json, true);
+				$fp['robots'] = array( 'ua' => 0, 'ip'=> 0);
+				$fp['listeIP'] = [];
+				$fp['listeQS'] = array( 0 => $this->getUrl(0));
+				$fp['listeBot'] = [];			
+			}
+			$json = json_encode($fp);
+			file_put_contents(self::$fichiers_json.'filtre_primaire.json',$json);	
 			
-			// Mise à jour forcée des fichiers navigateurs.txt, systemes.txt et langages.txt
-			$majForce = $this->getInput('statisliteConfigMajForce', helper::FILTER_BOOLEAN);
-			if( $majForce === true ){
-				copy( './module/statislite/ressource/navigateurs.txt', self::$base.'navigateurs.txt');
-				copy( './module/statislite/ressource/langages.txt', self::$base.'langages.txt');
-				copy( './module/statislite/ressource/systemes.txt', self::$base.'systemes.txt');
-			}
+			// Soumission du formulaire
+			if($this->isPost()) {
+				$this->setData(['module', $this->getUrl(0), 'config',[
+					'timeVisiteMini' => $this->getInput('statisliteConfigTimeVisiteMini', helper::FILTER_STRING_SHORT, true),
+					'timePageMini' => $this->getInput('statisliteConfigTimePageMini', helper::FILTER_STRING_SHORT, true),
+					'nbPageMini' => $this->getInput('statisliteConfigNbPageMini', helper::FILTER_STRING_SHORT, true),
+					'usersExclus' => $this->getInput('statisliteConfigUsersExclus', helper::FILTER_STRING_SHORT, true),
+					'nbEnregSession' => $this->getInput('statisliteConfigNbEnregSession', helper::FILTER_STRING_SHORT, true),
+					'geolocalisation' => $this->getInput('statisliteConfigGeolocalisation', helper::FILTER_BOOLEAN),
+					'nbaffipagesvues' => $this->getInput('statisliteConfigNbAffiPagesVues'), 
+					'nbaffilangues' => $this->getInput('statisliteConfigNbAffiLangues'), 
+					'nbaffinavigateurs' => $this->getInput('statisliteConfigNbAffiNavigateurs'),
+					'nbaffise' => $this->getInput('statisliteConfigNbAffiSe'),
+					'nbaffipays' => $this->getInput('statisliteConfigNbAffiPays'),
+					'nbaffidates' => $this->getInput('statisLiteConfigNbAffiDates'),
+					'config' => true,
+					'versionData' => $this->getData(['module', $this->getUrl(0), 'config', 'versionData'])
+				]]);
+				// Validation des statistiques
+				$this->setData(['config', 'statislite', 'enable', true]);
+				
+				// Mise à jour forcée des fichiers navigateurs.txt, systemes.txt et langages.txt
+				$majForce = $this->getInput('statisliteConfigMajForce', helper::FILTER_BOOLEAN);
+				if( $majForce === true ){
+					copy( './module/statislite/ressource/navigateurs.txt', self::$base.'navigateurs.txt');
+					copy( './module/statislite/ressource/langages.txt', self::$base.'langages.txt');
+					copy( './module/statislite/ressource/systemes.txt', self::$base.'systemes.txt');
+				}
 
-			// Restauration si le fichier sélectionné est un fichier cumul.json
-			$file_cumul = $this->getInput('configRestoreJson', helper::FILTER_STRING_SHORT);
-			if( strpos( $file_cumul, 'cumul.json' ) === 15){
-				// Sauvegarde de sécurité des fichiers json
-				$this->sauvegardeJson();
-				$date = substr( $file_cumul, 0 , 15);
-				$nameFile = [ '0'=>'cumul.json', '1'=>'affitampon.json', '2'=>'chrono.json', '3'=>'robots.json', '4'=>'sessionInvalide.json', '5'=>'sessionLog.json',   ];
-				foreach( $nameFile as $key=>$file){
-					if( is_file( self::$json_sauve.$date.$file )){
-						file_put_contents(self::$fichiers_json.$file, file_get_contents(self::$json_sauve.$date.$file));
+				// Restauration si le fichier sélectionné est un fichier cumul.json
+				$file_cumul = $this->getInput('configRestoreJson', helper::FILTER_STRING_SHORT);
+				if( strpos( $file_cumul, 'cumul.json' ) === 15){
+					// Sauvegarde de sécurité des fichiers json
+					$this->sauvegardeJson();
+					$date = substr( $file_cumul, 0 , 15);
+					$nameFile = [ '0'=>'cumul.json', '1'=>'affitampon.json', '2'=>'chrono.json', '3'=>'robots.json', '4'=>'sessionInvalide.json', '5'=>'sessionLog.json',   ];
+					foreach( $nameFile as $key=>$file){
+						if( is_file( self::$json_sauve.$date.$file )){
+							file_put_contents(self::$fichiers_json.$file, file_get_contents(self::$json_sauve.$date.$file));
+						}
 					}
 				}
+			
+				// Valeurs en sortie
+				$this->addOutput([
+					'redirect' => helper::baseUrl().$this->getUrl(),
+					'notification' => $text['statislite']['config'][1],
+					'state' => true
+				]);
 			}
-		
-			// Valeurs en sortie
-			$this->addOutput([
-				'redirect' => helper::baseUrl().$this->getUrl(),
-				'notification' => $text['statislite']['config'][1],
-				'state' => true
-			]);
-		}
-		else{
-			// Liste des fichiers de sauvegarde
-			if(is_dir( self::$json_sauve )) {
-				$dir = self::$json_sauve;
-				self::$filesSaved = scandir($dir);
-				//Ne conserver que les fichiers xxxxxxxxx_cumul.json
-				foreach( self::$filesSaved as $key=>$val){
-					if( strpos($val, 'cumul.json') === false){
-						unset( self::$filesSaved[$key]);
-					}	
+			else{
+				// Liste des fichiers de sauvegarde
+				if(is_dir( self::$json_sauve )) {
+					$dir = self::$json_sauve;
+					self::$filesSaved = scandir($dir);
+					//Ne conserver que les fichiers xxxxxxxxx_cumul.json
+					foreach( self::$filesSaved as $key=>$val){
+						if( strpos($val, 'cumul.json') === false){
+							unset( self::$filesSaved[$key]);
+						}	
+					}
+					if (count(self::$filesSaved) === 0 ){
+						self::$filesSaved = array(0 => $text['statislite']['config'][2]);
+					}
+					else{
+						self::$filesSaved[0] = $text['statislite']['config'][0];
+						// clef = valeur pour renvoyer le nom du fichier et non la clef de type numméro
+						self::$filesSaved= array_combine(self::$filesSaved,self::$filesSaved);
+					}
 				}
-				if (count(self::$filesSaved) === 0 ){
-					self::$filesSaved = array(0 => $text['statislite']['config'][2]);
+				else {
+					self::$filesSaved = array(0 => $text['statislite']['config'][3]);
 				}
-				else{
-					self::$filesSaved[0] = $text['statislite']['config'][0];
-					// clef = valeur pour renvoyer le nom du fichier et non la clef de type numméro
-					self::$filesSaved= array_combine(self::$filesSaved,self::$filesSaved);
-				}
+				// Valeurs en sortie
+				$this->addOutput([
+					'title' => $text['statislite']['config'][4],
+					'view' => 'config'
+				]);
 			}
-			else {
-				self::$filesSaved = array(0 => $text['statislite']['config'][3]);
-			}
-			// Valeurs en sortie
-			$this->addOutput([
-				'title' => $text['statislite']['config'][4],
-				'view' => 'config'
-			]);
 		}
 	}
 	
@@ -232,157 +248,167 @@ class statislite extends common {
 	 * Configuration avancée
 	 */
 	public function advanced() {
-		// Lexique
-		include('./module/statislite/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_statislite.php');
-
-		// Liste des pages du site
-		$i=0;
-		foreach($this->getData(['page']) as $key=>$page){
-			self::$listePages[$i] = $this->getData(['page', $key, 'title']);
-			$i++;
-		}
-
-		// Retour de formulaire
-		if($this->isPost()) {
-			// Lecture des données postées bloc IP
-			$addIP = $this->getInput('statisliteAddIp', helper::FILTER_BOOLEAN);
-			$supIP = $this->getInput('statisliteSupIp', helper::FILTER_BOOLEAN);
-			$addressIP = $this->getInput('statisliteEditIP', helper::FILTER_STRING_SHORT);
-			// Bloc Pages
-			$addQS = $this->getInput('statisliteAddQS', helper::FILTER_BOOLEAN);
-			$supQS = $this->getInput('statisliteSupQS', helper::FILTER_BOOLEAN);
-			$pageQS = self::$listePages[$this->getInput('statisliteEditQS', helper::FILTER_STRING_SHORT)];
-			$pageQS = strtolower(str_replace(' ', '-', $pageQS));
-			// Bloc robots
-			$addBot = $this->getInput('statisliteAddBot', helper::FILTER_BOOLEAN);
-			$supBot = $this->getInput('statisliteSupBot', helper::FILTER_BOOLEAN);
-			$robot = $this->getInput('statisliteEditBot', helper::FILTER_STRING_SHORT);
-			
-			// Ouverture et décodage du fichier json
-			$json = file_get_contents(self::$fichiers_json.'filtre_primaire.json');
-			$fp = json_decode($json, true);
-			
-			// Ajout ou suppression d'adresses IP
-			if ($addIP){
-				// Ajout seulement si l'entrée n'existe pas
-				$noexist =true;
-				foreach( $fp['listeIP'] as $key=>$value){
-					if($value === $addressIP){
-						$noexist = false;
-						break;
-					}
-				}
-				if($noexist) $fp['listeIP'][ count($fp['listeIP'])] = $addressIP;
-			}
-			// Suppression si l'entrée existe
-			elseif( $supIP ){
-				foreach( $fp['listeIP'] as $key=>$value){
-					if( $value === $addressIP){
-						unset($fp['listeIP'][$key]);
-						$fp['listeIP'] = array_values($fp['listeIP']);
-						break;
-					}
-				}
-			}
-			
-			// Ajout ou suppression de pages à exclure
-			if ($addQS){
-				// Ajout seulement si l'entrée n'existe pas
-				$noexist =true;
-				foreach( $fp['listeQS'] as $key=>$value){
-					if($value === $pageQS){
-						$noexist = false;
-						break;
-					}
-				}
-				if($noexist) $fp['listeQS'][ count($fp['listeQS'])] = $pageQS;
-			}
-			// Suppression si l'entrée existe
-			elseif( $supQS ){
-				foreach( $fp['listeQS'] as $key=>$value){
-					if( $value === $pageQS){
-						unset($fp['listeQS'][$key]);
-						$fp['listeQS'] = array_values($fp['listeQS']);
-						break;
-					}
-				}
-			}
-			// Ajout ou suppression de robots
-			if ($addBot){
-				// Ajout seulement si l'entrée n'existe pas
-				$noexist =true;
-				foreach( $fp['listeBot'] as $key=>$value){
-					if($value === $robot){
-						$noexist = false;
-						break;
-					}
-				}
-				if($noexist) $fp['listeBot'][ count($fp['listeBot'])] = $robot;
-			}
-			// Suppression si l'entrée existe
-			elseif( $supBot ){
-				foreach( $fp['listeBot'] as $key=>$value){
-					if( $value === $robot){
-						unset($fp['listeBot'][$key]);
-						$fp['listeBot'] = array_values($fp['listeBot']);
-						break;
-					}
-				}
-			}
-			
-			// Encodage et fermeture du fichier json
-			$json = json_encode($fp);
-			file_put_contents(self::$fichiers_json.'filtre_primaire.json',$json);
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < statislite::$actions['advanced'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
-				'redirect' => helper::baseUrl().$this->getUrl(),
-				'notification' => $text['statislite']['advanced'][0],
-				'state' => true
+				'access' => false
+			]);	
+		} else {
+			// Lexique
+			include('./module/statislite/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_statislite.php');
+
+			// Liste des pages du site
+			$i=0;
+			foreach($this->getData(['page']) as $key=>$page){
+				self::$listePages[$i] = $this->getData(['page', $key, 'title']);
+				$i++;
+			}
+
+			// Retour de formulaire
+			if($this->isPost()) {
+				// Lecture des données postées bloc IP
+				$addIP = $this->getInput('statisliteAddIp', helper::FILTER_BOOLEAN);
+				$supIP = $this->getInput('statisliteSupIp', helper::FILTER_BOOLEAN);
+				$addressIP = $this->getInput('statisliteEditIP', helper::FILTER_STRING_SHORT);
+				// Bloc Pages
+				$addQS = $this->getInput('statisliteAddQS', helper::FILTER_BOOLEAN);
+				$supQS = $this->getInput('statisliteSupQS', helper::FILTER_BOOLEAN);
+				$pageQS = self::$listePages[$this->getInput('statisliteEditQS', helper::FILTER_STRING_SHORT)];
+				$pageQS = strtolower(str_replace(' ', '-', $pageQS));
+				// Bloc robots
+				$addBot = $this->getInput('statisliteAddBot', helper::FILTER_BOOLEAN);
+				$supBot = $this->getInput('statisliteSupBot', helper::FILTER_BOOLEAN);
+				$robot = $this->getInput('statisliteEditBot', helper::FILTER_STRING_SHORT);
+				
+				// Ouverture et décodage du fichier json
+				$json = file_get_contents(self::$fichiers_json.'filtre_primaire.json');
+				$fp = json_decode($json, true);
+				
+				// Ajout ou suppression d'adresses IP
+				if ($addIP){
+					// Ajout seulement si l'entrée n'existe pas
+					$noexist =true;
+					foreach( $fp['listeIP'] as $key=>$value){
+						if($value === $addressIP){
+							$noexist = false;
+							break;
+						}
+					}
+					if($noexist) $fp['listeIP'][ count($fp['listeIP'])] = $addressIP;
+				}
+				// Suppression si l'entrée existe
+				elseif( $supIP ){
+					foreach( $fp['listeIP'] as $key=>$value){
+						if( $value === $addressIP){
+							unset($fp['listeIP'][$key]);
+							$fp['listeIP'] = array_values($fp['listeIP']);
+							break;
+						}
+					}
+				}
+				
+				// Ajout ou suppression de pages à exclure
+				if ($addQS){
+					// Ajout seulement si l'entrée n'existe pas
+					$noexist =true;
+					foreach( $fp['listeQS'] as $key=>$value){
+						if($value === $pageQS){
+							$noexist = false;
+							break;
+						}
+					}
+					if($noexist) $fp['listeQS'][ count($fp['listeQS'])] = $pageQS;
+				}
+				// Suppression si l'entrée existe
+				elseif( $supQS ){
+					foreach( $fp['listeQS'] as $key=>$value){
+						if( $value === $pageQS){
+							unset($fp['listeQS'][$key]);
+							$fp['listeQS'] = array_values($fp['listeQS']);
+							break;
+						}
+					}
+				}
+				// Ajout ou suppression de robots
+				if ($addBot){
+					// Ajout seulement si l'entrée n'existe pas
+					$noexist =true;
+					foreach( $fp['listeBot'] as $key=>$value){
+						if($value === $robot){
+							$noexist = false;
+							break;
+						}
+					}
+					if($noexist) $fp['listeBot'][ count($fp['listeBot'])] = $robot;
+				}
+				// Suppression si l'entrée existe
+				elseif( $supBot ){
+					foreach( $fp['listeBot'] as $key=>$value){
+						if( $value === $robot){
+							unset($fp['listeBot'][$key]);
+							$fp['listeBot'] = array_values($fp['listeBot']);
+							break;
+						}
+					}
+				}
+				
+				// Encodage et fermeture du fichier json
+				$json = json_encode($fp);
+				file_put_contents(self::$fichiers_json.'filtre_primaire.json',$json);
+				// Valeurs en sortie
+				$this->addOutput([
+					'redirect' => helper::baseUrl().$this->getUrl(),
+					'notification' => $text['statislite']['advanced'][0],
+					'state' => true
+				]);
+			}
+			
+			// Données de filtrage primaire dans filtre_primaire.json avec les clefs 'listeIP', 'listeBot', 'listeQS'	
+			$json = file_get_contents(self::$fichiers_json.'filtre_primaire.json');
+			$fp = json_decode($json, true);
+			$tabListeIP = $fp['listeIP'];
+			$tabListeQS = $fp['listeQS'];
+			$tabListeBot = $fp['listeBot'];
+			
+			// Liste des IP filtrées
+			foreach( $tabListeIP as $key=>$value){
+				self::$listeIP .= $value."\r\n";
+			}
+			// Lecture de l'adresse IP
+			// Si internet partagé
+			self::$yourIP ='';
+			if (isset($_SERVER['HTTP_CLIENT_IP'])) {
+				self::$yourIP  = $_SERVER['HTTP_CLIENT_IP'];
+			}
+			// Si derrière un proxy
+			elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+				self::$yourIP  = $_SERVER['HTTP_X_FORWARDED_FOR'];
+			}
+			// Sinon : IP normale
+			else{
+				if(isset($_SERVER['REMOTE_ADDR'])){
+					self::$yourIP = $_SERVER['REMOTE_ADDR'];
+				}
+			}
+			// Liste des pages filtrées
+			foreach( $tabListeQS as $key=>$value){
+				self::$listeQS .= $value."\r\n";
+			}
+
+			// Liste des robots
+			foreach( $tabListeBot as $key=>$value){
+				self::$listeBot .= $value."\r\n";
+			}
+		
+			// Valeurs en sortie
+			$this->addOutput([
+				'title' => $text['statislite']['advanced'][1],
+				'view' => 'advanced'
 			]);
 		}
-		
-		// Données de filtrage primaire dans filtre_primaire.json avec les clefs 'listeIP', 'listeBot', 'listeQS'	
-		$json = file_get_contents(self::$fichiers_json.'filtre_primaire.json');
-		$fp = json_decode($json, true);
-		$tabListeIP = $fp['listeIP'];
-		$tabListeQS = $fp['listeQS'];
-		$tabListeBot = $fp['listeBot'];
-		
-		// Liste des IP filtrées
-		foreach( $tabListeIP as $key=>$value){
-			self::$listeIP .= $value."\r\n";
-		}
-		// Lecture de l'adresse IP
-		// Si internet partagé
-		self::$yourIP ='';
-		if (isset($_SERVER['HTTP_CLIENT_IP'])) {
-			self::$yourIP  = $_SERVER['HTTP_CLIENT_IP'];
-		}
-		// Si derrière un proxy
-		elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-			self::$yourIP  = $_SERVER['HTTP_X_FORWARDED_FOR'];
-		}
-		// Sinon : IP normale
-		else{
-			if(isset($_SERVER['REMOTE_ADDR'])){
-				self::$yourIP = $_SERVER['REMOTE_ADDR'];
-			}
-		}
-		// Liste des pages filtrées
-		foreach( $tabListeQS as $key=>$value){
-			self::$listeQS .= $value."\r\n";
-		}
-
-		// Liste des robots
-		foreach( $tabListeBot as $key=>$value){
-			self::$listeBot .= $value."\r\n";
-		}
-	
-		// Valeurs en sortie
-		$this->addOutput([
-			'title' => $text['statislite']['advanced'][1],
-			'view' => 'advanced'
-		]);
 	}
 
 
@@ -390,33 +416,43 @@ class statislite extends common {
 	 * Fonction initJson()
 	 */
 	public function initJson() {
-		// Lexique
-		include('./module/statislite/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_statislite.php');
-
-		// Jeton incorrect
-		if ($this->getUrl(2) !== $_SESSION['csrf']) {
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < statislite::$actions['initJson'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
-				'redirect' => helper::baseUrl()  . $this->getUrl(0) . '/config',
-				'notification' => $text['statislite']['initJson'][0]
-			]);
+				'access' => false
+			]);	
 		} else {
-			// Sauvegarde de sécurité des fichiers json
-			$this->sauvegardeJson();
-			// Réinitialisation des fichiers json
-			$this -> initcumul();
-			$this -> initchrono();
-			file_put_contents( self::$fichiers_json.'robots.json', '{}');
-			file_put_contents( self::$fichiers_json.'sessionInvalide.json', '{}');
-			file_put_contents( self::$fichiers_json.'affitampon.json', '{}');
-			file_put_contents( self::$fichiers_json.'sessionLog.json', '{}');
-			// Valeurs en sortie
-			$this->addOutput([
-				'redirect' => helper::baseUrl() . $this->getUrl(0) . '/config',
-				'notification' => $text['statislite']['initJson'][1],
-				'state' => true
-			]);
-			
+			// Lexique
+			include('./module/statislite/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_statislite.php');
+
+			// Jeton incorrect
+			if ($this->getUrl(2) !== $_SESSION['csrf']) {
+				// Valeurs en sortie
+				$this->addOutput([
+					'redirect' => helper::baseUrl()  . $this->getUrl(0) . '/config',
+					'notification' => $text['statislite']['initJson'][0]
+				]);
+			} else {
+				// Sauvegarde de sécurité des fichiers json
+				$this->sauvegardeJson();
+				// Réinitialisation des fichiers json
+				$this -> initcumul();
+				$this -> initchrono();
+				file_put_contents( self::$fichiers_json.'robots.json', '{}');
+				file_put_contents( self::$fichiers_json.'sessionInvalide.json', '{}');
+				file_put_contents( self::$fichiers_json.'affitampon.json', '{}');
+				file_put_contents( self::$fichiers_json.'sessionLog.json', '{}');
+				// Valeurs en sortie
+				$this->addOutput([
+					'redirect' => helper::baseUrl() . $this->getUrl(0) . '/config',
+					'notification' => $text['statislite']['initJson'][1],
+					'state' => true
+				]);
+				
+			}
 		}
 	}
 
@@ -425,44 +461,62 @@ class statislite extends common {
 	 * Fonction sauveJson()
 	 */
 	public function sauveJson() {
-		// Lexique
-		include('./module/statislite/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_statislite.php');
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < statislite::$actions['sauveJson'] ) {
+			// Valeurs en sortie
+			$this->addOutput([
+				'access' => false
+			]);	
+		} else {
+			// Lexique
+			include('./module/statislite/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_statislite.php');
 
-		// Sauvegarde des fichiers json
-		$this->sauvegardeJson();
-		// Valeurs en sortie
-		$this->addOutput([
-			'redirect' => helper::baseUrl() . $this->getUrl(0) . '/config',
-			'notification' => $text['statislite']['sauveJson'][0],
-			'state' => true
-		]);
-			
+			// Sauvegarde des fichiers json
+			$this->sauvegardeJson();
+			// Valeurs en sortie
+			$this->addOutput([
+				'redirect' => helper::baseUrl() . $this->getUrl(0) . '/config',
+				'notification' => $text['statislite']['sauveJson'][0],
+				'state' => true
+			]);
+		}
 	}
 
 	/**
 	 * Fonction initDownload()
 	 */
 	public function initDownload() {
-		// Lexique
-		include('./module/statislite/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_statislite.php');
-
-		// Jeton incorrect
-		if ($this->getUrl(2) !== $_SESSION['csrf']) {
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < statislite::$actions['initDownload'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
-				'redirect' => helper::baseUrl()  . $this->getUrl(0) . '/config',
-				'notification' => $text['statislite']['initDownload'][0]
-			]);
+				'access' => false
+			]);	
 		} else {
-			// Réinitialisation du compteur de liens cliqués
-			file_put_contents( self::$downloadLink.'counter.json', '{}');
-			// Valeurs en sortie
-			$this->addOutput([
-				'redirect' => helper::baseUrl() . $this->getUrl(0) . '/config',
-				'notification' => $text['statislite']['initDownload'][1],
-				'state' => true
-			]);
-			
+			// Lexique
+			include('./module/statislite/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_statislite.php');
+
+			// Jeton incorrect
+			if ($this->getUrl(2) !== $_SESSION['csrf']) {
+				// Valeurs en sortie
+				$this->addOutput([
+					'redirect' => helper::baseUrl()  . $this->getUrl(0) . '/config',
+					'notification' => $text['statislite']['initDownload'][0]
+				]);
+			} else {
+				// Réinitialisation du compteur de liens cliqués
+				file_put_contents( self::$downloadLink.'counter.json', '{}');
+				// Valeurs en sortie
+				$this->addOutput([
+					'redirect' => helper::baseUrl() . $this->getUrl(0) . '/config',
+					'notification' => $text['statislite']['initDownload'][1],
+					'state' => true
+				]);
+			}
 		}
 	}	
 	
@@ -480,12 +534,13 @@ class statislite extends common {
 			$this->custom_copy('./module/statislite/ressource', self::DATAMODULE);	
 			if( !is_dir( self::DATAMODULE.'/json' )) mkdir( self::DATAMODULE.'/json', 0755);
 			if( !is_dir( self::DATAMODULE.'/json_sauve' ))mkdir( self::DATAMODULE.'/json_sauve', 0755);
+			if( !is_dir( self::DATAMODULE.'/tmp' ))mkdir( self::DATAMODULE.'/tmp', 0755);
 			
 			$this->setData(['module', $this->getUrl(0), 'config',[
 				'timeVisiteMini' => '30',
 				'timePageMini' => '5',
 				'nbPageMini' => '2',
-				'usersExclus' => '3',
+				'usersExclus' => '4',
 				'nbEnregSession' => '5',
 				'geolocalisation' => false,
 				'nbaffipagesvues' => '10',

@@ -14,7 +14,7 @@ $("input, select").on("change", function() {
     var css = "#site{background-color:" + colors.normal + ";}";
     css += "body, .row > div {font:" + $("#adminFontTextSize").val() + " '" + textFont  + "', sans-serif;}";
     css += "body h1, h2, h3, h4, h5, h6 {font-family:'" +  titleFont + "', sans-serif; color:" + $("#adminColorTitle").val() + ";}";
-    css += "body:not(.editorWysiwyg),span .zwiico-help {color:" + $("#adminColorText").val() + ";}";
+    css += "body:not(.editorWysiwyg),span .delta-ico-help {color:" + $("#adminColorText").val() + ";}";
     var colors = core.colorVariants($("#adminColorButton").val());
     css += "input[type='checkbox']:checked + label::before,.speechBubble{ background-color:" + colors.normal + "; color:" + $("#adminColorButtonText").val() + ";}";
     css += ".speechBubble::before {border-color:" + colors.normal + " transparent transparent transparent;}";

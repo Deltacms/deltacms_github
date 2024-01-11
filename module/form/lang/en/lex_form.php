@@ -78,6 +78,8 @@ $text['form']['index'][11] = 'The attachment is not a zip document';
 $text['form']['index'][12] = ' Fill in the Captcha ';
 // Initialisation de flatpickr
 $lang_flatpickr = 'default';
+// Langue d'administration pour tinymce
+$lang_admin = 'en_GB';
 // Selects
 $signature = [
 	'text' => 'Name of the site',

@@ -43,6 +43,15 @@ echo template::formOpen('themeAdvancedForm'); ?>
 			]); ?>
 		</div>
 	</div>
+	<div class="row">
+		<div class="col2">
+			<?php echo template::text('themeAdvancedColorPicker', [
+				'class' => 'colorPicker',
+				'label' => $text['core_theme_view']['advanced'][5],
+				'value' => 'rgba(245,245,245,1)'
+			]); ?>		
+		</div>
+	</div>
 <?php echo template::formClose(); ?>
 <script>
 	var textConfirm = <?php echo '"'.$text['core_theme_view']['advanced'][4].'"'; ?>;

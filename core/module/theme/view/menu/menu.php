@@ -2,6 +2,14 @@
 // Lexique
 include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
 
+// drapeau pour la langue d'origine ou la langue en traduction rédigée
+if( $this->getInput('DELTA_I18N_SITE') === '' || $this->getInput('DELTA_I18N_SITE')=== null || $this->getInput('DELTA_I18N_SITE') === 'base'){
+	$flag = $this->getData(['config', 'i18n', 'langBase']);
+}
+else{
+	$flag = $this->getInput('DELTA_I18N_SITE');
+}
+
 echo template::formOpen('themeMenuForm'); ?>
 <div class="row">
     <div class="col2">
@@ -263,9 +271,9 @@ echo template::formOpen('themeMenuForm'); ?>
 					]); ?>
 				</div>
 				<div class="col6">
-					<?php echo template::select('themeMenuBurgerIconLink1', $module::$pageList,[
-							'selected' => $this->getData(['theme', 'menu','burgerIconLink1']),
-							'label' => $text['core_theme_view']['menu'][52],
+					<?php echo template::select('themeMenuBurgerLeftIconLink', $module::$pageList,[
+							'selected' => $this->getData(['locale', 'menuBurger','burgerLeftIconLink']),
+							'label' => $text['core_theme_view']['menu'][52] .' '. template::flag($flag, '20px'),
 							'help' => $text['core_theme_view']['menu'][53]
 					]); ?>
 				</div>
@@ -283,9 +291,9 @@ echo template::formOpen('themeMenuForm'); ?>
 					]); ?>
 				</div>
 				<div class="col6">
-					<?php echo template::select('themeMenuBurgerIconLink2', $module::$pageList,[
-							'selected' => $this->getData(['theme', 'menu','burgerIconLink2']),
-							'label' => $text['core_theme_view']['menu'][52],
+					<?php echo template::select('themeMenuBurgerCenterIconLink', $module::$pageList,[
+							'selected' => $this->getData(['locale', 'menuBurger','burgerCenterIconLink']),
+							'label' => $text['core_theme_view']['menu'][52] .' '. template::flag($flag, '20px'),
 							'help' => $text['core_theme_view']['menu'][53]
 					]); ?>
 				</div>

@@ -1,19 +1,21 @@
 <?php
-
 /**
  * This file is part of DeltaCMS.
  * For full copyright and license information, please see the LICENSE
  * file that was distributed with this source code.
- * @author Sylvain Lelièvre <lelievresylvain@free.fr>
- * @copyright Copyright (C) 2021, Sylvain Lelièvre
+ * @author Sylvain Lelièvre
+ * @copyright 2021 © Sylvain Lelièvre
+ * @author Lionel Croquefer
+ * @copyright 2022 © Lionel Croquefer
  * @license GNU General Public License, version 3
  * @link https://deltacms.fr/
+ * @contact https://deltacms.fr/contact
  *
  * Delta was created from version 11.2.00.24 of ZwiiCMS
  * @author Rémi Jean <remi.jean@outlook.com>
- * @copyright Copyright (C) 2008-2018, Rémi Jean
+ * @copyright 2008-2018 © Rémi Jean
  * @author Frédéric Tempez <frederic.tempez@outlook.com>
- * @copyright Copyright (C) 2018-2021, Frédéric Tempez
+ * @copyright 2018-2021 © Frédéric Tempez
  */
 
 class addon extends common {
@@ -48,42 +50,52 @@ class addon extends common {
 	* Effacement d'un module installé et non utilisé
 	*/
 	public function delete() {
-		// Lexique
-		include('./core/module/addon/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_addon.php');
-
-		// Jeton incorrect
-		if ($this->getUrl(3) !== $_SESSION['csrf']) {
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < addon::$actions['delete'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
-				'redirect' => helper::baseUrl()  . 'addon',
-				'state' => false,
-				'notification' => $text['core_addon']['delete'][0]
-			]);
-		}
-		else{
-			// Suppression des dossiers
-			$infoModules = helper::getModules();
-			$module = $this->getUrl(2);
-			//Liste des dossiers associés au module non effacés
-			if( $this->removeDir('./module/'.$module ) === true   ){
-				$success = true;
-				$notification = 'Module '. $module .$text['core_addon']['delete'][1];
-				if( is_dir($infoModules[$this->getUrl(2)]['dataDirectory']) ) {
-					if (!$this->removeDir($infoModules[$this->getUrl(2)]['dataDirectory'])){
-						$notification = 'Module '.$module .$text['core_addon']['delete'][2] . $infoModules[$this->getUrl(2)]['dataDirectory'];
-					}
-				}
+				'access' => false
+			]);	
+		} else {
+			// Lexique
+			include('./core/module/addon/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_addon.php');
+
+			// Jeton incorrect
+			if ($this->getUrl(3) !== $_SESSION['csrf']) {
+				// Valeurs en sortie
+				$this->addOutput([
+					'redirect' => helper::baseUrl()  . 'addon',
+					'state' => false,
+					'notification' => $text['core_addon']['delete'][0]
+				]);
 			}
 			else{
-				$success = false;
-				$notification = $text['core_addon']['delete'][3];
+				// Suppression des dossiers
+				$infoModules = helper::getModules();
+				$module = $this->getUrl(2);
+				//Liste des dossiers associés au module non effacés
+				if( $this->removeDir('./module/'.$module ) === true   ){
+					$success = true;
+					$notification = 'Module '. $module .$text['core_addon']['delete'][1];
+					if( is_dir($infoModules[$this->getUrl(2)]['dataDirectory']) ) {
+						if (!$this->removeDir($infoModules[$this->getUrl(2)]['dataDirectory'])){
+							$notification = 'Module '.$module .$text['core_addon']['delete'][2] . $infoModules[$this->getUrl(2)]['dataDirectory'];
+						}
+					}
+				}
+				else{
+					$success = false;
+					$notification = $text['core_addon']['delete'][3];
+				}
+				// Valeurs en sortie
+				$this->addOutput([
+					'redirect' => helper::baseUrl() . 'addon',
+					'notification' => $notification,
+					'state' => $success
+				]);
 			}
-			// Valeurs en sortie
-			$this->addOutput([
-				'redirect' => helper::baseUrl() . 'addon',
-				'notification' => $notification,
-				'state' => $success
-			]);
 		}
 	}
 
@@ -206,307 +218,366 @@ class addon extends common {
 	 * Installation d'un module à partir du gestionnaire de fichier
 	 */
 	public function upload() {
-		// Lexique
-		include('./core/module/addon/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_addon.php');
-
-		// Soumission du formulaire
-		if($this->isPost()) {
-			// Installation d'un module
-			$checkValidMaj = $this->getInput('configModulesCheck', helper::FILTER_BOOLEAN);
-			$zipFilename =	$this->getInput('configModulesInstallation', helper::FILTER_STRING_SHORT);
-			if( $zipFilename !== ''){
-				$success = [
-					'success' => false,
-					'notification'=> ''
-				];
-				$state = $this->install(self::FILE_DIR.'source/'.$zipFilename, $checkValidMaj);
-			}
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < addon::$actions['upload'] ) {
+			// Valeurs en sortie
 			$this->addOutput([
-				'redirect' => helper::baseUrl() . $this->getUrl(),
-				'notification' => $state['notification'],
-				'state' => $state['success']
+				'access' => false
+			]);	
+		} else {
+			// Lexique
+			include('./core/module/addon/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_addon.php');
+
+			// Soumission du formulaire
+			if($this->isPost()) {
+				// Installation d'un module
+				$checkValidMaj = $this->getInput('configModulesCheck', helper::FILTER_BOOLEAN);
+				$zipFilename =	$this->getInput('configModulesInstallation', helper::FILTER_STRING_SHORT);
+				if( $zipFilename !== ''){
+					$success = [
+						'success' => false,
+						'notification'=> ''
+					];
+					$state = $this->install(self::FILE_DIR.'source/'.$zipFilename, $checkValidMaj);
+				}
+				$this->addOutput([
+					'redirect' => helper::baseUrl() . $this->getUrl(),
+					'notification' => $state['notification'],
+					'state' => $state['success']
+				]);
+			}
+			// Valeurs en sortie
+			$this->addOutput([
+				'title' => $text['core_addon']['upload'][0],
+				'view' => 'upload'
 			]);
 		}
-		// Valeurs en sortie
-		$this->addOutput([
-			'title' => $text['core_addon']['upload'][0],
-			'view' => 'upload'
-		]);
 	}
 
 	/***
 	 * Installation  d'un module par le catalogue
 	 */
 	public function uploadItem() {
-		// Jeton incorrect
-		if ($this->getUrl(3) !== $_SESSION['csrf']) {
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < addon::$actions['uploadItem'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
-				'redirect' => helper::baseUrl()  . 'store',
-				'state' => false,
-				'notification' => 'Action non autorisée'
-			]);
+				'access' => false
+			]);	
 		} else {
-			// Récupérer le module en ligne
-			$moduleName = $this->getUrl(2);
-			// Informations sur les module en ligne
-			$store = json_decode(helper::urlGetContents(self::BASEURL_STORE . self::MODULE_STORE . 'list'), true);
-			// Url du module à télécharger
-			$moduleFilePath = $store[$moduleName]['file'];
-			// Télécharger le fichier
-			$moduleData = helper::urlGetContents(self::BASEURL_STORE . self::FILE_DIR . 'source/' . $moduleFilePath);
-			// Extraire de l'arborescence
-			$d = explode('/',$moduleFilePath);
-			$moduleFile = $d[count($d)-1];
-			// Créer le dossier modules
-			if (!is_dir(self::FILE_DIR . 'source/modules')) {
-				mkdir (self::FILE_DIR . 'source/modules', 0755);
+			// Jeton incorrect
+			if ($this->getUrl(3) !== $_SESSION['csrf']) {
+				// Valeurs en sortie
+				$this->addOutput([
+					'redirect' => helper::baseUrl()  . 'store',
+					'state' => false,
+					'notification' => 'Action non autorisée'
+				]);
+			} else {
+				// Récupérer le module en ligne
+				$moduleName = $this->getUrl(2);
+				// Informations sur les module en ligne
+				$store = json_decode(helper::urlGetContents(self::BASEURL_STORE . self::MODULE_STORE . 'list'), true);
+				// Url du module à télécharger
+				$moduleFilePath = $store[$moduleName]['file'];
+				// Télécharger le fichier
+				$moduleData = helper::urlGetContents(self::BASEURL_STORE . self::FILE_DIR . 'source/' . $moduleFilePath);
+				// Extraire de l'arborescence
+				$d = explode('/',$moduleFilePath);
+				$moduleFile = $d[count($d)-1];
+				// Créer le dossier modules
+				if (!is_dir(self::FILE_DIR . 'source/modules')) {
+					mkdir (self::FILE_DIR . 'source/modules', 0755);
+				}
+				// Sauver les données du fichiers
+				file_put_contents(self::FILE_DIR . 'source/modules/' . $moduleFile, $moduleData);
+
+				/**
+				* $if( $moduleFile !== ''){
+				*	$success = [
+				*		'success' => false,
+				*		'notification'=> ''
+				*	];
+				*	$state = $this->install(self::FILE_DIR.'source/modules/'.$moduleFile, false);
+				*}
+				*/
+				$this->addOutput([
+					'redirect' => helper::baseUrl()  . 'addon/store',
+					'notification' => $moduleFile . ' téléchargé dans le dossier modules du gestionnaire de fichiers',
+					'state' => true
+				]);
+
 			}
-			// Sauver les données du fichiers
-			file_put_contents(self::FILE_DIR . 'source/modules/' . $moduleFile, $moduleData);
-
-			/**
-			* $if( $moduleFile !== ''){
-			*	$success = [
-			*		'success' => false,
-			*		'notification'=> ''
-			*	];
-			*	$state = $this->install(self::FILE_DIR.'source/modules/'.$moduleFile, false);
-			*}
-			*/
+			// Valeurs en sortie
 			$this->addOutput([
-				'redirect' => helper::baseUrl()  . 'addon/store',
-				'notification' => $moduleFile . ' téléchargé dans le dossier modules du gestionnaire de fichiers',
-				'state' => true
+				'title' => 'Catalogue de modules',
+				'view' => 'store'
 			]);
-
 		}
-		// Valeurs en sortie
-		$this->addOutput([
-			'title' => 'Catalogue de modules',
-			'view' => 'store'
-		]);
 	}
 
 	/**
 	 * Catalogue des modules sur le site DeltaCMS.fr
 	 */
 	public function store() {
-		$store = json_decode(helper::urlGetContents(self::BASEURL_STORE . self::MODULE_STORE . 'list'), true);
-		if ($store) {
-			// Modules installés
-			$infoModules = helper::getModules();
-			// Clés moduleIds dans les pages
-			$inPages = helper::arrayCollumn($this->getData(['page']),'moduleId', 'SORT_DESC');
-			foreach( $inPages as $key=>$value){
-				$inPagesTitle[ $this->getData(['page', $key, 'title' ]) ] = $value;
-			}
-			// Parcourir les données des modules
-			foreach ($store as $key=>$value) {
-				// Module non installé
-				$ico = template::ico('download');
-				$class = '';
-				// Le module est installé
-				if (array_key_exists($key,$infoModules) === true) {
-					$class = 'buttonGreen';
-					$ico = template::ico('update');
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < addon::$actions['store'] ) {
+			// Valeurs en sortie
+			$this->addOutput([
+				'access' => false
+			]);	
+		} else {
+			$store = json_decode(helper::urlGetContents(self::BASEURL_STORE . self::MODULE_STORE . 'list'), true);
+			if ($store) {
+				// Modules installés
+				$infoModules = helper::getModules();
+				// Clés moduleIds dans les pages
+				$inPages = helper::arrayCollumn($this->getData(['page']),'moduleId', 'SORT_DESC');
+				foreach( $inPages as $key=>$value){
+					$inPagesTitle[ $this->getData(['page', $key, 'title' ]) ] = $value;
 				}
-				// Le module est installé et utilisé
-				if (in_array($key,$inPages) === true) {
-					$class = 'buttonRed';
-					$ico =  template::ico('update');
+				// Parcourir les données des modules
+				foreach ($store as $key=>$value) {
+					// Module non installé
+					$ico = template::ico('download');
+					$class = '';
+					// Le module est installé
+					if (array_key_exists($key,$infoModules) === true) {
+						$class = 'buttonGreen';
+						$ico = template::ico('update');
+					}
+					// Le module est installé et utilisé
+					if (in_array($key,$inPages) === true) {
+						$class = 'buttonRed';
+						$ico =  template::ico('update');
+					}
+					self::$storeList [] = [
+						$store[$key]['category'],
+						'<a href="' . self::BASEURL_STORE . self::MODULE_STORE . $key . '" target="_blank" >'.$store[$key]['title'].'</a>',
+						$store[$key]['version'],
+						mb_detect_encoding(strftime('%d %B %Y', $store[$key]['versionDate']), 'UTF-8', true)
+						? strftime('%d %B %Y', $store[$key]['versionDate'])
+						: utf8_encode(strftime('%d %B %Y', $store[$key]['versionDate'])),
+						implode(', ', array_keys($inPagesTitle,$key)),
+						template::button('moduleExport' . $key, [
+								'class' => $class,
+								'href' => helper::baseUrl(). $this->getUrl(0) . '/uploadItem/' . $key.'/' . $_SESSION['csrf'],// appel de fonction vaut exécution, utiliser un paramètre
+								'value' => $ico
+								])
+					];
 				}
-				self::$storeList [] = [
-					$store[$key]['category'],
-					'<a href="' . self::BASEURL_STORE . self::MODULE_STORE . $key . '" target="_blank" >'.$store[$key]['title'].'</a>',
-					$store[$key]['version'],
-					mb_detect_encoding(strftime('%d %B %Y', $store[$key]['versionDate']), 'UTF-8', true)
-					? strftime('%d %B %Y', $store[$key]['versionDate'])
-					: utf8_encode(strftime('%d %B %Y', $store[$key]['versionDate'])),
-					implode(', ', array_keys($inPagesTitle,$key)),
-					template::button('moduleExport' . $key, [
-							'class' => $class,
-							'href' => helper::baseUrl(). $this->getUrl(0) . '/uploadItem/' . $key.'/' . $_SESSION['csrf'],// appel de fonction vaut exécution, utiliser un paramètre
-							'value' => $ico
-							])
-				];
 			}
+			// Valeurs en sortie
+			$this->addOutput([
+				'title' => 'Catalogue de modules en ligne',
+				'view' => 'store'
+			]);
 		}
-
-		// Valeurs en sortie
-		$this->addOutput([
-			'title' => 'Catalogue de modules en ligne',
-			'view' => 'store'
-		]);
 	}
 
 	/**
 	 * Détail d'un objet du catalogue
 	 */
 	public function item() {
-		$store = json_decode(helper::urlGetContents(self::BASEURL_STORE . self::MODULE_STORE . 'list'), true);
-		self::$storeItem = $store [$this->getUrl(2)] ;
-		self::$storeItem ['fileDate'] = mb_detect_encoding(strftime('%d %B %Y',self::$storeItem ['fileDate']), 'UTF-8', true)
-										? strftime('%d %B %Y', self::$storeItem ['fileDate'])
-										: utf8_encode(strftime('%d %B %Y', self::$storeItem ['fileDate']));
-		// Valeurs en sortie
-		$this->addOutput([
-			'title' =>'Module ' . self::$storeItem['title'],
-			'view' => 'item'
-		]);
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < addon::$actions['item'] ) {
+			// Valeurs en sortie
+			$this->addOutput([
+				'access' => false
+			]);	
+		} else {
+			$store = json_decode(helper::urlGetContents(self::BASEURL_STORE . self::MODULE_STORE . 'list'), true);
+			self::$storeItem = $store [$this->getUrl(2)] ;
+			self::$storeItem ['fileDate'] = mb_detect_encoding(strftime('%d %B %Y',self::$storeItem ['fileDate']), 'UTF-8', true)
+											? strftime('%d %B %Y', self::$storeItem ['fileDate'])
+											: utf8_encode(strftime('%d %B %Y', self::$storeItem ['fileDate']));
+			// Valeurs en sortie
+			$this->addOutput([
+				'title' =>'Module ' . self::$storeItem['title'],
+				'view' => 'item'
+			]);
+		}
 	}
 
 	/**
 	 * Gestion des modules
 	 */
 	public function index() {
-		// Lexique
-		include('./core/module/addon/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_addon.php');
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < addon::$actions['index'] ) {
+			// Valeurs en sortie
+			$this->addOutput([
+				'access' => false
+			]);	
+		} else {
+			// Lexique
+			include('./core/module/addon/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_addon.php');
 
-		// Lister les modules
-		// $infoModules[nom_module]['realName'], ['version'], ['update'], ['delete'], ['dataDirectory']
-		$infoModules = helper::getModules();
+			// Lister les modules
+			// $infoModules[nom_module]['realName'], ['version'], ['update'], ['delete'], ['dataDirectory']
+			$infoModules = helper::getModules();
 
-		// Clés moduleIds dans les pages
-		$inPages = helper::arrayCollumn($this->getData(['page']),'moduleId', 'SORT_DESC');
-		foreach( $inPages as $key=>$value){
-			$inPagesTitle[ $this->getData(['page', $key, 'title' ]) ] = $value;
+			// Clés moduleIds dans les pages
+			$inPages = helper::arrayCollumn($this->getData(['page']),'moduleId', 'SORT_DESC');
+			foreach( $inPages as $key=>$value){
+				$inPagesTitle[ $this->getData(['page', $key, 'title' ]) ] = $value;
+			}
+
+			// Parcourir les données des modules
+			foreach ($infoModules as $key=>$value) {
+				// Construire le tableau de sortie
+				self::$modInstal[] = [
+					$key,
+					$infoModules[$key]['realName'],
+					$infoModules[$key]['version'],
+					implode(', ', array_keys($inPagesTitle,$key)),
+					//|| ('delete',$infoModules[$key]) && $infoModules[$key]['delete'] === true && implode(', ',array_keys($inPages,$key)) === ''
+					$infoModules[$key]['delete'] === true  && implode(', ',array_keys($inPages,$key)) === ''
+												? template::button('moduleDelete' . $key, [
+														'class' => 'moduleDelete buttonRed',
+														'href' => helper::baseUrl() . $this->getUrl(0) . '/delete/' . $key . '/' . $_SESSION['csrf'],
+														'value' => template::ico('cancel')
+													])
+												: '',
+					implode(', ',array_keys($inPages,$key)) !== ''
+												? template::button('moduleExport' . $key, [
+													'href' => helper::baseUrl(). $this->getUrl(0) . '/export/' . $key . '/' . $_SESSION['csrf'],// appel de fonction vaut exécution, utiliser un paramètre
+													'value' => template::ico('download')
+													])
+												: '',
+					implode(', ',array_keys($inPages,$key)) === ''
+												? template::button('moduleExport' . $key, [
+													'href' => helper::baseUrl(). $this->getUrl(0) . '/import/' . $key . '/' . $_SESSION['csrf'],// appel de fonction vaut exécution, utiliser un paramètre
+													'value' => template::ico('upload')
+													])
+												: ''
+				];
+			}
+
+			// Valeurs en sortie
+			$this->addOutput([
+				'title' => $text['core_addon']['index'][0],
+				'view' => 'index'
+			]);
 		}
-
-		// Parcourir les données des modules
-		foreach ($infoModules as $key=>$value) {
-			// Construire le tableau de sortie
-			self::$modInstal[] = [
-				$key,
-				$infoModules[$key]['realName'],
-				$infoModules[$key]['version'],
-				implode(', ', array_keys($inPagesTitle,$key)),
-				//|| ('delete',$infoModules[$key]) && $infoModules[$key]['delete'] === true && implode(', ',array_keys($inPages,$key)) === ''
-				$infoModules[$key]['delete'] === true  && implode(', ',array_keys($inPages,$key)) === ''
-											? template::button('moduleDelete' . $key, [
-													'class' => 'moduleDelete buttonRed',
-													'href' => helper::baseUrl() . $this->getUrl(0) . '/delete/' . $key . '/' . $_SESSION['csrf'],
-													'value' => template::ico('cancel')
-												])
-											: '',
-				implode(', ',array_keys($inPages,$key)) !== ''
-											? template::button('moduleExport' . $key, [
-												'href' => helper::baseUrl(). $this->getUrl(0) . '/export/' . $key . '/' . $_SESSION['csrf'],// appel de fonction vaut exécution, utiliser un paramètre
-												'value' => template::ico('download')
-												])
-											: '',
-				implode(', ',array_keys($inPages,$key)) === ''
-											? template::button('moduleExport' . $key, [
-												'href' => helper::baseUrl(). $this->getUrl(0) . '/import/' . $key . '/' . $_SESSION['csrf'],// appel de fonction vaut exécution, utiliser un paramètre
-												'value' => template::ico('upload')
-												])
-											: ''
-			];
-		}
-
-		// Valeurs en sortie
-		$this->addOutput([
-			'title' => $text['core_addon']['index'][0],
-			'view' => 'index'
-		]);
 	}
 
 	/*
 	* Export des données d'un module externes ou interne à module.json
 	*/
 	public function export(){
-		// Lexique
-		include('./core/module/addon/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_addon.php');
-
-		// Jeton incorrect
-		if ($this->getUrl(3) !== $_SESSION['csrf']) {
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < addon::$actions['export'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
-				'redirect' => helper::baseUrl()  . 'addon',
-				'state' => false,
-				'notification' => $text['core_addon']['export'][0]
-			]);
-		}
-		else {
-			// Lire les données du module
-			$infoModules = helper::getModules();
-			// Créer un dossier par défaut
-			$tmpFolder = self::TEMP_DIR . uniqid();
-			//$tmpFolder = self::TEMP_DIR . 'test';
-			if (!is_dir($tmpFolder)) {
-				mkdir($tmpFolder, 0755);
-			}
-			// Clés moduleIds dans les pages
-			$inPages = helper::arrayCollumn($this->getData(['page']),'moduleId', 'SORT_DESC');
-			// Parcourir les pages utilisant le module
-			foreach (array_keys($inPages,$this->getUrl(2)) as $pageId) {
-				// Export des pages hébergeant le module
-				$pageParam[$pageId] = $this->getData(['page',$pageId]);
-				// Export du contenu de la page
-				//$pageContent[$pageId] = file_get_contents(self::DATA_DIR . self::$i18n . '/content/' . $this->getData(['page', $pageId, 'content']));
-				$pageContent[$pageId] = $this->getPage($pageId, self::$i18n);
-				// Export de base/module.json
-				$moduleId = 'base/module.json';
-				$moduleDir = str_replace('site/data/','',$infoModules[$this->getUrl(2)]['dataDirectory']);
-				// Création de l'arborescence des langues
-				// Pas de nom dossier de langue - dossier par défaut
-				$t = explode ('/',$moduleId);
-				if ( is_array($t)) {
-					$lang = 'base';
-				} else {
-					$lang = $t[0];
-				}
-				// Créer le dossier temporaire si inexistant sinon le nettoyer et le créer
-				if (!is_dir($tmpFolder . '/' . $lang)) {
-					mkdir ($tmpFolder . '/' . $lang, 0755, true);
-				} else {
-					$this->removeDir($tmpFolder . '/' . $lang);
-					mkdir ($tmpFolder . '/' . $lang, 0755, true);
-				}
-				// Créer le dossier temporaire des données du  module
-				if ($infoModules[$this->getUrl(2)]['dataDirectory']) {
-					if (!is_dir($tmpFolder . '/' . $moduleDir)) {
-						mkdir ($tmpFolder . '/' . $moduleDir, 0755, true) ;
-					}
-				}
-				// Sauvegarde si données non vides
-				$tmpData [$pageId] = $this->getData(['module',$pageId ]);
-				if ($tmpData [$pageId] !== null) {
-					file_put_contents($tmpFolder . '/' . $moduleId, json_encode($tmpData));
-				}
-				// Export des données localisées dans le dossier de données du module
-				if ($infoModules[$this->getUrl(2)]['dataDirectory'] &&
-					is_dir($infoModules[$this->getUrl(2)]['dataDirectory'])) {
-						$this->copyDir ($infoModules[$this->getUrl(2)]['dataDirectory'], $tmpFolder . '/' . $moduleDir);
-				}
-			}
-			// Enregistrement des pages dans le dossier de langue identique à module
-			if (!file_exists($tmpFolder . '/' . $lang . '/page.json')) {
-				file_put_contents($tmpFolder . '/' . $lang . '/page.json', json_encode($pageParam));
-				mkdir ($tmpFolder . '/' . $lang . '/content', 0755);
-				file_put_contents($tmpFolder . '/' . $lang . '/content/' . $this->getData(['page', $pageId, 'content']), $pageContent);
-			}
-			// création du zip
-			$fileName =  $this->getUrl(2) . '.zip';
-			$this->makeZip ($fileName, $tmpFolder, []);
-			if (file_exists($fileName)) {
-				ob_start();
-				header('Content-Type: application/octet-stream');
-				header('Content-Disposition: attachment; filename="' . $fileName . '"');
-				header('Content-Length: ' . filesize($fileName));
-				ob_clean();   
-				ob_end_flush();
-				readfile( $fileName);
-				unlink($fileName);
-				$this->removeDir($tmpFolder);
-				exit();
-			} else {
+				'access' => false
+			]);	
+		} else {
+			// Lexique
+			include('./core/module/addon/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_addon.php');
+
+			// Jeton incorrect
+			if ($this->getUrl(3) !== $_SESSION['csrf']) {
 				// Valeurs en sortie
 				$this->addOutput([
-					'redirect' => helper::baseUrl() . 'addon',
-					'notification' => $text['core_addon']['export'][1],
-					'state' => false
+					'redirect' => helper::baseUrl()  . 'addon',
+					'state' => false,
+					'notification' => $text['core_addon']['export'][0]
 				]);
+			}
+			else {
+				// Lire les données du module
+				$infoModules = helper::getModules();
+				// Créer un dossier par défaut
+				$tmpFolder = self::TEMP_DIR . uniqid();
+				//$tmpFolder = self::TEMP_DIR . 'test';
+				if (!is_dir($tmpFolder)) {
+					mkdir($tmpFolder, 0755);
+				}
+				// Clés moduleIds dans les pages
+				$inPages = helper::arrayCollumn($this->getData(['page']),'moduleId', 'SORT_DESC');
+				// Parcourir les pages utilisant le module
+				foreach (array_keys($inPages,$this->getUrl(2)) as $pageId) {
+					// Export des pages hébergeant le module
+					$pageParam[$pageId] = $this->getData(['page',$pageId]);
+					// Export du contenu de la page
+					//$pageContent[$pageId] = file_get_contents(self::DATA_DIR . self::$i18n . '/content/' . $this->getData(['page', $pageId, 'content']));
+					$pageContent[$pageId] = $this->getPage($pageId, self::$i18n);
+					// Export de base/module.json
+					$moduleId = 'base/module.json';
+					$moduleDir = str_replace('site/data/','',$infoModules[$this->getUrl(2)]['dataDirectory']);
+					// Création de l'arborescence des langues
+					// Pas de nom dossier de langue - dossier par défaut
+					$t = explode ('/',$moduleId);
+					if ( is_array($t)) {
+						$lang = 'base';
+					} else {
+						$lang = $t[0];
+					}
+					// Créer le dossier temporaire si inexistant sinon le nettoyer et le créer
+					if (!is_dir($tmpFolder . '/' . $lang)) {
+						mkdir ($tmpFolder . '/' . $lang, 0755, true);
+					} else {
+						$this->removeDir($tmpFolder . '/' . $lang);
+						mkdir ($tmpFolder . '/' . $lang, 0755, true);
+					}
+					// Créer le dossier temporaire des données du  module
+					if ($infoModules[$this->getUrl(2)]['dataDirectory']) {
+						if (!is_dir($tmpFolder . '/' . $moduleDir)) {
+							mkdir ($tmpFolder . '/' . $moduleDir, 0755, true) ;
+						}
+					}
+					// Sauvegarde si données non vides
+					$tmpData [$pageId] = $this->getData(['module',$pageId ]);
+					if ($tmpData [$pageId] !== null) {
+						file_put_contents($tmpFolder . '/' . $moduleId, json_encode($tmpData));
+					}
+					// Export des données localisées dans le dossier de données du module
+					if ($infoModules[$this->getUrl(2)]['dataDirectory'] &&
+						is_dir($infoModules[$this->getUrl(2)]['dataDirectory'])) {
+							$this->copyDir ($infoModules[$this->getUrl(2)]['dataDirectory'], $tmpFolder . '/' . $moduleDir);
+					}
+				}
+				// Enregistrement des pages dans le dossier de langue identique à module
+				if (!file_exists($tmpFolder . '/' . $lang . '/page.json')) {
+					file_put_contents($tmpFolder . '/' . $lang . '/page.json', json_encode($pageParam));
+					mkdir ($tmpFolder . '/' . $lang . '/content', 0755);
+					file_put_contents($tmpFolder . '/' . $lang . '/content/' . $this->getData(['page', $pageId, 'content']), $pageContent);
+				}
+				// création du zip
+				$fileName =  $this->getUrl(2) . '.zip';
+				$this->makeZip ($fileName, $tmpFolder, []);
+				if (file_exists($fileName)) {
+					ob_start();
+					header('Content-Type: application/octet-stream');
+					header('Content-Disposition: attachment; filename="' . $fileName . '"');
+					header('Content-Length: ' . filesize($fileName));
+					ob_clean();   
+					ob_end_flush();
+					readfile( $fileName);
+					unlink($fileName);
+					$this->removeDir($tmpFolder);
+					exit();
+				} else {
+					// Valeurs en sortie
+					$this->addOutput([
+						'redirect' => helper::baseUrl() . 'addon',
+						'notification' => $text['core_addon']['export'][1],
+						'state' => false
+					]);
+				}
 			}
 		}
 	}
@@ -515,94 +586,104 @@ class addon extends common {
 	* Importer des données d'un module externes ou interne à module.json
 	*/
 	public function import(){
-		// Lexique
-		include('./core/module/addon/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_addon.php');
-
-		// Jeton incorrect
-		if ($this->getUrl(3) !== $_SESSION['csrf']) {
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < addon::$actions['import'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
-				'redirect' => helper::baseUrl()  . 'addon',
-				'state' => false,
-				'notification' => $text['core_addon']['import'][0]
-			]);
-		}
-		else {
-			// Soumission du formulaire
-			if($this->isPost()) {
-				// Récupérer le fichier et le décompacter
-				$zipFilename =	$this->getInput('addonImportFile', helper::FILTER_STRING_SHORT, true);
-				$tempFolder = uniqid();
-				mkdir (self::TEMP_DIR . $tempFolder, 0755);
-				$zip = new ZipArchive();
-				if ($zip->open(self::FILE_DIR . 'source/' . $zipFilename) === TRUE) {
-					$zip->extractTo(self::TEMP_DIR  . $tempFolder );
-				}
-				// Import des données localisées page.json et module.json
-				// Pour chaque dossier localisé
-				$dataTarget = array();
-				$dataSource = array();
-				// Liste des pages de même nom dans l'archive et le site
-				$list = '';
-				// Tableau des langues avec langue originale
-				$origin = ['base'=>'Langue originale'];
-				$i18nListComplet = array_merge( self::$i18nList, $origin);
-				foreach ($i18nListComplet as $key=>$value) {
-					// Les Pages et les modules
-					foreach (['page','module'] as $fileTarget){
-						if (file_exists(self::TEMP_DIR . $tempFolder . '/' .$key . '/' . $fileTarget . '.json')) {
-							// Le dossier de langue existe
-							// faire la fusion
-							$dataSource  = json_decode(file_get_contents(self::TEMP_DIR . $tempFolder . '/' .$key . '/' . $fileTarget . '.json'), true);
-							// Des pages de même nom que celles de l'archive existent
-							if( $fileTarget === 'page' ){
-								foreach( $dataSource as $keydataSource=>$valuedataSource ){
-									foreach( $this->getData(['page']) as $keypage=>$valuepage ){
-										if( $keydataSource === $keypage){
-											$list === '' ? $list .= ' '.$this->getData(['page', $keypage, 'title']) : $list .= ', '.$this->getData(['page', $keypage, 'title']);
+				'access' => false
+			]);	
+		} else {
+			// Lexique
+			include('./core/module/addon/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_addon.php');
+
+			// Jeton incorrect
+			if ($this->getUrl(3) !== $_SESSION['csrf']) {
+				// Valeurs en sortie
+				$this->addOutput([
+					'redirect' => helper::baseUrl()  . 'addon',
+					'state' => false,
+					'notification' => $text['core_addon']['import'][0]
+				]);
+			}
+			else {
+				// Soumission du formulaire
+				if($this->isPost()) {
+					// Récupérer le fichier et le décompacter
+					$zipFilename =	$this->getInput('addonImportFile', helper::FILTER_STRING_SHORT, true);
+					$tempFolder = uniqid();
+					mkdir (self::TEMP_DIR . $tempFolder, 0755);
+					$zip = new ZipArchive();
+					if ($zip->open(self::FILE_DIR . 'source/' . $zipFilename) === TRUE) {
+						$zip->extractTo(self::TEMP_DIR  . $tempFolder );
+					}
+					// Import des données localisées page.json et module.json
+					// Pour chaque dossier localisé
+					$dataTarget = array();
+					$dataSource = array();
+					// Liste des pages de même nom dans l'archive et le site
+					$list = '';
+					// Tableau des langues avec langue originale
+					$origin = ['base'=>'Langue originale'];
+					$i18nListComplet = array_merge( self::$i18nList, $origin);
+					foreach ($i18nListComplet as $key=>$value) {
+						// Les Pages et les modules
+						foreach (['page','module'] as $fileTarget){
+							if (file_exists(self::TEMP_DIR . $tempFolder . '/' .$key . '/' . $fileTarget . '.json')) {
+								// Le dossier de langue existe
+								// faire la fusion
+								$dataSource  = json_decode(file_get_contents(self::TEMP_DIR . $tempFolder . '/' .$key . '/' . $fileTarget . '.json'), true);
+								// Des pages de même nom que celles de l'archive existent
+								if( $fileTarget === 'page' ){
+									foreach( $dataSource as $keydataSource=>$valuedataSource ){
+										foreach( $this->getData(['page']) as $keypage=>$valuepage ){
+											if( $keydataSource === $keypage){
+												$list === '' ? $list .= ' '.$this->getData(['page', $keypage, 'title']) : $list .= ', '.$this->getData(['page', $keypage, 'title']);
+											}
 										}
 									}
 								}
+								$dataTarget  = json_decode(file_get_contents(self::DATA_DIR . $key . '/' . $fileTarget . '.json'), true);
+								$data [$fileTarget] = array_merge($dataTarget[$fileTarget], $dataSource);
+								if( $list === ''){
+									file_put_contents(self::DATA_DIR . '/' .$key . '/' . $fileTarget . '.json', json_encode( $data ,JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT|LOCK_EX) );
+								}
+								// copie du contenu de la page
+								$this->copyDir (self::TEMP_DIR . $tempFolder . '/' .$key . '/content', self::DATA_DIR . '/' .$key . '/content');
+								// Supprimer les fichiers importés
+								unlink (self::TEMP_DIR . $tempFolder . '/' .$key . '/' . $fileTarget . '.json');
 							}
-							$dataTarget  = json_decode(file_get_contents(self::DATA_DIR . $key . '/' . $fileTarget . '.json'), true);
-							$data [$fileTarget] = array_merge($dataTarget[$fileTarget], $dataSource);
-							if( $list === ''){
-								file_put_contents(self::DATA_DIR . '/' .$key . '/' . $fileTarget . '.json', json_encode( $data ,JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT|LOCK_EX) );
-							}
-							// copie du contenu de la page
-							$this->copyDir (self::TEMP_DIR . $tempFolder . '/' .$key . '/content', self::DATA_DIR . '/' .$key . '/content');
-							// Supprimer les fichiers importés
-							unlink (self::TEMP_DIR . $tempFolder . '/' .$key . '/' . $fileTarget . '.json');
 						}
 					}
-				}
 
-				// Import des fichiers placés ailleurs que dans les dossiers localisés.
-				$this->copyDir (self::TEMP_DIR . $tempFolder,self::DATA_DIR );
+					// Import des fichiers placés ailleurs que dans les dossiers localisés.
+					$this->copyDir (self::TEMP_DIR . $tempFolder,self::DATA_DIR );
 
-				// Supprimer le dossier temporaire
-				$this->removeDir(self::TEMP_DIR . $tempFolder);
-				$zip->close();
-				if( $list !== '' ){
-					 $success = false;
-					strpos( $list, ',') === false ? $notification = $text['core_addon']['import'][1].$list : $notification = $text['core_addon']['import'][2].$list;
-				}
-				else{
-					 $success = true;
-					 $notification = $text['core_addon']['import'][3];
+					// Supprimer le dossier temporaire
+					$this->removeDir(self::TEMP_DIR . $tempFolder);
+					$zip->close();
+					if( $list !== '' ){
+						 $success = false;
+						strpos( $list, ',') === false ? $notification = $text['core_addon']['import'][1].$list : $notification = $text['core_addon']['import'][2].$list;
+					}
+					else{
+						 $success = true;
+						 $notification = $text['core_addon']['import'][3];
+					}
+					// Valeurs en sortie
+					$this->addOutput([
+						'redirect' => helper::baseUrl() . 'addon',
+						'state' => $success,
+						'notification' => $notification
+					]);
 				}
 				// Valeurs en sortie
 				$this->addOutput([
-					'redirect' => helper::baseUrl() . 'addon',
-					'state' => $success,
-					'notification' => $notification
+					'title' => $text['core_addon']['import'][4],
+					'view' => 'import'
 				]);
 			}
-			// Valeurs en sortie
-			$this->addOutput([
-				'title' => $text['core_addon']['import'][4],
-				'view' => 'import'
-			]);
 		}
 	}
 

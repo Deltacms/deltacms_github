@@ -49,7 +49,7 @@ $("input, select").on("change", function() {
 		css = "nav,nav.navLevel1 a{background-color:transparent}"; // fond du menu en grand écran
 		css += "nav #toggle{background-color:" + $("#themeMenuBurgerBannerColor").val() + "}"; // bandeau du menu
 		css += "nav #toggle span{color:" + $("#themeMenuBurgerIconColor").val() + "}"; // icône burger
-		css += "nav #toggle span.zwiico-menu::before, nav #toggle span.zwiico-cancel::before{background-color:" + $("#themeMenuBurgerIconBgColor").val() + "}"; // fond icône burger
+		css += "nav #toggle span.delta-ico-menu::before, nav #toggle span.delta-ico-cancel::before{background-color:" + $("#themeMenuBurgerIconBgColor").val() + "}"; // fond icône burger
 		css += "nav #menu a, nav #menu a:hover{color:" + $("#themeMenuBurgerTextMenuColor").val() + "}"; // texte du menu
 		css += "nav #menu, nav.navMain a{background-color:" + $("#themeMenuBurgerBackgroundColor").val() + "}"; // arrière plan du menu
 		css += "nav #menu .navSub a{background-color:" + $("#themeMenuBurgerBackgroundColorSub").val() + "}"; // fond du sous menu
@@ -62,7 +62,7 @@ $("input, select").on("change", function() {
 		css += "nav #burgerText{color:" + $("#themeMenuBurgerTextColor").val() + "}";//Couleur du texte du bandeau
 		css += "nav #burgerText{font-size:" + $("#themeMenuBurgerFontSize").val() + "}";// Taille du texte du bandeau
 	}
-	
+
 	// Taille, hauteur, épaisseur et capitalisation de caractères du menu
 	css += "#toggle span,#menu a{padding:" + $("#themeMenuHeight").val() + ";font-family:'" + menuFont.replace(/\+/g, " ")  + "',sans-serif;font-weight:" + $("#themeMenuFontWeight").val() + ";font-size:" + $("#themeMenuFontSize").val() + ";text-transform:" + $("#themeMenuTextTransform").val() + "}";
 	// Alignement du menu
@@ -129,14 +129,14 @@ $("input, select").on("change", function() {
 			$("nav").show().prependTo("#site");
 			break;
 	}
-	
+
 	//  Disposition des items du menu
 	if ($("#themeMenuWide").val() === 'none' || $("#themeMenuPosition").val() === 'site-first' || $("#themeMenuPosition").val() === 'site-second') {
 		$("#menu").removeClass();
 	} else {
 		$("#menu").addClass("container");
 	}
-	
+
 	//  Largeur du menu quand la bannière est au dessus du site et limitée aus site en grand écran
 	if( $(window).width() >= 800 ){
 		if( <?php echo json_encode($this->getData(['theme', 'header', 'position']) === 'body'); ?> && <?php echo json_encode($this->getData(['theme', 'header', 'wide']) === 'container'); ?>){
@@ -152,7 +152,7 @@ $("input, select").on("change", function() {
 			}
 		}
 	}
-	
+
 	// Visibilité du select 'disposition'
 	if( <?php echo json_encode($this->getData(['theme', 'site', 'width']) !== '100%'); ?> && ( $("#themeMenuPosition").val() === 'top' || ( <?php echo json_encode($this->getData(['theme', 'header', 'wide']) === 'none'); ?>
 		&& ( $("#themeMenuPosition").val() === 'body-first' || $("#themeMenuPosition").val() === 'body-second')) ) ) {
@@ -181,10 +181,10 @@ $("#themeMenuMinWidthParentOrAll, #themeMenuMinWidthTab").on("change", function(
 					$('.' + value).css('text-align', 'left');
 				});
 			} else {
-					$('a.A, a.B').css('min-width', $("#themeMenuMinWidthTab").val());	
+					$('a.A, a.B').css('min-width', $("#themeMenuMinWidthTab").val());
 					$('nav li ul li a').css('min-width', $("#themeMenuMinWidthTab").val());
 					$('nav li ul li a').css('width', $("#themeMenuMinWidthTab").val());
-					$('a.A, a.B').css('text-align', 'left');		
+					$('a.A, a.B').css('text-align', 'left');
 			}
 		}
 }).trigger("change");
@@ -259,7 +259,7 @@ $("#themeMenuBurgerContent").on("change", function() {
 			case 'twoIcon':
 				$("#themeMenuBurgerLogoId1").slideDown();
 				$("#themeMenuBurgerLogoId2").slideDown();
-				$("#themeMenuBurgerTitle").slideUp();			
+				$("#themeMenuBurgerTitle").slideUp();
 			break;
 			case 'oneIcon':
 				$("#themeMenuBurgerLogoId1").slideDown();
@@ -283,13 +283,16 @@ $("#themeMenuBurgerContent").on("change", function() {
 * petit écran et menu burger fixe et non caché
 */
 if($(window).width() < 800) {
+	// Annulation des décalages réalisés par theme.css ou core.js.php
+	$("section").css("padding-top","10px");
+	$("#site.container header, header.container").css("padding-top","0");
 	$(".container").css("max-width","100%");
+	$("nav").css("padding","0");
 	// Variables du thème
 	var positionNav = <?php echo json_encode($this->getData(['theme', 'menu', 'position'])); ?>;
 	var positionHeader = <?php echo json_encode($this->getData(['theme', 'header', 'position'])); ?>;
 	var tinyHidden = <?php echo json_encode($this->getData(['theme', 'header', 'tinyHidden'])); ?>;
-	var bannerMenuHeight = $("nav #toggle").css("height");
-	bannerMenuHeightSection = ( parseInt( bannerMenuHeight.replace("px","") ) + 10 ).toString() + "px";
+	// bannerMenuHeight et bannerMenuHeightSection transmis par core.php / showMenu()
 	var burgerFixed = <?php echo json_encode($this->getData(['theme', 'menu', 'burgerFixed'])); ?>;
 	var burgerOverlay = <?php echo json_encode($this->getData(['theme', 'menu', 'burgerOverlay'])); ?>;
 	if( positionNav !=='hide' && burgerFixed === true && burgerOverlay === false){
@@ -303,6 +306,6 @@ if($(window).width() < 800) {
 	}
 	if( positionNav !=='hide' && burgerFixed === true && ( burgerOverlay === true && tinyHidden === true || positionHeader === 'hide' )){
 		// Bannière masquée ou cachée décaler la section
-		$("section").css("padding-top",bannerMenuHeightSection); 
+		$("section").css("padding-top",bannerMenuHeightSection);
 	}
 }

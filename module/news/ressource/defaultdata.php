@@ -12,12 +12,11 @@ class init extends news {
 		'sameHeight'		=> false,
 		'noMargin'			=> true
     ];
-
+	
     public static $defaultTheme = [
-        'style'               => '',
-        'borderColor'         => 'rgba(33, 34, 35, 1)',
-        'backgroundColor'     => 'rgba(255, 255, 255, 1)',
-        'borderWidth'          => '0',
+        'style'             => '',
+        'borderColor'      	=> 'rgba(33, 34, 35, 1)',
+        'borderWidth'       => '0',
 		'borderRadius'		=> '0px',
 		'borderShadows'		=> '0px 0px 0px'
     ];

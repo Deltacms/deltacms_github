@@ -2,7 +2,9 @@
 // Lexique
 include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_news.php');
 
-if($module::$news): 
+if($module::$news):
+	// Mémorisation da la page active
+	$_SESSION['pageActive'] = $this->getUrl(); 
 	if( function_exists('datefmt_create') && function_exists('datefmt_format') && extension_loaded('intl') ){
 		// Pour les dates suivant la langue de rédaction du site (langue principale ou langue de traduction rédigée)
 		if( isset( $_SESSION['langFrontEnd']) && isset( $_SESSION['translationType']) && $_SESSION['translationType'] === 'site' ){

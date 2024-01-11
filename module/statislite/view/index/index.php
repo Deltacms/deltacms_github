@@ -152,23 +152,28 @@ if( function_exists('datefmt_create') && function_exists('datefmt_format') && ex
  * Affichage des téléchargements
  *
 */
-if( file_exists( $module::$downloadLink.'counter.json' ) && file_get_contents($module::$downloadLink.'counter.json') !== '{}'){
+if( file_exists( $module::$downloadLink.'counter.json' )){
+	if( file_get_contents($module::$downloadLink.'counter.json') !== '{}'){
 	$json = file_get_contents($module::$downloadLink.'counter.json');
 	$download = json_decode($json, true);
-	if( function_exists('datefmt_create') && function_exists('datefmt_format') && extension_loaded('intl') ){
-		// Affichage au format de la langue d'administration
-		$fmt = datefmt_create(
-			$text['statislite_view']['index'][29],
-			IntlDateFormatter::LONG,
-			IntlDateFormatter::SHORT,
-			$text['statislite_view']['index'][30],
-			IntlDateFormatter::GREGORIAN
-		);
-		$datedeb = datefmt_format($fmt, strtotime($download["date_creation_fichier"]));
+	if( isset($download["date_creation_fichier"])){
+		if( function_exists('datefmt_create') && function_exists('datefmt_format') && extension_loaded('intl') ){
+			// Affichage au format de la langue d'administration
+			$fmt = datefmt_create(
+				$text['statislite_view']['index'][29],
+				IntlDateFormatter::LONG,
+				IntlDateFormatter::SHORT,
+				$text['statislite_view']['index'][30],
+				IntlDateFormatter::GREGORIAN
+			);
+			$datedeb = datefmt_format($fmt, strtotime($download["date_creation_fichier"]));
 
-	} else{
-		$datedeb = $download["date_creation_fichier"];
-	} ?>
+		} else{
+			$datedeb = $download["date_creation_fichier"];
+		} 
+	} else {
+		$datedeb =" ? ";
+	}?>
 <div class="block">
 		<div class="blockTitle"><?php echo  $text['statislite_view']['index'][31].$datedeb; ?></div>
 	<?php
@@ -181,7 +186,7 @@ if( file_exists( $module::$downloadLink.'counter.json' ) && file_get_contents($m
 		</div>
 		<?php } } ?>
 </div>
-<?php } ?>
+<?php } }?>
 
 <?php
 /*

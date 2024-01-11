@@ -94,7 +94,7 @@ class slider extends common {
 	*/
 	private function update() {
 		
-		// Mise à jour version 5.0 vers 6.0
+		// Mise à jour version 5.0 vers 6.0 ou Initialisation
 		if (null === $this->getData(['module', $this->getUrl(0), 'config', 'versionData']) ) {	
 			if(null !== $this->getData(['module', $this->getUrl(0) ]) ){ 
 				$name = array_key_first(  $this->getData(['module', $this->getUrl(0) ]) );
@@ -106,6 +106,9 @@ class slider extends common {
 				$this->deleteData(['module', $this->getUrl(0), 'config', 'name' ]);
 				// Ajoute config versionData
 				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','6.0']);
+			}else{
+				// Initialisation
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData', self::VERSION]);
 			}
 		}
 		// Version 6.3
@@ -119,131 +122,141 @@ class slider extends common {
 	 * Configuration
 	 */
 	public function config() {
-		// Lexique
-		include('./module/slider/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_slider.php');
-		// Liste des dossiers dans site/file/source triés et non vides
-		$filter = ['jpg', 'jpeg', 'png', 'gif', 'tiff', 'ico', 'webp'];
-		self::$listDirs = helper::scanDir(self::FILE_DIR.'source', $filter);
-		sort(self::$listDirs);
-		// Liste des pages pour les liens sur image
-		self::$pageList['-']='';
-		foreach ($this->getHierarchy(null,null,null) as $parentKey=>$parentValue) {
-			// Exclusions les barres, les pages masquées ou non publiques
-			if ($this->getData(['page',$parentKey,'group']) !== 0  ||
-				$this->getData(['page', $parentKey, 'block']) === 'bar' )  {
-				continue;
-			}
-			self::$pageList [$parentKey] = $parentKey;
-			foreach ($parentValue as $childKey) {
-				self::$pageList [$childKey] = $childKey;
-			}
-		}
-		// Valeurs par défaut si le slider n'existe pas encore
-		if($this->getData(['module', $this->getUrl(0), 'config', 'directory']) === null){
-			$this->setData(['module', $this->getUrl(0), [
-				'config' => [
-					'directory' => self::$listDirs[0],
-					'boutonsVisibles' => 'slider2',
-					'pagerVisible' => 'true',
-					'maxiWidth' => '800',
-					'fadingTime' => '1500',
-					'sliderTime' => '5000',
-					'visibiliteLegende' => 'survol',
-					'positionLegende' => 'bas',
-					'tempsApparition' => 'opacity 2s ease-in',
-					'typeBouton' => 'cer_blanc',
-					'tri' => 'SORT_ASC',
-					'versionData' => self::VERSION
-				],
-				'legend' => [],
-				'href' => []
-			]]);
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < slider::$actions['config'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
-				'redirect' => helper::baseUrl() . $this->getUrl(0) . '/config',
-				'notification' => 'slider init',
-				'state' => true
-			]);
-		}
-		
-		// Soumission du formulaire
-		if($this->isPost()) {
-			$legends = [];
-			foreach((array) $this->getInput('legend', null) as $file => $legend) {
-				$file = str_replace('.','',$file);
-				$legends[$file] = helper::filter($legend, helper::FILTER_STRING_SHORT);
-			}
-			
-			$hrefs = [];
-			foreach((array) $this->getInput('sliderHref', null) as $file => $href) {
-				$file = str_replace('.','',$file);
-				$hrefs[$file] = self::$pageList[helper::filter($href, helper::FILTER_STRING_SHORT)];
-			}
-
-			$this->setData(['module', $this->getUrl(0), [
-				'config' => [
-					'directory' => self::$listDirs[$this->getInput('galleryEditDirectory')],
-					'boutonsVisibles' => $this->getInput('sliderBoutonsVisibles', helper::FILTER_STRING_SHORT, true),
-					'pagerVisible' => $this->getInput('sliderPagerVisible', helper::FILTER_STRING_SHORT, true),
-					'maxiWidth' => $this->getInput('sliderMaxiWidth', helper::FILTER_STRING_SHORT, true),
-					'fadingTime' => $this->getInput('sliderFadingTime', helper::FILTER_STRING_SHORT, true),
-					'sliderTime' => $this->getInput('sliderDiapoTime', helper::FILTER_STRING_SHORT, true),
-					'visibiliteLegende' => $this->getInput('sliderVisibiliteLegende', helper::FILTER_STRING_SHORT, true),
-					'positionLegende' => $this->getInput('sliderPositionLegende', helper::FILTER_STRING_SHORT, true),
-					'tempsApparition' => $this->getInput('sliderTempsApparition', helper::FILTER_STRING_SHORT, true),
-					'typeBouton' => $this->getInput('sliderTypeBouton', helper::FILTER_STRING_SHORT, true),
-					'tri' => $this->getInput('sliderTri', helper::FILTER_STRING_SHORT, true),
-					'versionData' => self::VERSION
-				],
-				'legend' => $legends,
-				'href' => $hrefs
-			]]);
-			// Valeurs en sortie
-			$this->addOutput([
-				'redirect' => helper::baseUrl() . $this->getUrl(0) . '/config',
-				'notification' => $text['slider']['edit'][1],
-				'state' => true
-			]);
-		}
-		// Met en forme le tableau
-		$directory = $this->getData(['module', $this->getUrl(0), 'config', 'directory']);
-		if(is_dir($directory)) {
-			$iterator = new DirectoryIterator($directory);
-			foreach($iterator as $fileInfos) {
-				if($fileInfos->isDot() === false AND $fileInfos->isFile() AND @getimagesize($fileInfos->getPathname())) {
-					self::$pictures[$fileInfos->getFilename()] = [
-						$fileInfos->getFilename(),
-						template::text('legend[' . $fileInfos->getFilename() . ']', [
-							'value' => $this->getData(['module', $this->getUrl(0), 'legend', str_replace('.','',$fileInfos->getFilename())])
-						]),
-						template::select('sliderHref[' . $fileInfos->getFilename() . ']', self::$pageList,[
-							'selected' => array_flip(self::$pageList)[$this->getData(['module', $this->getUrl(0), 'href', str_replace('.','',$fileInfos->getFilename())])]
-						])
-					];
+				'access' => false
+			]);	
+		} else {
+			// Lexique
+			include('./module/slider/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_slider.php');
+			// Liste des dossiers dans site/file/source triés et non vides
+			$filter = ['jpg', 'jpeg', 'png', 'gif', 'tiff', 'ico', 'webp'];
+			self::$listDirs = helper::scanDir(self::FILE_DIR.'source', $filter);
+			sort(self::$listDirs);
+			// Liste des pages pour les liens sur image
+			self::$pageList['-']='';
+			foreach ($this->getHierarchy(null,null,null) as $parentKey=>$parentValue) {
+				// Exclusions les barres, les pages masquées ou non publiques
+				if ($this->getData(['page',$parentKey,'group']) !== 0  ||
+					$this->getData(['page', $parentKey, 'block']) === 'bar' )  {
+					continue;
+				}
+				self::$pageList [$parentKey] = $parentKey;
+				foreach ($parentValue as $childKey) {
+					self::$pageList [$childKey] = $childKey;
 				}
 			}
-			// Tri des images pour affichage de la liste dans la page de configuration
-			switch ($this->getData(['module', $this->getUrl(0), 'config', 'tri'])) {
-					case 'SORT_DSC':
-						krsort(self::$pictures,SORT_NATURAL | SORT_FLAG_CASE);
-						break;
-					case 'SORT_ASC':
-						ksort(self::$pictures,SORT_NATURAL | SORT_FLAG_CASE);
-						break;
-					case 'RAND':
-						// sans intérêt ici
-						break;
-					case 'NONE':
-						break;
-					default:
-						break;
+			// Valeurs par défaut si le slider n'existe pas encore
+			if($this->getData(['module', $this->getUrl(0), 'config', 'directory']) === null){
+				$this->setData(['module', $this->getUrl(0), [
+					'config' => [
+						'directory' => self::$listDirs[0],
+						'boutonsVisibles' => 'slider2',
+						'pagerVisible' => 'true',
+						'maxiWidth' => '800',
+						'fadingTime' => '1500',
+						'sliderTime' => '5000',
+						'visibiliteLegende' => 'survol',
+						'positionLegende' => 'bas',
+						'tempsApparition' => 'opacity 2s ease-in',
+						'typeBouton' => 'cer_blanc',
+						'tri' => 'SORT_ASC',
+						'versionData' => self::VERSION
+					],
+					'legend' => [],
+					'href' => []
+				]]);
+				// Valeurs en sortie
+				$this->addOutput([
+					'redirect' => helper::baseUrl() . $this->getUrl(0) . '/config',
+					'notification' => 'slider init',
+					'state' => true
+				]);
 			}
+			
+			// Soumission du formulaire
+			if($this->isPost()) {
+				$legends = [];
+				foreach((array) $this->getInput('legend', null) as $file => $legend) {
+					$file = str_replace('.','',$file);
+					$legends[$file] = helper::filter($legend, helper::FILTER_STRING_SHORT);
+				}
+				
+				$hrefs = [];
+				foreach((array) $this->getInput('sliderHref', null) as $file => $href) {
+					$file = str_replace('.','',$file);
+					$hrefs[$file] = self::$pageList[helper::filter($href, helper::FILTER_STRING_SHORT)];
+				}
+
+				$this->setData(['module', $this->getUrl(0), [
+					'config' => [
+						'directory' => self::$listDirs[$this->getInput('galleryEditDirectory')],
+						'boutonsVisibles' => $this->getInput('sliderBoutonsVisibles', helper::FILTER_STRING_SHORT, true),
+						'pagerVisible' => $this->getInput('sliderPagerVisible', helper::FILTER_STRING_SHORT, true),
+						'maxiWidth' => $this->getInput('sliderMaxiWidth', helper::FILTER_STRING_SHORT, true),
+						'fadingTime' => $this->getInput('sliderFadingTime', helper::FILTER_STRING_SHORT, true),
+						'sliderTime' => $this->getInput('sliderDiapoTime', helper::FILTER_STRING_SHORT, true),
+						'visibiliteLegende' => $this->getInput('sliderVisibiliteLegende', helper::FILTER_STRING_SHORT, true),
+						'positionLegende' => $this->getInput('sliderPositionLegende', helper::FILTER_STRING_SHORT, true),
+						'tempsApparition' => $this->getInput('sliderTempsApparition', helper::FILTER_STRING_SHORT, true),
+						'typeBouton' => $this->getInput('sliderTypeBouton', helper::FILTER_STRING_SHORT, true),
+						'tri' => $this->getInput('sliderTri', helper::FILTER_STRING_SHORT, true),
+						'versionData' => self::VERSION
+					],
+					'legend' => $legends,
+					'href' => $hrefs
+				]]);
+				// Valeurs en sortie
+				$this->addOutput([
+					'redirect' => helper::baseUrl() . $this->getUrl(0) . '/config',
+					'notification' => $text['slider']['edit'][1],
+					'state' => true
+				]);
+			}
+			// Met en forme le tableau
+			$directory = $this->getData(['module', $this->getUrl(0), 'config', 'directory']);
+			if(is_dir($directory)) {
+				$iterator = new DirectoryIterator($directory);
+				foreach($iterator as $fileInfos) {
+					if($fileInfos->isDot() === false AND $fileInfos->isFile() AND @getimagesize($fileInfos->getPathname())) {
+						self::$pictures[$fileInfos->getFilename()] = [
+							$fileInfos->getFilename(),
+							template::text('legend[' . $fileInfos->getFilename() . ']', [
+								'value' => $this->getData(['module', $this->getUrl(0), 'legend', str_replace('.','',$fileInfos->getFilename())])
+							]),
+							template::select('sliderHref[' . $fileInfos->getFilename() . ']', self::$pageList,[
+								'selected' => array_flip(self::$pageList)[$this->getData(['module', $this->getUrl(0), 'href', str_replace('.','',$fileInfos->getFilename())])]
+							])
+						];
+					}
+				}
+				// Tri des images pour affichage de la liste dans la page de configuration
+				switch ($this->getData(['module', $this->getUrl(0), 'config', 'tri'])) {
+						case 'SORT_DSC':
+							krsort(self::$pictures,SORT_NATURAL | SORT_FLAG_CASE);
+							break;
+						case 'SORT_ASC':
+							ksort(self::$pictures,SORT_NATURAL | SORT_FLAG_CASE);
+							break;
+						case 'RAND':
+							// sans intérêt ici
+							break;
+						case 'NONE':
+							break;
+						default:
+							break;
+				}
+			}
+			// Valeurs en sortie
+			$this->addOutput([
+				'title' => $text['slider']['config'][3],
+				'view' => 'config'
+			]);
 		}
-		// Valeurs en sortie
-		$this->addOutput([
-			'title' => $text['slider']['config'][3],
-			'view' => 'config'
-		]);
 	}
 
 	/**

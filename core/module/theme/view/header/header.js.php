@@ -46,7 +46,7 @@ $("input, select").on("change", function() {
 		$("#headerSwiper").hide();
 			
 		var headerFont = $("#themeHeaderFont").val();
-		css = "header{text-align:" + $("#themeHeaderTextAlign").val() + ";";
+		css = "header #wallPaper{text-align:" + $("#themeHeaderTextAlign").val() + ";";
 		
 		// Sélection d'une image réalisée
 		if( $("#themeHeaderImage").val() !== ""){
@@ -248,7 +248,7 @@ $("#themeHeaderFeature").on("change", function() {
 	}
 	if($(this).val() === 'swiper') {
 		$(".swiperContainer").show();
-		$(".colorsContainer").hide();
+		$(".colorsContainer").show();
 		$(".featureContainer").hide();
 		$(".wallpaperContainer").hide();
 		$("#themeHeaderTextColorWrapper").hide();
@@ -259,17 +259,26 @@ $("#themeHeaderFeature").on("change", function() {
 * petit écran et menu burger fixe et non caché
 */
 if($(window).width() < 800) {
+	// Annulation des décalages réalisés par theme.css ou core.js.php
+	$("section").css("padding-top","10px");
+	$("#site.container header, header.container").css("padding-top","0");
 	// Variables du thème
 	var positionNav = <?php echo json_encode($this->getData(['theme', 'menu', 'position'])); ?>;
 	var positionHeader = <?php echo json_encode($this->getData(['theme', 'header', 'position'])); ?>;
 	var tinyHidden = <?php echo json_encode($this->getData(['theme', 'header', 'tinyHidden'])); ?>;
-	var bannerMenuHeight = $("nav #toggle").css("height");
-	bannerMenuHeightSection = ( parseInt( bannerMenuHeight.replace("px","") ) + 10 ).toString() + "px";
+	// bannerMenuHeight et bannerMenuHeightSection transmis par core.php / showMenu()
 	var burgerFixed = <?php echo json_encode($this->getData(['theme', 'menu', 'burgerFixed'])); ?>;
 	var burgerOverlay = <?php echo json_encode($this->getData(['theme', 'menu', 'burgerOverlay'])); ?>;
+	// Spécialement pour une bannière papier peint
+	var headerFeature = <?php echo json_encode($this->getData(['theme', 'header', 'feature'])); ?>;
+	var headerBgColor = <?php echo json_encode($this->getData(['theme', 'header', 'backgroundColor'])); ?>;
 	if( positionNav !=='hide' && burgerFixed === true && burgerOverlay === false){
 		// Décalage de la bannière de la hauteur du menu
 		$("header").css("padding-top",bannerMenuHeight);
+		if ( headerFeature === "wallpaper" ){
+			$("section").css("padding-top",bannerMenuHeightSection);
+			$("nav.navfixedburgerconnected #toggle").css("background-color",headerBgColor);
+		}
 	}
 	if( positionNav !=='hide' && burgerFixed === true && positionHeader === 'hide' ){
 		// si bannière cachée décalage de la section

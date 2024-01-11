@@ -1,4 +1,6 @@
 <?php
+//Supprime les erreurs de dépréciations
+error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 try {
     if (!isset($config)) {

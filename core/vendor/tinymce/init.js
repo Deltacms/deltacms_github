@@ -17,6 +17,16 @@ if ( typeof(lang_admin) == 'undefined') {
 if ( typeof(initSnipcart) == 'undefined') {
 	var initSnipcart = false;
 }; 
+// Adaptations pour la saisie des news
+if ( typeof(newsAddEdit) == 'undefined') {
+	var newsAddEdit = false;
+}; 
+if(newsAddEdit){
+	var content_css = [ baseUrl + "core/layout/common.css",baseUrl + "core/layout/mediaqueries.css",baseUrl + "core/vendor/tinymce/content.css",baseUrl + "site/data/theme.css",baseUrl + "site/data/news/themeNews.css",baseUrl + "site/data/custom.css"];
+} else {
+	var content_css = [baseUrl + "core/layout/common.css",baseUrl + "core/layout/mediaqueries.css",baseUrl + "core/vendor/tinymce/content.css",baseUrl + "site/data/theme.css",baseUrl + "site/data/custom.css"];
+}
+newAddEdit = false;
 var pluginsList = "advlist anchor autolink autoresize autosave codemirror colorpicker contextmenu fullscreen hr image imagetools link lists media paste searchreplace stickytoolbar tabfocus table template textcolor nonbreaking";
 var toolbarList = "restoredraft | undo redo | formatselect bold italic underline forecolor backcolor | fontsizeselect | alignleft aligncenter alignright alignjustify | bullist numlist | table template | image media link | code fullscreen";
 var templatesList = [
@@ -44,6 +54,11 @@ var templatesList = [
 			title: "Blocs de texte : 3 - 3 - 3 - 3",
 			url: baseUrl + "core/vendor/tinymce/templates/4blocks.html",
 			description: "4 blocs de texte, de même hauteur, avec un titre en ligne."
+		},
+		{
+			title: "Color box",
+			url: baseUrl + "core/vendor/tinymce/templates/colorbox.html",
+			description: "Boîte colorée sans marge en petit écran."
 		},
 		{
 			title: "Effet accordéon : 2",
@@ -220,13 +235,7 @@ tinymce.init({
 	// Contenu du menu contextuel
 	contextmenu: "selectall searchreplace | hr | media image  link anchor nonbreaking  | insertable  cell row column deletetable",
 	// Fichiers CSS à intégrer à l'éditeur
-	content_css: [
-		baseUrl + "core/layout/common.css",
-		baseUrl + "core/layout/mediaqueries.css",
-		baseUrl + "core/vendor/tinymce/content.css",
-		baseUrl + "site/data/theme.css",
-		baseUrl + "site/data/custom.css"
-	],
+	content_css,
 // Classe à ajouter à la balise body dans l'iframe
 	body_class: "editorWysiwyg",
 	// Cache les menus
@@ -331,7 +340,7 @@ tinymce.init({
 	// Langue
 	language: lang_admin,
 	// Plugins
-	plugins: "advlist anchor autolink autoresize autosave colorpicker contextmenu fullscreen hr lists paste searchreplace stickytoolbar tabfocus template textcolor visualblocks",
+	plugins: "advlist anchor autolink autoresize autosave colorpicker contextmenu fullscreen hr lists paste searchreplace tabfocus template textcolor visualblocks",
 	// Contenu de la barre d'outils
 	toolbar: "restoredraft | undo redo | formatselect bold italic forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist | visualblocks fullscreen",
 	// Titre des images

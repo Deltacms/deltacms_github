@@ -76,8 +76,10 @@ $text['form']['index'][9] = 'échec le message n\'est pas envoyé car ';
 $text['form']['index'][10] = 'La pièce jointe n\'est pas un document pdf';
 $text['form']['index'][11] = 'La pièce jointe n\'est pas un document zip';
 $text['form']['index'][12] = ' Renseignez le Captcha ';
-// Initialisation de flatpickr
+// Initialisation de flatpickr 
 $lang_flatpickr = 'fr';
+// Langue d'administration pour tinymce
+$lang_admin = 'fr_FR';
 // Selects
 $signature = [
 	'text' => 'Nom du site',

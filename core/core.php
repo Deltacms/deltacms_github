@@ -4,16 +4,19 @@
  * This file is part of DeltaCMS.
  * For full copyright and license information, please see the LICENSE
  * file that was distributed with this source code.
- * @author Sylvain Lelièvre <lelievresylvain@free.fr>
- * @copyright Copyright (C) 2021, Sylvain Lelièvre
+ * @author Sylvain Lelièvre
+ * @copyright 2021 © Sylvain Lelièvre
+ * @author Lionel Croquefer
+ * @copyright 2022 © Lionel Croquefer
  * @license GNU General Public License, version 3
  * @link https://deltacms.fr/
+ * @contact https://deltacms.fr/contact
  *
  * Delta was created from version 11.2.00.24 of ZwiiCMS
  * @author Rémi Jean <remi.jean@outlook.com>
- * @copyright Copyright (C) 2008-2018, Rémi Jean
+ * @copyright 2008-2018 © Rémi Jean
  * @author Frédéric Tempez <frederic.tempez@outlook.com>
- * @copyright Copyright (C) 2018-2021, Frédéric Tempez
+ * @copyright 2018-2021 © Frédéric Tempez
  */
 
 class common {
@@ -49,7 +52,7 @@ class common {
 
 	// Numéro de version
 	const DELTA_UPDATE_URL = 'https://update.deltacms.fr/master/';
-	const DELTA_VERSION = '4.5.01';
+	const DELTA_VERSION = '4.5.04';
 	const DELTA_UPDATE_CHANNEL = "v4";
 
 	public static $actions = [];
@@ -114,7 +117,7 @@ class common {
 			'lity',
 			'filemanager',
 			'tippy',
-			'zwiico',
+			'delta-ico',
 			'imagemap',
 			'simplelightbox',
 			'swiper'
@@ -302,35 +305,6 @@ class common {
 		if( !isset( $_SESSION['humanBot'] )){
 			$_SESSION['humanBot'] = 'bot';
 			if( !empty($_SERVER['HTTP_ACCEPT_LANGUAGE']) ) $_SESSION['humanBot'] = 'human';
-		}
-
-		/**
-		 * Traduction du site par script
-		 * Traduction par auto-détection de la langue du navigateur
-		 *	- Exclure la traduction manuelle
-		 *	- La langue du navigateur est lisible
-		 *	- L'auto-détection est active
-		 */
-
-		if ( $this->getData(['config', 'i18n', 'enable']) === true
-			 AND $this->getData(['config', 'i18n','scriptGoogle']) === true
-			 AND $this->getData(['config', 'i18n','autoDetect']) === true
-			 AND $this->getInput('DELTA_I18N_SITE') !== ''
-			 AND !empty($_SERVER['HTTP_ACCEPT_LANGUAGE']) )
-		{
-			/**
-			 * Le cookie est prioritaire sur le navigateur
-			 * la traduction est celle de la langue du drapeau
-			 **/
-			if ( $this->getInput('DELTA_I18N_SCRIPT') !== substr($_SERVER["HTTP_ACCEPT_LANGUAGE"],0,2 ) ) {
-				setrawcookie('googtrans', '/'.$this->getData(['config', 'i18n', 'langBase']).'/'.substr( $_SERVER["HTTP_ACCEPT_LANGUAGE"],0,2 ), time() + 3600, helper::baseUrl(false, false));
-			} else {
-				// Langue du drapeau si elle est définie
-				if (  $this->getInput('DELTA_I18N_SCRIPT') !== '' )	{
-					// Paramètre du script
-					setrawcookie("googtrans", '/'.$this->getData(['config', 'i18n', 'langBase']). '/'. $this->getInput('DELTA_I18N_SCRIPT') , time() + 3600, helper::baseUrl(false,false));
-				}
-			}
 		}
 
 		// Construit la liste des pages parents/enfants
@@ -982,7 +956,7 @@ class common {
 			file_put_contents('robots.txt','User-agent: *' .  PHP_EOL . 'Disallow: /');
 		}
 
-		// Submit your sitemaps to Google, Yahoo, Bing and Ask.com
+		// Submit your sitemaps
 		if (empty ($this->getData(['config','proxyType']) . $this->getData(['config','proxyUrl']) . ':' . $this->getData(['config','proxyPort'])) ) {
 			$sitemap->submitSitemap();
 		}
@@ -1219,7 +1193,7 @@ class common {
 			$item .= $this->getInput('DELTA_COOKIE_CONSENT') !==  'true' ? '>' : ' class="displayNone">';
 			// Image titre et bouton de fermeture
 			$item .= '<div class="cookieTop">';
-			$item .= '<div class="cookieImage"><img src="site/file/source/icones/cookie.gif" alt=""></div>';
+			$item .= '<div class="cookieImage"><img src="site/file/source/icones/cookie.gif" alt="cookie"></div>';
 			$item .= '<div class="cookieTitle">'.$this->getData(['locale', 'cookies', 'cookiesTitleText']) . '</div>';
 			$item .= '<div class="cookieClose">'. template::ico('cancel') .'</div>';
 			$item .= '</div>';
@@ -1284,8 +1258,8 @@ class common {
 			in_array($this->getUrl(1),$pattern)  )
 			) { // Pleine page en mode configuration
 				$this->showContent();
-				if (file_exists(self::DATA_DIR . 'body.inc.html')) {
-					include( self::DATA_DIR . 'body.inc.html');
+				if (file_exists(self::DATA_DIR . 'body.inc.php')) {
+					include( self::DATA_DIR . 'body.inc.php');
 				}
 				if($this->getData(['config', 'statislite', 'enable'])){
 					if(is_dir("./module/statislite")) include "./module/statislite/include/stat.php";
@@ -1319,8 +1293,8 @@ class common {
 				 */
 				echo '<div class="'. $content . '" id="contentSite">';
 				$this->showContent();
-				if (file_exists(self::DATA_DIR . 'body.inc.html')) {
-						include(self::DATA_DIR . 'body.inc.html');
+				if (file_exists(self::DATA_DIR . 'body.inc.php')) {
+						include(self::DATA_DIR . 'body.inc.php');
 				}
 				if($this->getData(['config', 'statislite', 'enable'])){
 					if(is_dir("./module/statislite")) include "./module/statislite/include/stat.php";
@@ -1370,23 +1344,6 @@ class common {
 		}
 
 		echo $this->output['content'];
-
-		/**
-		 * Affiche les crédits, conditions requis :
-		 * La traduction automatique est active et La fonction est activée.
-		 */
-		if ( $this->getData(['config', 'i18n', 'enable']) === true
-			 AND $this->getData(['config', 'i18n','scriptGoogle']) === true
-			 AND $this->getData(['config', 'i18n','showCredits']) === true
-			 AND
-				// et la traduction n'est pas manuelle
-				(  $this->getInput('DELTA_I18N_SCRIPT')
-					AND $this->getData(['config', 'i18n', $this->getInput('DELTA_I18N_SCRIPT')]) === 'script'
-				)
-           )
-		{
-		   echo '<div id="googTransLogo"><a href="//policies.google.com/terms#toc-content" data-lity><img src="core/module/translate/ressource/googtrans.png" ></a></div>';
-		}
 	}
 
 	/**
@@ -1532,25 +1489,25 @@ class common {
 		$items .= '</span>';
 		// Enregistrement et affichage des personnes en ligne
 		if( $this->getData(['theme', 'footer', 'displayWhois']) === true ){
-			// ajouter 'session' à la liste des descripteurs d'E/S ligne 225
 			if( ! file_exists(self::DATA_DIR . 'session.json'))	file_put_contents(self::DATA_DIR . 'session.json', '{}');
 			$user_type = $this->getUser('id') ? $this->getData(['user', $this->getUser('id'), 'group']) : 0 ;
 			$this->setData(['session', session_id(), 'user_type', $user_type ]);
 			$this->setData(['session', session_id(), 'time', time() ]);
-			// Lexique
-			include('./core/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_core.php');
+			// Tableau $groupWhoIs
+			$groupWhoIs = [ 0 => $this->getData(['locale', 'visitorLabel']), 1 => $this->getData(['locale', 'memberLabel']),
+			2 => $this->getData(['locale', 'editorLabel']), 3 => $this->getData(['locale', 'moderatorLabel']), 4 => $this->getData(['locale', 'administratorLabel'])];
 			$file = file_get_contents('site/data/session.json');
 			$session_tab = json_decode( $file, true);
 			$whoIs = [0 => 0,1 => 0,2 => 0, 3 => 0,4=> 0];
 			foreach( $session_tab as $key1=>$session_id){
 				foreach($session_id as $key2=>$value){
-					// Temps d'inactivité réglé ici à 300 secondes
-					if( time() >  $value["time"] + 300){
+					// Temps d'inactivité réglé à 60 secondes
+					if( time() >  $value["time"] + 60){
 						$session_tab[$key1]=[];
 					} else {
 						$whoIs[$value['user_type']]++;
 					}
-				}  
+				}
 			}
 			$file = json_encode( $session_tab);
 			file_put_contents('site/data/session.json', $file);
@@ -1558,8 +1515,7 @@ class common {
 			$textWhoIs ='';
 			foreach( $whoIs as $key=>$value ){
 				if( $value !== 0){
-					$textWhoIs .= ' '. $value.'&nbsp;'. $groupWhoIs[$key];
-					$textWhoIs .= $value > 1 ? 's ':' ';
+					$textWhoIs .= ' '.$groupWhoIs[$key].'=>'.$value.' ';
 				}
 			}
 			$items .= ' | '.$textWhoIs;
@@ -1659,7 +1615,7 @@ class common {
 			) {
 			echo '<link rel="icon" media="(prefers-color-scheme:light)" href="' . self::FILE_DIR.'source/' . $favicon . '">';
 		} else {
-			echo '<link rel="icon" media="(prefers-color-scheme:light)"  href="core/vendor/zwiico/ico/favicon.ico">';
+			echo '<link rel="icon" media="(prefers-color-scheme:light)"  href="core/vendor/delta-ico/ico/favicon.ico">';
 		}
 		// Dark scheme
 		$faviconDark = $this->getData(['config', 'faviconDark']);
@@ -1682,43 +1638,43 @@ class common {
 		$groupUser = $this->getUser('group') === false ? 0 : $this->getUser('group');
 		// Ajout de la class navfixedburgerconnected ou navfixedburgerlogout si le bandeau (texte ou logo + icône burger) du menu burger est fixe
 		if( $this->getData(['theme', 'menu', 'burgerFixed']) === true ){
-			if( $groupUser >= 2 ) {
+			if( $groupUser >= 2 && $this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD')) {
 				$burgerclass = 'class="navfixedburgerconnected"';
 				$burgerclassshort = 'navfixedburgerconnected';
 			} else {
 				$burgerclass = 'class="navfixedburgerlogout"';
 				$burgerclassshort = 'navfixedburgerlogout';
-			} 			
+			}
 		} else {
-			if( $groupUser >= 2 ) {
+			if( $groupUser >= 2 && $this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD')) {
 				$burgerclass = 'class="navburgerconnected"';
 				$burgerclassshort = 'navburgerconnected';
 			}
 		}
 		switch ($position) {
 			case 'top':
-				// Détermine si le menu est fixe en haut de page lorsque l'utilisateur n'est pas connecté 
+				// Détermine si le menu est fixe en haut de page lorsque l'utilisateur n'est pas connecté
 				if ( $this->getData(['theme', 'menu', 'position']) === 'top' AND $this->getData(['theme', 'menu', 'fixed']) === true ){
-					if( $groupUser >= 2 ) {
+					if( $groupUser >= 2 && $this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD')) {
 						echo '<nav id="navfixedconnected" '.$burgerclass.'>';
 					} else {
 						echo '<nav id="navfixedlogout" '.$burgerclass.'>';
-					} 
+					}
 				} else {
 					echo '<nav '.$burgerclass.'>';
 				}
-				$menuClass = $this->getData(['theme', 'menu', 'wide']) === 'none' ? 'class="container-large"'  : 'class="container"';			
+				$menuClass = $this->getData(['theme', 'menu', 'wide']) === 'none' ? 'class="container-large"'  : 'class="container"';
 			break;
 			case 'body-first' :
 				// Limitation de la largeur du bandeau menu pour une bannière body et container
 				$navStyle = $this->getData(['theme', 'header', 'wide'])==='container'?  $navStyle = 'class="container '.$burgerclassshort.'"' : '';
 				echo '<nav '.$navStyle.'>';
-				$menuClass = $this->getData(['theme', 'menu', 'wide']) === 'none' ? 'class="container-large"'  : 'class="container"';				
+				$menuClass = $this->getData(['theme', 'menu', 'wide']) === 'none' ? 'class="container-large"'  : 'class="container"';
 			break;
 			case 'body-second' :
 				$navStyle = $this->getData(['theme', 'header', 'wide'])==='container'?  $navStyle = 'class="container '.$burgerclassshort.'"' : '';
 				echo '<nav '.$navStyle.'>';
-				$menuClass = $this->getData(['theme', 'menu', 'wide']) === 'none' ? 'class="container-large"'  : 'class="container"';	
+				$menuClass = $this->getData(['theme', 'menu', 'wide']) === 'none' ? 'class="container-large"'  : 'class="container"';
 			break;
 			case 'site-first' :
 				echo '<nav '.$burgerclass.'>';
@@ -1727,34 +1683,34 @@ class common {
 				echo '<nav '.$burgerclass.'>';
 			break;
 			case 'site' :
-				echo '<nav '.$burgerclass.'>';		
-			break;	
+				echo '<nav '.$burgerclass.'>';
+			break;
 			case 'hide' :
-				?> <nav <?php if($this->getData(['theme', 'menu', 'position']) === 'hide'): ?> class="displayNone" <?php endif; ?> > <?php		
-			break;			
+				?> <nav <?php if($this->getData(['theme', 'menu', 'position']) === 'hide'): ?> class="displayNone" <?php endif; ?> > <?php
+			break;
 		}
-		
+
 		// Adaptation automatique de la hauteur des icônes du menu à la hauteur du menu pour tous les écrans
 		$fontsize = (int) str_replace('px', '', $this->getData(['theme', 'text', 'fontSize']));
 		$height = $this->getData(['theme', 'menu', 'height']);
 		$pospx = strpos($height, 'px');
 		$height = (int) substr( $height, 0, $pospx);
 		$coef = str_replace('em', '', $this->getData(['theme', 'menu', 'fontSize']));
-		$heightLogo = (int) ($height + $fontsize*$coef - 5); // icônes des menus 
+		$heightLogo = (int) ($height + $fontsize*$coef - 5); // icônes des menus
 		$heightLogoBurger = $heightLogo + 5; // icônes dans le bandeau du menu burger
 		// Pour le décalage du header ou de la section, par core.js.php en petit écran, transmision de la hauteur du bandeau du menu = 2* taille du texte (icône burger) + 2 * padding-topbottom défini par $this->getData(['theme', 'menu', 'height']);
 		$bannerHeight = 2 * $height + 2 * $fontsize;
 		?><script>var bannerMenuHeight = (<?php echo $bannerHeight;?>).toString() + "px";var bannerMenuHeightSection= (<?php echo $bannerHeight + 10;?>).toString() + "px";  </script><?php
-		
+
 		//Menu burger
 		$fileIcon1 = './site/file/source/'. $this->getData(['theme', 'menu', 'burgerIcon1']);
 		$fileIcon2 = './site/file/source/'. $this->getData(['theme', 'menu', 'burgerIcon2']);
-		$iconLink1 = helper::baseUrl().$this->getData(['theme', 'menu','burgerIconLink1']);
-		$iconLink2 = helper::baseUrl().$this->getData(['theme', 'menu','burgerIconLink2']);
+		$iconLink1 = helper::baseUrl().$this->getData(['locale', 'menuBurger','burgerLeftIconLink']);
+		$iconLink2 = helper::baseUrl().$this->getData(['locale', 'menuBurger','burgerCenterIconLink']);
 		echo '<div id="toggle">';
 			switch( $this->getData(['theme','menu','burgerContent']) ){
 				case 'none' :
-					echo '<div id="burgerText"></div>';		
+					echo '<div id="burgerText"></div>';
 				break;
 				case 'title' :
 					echo '<div class="notranslate" id="burgerText">' . $this->getData(['locale', 'title']) . '</div>';
@@ -1770,7 +1726,7 @@ class common {
 			}?>
 			<div id="burgerIcon"><?php echo template::ico('menu',null,null,'2em'); ?></div>
 		</div>
-		
+
 		<div id="menu" <?php echo $menuClass; ?> > <?php
 		// Met en forme les items du menu
 		$itemsLeft = '';
@@ -1789,13 +1745,13 @@ class common {
 			foreach($childrenPageIds as $childKey) {
 				$totalChild += 1;
 				if( $this->getData(['page', $childKey, 'disable']) === true ) $disableChild +=1;
-			}	
+			}
 			$iconSubExistLargeScreen='';
 			$iconSubExistSmallScreen='';
-			if($childrenPageIds && ( $disableChild !== $totalChild || $groupUser >= 2 ) && $this->getdata(['page',$parentPageId,'hideMenuChildren']) === false) {					
-				$iconSubExistLargeScreen= '<span class="zwiico-down iconSubExistLargeScreen" style="font-size:1em"><!----></span>';
-				$iconSubExistSmallScreen= '<span class="zwiico-plus iconSubExistSmallScreen" style="font-size:1em"><!----></span>';
-				
+			if($childrenPageIds && ( $disableChild !== $totalChild || $groupUser >= 2 ) && $this->getdata(['page',$parentPageId,'hideMenuChildren']) === false) {
+				$iconSubExistLargeScreen= '<span class="delta-ico-down iconSubExistLargeScreen" style="font-size:1em"><!----></span>';
+				$iconSubExistSmallScreen= '<span class="delta-ico-plus iconSubExistSmallScreen" style="font-size:1em"><!----></span>';
+
 			}
 			// Si la page est désactivée et sans sous-page active et client < éditeur => elle n'est pas affichée
 			if ( $this->getData(['page',$parentPageId,'disable']) && (empty($childrenPageIds) ||  $disableChild === $totalChild) && $groupUser < 2){
@@ -1835,10 +1791,10 @@ class common {
 							$itemsLeft .= $this->getData(['page', $parentPageId, 'shortTitle']);
 						}
 						break;
-				} 
+				}
 				$itemsLeft .= $iconSubExistLargeScreen;
 				$itemsLeft .= '</a>';
-				$itemsLeft .= '</div>';		
+				$itemsLeft .= '</div>';
 				$itemsLeft .= $iconSubExistSmallScreen;
 				$itemsLeft .= '</div>';
 				if ($this->getdata(['page',$parentPageId,'hideMenuChildren']) === true ||
@@ -1931,7 +1887,7 @@ class common {
 
 		// Affichage du menu
 		// En commençant par lien de connexion, barre de membre et les drapeaux uniquement en petit écran
-		echo '<ul class="smallScreenFlags">' .  $itemsRight;	
+		echo '<ul class="smallScreenFlags">' .  $itemsRight;
 		if($this->getData(['config', 'i18n', 'enable']) === true) {
 			echo $this->showi18n();
 		}
@@ -2004,7 +1960,7 @@ class common {
 				if ( $this->getData(['page',$parentPageId,'disable']) === true
 					AND $this->getUser('password') !== $this->getInput('DELTA_USER_PASSWORD')	) {
 						$items .= '<a class="disabled-link">';
-						//$items .= '<a href="'.$this->getUrl(1).'">';	
+						//$items .= '<a href="'.$this->getUrl(1).'">';
 				} else {
 						$items .= '<a href="'. helper::baseUrl() . $parentPageId . '"' . $targetBlank .  $active .'>';
 				}
@@ -2209,14 +2165,17 @@ class common {
 				$rightItems .= '<li><a href="' . helper::baseUrl() . 'user" data-tippy-content="'.$text['core']['showBar'][14].'">' . template::ico('users') . '</a></li>';
 				// Mise à jour automatique
 				$today = time();
-				// Une mise à jour est disponible + recherche auto activée + 1 jour de délai
+				// Une mise à jour est disponible : recherche auto activée et ( 1 jour de délai ou page config ) et version non encore lue dans la session
 				if ( $this->getData(['config','autoUpdate']) === true
-					AND $today > $this->getData(['core','lastAutoUpdate']) + 86400 ) {
+					&& ( $today > $this->getData(['core','lastAutoUpdate']) + 86400 || $this->getUrl(0) === 'config' )
+					&& !isset($_SESSION['versionNumberRead']) ) {
 						$version = helper::getOnlineVersion();
+						$_SESSION['versionNumberRead'] = $version;
 						if( $version === false){
-							// Le serveur ne supporte pa la mise à jour automatique
+							// Le serveur ne supporte pas la mise à jour automatique
 							$this->setData(['config','autoUpdate',false]);
 						} else {
+							$this->setData(['core','updateAvailable', false]);
 							if ( version_compare(common::DELTA_VERSION,$version) === -1 ) {
 								$this->setData(['core','updateAvailable', true]);
 								$this->setData(['core','lastAutoUpdate',$today]);
@@ -2237,12 +2196,12 @@ class common {
 			echo '<div id="bar"><div class="container"><ul id="barLeft">' . $leftItems . '</ul><ul id="barRight">' . $rightItems . '</ul></div></div>';
 		}
 	}
-	
+
 	/**
 	 * Affiche la bannière
 	 */
 	public function showHeader( $position = ''){
-		
+
 		$homePageOnly = false;
 		if( $this->getUrl(0) !== 'theme' ){
 			if( $this->getUrl(0) !== $this->getData(['locale', 'homePageId' ]) && $this->getData(['theme','header','homePageOnly']) === true) $homePageOnly = true;
@@ -2256,10 +2215,11 @@ class common {
 			case 'site' :
 			break;
 		}
-		
+
 		?><header <?php echo empty($headerClass) ? '' : 'class="' . $headerClass . '"'; ?> >
-			<?php if ($this->getData(['theme','header','feature']) === 'wallpaper' ) { 
-				echo ($this->getData(['theme','header','linkHomePage']) ) ?  '<a class="headertitle" href="' . helper::baseUrl(false) . '">' : ''; 
+			<?php if ($this->getData(['theme','header','feature']) === 'wallpaper' ) {
+				echo '<div id="wallPaper">';
+				echo ($this->getData(['theme','header','linkHomePage']) ) ?  '<a class="headertitle" href="' . helper::baseUrl(false) . '">' : '';
 				if(
 					$this->getData(['theme', 'header', 'textHide']) === false
 					// Affiche toujours le titre de la bannière pour l'édition du thème
@@ -2269,12 +2229,13 @@ class common {
 				<?php else: ?>
 						<span id="themeHeaderTitle">&nbsp;</span>
 				<?php endif;
-				 echo ( $this->getData(['theme','header','linkHomePage']) ) ? '</a>' : ''; 
+				 echo ( $this->getData(['theme','header','linkHomePage']) ) ? '</a>' : '';
+				 echo '</div>';
 			 } elseif( $this->getData(['theme','header','feature']) === 'feature') { ?>
 				<div id="featureContent">
 					<?php echo $this->getData(['theme','header','featureContent']);?>
 				</div>
-			<?php } else { 
+			<?php } else {
 				// Swiper avec défilement vertical ? Pour adaptation à la largeur de l'écran client
 				if( $this->getData(['theme','header','feature'])=== 'swiper' && $this->getData(['theme','header','swiperEffects']) === 'vertical'){
 					$iterator = new DirectoryIterator('./'.$this->getData(['theme', 'header', 'swiperImagesDir' ]));
@@ -2284,9 +2245,9 @@ class common {
 						$imageFile[$key] = $fileInfos->getPathname();
 					  }
 					}
-					sort($imageFile);	
+					sort($imageFile);
 					$size = getimagesize($imageFile[0]);
-					$heightMod = 0;	
+					$heightMod = 0;
 					if( isset( $_COOKIE["DELTA_COOKIE_INNERWIDTH"] ) ){
 						$wclient = $_COOKIE["DELTA_COOKIE_INNERWIDTH"];
 					} else {
@@ -2314,17 +2275,17 @@ class common {
 					} else {
 						$heightMod = $size[1] * ( $wclient / $size[0]);
 						$replace = '<div class="swiper mySwiper" style="width: 100%; height:'.(int)$heightMod.'px">';
-					}					
+					}
 					$string =  $this->getData(['theme','header','swiperContent']);
 					$start = strpos( $string, '<div class="swiper mySwiper" style="');
 					$end = strpos($string,'>', $start);
-					$search = substr( $string, $start, $end - $start + 1 ); 	
+					$search = substr( $string, $start, $end - $start + 1 );
 					$string = str_replace( $search, $replace, $string );
 					$this->setData(['theme','header','swiperContent', $string]);
 				}
 				if( ! $homePageOnly ) echo $this->getData(['theme','header','swiperContent']);
 			} ?>
-		</header> <?php		
+		</header> <?php
 	}
 
 	/**
@@ -2364,19 +2325,19 @@ class common {
 		) {
 			$vars .= 'var privateKey = ' . json_encode(md5_file(self::DATA_DIR.'core.json')) . ';';
 		}
-		echo '<script>' . helper::minifyJs($vars) . '</script>';		
+		echo '<script>' . helper::minifyJs($vars) . '</script>';
 	}
 	/*
 	 * Tri le tableau output['vendor']
-	 */	
+	 */
 	public function sortVendor() {
-		$moduleId = $this->getData(['page', $this->getUrl(0), 'moduleId']);	
+		$moduleId = $this->getData(['page', $this->getUrl(0), 'moduleId']);
 		foreach($this->output['vendor'] as $vendorName) {
 		  // Coeur
 		  if(file_exists('core/vendor/' . $vendorName . '/css.inc.json'))  self::$cssVendorPath[] = 'core/vendor/' . $vendorName . '/';
 		  if(file_exists('core/vendor/' . $vendorName . '/jshead.inc.json'))  self::$jsHeadVendorPath[] = 'core/vendor/' . $vendorName . '/';
 		  if(file_exists('core/vendor/' . $vendorName . '/jsbody.inc.json'))  self::$jsBodyVendorPath[] = 'core/vendor/' . $vendorName . '/';
-		  // Modules			
+		  // Modules
 		  if(	$moduleId  AND in_array($moduleId, self::$coreModuleIds) === false){
 			if( file_exists('module/' . $moduleId . '/vendor/' . $vendorName . '/css.inc.json') ) self::$cssVendorPath[] = 'module/' . $moduleId . '/vendor/' . $vendorName . '/';
 			if( file_exists('module/' . $moduleId . '/vendor/' . $vendorName . '/jshead.inc.json') ) self::$jsHeadVendorPath[] = 'module/' . $moduleId . '/vendor/' . $vendorName . '/';
@@ -2387,7 +2348,7 @@ class common {
 	/**
 	 * Affiche les scripts et les styles dans le head ou le body
 	 */
-	public function showVendor($type) {	
+	public function showVendor($type) {
 		// Pour bannière animée verticale
 		if( $type === 'jshead' && $this->getData(['theme','header','feature'])=== 'swiper' && $this->getData(['theme','header','swiperEffects']) === 'vertical' ){
 			?>	<script>var wclient = window.innerWidth;  document.cookie = "DELTA_COOKIE_INNERWIDTH =" + wclient + "; samesite=lax;" ; </script> <?php
@@ -2397,7 +2358,7 @@ class common {
 				?>	<script>window.location.replace(" <?php echo $url  ?>");</script> <?php
 				$_SESSION["innerWidth"] = 'done';
 			}
-		}	
+		}
 		// Pour capture d'écran
 		if( $type === 'jshead' && isset($_SESSION['screenshot'] ) && $_SESSION['screenshot'] === 'on' ){
 			?> <script src="core/vendor/screenshot/html2canvas.min.js"></script> <?php
@@ -2415,7 +2376,7 @@ class common {
 				$vendorPath = self::$jsBodyVendorPath;
 				$incName = 'jsbody.inc.json';
 				break;
-			
+
 		}
 		foreach($vendorPath as $vendorName) {
 
@@ -2436,26 +2397,8 @@ class common {
 	public function showi18n() {
 		foreach (self::$i18nList as $key => $value) {
 
-			if ($this->getData(['config', 'i18n', $key]) === 'site'
-				OR (
-					// Le script de traduction est actif et la langue est traduite par script
-					$this->getData(['config', 'i18n','scriptGoogle']) === true
-					AND $this->getData(['config', 'i18n', $key]) === 'script'
-					// Le drapeau n'est pas actif pour les non admin en mode connecté.
-					AND
-						( $this->getUser('password') !== $this->getInput('DELTA_USER_PASSWORD')
-						OR $this->getUser('group') === self::GROUP_ADMIN
-						OR $this->getUser('group') === self::GROUP_MEMBER)
-				)
-			) {
-				if (
-					(isset($_COOKIE['DELTA_I18N_SITE'] )
-					  AND $_COOKIE['DELTA_I18N_SITE'] === $key
-				    )
-					 OR
-					( isset($_COOKIE['DELTA_I18N_SCRIPT'])
-					  AND $_COOKIE['DELTA_I18N_SCRIPT'] === $key
-				   ) ) {
+			if ($this->getData(['config', 'i18n', $key]) === 'site') {
+				if ( isset($_COOKIE['DELTA_I18N_SITE'] ) AND $_COOKIE['DELTA_I18N_SITE'] === $key ) {
 					   $select = ' class="i18nFlagSelected" ';
 				   } else {
 					   $select = ' class="i18nFlag flag" ';
@@ -2626,6 +2569,11 @@ class core extends common {
 				$marginBottomSmall = $margin;
 				$marginBottomLarge = $margin;
 			}
+			// Site overflow visible si le menu est dans le site ou avant ou après la bannière dans le site
+			$overflowSite = 'hidden';
+			if( $this->getData(['theme', 'menu', 'position'])==='site' || ( $this->getData(['theme', 'header', 'position'])==='site' &&
+			( $this->getData(['theme', 'menu', 'position'])==='site-first' || $this->getData(['theme', 'menu', 'position'])==='site-second' ))) $overflowSite = 'visible';
+			$css .= '@media screen and (min-width: 800px) { #site { overflow: '.$overflowSite.'; } }';
 			$css .= '@media screen and (max-width: 799px) { .container { max-width: 100vw; } }';
 			$css .= $this->getData(['theme', 'site', 'width']) === '100%'
 					? '@media (min-width: 800px) {#site{margin:0 auto ' . $marginBottomLarge . ' 0 !important;}}@media (max-width: 799px) {#site{margin:0 auto ' . $marginBottomSmall . ' 0 !important;}}#site.light{margin:5% auto !important;} body{margin:0 auto !important;}  #bar{margin:0 auto !important;} body > header{margin:0 auto !important;} body > nav {margin: 0 auto !important;} body > footer {margin:0 auto !important;}'
@@ -2633,11 +2581,11 @@ class core extends common {
 			$css .= $this->getData(['theme', 'site', 'width']) === '75vw'
 					? '.button, button{font-size:0.8em;}'
 					: '';
-			$css .= '#site{background-color:' . $this->getData(['theme', 'site', 'backgroundColor']) . ';border-radius:' . $this->getData(['theme', 'site', 'radius']) . ';box-shadow:' . $this->getData(['theme', 'site', 'shadow']) . ' #212223;}';
+			$css .= '@media (min-width: 800px) { #site{background-color:' . $this->getData(['theme', 'site', 'backgroundColor']) . ';border-radius:' . $this->getData(['theme', 'site', 'radius']) . ';box-shadow:' . $this->getData(['theme', 'site', 'shadow']) . ' #212223;} }';
+			$css .= '@media (max-width: 799px) { #site{background-color:' . $this->getData(['theme', 'site', 'backgroundColor']) . ';border-radius: 0px; box-shadow: none;} }';
 			$colors = helper::colorVariants($this->getData(['theme', 'button', 'backgroundColor']));
 			$css .= '.speechBubble,.button,.button:hover,button[type=\'submit\'],.pagination a,.pagination a:hover,input[type=\'checkbox\']:checked + label:before,input[type=\'radio\']:checked + label:before,.helpContent{background-color:' . $colors['normal'] . ';color:' . $colors['text'] . '}';
 			$css .= '.helpButton span{color:' . $colors['normal'] . '}';
-			//$css .= 'input[type=\'text\']:hover,input[type=\'password\']:hover,.inputFile:hover,select:hover,textarea:hover{border-color:' . $colors['normal'] . '}';
 			$css .= '.speechBubble:before{border-color:' . $colors['normal'] . ' transparent transparent transparent}';
 			$css .= '.button:hover,button[type=\'submit\']:hover,.pagination a:hover,input[type=\'checkbox\']:not(:active):checked:hover + label:before,input[type=\'checkbox\']:active + label:before,input[type=\'radio\']:checked:hover + label:before,input[type=\'radio\']:not(:checked):active + label:before{background-color:' . $colors['darken'] . '}';
 			$css .= '.helpButton span:hover{color:' . $colors['darken'] . '}';
@@ -2649,8 +2597,6 @@ class core extends common {
 			$colors = helper::colorVariants($this->getData(['theme', 'block', 'backgroundTitleColor']));
 			$css .= '.block {border: 1px solid ' . $this->getdata(['theme','block','borderColor']) .  ';background-color: ' . $this->getdata(['theme','block','backgroundColor']) .';border-radius: ' . $this->getdata(['theme','block','blockBorderRadius']) . ';box-shadow :' . $this->getdata(['theme','block','blockBorderShadow']) . ' ' . $this->getdata(['theme','block','borderColor']) . ';}';
 			$css .= '.block > h4, .blockTitle {background-color:'. $colors['normal'] . ';color:' . $colors['text'] .';border-radius: ' . $this->getdata(['theme','block','blockBorderRadius']) . ' ' . $this->getdata(['theme','block','blockBorderRadius']) . ' 0px 0px;}';
-			//$css .= '.mce-tinymce {border: 1px solid ' . $this->getdata(['theme','block','borderColor']) .' !important;}';
-
 			//Tinymce option titre sous une image valeurs par défaut modifiables dans custom.css
 			$css .= 'figure.image { border-color: ' . $this->getdata(['theme','block','borderColor']) . '; background-color: ' . $this->getdata(['theme','block','backgroundColor']).'}';
 
@@ -2667,21 +2613,39 @@ class core extends common {
 			}
 			$colors = helper::colorVariants($this->getData(['theme', 'header', 'backgroundColor']));
 			$css .= 'header{background-color:' . $colors['normal'] . ';}';
+			// Calcul de la hauteur du bandeau du menu burger utilisé dans plusieurs cas
+			$fontsize = (int) str_replace('px', '', $this->getData(['theme', 'text', 'fontSize']));
+			$height = $this->getData(['theme', 'menu', 'height']);
+			$pospx = strpos($height, 'px');
+			$height = (int) substr( $height, 0, $pospx);
+			$bannerHeight = 2 * $height + 2 * $fontsize;	// 2*height imposé par l'icône burger
 
 			// Bannière de type papier peint
 			if ($this->getData(['theme','header','feature']) === 'wallpaper' ) {
-				$css .= 'header{background-size:' . $this->getData(['theme','header','imageContainer']).'}';
-				$css .= 'header{background-color:' . $colors['normal'];
+				$css .= 'header #wallPaper{background-size:' . $this->getData(['theme','header','imageContainer']).'}';
+				$css .= 'header #wallPaper{background-color:' . $colors['normal'];
 
 				// Valeur de hauteur traditionnelle
 				$css .= ';height:' . $this->getData(['theme', 'header', 'height']) . ';line-height:' . $this->getData(['theme', 'header', 'height']) ;
 
 				$css .=  ';text-align:' . $this->getData(['theme', 'header', 'textAlign']) . '}';
 				if($themeHeaderImage = $this->getData(['theme', 'header', 'image'])) {
-					$css .= 'header{background-image:url("../file/source/' . $themeHeaderImage . '");background-position:' . $this->getData(['theme', 'header', 'imagePosition']) . ';background-repeat:' . $this->getData(['theme', 'header', 'imageRepeat']) . '}';
+					$css .= 'header #wallPaper{background-image:url("../file/source/' . $themeHeaderImage . '");background-position:' . $this->getData(['theme', 'header', 'imagePosition']) . ';background-repeat:' . $this->getData(['theme', 'header', 'imageRepeat']) . '}';
 				}
 				$colors = helper::colorVariants($this->getData(['theme', 'header', 'textColor']));
-				$css .= 'header span{color:' . $colors['normal'] . ';font-family:"' . $this->getData(['fonts', $this->getData(['theme', 'header', 'font']), 'name']) . '",sans-serif;font-weight:' . $this->getData(['theme', 'header', 'fontWeight']) . ';font-size:' . $this->getData(['theme', 'header', 'fontSize']) . ';text-transform:' . $this->getData(['theme', 'header', 'textTransform']) . '}';
+				$css .= 'header #wallPaper span{color:' . $colors['normal'] . ';font-family:"' . $this->getData(['fonts', $this->getData(['theme', 'header', 'font']), 'name']) . '",sans-serif;font-weight:' . $this->getData(['theme', 'header', 'fontWeight']) . ';font-size:' . $this->getData(['theme', 'header', 'fontSize']) . ';text-transform:' . $this->getData(['theme', 'header', 'textTransform']) . '}';
+				// En petit écran pour s'adapter à des textes longs
+				$search ='em';
+				if( $this->getData(['theme', 'header', 'fontSize']) === '2.4vmax' ) $search = 'vmax';
+				$titleLineHeight = str_replace(',','.',(str_replace(',','.',str_replace($search,'',$this->getData(['theme', 'header', 'fontSize']))/2)+0.2)).'em';
+				//Si menu burger fixe et superposé à la bannière
+				if( $this->getData(['theme', 'menu', 'burgerFixed']) && $this->getData(['theme', 'menu', 'burgerOverlay'])) {
+					$titleMarginTop = strval($bannerHeight - 5).'px';
+				} else {
+					$titleMarginTop	= ((int) str_replace('px','', $this->getData(['theme', 'header', 'height'])))/2 - $fontsize * ( str_replace($search,'', $this->getData(['theme', 'header', 'fontSize'])));
+					$titleMarginTop = strval((int)$titleMarginTop).'px';
+				}
+				$css .= '@media (max-width: 799px) { header #themeHeaderTitle{ margin-top:'.$titleMarginTop.'; line-height:'.$titleLineHeight.';}}';
 			}
 
 			// Bannière au contenu personnalisé
@@ -2692,6 +2656,18 @@ class core extends common {
 				//$css .= '.bannerDisplay img { width: auto;max-height:' . $this->getData(['theme', 'header', 'height']) . ';}';
 
 			}
+
+			// Pour le décalage de la bannière ou de la section, en petit écran burger fixe, calcul de la hauteur du bandeau du menu
+			$css .= '@media (max-width: 799px) {';
+			$bannerHeight = $bannerHeight + 10;
+			// Décalage de la bannière en petit écran et burger fixe et bannière visible et non superposée
+			if( $this->getData(['theme', 'menu', 'position']) !== 'hide' && $this->getData(['theme', 'menu', 'burgerFixed']) === true
+				&& $this->getData(['theme', 'header', 'tinyHidden']) === false && $this->getData(['theme', 'menu', 'burgerOverlay']) === false){
+				$css .= '#site.container header, header.container { padding-top:'.$bannerHeight.'px;}';
+			} else {
+				$css .= '#site.container header, header.container { padding-top: 0;}';
+			}
+			$css .= '}';
 
 			// Menu écran large couleurs
 			$css .= '@media (min-width: 800px) {';
@@ -2710,18 +2686,21 @@ class core extends common {
 				$colors = helper::colorVariants($this->getData(['theme', 'menu', 'backgroundColorSub']));
 				$css .= 'nav .navSub a{background-color:' . $colors['normal'] . '}';
 			$css .= '}';
-			
+
 			// Menu burger couleurs
+			// Valeurs par défaut si chargement d'un thème < 4501
+			if(is_null($this->getData(['theme', 'menu', 'burgerBackgroundColor'])) || $this->getData(['theme', 'menu', 'burgerBackgroundColor']) === '') $this->setData(['theme', 'menu', 'burgerBackgroundColor', $this->getData(['theme', 'menu', 'backgroundColor']) ]);
+			if(is_null($this->getData(['theme', 'menu', 'burgerBackgroundColorSub'])) || $this->getData(['theme', 'menu', 'burgerBackgroundColorSub']) === '') $this->setData(['theme', 'menu', 'burgerBackgroundColorSub', $this->getData(['theme', 'menu', 'backgroundColorSub']) ]);
 			$css .= '@media (max-width: 799px) {';
 				$colors = helper::colorVariants($this->getData(['theme', 'menu', 'burgerBackgroundColor']));
 				$css .= 'nav #toggle { background-color:'.$this->getData(['theme', 'menu', 'burgerBannerColor']).';}';
-				$css .= 'nav #toggle span.zwiico-menu::before, nav #toggle span.zwiico-cancel::before{ background-color:'.$this->getData(['theme', 'menu', 'burgerIconBgColor']).';}';
+				$css .= 'nav #toggle span.delta-ico-menu::before, nav #toggle span.delta-ico-cancel::before{ background-color:'.$this->getData(['theme', 'menu', 'burgerIconBgColor']).';}';
 				$css .= 'nav #toggle span{color:'.$this->getData(['theme', 'menu', 'burgerIconColor']).';}';
 				$css .= 'nav ul li span{color:' . $this->getData(['theme', 'menu', 'burgerTextMenuColor']) .'}';
 				$css .= 'nav #menu,nav.navMain a{background-color:' . $colors['normal'] .'}';
 				$css .= 'nav #menu a,nav #menu a:hover{color:' . $this->getData(['theme', 'menu', 'burgerTextMenuColor']) . '}';
 				$css .= 'nav #menu a:hover{background-color:' . $colors['darken'] . '}';
-				$css .= 'nav #menu .active{color:' . $this->getData(['theme', 'menu', 'burgerActiveTextColor']) . ';}';			
+				$css .= 'nav #menu .active{color:' . $this->getData(['theme', 'menu', 'burgerActiveTextColor']) . ';}';
 				// Couleur du body à la couleur de la page
 				$css .= 'body {background-color:'.$this->getData(['theme', 'site', 'backgroundColor']).'}';
 				if ($this->getData(['theme','menu','burgerActiveColorAuto']) === true) {
@@ -2732,7 +2711,15 @@ class core extends common {
 				$css .= 'nav #burgerText{color:' .  $this->getData(['theme','menu','burgerTextColor']) .';font-size:'.$this->getData(['theme','menu','burgerFontSize']) .';}';
 				// Sous menu
 				$colors = helper::colorVariants($this->getData(['theme', 'menu', 'burgerBackgroundColorSub']));
-				$css .= 'nav #menu .navSub a{background-color:' . $colors['normal'] . '}';			
+				$css .= 'nav #menu .navSub a{background-color:' . $colors['normal'] . '}';
+
+				// Décalage de la section en menu burger fixe et non caché et bannière masquée ou cachée
+				if( $this->getData(['theme', 'menu', 'position']) !== 'hide' && $this->getData(['theme', 'menu', 'burgerFixed']) === true
+					&& ( $this->getData(['theme', 'header', 'tinyHidden']) === true || $this->getData(['theme', 'header', 'position']) === 'hide')){
+					$css .= 'section { padding-top:'.$bannerHeight.'px;}';
+				} else {
+					$css .= 'section { padding-top: 10px;}';
+				}
 			$css .= '}';
 
 			// Partie commune aux 2 types d'écran
@@ -2741,7 +2728,7 @@ class core extends common {
 				if( $this->getData(['theme', 'menu', 'minWidthParentOrAll']) === true || $childrenPageIds !== [] ){
 					$css .= 'nav li .' . $parentPageId . '{ min-width : '. $this->getData(['theme', 'menu', 'minWidthTab'])  .';}';
 				}
-			}			
+			}
 			$css .= 'nav .navMain a.active {border-radius:' . $this->getData(['theme', 'menu', 'radius']) . '}';
 			$css .= '#menu{text-align:' . $this->getData(['theme', 'menu', 'textAlign']) . '}';
 			if($this->getData(['theme', 'menu', 'margin'])) {
@@ -2763,7 +2750,7 @@ class core extends common {
 					$css .= 'nav{padding:0 10px;}';
 			}
 			$css .= '#toggle span,#menu a{padding:' . $this->getData(['theme', 'menu', 'height']) .';font-family:"' . $this->getData(['fonts', $this->getData(['theme', 'menu', 'font']), 'name']) . '",sans-serif;font-weight:' . $this->getData(['theme', 'menu', 'fontWeight']) . ';font-size:' . $this->getData(['theme', 'menu', 'fontSize']) . ';text-transform:' . $this->getData(['theme', 'menu', 'textTransform']) . '}';
-			
+
 			// Pied de page
 			$colors = helper::colorVariants($this->getData(['theme', 'footer', 'backgroundColor']));
 			if($this->getData(['theme', 'footer', 'margin'])) {
@@ -2847,8 +2834,8 @@ class core extends common {
 			$css .= 'body h1, h2, h3, .block > h4, .blockTitle, h5, h6 {font-family:' .   $this->getData(['fonts', $this->getData(['admin', 'fontTitle']), 'name']) . ', sans-serif;color:' . $this->getData(['admin','colorTitle' ]) . ';}';
 
 			// TinyMCE
-			$css .= 'body:not(.editorWysiwyg),span .zwiico-help {color:' . $this->getData(['admin','colorText']) . ';}';
-			$css .= 'table thead tr, table thead tr .zwiico-help{ background-color:'.$this->getData(['admin','colorText']).'; color:'.$colors['normal'].';}';
+			$css .= 'body:not(.editorWysiwyg),span .delta-ico-help {color:' . $this->getData(['admin','colorText']) . ';}';
+			$css .= 'table thead tr, table thead tr .delta-ico-help{ background-color:'.$this->getData(['admin','colorText']).'; color:'.$colors['normal'].';}';
 			$colors = helper::colorVariants($this->getData(['admin','backgroundColorButton']));
 			$css .= 'input[type="checkbox"]:checked + label::before,.speechBubble{background-color:' . $colors['normal'] . ';color:' .  $colors['text'] . ';}';
 			$css .= '.speechBubble::before {border-color:' . $colors['normal'] . ' transparent transparent transparent;}';
@@ -3252,36 +3239,6 @@ class core extends common {
 						$access = false;
 					}
 				}
-			}
-		}
-
-		// Chargement de la bibliothèque googtrans
-
-		// Le script de traduction est sélectionné
-		if ($this->getData(['config', 'i18n', 'enable']) === true) {
-			if ( 	$this->getData(['config', 'i18n','scriptGoogle']) === true
-					// et la traduction de la langue courante est automatique
-				AND	(  $this->getInput('DELTA_I18N_SCRIPT') !== ''
-						// Ou traduction automatique
-						OR 	$this->getData(['config', 'i18n','autoDetect']) === true
-					)
-				// Cas  des pages d'administration
-				// Pas connecté
-				AND $this->getUser('password') !== $this->getInput('DELTA_USER_PASSWORD')
-				AND $this->getUrl(1) !== 'login'
-					// Ou connecté avec option active
-					OR ($this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD')
-						//AND $this->getData(['config', 'i18n','admin']) === true
-						AND $this->getUser('group') === self::GROUP_MEMBER
-					)
-
-				)	{
-
-						// Chargement de la librairie
-						$this->addOutput([
-							'vendor' => array_merge($this->output['vendor'], ['i18n'])
-						]);
-
 			}
 		}
 

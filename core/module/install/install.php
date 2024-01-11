@@ -1,19 +1,21 @@
 <?php
-
 /**
  * This file is part of DeltaCMS.
  * For full copyright and license information, please see the LICENSE
  * file that was distributed with this source code.
- * @author Sylvain Lelièvre <lelievresylvain@free.fr>
- * @copyright Copyright (C) 2021, Sylvain Lelièvre
+ * @author Sylvain Lelièvre
+ * @copyright 2021 © Sylvain Lelièvre
+ * @author Lionel Croquefer
+ * @copyright 2022 © Lionel Croquefer
  * @license GNU General Public License, version 3
  * @link https://deltacms.fr/
+ * @contact https://deltacms.fr/contact
  *
  * Delta was created from version 11.2.00.24 of ZwiiCMS
  * @author Rémi Jean <remi.jean@outlook.com>
- * @copyright Copyright (C) 2008-2018, Rémi Jean
+ * @copyright 2008-2018 © Rémi Jean
  * @author Frédéric Tempez <frederic.tempez@outlook.com>
- * @copyright Copyright (C) 2018-2021, Frédéric Tempez
+ * @copyright 2018-2021 © Frédéric Tempez
  */
 
 
@@ -205,114 +207,124 @@ class install extends common {
 	 * Étapes de mise à jour
 	 */
 	public function steps() {
-		switch($this->getInput('step', helper::FILTER_INT)) {
-			// Préparation
-			case 1:
-				$success = true;
-				// RAZ la mise à jour auto
-				$this->setData(['core','updateAvailable', false]);
-				// Backup du dossier Data
-				helper::autoBackup(self::BACKUP_DIR,['backup','tmp','file']);
-				// Sauvegarde htaccess
-				if ($this->getData(['config','autoUpdateHtaccess'])) {
-					$success = copy('.htaccess', '.htaccess' . '.bak');
-				}
-				// Nettoyage des fichiers d'installation précédents
-				if(file_exists(self::TEMP_DIR.'update.tar.gz') && $success) {
-					$success = unlink(self::TEMP_DIR.'update.tar.gz');
-				}
-				if(file_exists(self::TEMP_DIR.'update.tar') && $success) {
-					$success = unlink(self::TEMP_DIR.'update.tar');
-				}
-				// Valeurs en sortie
-				$this->addOutput([
-					'display' => self::DISPLAY_JSON,
-					'content' => [
-						'success' => $success,
-						'data' => null
-					]
-				]);
-				break;
-			// Téléchargement
-			case 2:
-				$success = (file_put_contents(self::TEMP_DIR.'update.tar.gz', helper::urlGetContents(common::DELTA_UPDATE_URL . common::DELTA_UPDATE_CHANNEL . '/update.tar.gz')) !== false);
-				// Valeurs en sortie
-				$this->addOutput([
-					'display' => self::DISPLAY_JSON,
-					'content' => [
-						'success' => $success,
-						'data' => null
-					]
-				]);
-				break;
-			// Installation
-			case 3:
-				$success = true;
-				// Check la réécriture d'URL avant d'écraser les fichiers
-				$rewrite = helper::checkRewrite();
-				// Décompression et installation
-				try {
-					// Décompression dans le dossier de fichier temporaires
-					$pharData = new PharData(self::TEMP_DIR.'update.tar.gz');
-					$pharData->decompress();
-					// Installation
-					$pharData->extractTo(__DIR__ . '/../../../', null, true);
-				} catch (Exception $e) {
-					$success = $e->getMessage();
-				}
-				// Nettoyage du dossier
-				if(file_exists(self::TEMP_DIR.'update.tar.gz')) {
-					unlink(self::TEMP_DIR.'update.tar.gz');
-				}
-				if(file_exists(self::TEMP_DIR.'update.tar')) {
-					unlink(self::TEMP_DIR.'update.tar');
-				}
-				// Valeurs en sortie
-				$this->addOutput([
-					'display' => self::DISPLAY_JSON,
-					'content' => [
-						'success' => $success,
-						'data' => $rewrite
-					]
-				]);
-				break;
-			// Configuration
-			case 4:
-				$success = true;
-				$rewrite = $this->getInput('data');
-				// Réécriture d'URL
-				if ($rewrite === "true") {
-					$success = (file_put_contents(
-						'.htaccess',
-						PHP_EOL .
-						'<IfModule mod_rewrite.c>' . PHP_EOL .
-						"\tRewriteEngine on" . PHP_EOL .
-						"\tRewriteBase " . helper::baseUrl(false, false) . PHP_EOL .
-						"\tRewriteCond %{REQUEST_FILENAME} !-f" . PHP_EOL .
-						"\tRewriteCond %{REQUEST_FILENAME} !-d" . PHP_EOL .
-						"\tRewriteRule ^(.*)$ index.php?$1 [L]" . PHP_EOL .
-						'</IfModule>',
-						FILE_APPEND
-					) !== false);
-				}
-				// Recopie htaccess
-				if ($this->getData(['config','autoUpdateHtaccess']) &&
-					$success && file_exists( '.htaccess.bak')
-				) {
-						// L'écraser avec le backup
-						$success = copy( '.htaccess.bak' ,'.htaccess' );
-						// Effacer l ebackup
-						unlink('.htaccess.bak');
-				}
-				// Valeurs en sortie
-				$this->addOutput([
-					'display' => self::DISPLAY_JSON,
-					'content' => [
-						'success' => $success,
-						'data' => null
-					]
-				]);
-				break;
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < install::$actions['steps'] ) {
+			// Valeurs en sortie
+			$this->addOutput([
+				'access' => false
+			]);	
+		} else {
+			switch($this->getInput('step', helper::FILTER_INT)) {
+				// Préparation
+				case 1:
+					$success = true;
+					// RAZ la mise à jour auto
+					$this->setData(['core','updateAvailable', false]);
+					// Backup du dossier Data
+					helper::autoBackup(self::BACKUP_DIR,['backup','tmp','file']);
+					// Sauvegarde htaccess
+					if ($this->getData(['config','autoUpdateHtaccess'])) {
+						$success = copy('.htaccess', '.htaccess' . '.bak');
+					}
+					// Nettoyage des fichiers d'installation précédents
+					if(file_exists(self::TEMP_DIR.'update.tar.gz') && $success) {
+						$success = unlink(self::TEMP_DIR.'update.tar.gz');
+					}
+					if(file_exists(self::TEMP_DIR.'update.tar') && $success) {
+						$success = unlink(self::TEMP_DIR.'update.tar');
+					}
+					// Valeurs en sortie
+					$this->addOutput([
+						'display' => self::DISPLAY_JSON,
+						'content' => [
+							'success' => $success,
+							'data' => null
+						]
+					]);
+					break;
+				// Téléchargement
+				case 2:
+					$success = (file_put_contents(self::TEMP_DIR.'update.tar.gz', helper::urlGetContents(common::DELTA_UPDATE_URL . common::DELTA_UPDATE_CHANNEL . '/update.tar.gz')) !== false);
+					// Valeurs en sortie
+					$this->addOutput([
+						'display' => self::DISPLAY_JSON,
+						'content' => [
+							'success' => $success,
+							'data' => null
+						]
+					]);
+					break;
+				// Installation
+				case 3:
+					$success = true;
+					// Check la réécriture d'URL avant d'écraser les fichiers
+					$rewrite = helper::checkRewrite();
+					// Décompression et installation
+					try {
+						// Décompression dans le dossier de fichier temporaires
+						$pharData = new PharData(self::TEMP_DIR.'update.tar.gz');
+						$pharData->decompress();
+						// Installation
+						$pharData->extractTo(__DIR__ . '/../../../', null, true);
+					} catch (Exception $e) {
+						$success = $e->getMessage();
+					}
+					// Nettoyage du dossier
+					if(file_exists(self::TEMP_DIR.'update.tar.gz')) {
+						unlink(self::TEMP_DIR.'update.tar.gz');
+					}
+					if(file_exists(self::TEMP_DIR.'update.tar')) {
+						unlink(self::TEMP_DIR.'update.tar');
+					}
+					// Valeurs en sortie
+					$this->addOutput([
+						'display' => self::DISPLAY_JSON,
+						'content' => [
+							'success' => $success,
+							'data' => $rewrite
+						]
+					]);
+					break;
+				// Configuration
+				case 4:
+					$success = true;
+					$rewrite = $this->getInput('data');
+					// Réécriture d'URL
+					if ($rewrite === "true") {
+						$success = (file_put_contents(
+							'.htaccess',
+							PHP_EOL .
+							'<IfModule mod_rewrite.c>' . PHP_EOL .
+							"\tRewriteEngine on" . PHP_EOL .
+							"\tRewriteBase " . helper::baseUrl(false, false) . PHP_EOL .
+							"\tRewriteCond %{REQUEST_FILENAME} !-f" . PHP_EOL .
+							"\tRewriteCond %{REQUEST_FILENAME} !-d" . PHP_EOL .
+							"\tRewriteRule ^(.*)$ index.php?$1 [L]" . PHP_EOL .
+							'</IfModule>',
+							FILE_APPEND
+						) !== false);
+					}
+					// Recopie htaccess
+					if ($this->getData(['config','autoUpdateHtaccess']) &&
+						$success && file_exists( '.htaccess.bak')
+					) {
+							// L'écraser avec le backup
+							$success = copy( '.htaccess.bak' ,'.htaccess' );
+							// Effacer l ebackup
+							unlink('.htaccess.bak');
+					}
+					// Valeurs en sortie
+					$this->addOutput([
+						'display' => self::DISPLAY_JSON,
+						'content' => [
+							'success' => $success,
+							'data' => null
+						]
+					]);
+					break;
+			}
 		}
 	}
 
@@ -320,16 +332,26 @@ class install extends common {
 	 * Mise à jour
 	 */
 	public function update() {
-		// Lexique
-		include('./core/module/install/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_install.php');
-		// Nouvelle version
-		self::$newVersion = helper::urlGetContents(common::DELTA_UPDATE_URL . common::DELTA_UPDATE_CHANNEL . '/version');
-		// Valeurs en sortie
-		$this->addOutput([
-			'display' => self::DISPLAY_LAYOUT_LIGHT,
-			'title' => $text['core_install']['update'][0],
-			'view' => 'update'
-		]);
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < install::$actions['update'] ) {
+			// Valeurs en sortie
+			$this->addOutput([
+				'access' => false
+			]);	
+		} else {
+			// Lexique
+			include('./core/module/install/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_install.php');
+			// Nouvelle version
+			self::$newVersion = helper::urlGetContents(common::DELTA_UPDATE_URL . common::DELTA_UPDATE_CHANNEL . '/version');
+			// Valeurs en sortie
+			$this->addOutput([
+				'display' => self::DISPLAY_LAYOUT_LIGHT,
+				'title' => $text['core_install']['update'][0],
+				'view' => 'update'
+			]);
+		}
 	}
 
 

@@ -135,34 +135,84 @@ else{
 					</span>
 				</div>
 				<div class="row">
-					<div class="col6">
+					<div class="col3">
 						<?php echo template::text('localeLegalPageLabel', [
 							'label' => $text['core_config_view']['locale'][15],
 							'placeholder' => $text['core_config_view']['locale'][15],
 							'value' => $this->getData(['locale', 'legalPageLabel'])
 						]); ?>
 					</div>
-					<div class="col6">
+					<div class="col3">
 						<?php echo template::text('localeSearchPageLabel', [
 							'label' => $text['core_config_view']['locale'][23],
 							'placeholder' => $text['core_config_view']['locale'][23],
 							'value' => $this->getData(['locale', 'searchPageLabel'])
 						]); ?>
 					</div>
-				</div>
-				<div class="row">
-					<div class="col6">
+					<div class="col3">
 						<?php echo template::text('localeSitemapPageLabel', [
 							'label' => $text['core_config_view']['locale'][24],
 							'placeholder' => $text['core_config_view']['locale'][24],
 							'value' => $this->getData(['locale', 'sitemapPageLabel']),
 						]); ?>
 					</div>
-					<div class="col6">
+					<div class="col3">
 						<?php echo template::text('localeCookiesFooterText', [
 							'label' => $text['core_config_view']['locale'][25],
 							'value' => $this->getData(['locale', 'cookies', 'cookiesFooterText']),
 							'placeHolder' => $text['core_config_view']['locale'][25]
+						]); ?>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col12">
+			<div class="block">
+				<div class="blockTitle"><?php echo $text['core_config_view']['locale'][47]; echo template::flag($flag, '20px');?>
+					<span id="labelHelpButton" class="helpDisplayButton">
+						<a href="https://doc.deltacms.fr/localisation#etiquettes" target="_blank">
+							<?php echo template::ico('help', 'left');?>
+						</a>
+					</span>
+				</div>
+				<div class="row">
+					<div class="col3">
+						<?php echo template::text('localeVisitorLabel', [
+							'label' => $text['core_config_view']['locale'][48],
+							'placeholder' => $text['core_config_view']['locale'][48],
+							'value' => $this->getData(['locale', 'visitorLabel'])
+						]); ?>
+					</div>
+					<div class="col3">
+						<?php echo template::text('localeMemberLabel', [
+							'label' => $text['core_config_view']['locale'][49],
+							'placeholder' => $text['core_config_view']['locale'][49],
+							'value' => $this->getData(['locale', 'memberLabel'])
+						]); ?>
+					</div>
+					<div class="col3">
+						<?php echo template::text('localeEditorLabel', [
+							'label' => $text['core_config_view']['locale'][50],
+							'placeholder' => $text['core_config_view']['locale'][50],
+							'value' => $this->getData(['locale', 'editorLabel']),
+						]); ?>
+					</div>
+					<div class="col3">
+						<?php echo template::text('localeModeratorLabel', [
+							'label' => $text['core_config_view']['locale'][51],
+							'value' => $this->getData(['locale', 'moderatorLabel']),
+							'placeHolder' => $text['core_config_view']['locale'][51]
+						]); ?>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col3">
+						<?php echo template::text('localeAdministratorLabel', [
+							'label' => $text['core_config_view']['locale'][52],
+							'placeholder' => $text['core_config_view']['locale'][52],
+							'value' => $this->getData(['locale', 'administratorLabel'])
 						]); ?>
 					</div>
 				</div>

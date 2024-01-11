@@ -39,7 +39,7 @@ $( document).ready(function() {
     $("#connectContainer").hide();
     $("#networkContainer").hide();
     $("#setupContainer").hide();
-    $("#scriptContainer").hide();	
+    $("#scriptContainer").hide();
     $("#" + configLayout + "Container" ).show();
     $("#config" + capitalizeFirstLetter(configLayout) + "Button").addClass("activeButton");
 
@@ -101,7 +101,7 @@ $( document).ready(function() {
      * Captcha strong si captcha sélectionné
      */
         $("input[name=connectCaptcha]").on("change", function() {
-            
+
         if ($("input[name=connectCaptcha]").is(':checked')) {
             $("#connectCaptchaStrongWrapper").addClass("disabled");
             $("#connectCaptchaStrongWrapper").slideDown();
@@ -205,7 +205,7 @@ $( document).ready(function() {
         $("#configNetworkButton").removeClass("activeButton");
 		$("#configScriptButton").addClass("activeButton");
         setCookie("configLayout","script");
-    }); 
+    });
 
     /**
      * Aspect de la souris
@@ -225,8 +225,8 @@ $( document).ready(function() {
            $("#config" + capitalizeFirstLetter(value) + "Button").removeClass("buttonNotice");
         }
     });
-	
-	// Animation des boutons zwiico-help lien vers la documentation
+
+	// Animation des boutons delta-ico-help lien vers la documentation
 	var colorButton = <?php echo "'".$this->getData(['admin', 'backgroundColorButtonHelp'])."'"; ?> ;
 	var blockButton = <?php echo "'".$this->getData(['admin', 'backgroundBlockColor'])."'"; ?> ;
     $(".helpDisplayButton").mouseenter(function(){
@@ -235,7 +235,7 @@ $( document).ready(function() {
     $(".helpDisplayButton").mouseleave(function(){
         $(this).css("background-color", blockButton);
     });
-	
+
 	// html vers pdf
 	$(".buttontopdf").on("click", function() {
 		var doc = new jsPDF();
@@ -245,7 +245,7 @@ $( document).ready(function() {
 		});
 		doc.save('informations.pdf');
 	});
-	
+
 });
 
 

@@ -18,7 +18,7 @@ $text['core_install']['index'][3] = 'URL del sitio';
 $text['core_install']['index'][4] = 'ID de cuenta';
 $text['core_install']['index'][5] = 'Instalación completa';
 // Nom de la page d'accueil dans cette langue d'administration
-$text['core_install']['index'][6] = 'home.html';
+$text['core_install']['index'][6] = 'inicio.html';
 // Texte par défaut à gauche du footer
 $text['core_install']['index'][7] = 'Pie de página personalizado';
 // Texte pour la bannière customisable

@@ -55,7 +55,7 @@ class search extends common {
 		$versionData = $this->getData(['module',$this->getUrl(0),'config', 'versionData' ]);
 
 		// le module n'est pas initialisé
-		if ($versionData === NULL) {
+		if ($versionData === NULL || !file_exists(self::DATADIRECTORY . $this->getUrl(0)  . '/theme.css')){
 			$this->init();
 		}
 		
@@ -142,53 +142,63 @@ class search extends common {
 
 	// Configuration vide
 	public function config() {
-		// Lexique
-		include('./module/search/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_search.php');
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < search::$actions['config'] ) {
+			// Valeurs en sortie
+			$this->addOutput([
+				'access' => false
+			]);	
+		} else {
+			// Lexique
+			include('./module/search/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_search.php');
 
-		// Mise à jour des données de module
-		$this->update();
+			// Mise à jour des données de module
+			$this->update();
 
-		if($this->isPost())  {
+			if($this->isPost())  {
 
-			// Générer la feuille de CSS
-			$style = '.keywordColor {background:' . $this->getInput('searchKeywordColor') . ';}';
-			$success = file_put_contents(self::DATADIRECTORY . $this->getUrl(0) . '/theme.css' , $style );
-			// Fin feuille de style
+				// Générer la feuille de CSS
+				$style = '.keywordColor {background:' . $this->getInput('searchKeywordColor') . ';}';
+				$success = file_put_contents(self::DATADIRECTORY . $this->getUrl(0) . '/theme.css' , $style );
+				// Fin feuille de style
 
-			// Soumission du formulaire
-			$this->setData(['module', $this->getUrl(0), 'config',[
-				'submitText' => $this->getInput('searchSubmitText'),
-				'placeHolder' => $this->getInput('searchPlaceHolder'),
-				'resultHideContent' => $this->getInput('searchResultHideContent',helper::FILTER_BOOLEAN),
-				'previewLength' => $this->getInput('searchPreviewLength',helper::FILTER_INT),
-				'versionData' => $this->getData(['module', $this->getUrl(0), 'config', 'versionData']),
-				'nearWordText' => $this->getInput('searchNearWordText'),
-				'successTitle' => $this->getInput('searchSuccessTitle'),
-				'failureTitle' => $this->getInput('searchFailureTitle'),
-				'commentFailureTitle'=> $this->getInput('searchCommentFailureTitle')
-			]]);
-			$this->setData(['module', $this->getUrl(0), 'theme',[
-				'keywordColor' => $this->getInput('searchKeywordColor'),
-				'style' => $success ? self::DATADIRECTORY . $this->getUrl(0) . '/theme.css' : '',
-			]]);
+				// Soumission du formulaire
+				$this->setData(['module', $this->getUrl(0), 'config',[
+					'submitText' => $this->getInput('searchSubmitText'),
+					'placeHolder' => $this->getInput('searchPlaceHolder'),
+					'resultHideContent' => $this->getInput('searchResultHideContent',helper::FILTER_BOOLEAN),
+					'previewLength' => $this->getInput('searchPreviewLength',helper::FILTER_INT),
+					'versionData' => $this->getData(['module', $this->getUrl(0), 'config', 'versionData']),
+					'nearWordText' => $this->getInput('searchNearWordText'),
+					'successTitle' => $this->getInput('searchSuccessTitle'),
+					'failureTitle' => $this->getInput('searchFailureTitle'),
+					'commentFailureTitle'=> $this->getInput('searchCommentFailureTitle')
+				]]);
+				$this->setData(['module', $this->getUrl(0), 'theme',[
+					'keywordColor' => $this->getInput('searchKeywordColor'),
+					'style' => $success ? self::DATADIRECTORY . $this->getUrl(0) . '/theme.css' : '',
+				]]);
 
 
+				// Valeurs en sortie, affichage du formulaire
+				$this->addOutput([
+					'redirect' => helper::baseUrl() . $this->getUrl(),
+					'notification' => $success !== FALSE ? $text['search']['config'][0] : $text['search']['config'][1],
+					'state' => $success !== FALSE
+				]);
+
+			}
 			// Valeurs en sortie, affichage du formulaire
 			$this->addOutput([
-				'redirect' => helper::baseUrl() . $this->getUrl(),
-				'notification' => $success !== FALSE ? $text['search']['config'][0] : $text['search']['config'][1],
-				'state' => $success !== FALSE
+				'title' => $text['search']['config'][2],
+				'view' => 'config',
+				'vendor' => [
+					'tinycolorpicker'
+				]
 			]);
-
 		}
-		// Valeurs en sortie, affichage du formulaire
-		$this->addOutput([
-			'title' => $text['search']['config'][2],
-			'view' => 'config',
-			'vendor' => [
-				'tinycolorpicker'
-			]
-		]);
 	}
 
 	public function index() {

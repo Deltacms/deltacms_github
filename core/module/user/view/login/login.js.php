@@ -3,10 +3,10 @@
  */
 
 /* Visibilité du mot de passe */
-$(".zwiico-eye").mouseenter(function() {
+$(".delta-ico-eye").mouseenter(function() {
 	$("#userLoginPassword").attr("type","text");
 });
-$(".zwiico-eye").mouseleave(function() {
+$(".delta-ico-eye").mouseleave(function() {
 	$("#userLoginPassword").attr("type","password");
 });
 

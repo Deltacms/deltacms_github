@@ -2,16 +2,19 @@
  * This file is part of DeltaCMS.
  * For full copyright and license information, please see the LICENSE
  * file that was distributed with this source code.
- * @author Sylvain Lelièvre <lelievresylvain@free.fr>
- * @copyright Copyright (C) 2021, Sylvain Lelièvre
+ * @author Sylvain Lelièvre
+ * @copyright 2021 © Sylvain Lelièvre
+ * @author Lionel Croquefer
+ * @copyright 2022 © Lionel Croquefer
  * @license GNU General Public License, version 3
  * @link https://deltacms.fr/
+ * @contact https://deltacms.fr/contact
  *
  * Delta was created from version 11.2.00.24 of ZwiiCMS
  * @author Rémi Jean <remi.jean@outlook.com>
- * @copyright Copyright (C) 2008-2018, Rémi Jean
+ * @copyright 2008-2018 © Rémi Jean
  * @author Frédéric Tempez <frederic.tempez@outlook.com>
- * @copyright Copyright (C) 2018-2021, Frédéric Tempez
+ * @copyright 2018-2021 © Frédéric Tempez
  */
 
 var core = {};
@@ -164,9 +167,9 @@ core.noticeRemove = function(id) {
  * Scripts à exécuter en premier
  */
 core.start = function() {
-	
+
 	/* Décalage en petit écran de la bannière ou de la section si le menu burger est fixe et non caché
-	* n'opère pas sur les pages de configuration du thème
+	* dans le cas d'une bannière affichée uniquement en page d'accueil
 	*/
 	$(window).on("resize", function() {
 		if($(window).width() < 800) {
@@ -174,30 +177,24 @@ core.start = function() {
 			var positionNav = <?php echo json_encode($this->getData(['theme', 'menu', 'position'])); ?>;
 			var burgerFixed = <?php echo json_encode($this->getData(['theme', 'menu', 'burgerFixed'])); ?>;
 			var namePage = <?php echo json_encode($this->getUrl(0)); ?>;
-			if( positionNav !=='hide' && burgerFixed === true && namePage !== 'theme'){
-				var positionHeader = <?php echo json_encode($this->getData(['theme', 'header', 'position'])); ?>;
-				var tinyHidden = <?php echo json_encode($this->getData(['theme', 'header', 'tinyHidden'])); ?>;
-				var homePageOnly = <?php echo json_encode($this->getData(['theme', 'header', 'homePageOnly'])); ?>;
-				// bannerMenuHeight et bannerMenuHeightSection transmis par core.php/showMenu()
-				var burgerOverlay = <?php echo json_encode($this->getData(['theme', 'menu', 'burgerOverlay'])); ?>;
-				var homePageId = <?php echo json_encode($this->getData(['locale', 'homePageId'])); ?>;	
+			var positionHeader = <?php echo json_encode($this->getData(['theme', 'header', 'position'])); ?>;
+			var tinyHidden = <?php echo json_encode($this->getData(['theme', 'header', 'tinyHidden'])); ?>;
+			var homePageOnly = <?php echo json_encode($this->getData(['theme', 'header', 'homePageOnly'])); ?>;
+			// bannerMenuHeight et bannerMenuHeightSection transmis par core.php / showMenu()
+			var burgerOverlay = <?php echo json_encode($this->getData(['theme', 'menu', 'burgerOverlay'])); ?>;
+			var homePageId = <?php echo json_encode($this->getData(['locale', 'homePageId'])); ?>;
+			if( positionNav !=='hide' && burgerFixed === true && tinyHidden === false && homePageOnly === true){
 				var offsetBanner = "0";
 				if( burgerOverlay === false) offsetBanner = bannerMenuHeight;
-				// Si la bannière est visible la décaler
-				if( tinyHidden === false && ( homePageOnly === false || namePage === homePageId )){
+				if( namePage === homePageId ){
 					$("#site.container header, header.container").css("padding-top",offsetBanner);
 				} else {
-					// sinon décaler la section
-					$("section").css("padding-top",bannerMenuHeightSection);
-				}
-				// Si la bannière est cachée décaler la section
-				if( positionHeader === 'hide'){
-					$("section").css("padding-top",bannerMenuHeightSection);
+					$("section").css("padding-top", bannerMenuHeightSection);
 				}
 			}
 		}
 	}).trigger("resize");
-	
+
 	/**
 	 * Remonter en haut au clic sur le bouton
 	 */
@@ -290,7 +287,7 @@ core.start = function() {
 	/**
 	 * Commande de gestion des cookies dans le footer
 	 */
-	 
+
 	 $("#footerLinkCookie").on("click", function() {
 		$("#cookieConsent").removeClass("displayNone");
 	});
@@ -362,7 +359,7 @@ core.start = function() {
 			.prop("disabled", true)
 			.empty()
 			.append(
-				$("<span>").addClass("zwiico-spin animate-spin")
+				$("<span>").addClass("delta-ico-spin animate-spin")
 			)
 	});
 	/**
@@ -408,7 +405,7 @@ core.start = function() {
 	*/
 	$(window).on("resize", function() {
 		var responsive = "<?php echo $this->getdata(['theme','header','imageContainer']);?>";
-		var feature = "<?php echo $this->getdata(['theme','header','feature']);?>";		
+		var feature = "<?php echo $this->getdata(['theme','header','feature']);?>";
 		if ( (responsive === "cover" || responsive === "contain") && feature !== "feature" ) {
 			var widthpx = "<?php echo $this->getdata(['theme','site','width']);?>";
 			var width = widthpx.substr(0,widthpx.length-2);
@@ -422,19 +419,19 @@ core.start = function() {
 			}
 		}
 	}).trigger("resize");
-		
+
 	/* Positionnement vertical du bandeau du menu burger si il est fixe et si un utilisateur est connecté
 	*/
 	$(window).on("resize", function() {
 		if($(window).width() < 800) {
-			<?php if( $this->getData(['theme','menu', 'burgerFixed'])=== true){ ?>	
+			<?php if( $this->getData(['theme','menu', 'burgerFixed'])=== true){ ?>
 				var barHeight = $(" #bar ").css("height");
 				$(".navfixedburgerconnected").css("top",barHeight);
 			<?php } ?>
 		}
 	}).trigger("resize");
 
-	/* En petit écran, affichage / masquage des items du sous-menu 
+	/* En petit écran, affichage / masquage des items du sous-menu
 	* ou signalisation que la page est désactivée par ouverture du sous-menu
 	*/
 	$(window).on("resize", function() {
@@ -447,14 +444,27 @@ core.start = function() {
 					$(select).css("opacity","1");
 					$(select).css("padding-left","20px");
 					$(select).css("position","static");
-					$(select2).removeClass('zwiico-plus').addClass('zwiico-minus');
+					$(select2).removeClass('delta-ico-plus').addClass('delta-ico-minus');
 				} else {
 					$(select).css("z-index","-1");
 					$(select).css("opacity","0");
-					$(select).css("position","absolute");	
-					$(select2).removeClass('zwiico-minus').addClass('zwiico-plus');				
+					$(select).css("position","absolute");
+					$(select2).removeClass('delta-ico-minus').addClass('delta-ico-plus');
 				}
 			}
+			// Affichage du sous-menu si une sous-page est active
+			$.each(parentPage, function(index, value) {
+				var select = "ul#_"+value+".navSub";
+				var select2 = 'nav #menu ul li #'+value+' span.iconSubExistSmallScreen';
+				var select3 = "ul#_"+value+".navSub > li > a";
+				if( $(select3).hasClass("active") ){
+						$(select).css("z-index","1");
+						$(select).css("opacity","1");
+						$(select).css("padding-left","20px");
+						$(select).css("position","static");
+						$(select2).removeClass('delta-ico-plus').addClass('delta-ico-minus');
+				}
+			});
 			$("nav #menu ul li span").click(function() {
 				// id de la page parent
 				var parentId = $(this).parents().attr("id");
@@ -466,11 +476,11 @@ core.start = function() {
 				displaySubPages( parentId);
 			});
 		}
-	}).trigger("resize");
-	
+	});
+
 	/*
-	* Largeur minimale des onglets principaux du menu et largeur du sous-menu égale à la largeur de l'onglet parent 
-	* sauf en petit écran 
+	* Largeur minimale des onglets principaux du menu et largeur du sous-menu égale à la largeur de l'onglet parent
+	* sauf en petit écran
 	*/
 	$(window).on("resize", function() {
 		if( $(window).width() > 799 ){
@@ -488,7 +498,7 @@ core.start = function() {
 				}
 				$.each(page, function(index, value) {
 					$('nav li .' + value).css('min-width', '<?php echo $this->getData(['theme', 'menu', 'minWidthTab']); ?>');
-					$('nav li ul li .'+value).css('width', $('.'+value).css('width'));
+					$('nav li ul li a.'+value).css('width', $('nav li a.'+value).css('width'));
 					$('nav li.' + value).css('text-align', 'left');
 				});
 			}
@@ -527,22 +537,21 @@ core.relativeLuminanceW3C = function(rgba) {
 	var B = (BsRGBA <= .03928) ? BsRGBA / 12.92 : Math.pow((BsRGBA + .055) / 1.055, 2.4);
 	return .2126 * R + .7152 * G + .0722 * B;
 };
-
-
-
-$(document).ready(function(){
+	 $(document).ready(function(){
 	/**
 	 * Affiche le sous-menu quand il est sticky
 	 */
-	$("nav").mouseenter(function(){
-		$("#navfixedlogout .navSub").css({ 'pointer-events' : 'auto' });
-		$("#navfixedconnected .navSub").css({ 'pointer-events' : 'auto' });
-	});
-	$("nav").mouseleave(function(){
-		$("#navfixedlogout .navSub").css({ 'pointer-events' : 'none' });
-		$("#navfixedconnected .navSub").css({ 'pointer-events' : 'none' });
-	});
-	
+		$("nav:not(.navsub)").mouseenter(function(){
+			$("#navfixedlogout .navSub").css({ 'pointer-events' : 'auto' });
+			$("#navfixedconnected .navSub").css({ 'pointer-events' : 'auto' });
+		});
+		$("nav, .navSub").mouseleave(function(){
+			if($(window).width() > 799 ) {
+				$("#navfixedlogout .navSub").css({ 'pointer-events' : 'none' });
+				$("#navfixedconnected .navSub").css({ 'pointer-events' : 'none' });
+			}
+		});
+
 	/**
 	 * Chargement paresseux des images et des iframes
 	 */
@@ -594,12 +603,12 @@ $(document).ready(function(){
 		var changeIcon = $('#burgerIcon').children("span");
 		var bgColor = "<?php echo $this->getData(['theme', 'menu', 'burgerBannerColor']) ;?>";
 		var bgColorOpaque = bgColor.replace(/[^,]+(?=\))/, '1');
-		if ( $(changeIcon).hasClass('zwiico-menu') ) {
-			$(changeIcon).removeClass('zwiico-menu').addClass('zwiico-cancel');
+		if ( $(changeIcon).hasClass('delta-ico-menu') ) {
+			$(changeIcon).removeClass('delta-ico-menu').addClass('delta-ico-cancel');
 			$("nav #toggle").css("background-color",bgColorOpaque);
 		}
 		else {
-			$(changeIcon).addClass('zwiico-menu');
+			$(changeIcon).addClass('delta-ico-menu');
 			$("nav #toggle").css("background-color",bgColor);
 		};
 	});
@@ -637,27 +646,27 @@ $(document).ready(function(){
 	 $(document).on('lity:ready', function(event, instance) {
 		$('.lity-close').addClass('notranslate');
 	});
-	
+
 	/**
 	* Bouton screenshot
 	*/
-	var dataURL = {};  
-	$('#screenshot').click(function() {  
+	var dataURL = {};
+	$('#screenshot').click(function() {
 		html2canvas(document.querySelector("#main_screenshot")).then(canvas => {
 			dataURL = canvas.toDataURL('image/jpeg', 0.1);
 			console.log( dataURL);
-			$.ajax({  
+			$.ajax({
 				type: "POST",
-				contentType:"application/x-www-form-urlencoded",    
-				url: "<?php echo helper::baseUrl(false); ?>core/vendor/screenshot/screenshot.php",   
-				data: {  
-					image: dataURL  
-				},  
-				dataType: "html" 				
-			});  
+				contentType:"application/x-www-form-urlencoded",
+				url: "<?php echo helper::baseUrl(false); ?>core/vendor/screenshot/screenshot.php",
+				data: {
+					image: dataURL
+				},
+				dataType: "html"
+			});
 		});
 	});
-		
+
 	/* Compteur de liens cliqués
 	* Fonctionne avec download_counter.php
 	* Les liens comptabilisés doivent avoir la class="clicked_link_count"
@@ -667,13 +676,14 @@ $(document).ready(function(){
 	  $('.clicked_link_count').on('click', function(event) {
 		// Récupérer le chemin vers le fichier
 		var filePath = $(this).attr('href');
+		console.log(filePath);
 		// Envoyer une requête AJAX pour enregistrer le téléchargement
 		$.ajax({
 		  type: 'POST',
-		  url: '/site/data/statislite/module/download_counter/download_counter.php',
+		  url: "<?php echo helper::baseUrl(false); ?>site/data/statislite/module/download_counter/download_counter.php",
 		  data: {'url': filePath},
 		});
 	  });
 	<?php } ?>
-		
+
 });
