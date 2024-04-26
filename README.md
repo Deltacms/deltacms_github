@@ -1,5 +1,5 @@
 
-# DeltaCMS 4.5.04
+# DeltaCMS 5.1.00
 
 DeltaCMS est un CMS sans base de données (flat-file) qui permet de créer et gérer facilement un site web sans aucune connaissance en programmation.
 L'administration du site est trilingue espagnol (castillan), anglais ou français, le site peut être rédigé dans une langue quelconque.
@@ -57,7 +57,9 @@ En cas de difficulté avec la nouvelle version, il suffira de téléverser la sa
 ```text
 [R] core                   Cœur du système
   [R] class                Classes
-  [R] include              Update des données 
+  [R] include              Dossier des includes
+	[F]	update.inc.php	   Update des données 
+	[F] comment.inc.php	   Pseudo module des commentaires de page
   [R] layout               Mise en page
   [R] module               Modules du cœur
   [R] vendor               Librairies extérieures
@@ -78,12 +80,15 @@ En cas de difficulté avec la nouvelle version, il suffira de téléverser la sa
 [R] site                   Contenu du site
   [R] backup               Sauvegardes automatiques
   [R] data                 Répertoire des données
-    [R] base                 Dossier localisé, un dossier par langue rédigée
+    [R] base               Dossier localisé, un dossier par langue rédigée, exemple en, es, de
+	  [F] comment.json	   Commentaires de page
       [F] page.json        Données des pages
-      [F] module.json      Données des modules de pages
-      [F] locale.json       Données du site propres à la langue
+      [F] module.json      Données des modules de page
+      [F] locale.json      Données du site propres à la langue
       [R] content          Dossier des contenus de page
         [F] accueil.html   Exemple contenu de la page d'accueil
+	  [R] data_module	   Données volumineuses des modules de page
+		[F] blog.json      Exemple de page avec module ayant des données volumineuses, un fichier par page ou un dossier pour statislite et agenda
     [R] *modules*          Un dossier par module, exemple [R]search [R]agenda, pour les données du module
     [F] admin.css          Thème des pages d'administration
     [F] admin.json         Données de thème des pages d'administration
@@ -106,6 +111,6 @@ En cas de difficulté avec la nouvelle version, il suffira de téléverser la sa
 [F] robots.txt             Filtrage des répertoires accessibles aux robots des moteurs de recherche
 [F] sitemap.xml            Plan du site
 
-Le fichiers .htaccess contribuent à la sécurité en filtrant l'accès aux répertoires sensibles.
+Les fichiers .htaccess contribuent à la sécurité en filtrant l'accès aux répertoires sensibles.
 
 ```

@@ -162,6 +162,22 @@ class config extends common {
 	// Variable pour construire la liste des pages du site
 	public static $pagesList = [];
 	public static $orphansList = [];
+	
+	// Constantes pour les champs de commentaires dans Social
+	const TYPE_MAIL = 'mail';
+	const TYPE_TEXT = 'text';
+	const TYPE_TEXTAREA = 'textarea';
+	const TYPE_DATETIME = 'date';
+	const ITEMSPAGE = 10;
+	
+	// Variable pour les champs de commentaires dans Social
+	public static $listUsers = [];
+	public static $nbItemPage = [
+		'1' => '1',
+		'3' => '3',
+		'5' => '5',
+		'10' => '10'
+	];
 
 	/**
 	 * Génére les fichiers pour les crawlers
@@ -179,6 +195,7 @@ class config extends common {
 			]);	
 		} else {
 			// Lexique
+			$param='';
 			include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
 
 			// Mettre à jour le site map
@@ -210,6 +227,7 @@ class config extends common {
 			]);	
 		} else {
 			// Lexique
+			$param='';
 			include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
 		
 			// Soumission du formulaire
@@ -254,6 +272,7 @@ class config extends common {
 			]);	
 		} else {
 			// Lexique
+			$param='';
 			include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
 
 			$texte='';
@@ -288,6 +307,7 @@ class config extends common {
 			]);	
 		} else {
 			// Lexique
+			$param='';
 			include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
 		
 			// Soumission du formulaire
@@ -375,8 +395,17 @@ class config extends common {
 			]);	
 		} else {
 			// Lexique
+			$param='';
 			include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
-		
+			
+			// Liste des utilisateurs
+			$userIdsFirstnames = helper::arrayCollumn($this->getData(['user']), 'firstname');
+			ksort($userIdsFirstnames);
+			self::$listUsers [] = '';
+			foreach($userIdsFirstnames as $userId => $userFirstname) {
+				self::$listUsers [] =  $userId;
+			}
+			
 			// Soumission du formulaire
 			if($this->isPost()) {
 
@@ -425,6 +454,7 @@ class config extends common {
 						'title' => $this->getInput('localeTitle', helper::FILTER_STRING_SHORT, true),
 						'captchaSimpleText' => $this->getInput('localeCaptchaSimpleText', helper::FILTER_STRING_LONG),
 						'captchaSimpleHelp' => $this->getInput('localeCaptchaSimpleHelp', helper::FILTER_STRING_LONG),
+						'questionnaireAccept' => $this->getInput('localeQuestionnaireAccept', helper::FILTER_STRING_LONG),
 						'cookies' => [
 							// Les champs sont obligatoires si l'option consentement des cookies est active
 							'cookiesDeltaText'	=> $this->getInput('localeCookiesDeltaText', helper::FILTER_STRING_LONG, $this->getData(['config', 'cookieConsent'])),
@@ -434,6 +464,14 @@ class config extends common {
 							'cookiesCheckboxExtText'	=> $this->getInput('localeCookiesCheckboxExtText', helper::FILTER_STRING_SHORT),
 							'cookiesFooterText' =>  $this->getInput('localeCookiesFooterText', helper::FILTER_STRING_SHORT, $this->getData(['config', 'cookieConsent'])),
 							'cookiesButtonText' =>$this->getInput('localeCookiesButtonText', helper::FILTER_STRING_SHORT, $this->getData(['config', 'cookieConsent']))
+						],
+						'pageComment' => [
+							'writeComment' => $this->getInput('localeConfigWriteComment', helper::FILTER_STRING_SHORT),
+							'commentName' => $this->getInput('localeConfigCommentName', helper::FILTER_STRING_SHORT),
+							'comment' => $this->getInput('localeConfigCommentComment', helper::FILTER_STRING_SHORT),
+							'submit' => $this->getInput('localeConfigCommentSubmit', helper::FILTER_STRING_SHORT),
+							'link' => $this->getInput('localeConfigCommentLink', helper::FILTER_STRING_SHORT),
+							'page' => $this->getInput('localeConfigCommentPage', helper::FILTER_STRING_SHORT)
 						]
 					]
 				]);
@@ -462,7 +500,14 @@ class config extends common {
 							'youtubeId' => $this->getInput('socialYoutubeId'),
 							'youtubeUserId' => $this->getInput('socialYoutubeUserId'),
 							'githubId' => $this->getInput('socialGithubId'),
-							'headFacebook' => $this->getInput('socialHeadFacebook', helper::FILTER_BOOLEAN)
+							'headFacebook' => $this->getInput('socialHeadFacebook', helper::FILTER_BOOLEAN),
+							'comment' => [
+								'group' => $this->getInput('socialConfigGroup'),
+								'user' => $this->getInput('socialConfigUser'),
+								'subject' => $this->getInput('socialConfigSubject'),
+								'captcha' => $this->getInput('socialConfigCaptcha', helper::FILTER_BOOLEAN),
+								'nbItemPage' => $this->getInput('socialConfigNbItemPage')
+							]
 						],
 						'smtp' => [
 							'enable' => $this->getInput('smtpEnable',helper::FILTER_BOOLEAN),
@@ -570,6 +615,7 @@ class config extends common {
 									// Met à jour la baseUrl
 									$this->setData(['core', 'baseUrl', helper::baseUrl(true,false) ]);
 				}
+								
 				// Générer robots.txt et sitemap
 				// $this->generateFiles();
 				// Valeurs en sortie
@@ -578,9 +624,9 @@ class config extends common {
 					'redirect' => helper::baseUrl() . 'config',
 					'notification' => $text['core_config']['index'][1] ,
 					'state' => true
-				]);
+				]);			
 			}
-			// Générer la list des pages disponibles
+			// Générer la liste des pages disponibles
 			self::$pagesList = $this->getData(['page']);
 			foreach(self::$pagesList as $page => $pageId) {
 				if ($this->getData(['page',$page,'block']) === 'bar' ||
@@ -597,9 +643,14 @@ class config extends common {
 					unset(self::$orphansList[$page]);
 				}
 			}
+
 			// Valeurs en sortie
 			$this->addOutput([
 				'title' => $text['core_config']['index'][0],
+				'vendor' => [
+					'html-sortable',
+					'flatpickr'
+				],
 				'view' => 'index'
 			]);
 		}
@@ -617,6 +668,7 @@ class config extends common {
 			]);	
 		} else {
 			// Lexique
+			$param='';
 			include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
 
 			// Soumission du formulaire
@@ -665,6 +717,7 @@ class config extends common {
 			]);	
 		} else {
 			// Lexique
+			$param='';
 			include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
 
 			if ( file_exists(self::DATA_DIR . 'journal.log') ) {
@@ -707,6 +760,7 @@ class config extends common {
 			]);	
 		} else {
 			// Lexique
+			$param='';
 			include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
 
 			$fileName = self::DATA_DIR . 'journal.log';
@@ -745,6 +799,7 @@ class config extends common {
 			]);	
 		} else {
 			// Lexique
+			$param='';
 			include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
 		
 			ob_start();
@@ -796,6 +851,7 @@ class config extends common {
 			]);	
 		} else {
 			// Lexique
+			$param='';
 			include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
 		
 			if ( file_exists(self::DATA_DIR . 'blacklist.json') ) {
@@ -833,6 +889,7 @@ class config extends common {
 			]);	
 		} else {
 			// Lexique
+			$param='';
 			include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
 		
 			// Créer le répertoire manquant

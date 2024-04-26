@@ -46,6 +46,11 @@ $text['core_page_view']['edit'][42] = "Les données du module ";
 $text['core_page_view']['edit'][43]	= " seront effacées. Confirmez-vous ?";
 $text['core_page_view']['edit'][44] = "Groupe requis pour modifier la page :";
 $text['core_page_view']['edit'][45] = "Vous n'avez pas les droits d'édition, contactez un administrateur.";
+$text['core_page_view']['edit'][46] = 'Permet aux visiteurs de laisser un commentaire sur la page. La configuration est commune à toutes les pages, la gestion propre à chaque page.';
+$text['core_page_view']['edit'][47] = 'Commentaires';
+$text['core_page_view']['edit'][48] = 'Configurer';
+$text['core_page_view']['edit'][49] = 'Gérer les commentaires';
+$text['core_page_view']['edit'][50] = 'Autoriser les commentaires';
 $text['core_page']['duplicate'][0] = "Jeton invalide";
 $text['core_page']['duplicate'][1] = "Duplication non autorisée";
 $text['core_page']['duplicate'][2] = "La page a été dupliquée";
@@ -60,7 +65,20 @@ $text['core_page']['delete'][3] = "Impossible de supprimer une page contenant de
 $text['core_page']['delete'][4] = "Page supprimée";
 $text['core_page']['edit'][0] = "Modifications enregistrées";
 $text['core_page']['edit'][1] = "Aucun";
-
+$text['core_page_view']['comment'][1] = 'Retour';
+$text['core_page_view']['comment'][2] = 'Données';
+$text['core_page_view']['comment'][3] = 'Export CSV';
+$text['core_page_view']['comment'][4] = 'Tout effacer';
+$text['core_page_view']['comment'][5] = 'Pas de données';
+$text['core_page_view']['comment'][6] = 'Êtes-vous sûr de vouloir supprimer cette donnée ?';
+$text['core_page_view']['comment'][7] = 'Êtes-vous sûr de vouloir supprimer toutes les données ?';
+$text['core_page']['commentDelete'][1] = 'Donnée supprimée';
+$text['core_page']['commentDelete'][2] = 'Accès non autorisé';
+$text['core_page']['exportToCsv'][1] = 'Données exportées dans le fichier ';
+$text['core_page']['exportToCsv'][2] = 'Pas de données à exporter';
+$text['core_page']['commentAllDelete'][1] = 'Accès non autorisé';
+$text['core_page']['commentAllDelete'][2] = 'Données effacées';
+$text['core_page']['commentAllDelete'][3] = 'Aucune donnée à effacer';
 
 // Tinymce et Flatpickr
 $lang_admin = 'fr_FR'; 
@@ -92,6 +110,7 @@ $pageBlocks = [
 	'3-6-3' => 'Barre 1/4 - page 1/2 - barre 1/4',
 	'2-7-3' => 'Barre 2/12 - page 7/12 - barre 3/12 ',
 	'3-7-2' => 'Barre 3/12 - page 7/12 - barre 2/12 ',
+	'2-8-2' => 'Barre 2/12 - page 8/12 - barre 2/12 ',
 	'bar'	=> 'Barre latérale'
 ];
 $displayMenu = [

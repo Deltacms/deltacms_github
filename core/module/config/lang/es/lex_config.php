@@ -17,7 +17,7 @@ $text['core_config_view']['bodyheadscript'][2] = 'Script en body';
 $text['core_config_view']['connect'][0] = 'Seguridad de conexión';
 $text['core_config_view']['connect'][1] = 'Captcha en conexión';
 $text['core_config_view']['connect'][2] = 'Captcha complejo';
-$text['core_config_view']['connect'][3] = 'Con esta opción, si se le reconoce como humano, se mostrará un captcha muy simplificado. Esto se aplica a todos los captchas del sitio.';
+$text['core_config_view']['connect'][3] = 'Con esta opción se utilizará un captcha de comportamiento. Esto se aplica a todos los captchas del sitio excepto al de inicio de sesión.';
 $text['core_config_view']['connect'][4] = 'Tipo de captcha';
 $text['core_config_view']['connect'][5] = 'Desconexión automática';
 $text['core_config_view']['connect'][6] = 'Desconecta sesiones previamente abiertas en otros navegadores o terminales. Activación recomendada.';
@@ -40,8 +40,8 @@ $text['core_config_view']['index'][0] = 'Inicio';
 $text['core_config_view']['index'][1] = 'Ayuda';
 $text['core_config_view']['index'][2] = 'Configuración';
 $text['core_config_view']['index'][3] = 'Guardar';
-$text['core_config_view']['index'][4] = 'Ubicación';
-$text['core_config_view']['index'][5] = 'Referencia';
+$text['core_config_view']['index'][4] = 'Localización';
+$text['core_config_view']['index'][5] = 'Social';
 $text['core_config_view']['index'][6] = 'Conexión';
 $text['core_config_view']['index'][7] = 'Red';
 $text['core_config_view']['index'][8] = 'Scripts';
@@ -98,6 +98,17 @@ $text['core_config_view']['locale'][49] = 'Miembro';
 $text['core_config_view']['locale'][50] = 'Editor';
 $text['core_config_view']['locale'][51] = 'Moderador';
 $text['core_config_view']['locale'][52] = 'Administrador';
+$text['core_config_view']['locale'][53] = 'Submit button text';
+$text['core_config_view']['locale'][54] = 'Comentarios de la página ';
+$text['core_config_view']['locale'][55] = 'Escribir un comentario';
+$text['core_config_view']['locale'][56] = 'Nombre o apodo';
+$text['core_config_view']['locale'][57] = 'Comentario';
+$text['core_config_view']['locale'][58] = 'Vínculo entre nombre y fecha';
+$text['core_config_view']['locale'][59] = 'Página';
+$text['core_config_view']['locale'][60] = 'Aceptación de las condiciones de uso de datos personales ';
+$text['core_config_view']['locale'][61] = 'Texto asociado con la casilla de verificación';
+$text['core_config_view']['locale'][62] = ' Acepto las condiciones de uso de mis datos personales';
+
 $text['core_config_view']['network'][0] = 'Configuración';
 $text['core_config_view']['network'][1] = 'Tipo de proxy';
 $text['core_config_view']['network'][2] = 'Dirección de proxy';
@@ -181,6 +192,21 @@ $text['core_config_view']['social'][15] = 'Ingrese su ID de Github: https://gith
 $text['core_config_view']['social'][16] = 'encabezar Facebook';
 $text['core_config_view']['social'][17] = 'Insertar metapropiedades específicas de Facebook en el encabezado de la página';
 $text['core_config_view']['social'][18] = 'Canal de Youtube';
+$text['core_config_view']['social'][19] = 'Comentarios de pie de página';
+$text['core_config_view']['social'][20] = 'Configuración';
+$text['core_config_view']['social'][23] = 'Enviar los datos ingresados ​​por correo electrónico:';
+$text['core_config_view']['social'][24] = 'Seleccione al menos un grupo o un usuario. Su servidor debe permitir el envío de correo electrónico.';
+$text['core_config_view']['social'][25] = 'Déjelo vacío para mantener el texto predeterminado.';
+$text['core_config_view']['social'][26] = 'Asunto del correo';
+$text['core_config_view']['social'][27] = 'A grupos de';
+$text['core_config_view']['social'][28] = 'Editores = editores + administradores<br> Miembros = miembros + editores + administradores';
+$text['core_config_view']['social'][29] = 'Tiene un miembro';
+$text['core_config_view']['social'][31] = 'Un correo electrónico o una lista de correo';
+$text['core_config_view']['social'][32] = 'Responder al remitente desde el correo electrónico de notificación';
+$text['core_config_view']['social'][33] = 'Esta opción le permite responder directamente al remitente del mensaje si ha indicado un correo electrónico válido.';
+$text['core_config_view']['social'][37] = 'Número de comentarios mostrados en una página';
+$text['core_config_view']['social'][40] = 'Validar un captcha para enviar el formulario';
+$text['core_config_view']['social'][21] = 'Los textos deben colocarse en el idioma de sus visitantes en la pestaña "Localización"';
 $text['core_config']['generateFiles'][0] = 'Mapa del sitio actualizado y archivos robots.txt';
 $text['core_config']['generateFiles'][1] = 'No se pudo escribir, el mapa del sitio no se actualizó';
 $text['core_config']['backup'][0] = 'Backup';
@@ -246,5 +272,27 @@ $anonIP = [
 $captchaTypes = [
 	'num' => 'Números',
 	'alpha' => 'Letras'
+];
+if( $param === 'social_view'){
+	$groupNews = [
+		self::GROUP_MEMBER => 'Miembro',
+		self::GROUP_EDITOR => 'Editor',
+		self::GROUP_MODERATOR => 'Moderador',
+		self::GROUP_ADMIN => 'Administrador'
+	];
+	$commentTypes = [
+		$module::TYPE_TEXT => 'Texto campeón',
+		$module::TYPE_TEXTAREA => 'Texto del gran campeón',
+		$module::TYPE_MAIL => 'Correo campeón'	
+	];
+}
+// Initialisation de flatpickr
+$lang_flatpickr = 'es';
+// Langue d'administration pour tinymce
+$lang_admin = 'es';
+// Selects
+$signature = [
+	'text' => 'Nombre del sitio',
+	'logo' => 'logotipo del sitio'
 ];
 ?>

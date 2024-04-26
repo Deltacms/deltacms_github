@@ -297,3 +297,192 @@ $(".configUpdate").on("click", function() {
 	});
 });
 
+/**
+ * Onglet Social configuration des commentaires de bas de page
+ */
+
+/**
+ * Ajout d'un champ
+ */
+function add(inputUid, input) {
+	// Nouveau champ
+	var newInput = $($("#socialConfigCopy").html());
+	// Ajout de l'ID unique aux champs
+	newInput.find("a, input, select").each(function() {
+		var _this = $(this);
+		_this.attr({
+			id: _this.attr("id").replace("[]", "[" + inputUid + "]"),
+			name: _this.attr("name").replace("[]", "[" + inputUid + "]")
+		});
+	});
+	newInput.find("label").each(function() {
+		var _this = $(this);
+		_this.attr("for", _this.attr("for").replace("[]", "[" + inputUid + "]"));
+	});
+	// Attribue les bonnes valeurs
+	if(input) {
+		// Nom du champ
+		newInput.find("[name='socialConfigName[" + inputUid + "]']").val(input.name);
+		// Type de champ
+		newInput.find("[name='socialConfigType[" + inputUid + "]']").val(input.type);
+		// Largeur du champ
+		newInput.find("[name='socialConfigWidth[" + inputUid + "]']").val(input.width);
+		// Valeurs du champ
+		newInput.find("[name='socialConfigValues[" + inputUid + "]']").val(input.values);
+		// Champ obligatoire
+		newInput.find("[name='socialConfigRequired[" + inputUid + "]']").prop("checked", input.required);
+	}
+	// Ajout du nouveau champ au DOM
+	$("#socialConfigInputs")
+		.append(newInput.hide())
+		.find(".socialConfigInput").last().show();
+	// Cache le texte d'absence de champ
+	$("#socialConfigNoInput:visible").hide();
+	// Check le type
+	$(".socialConfigType").trigger("change");
+	// Actualise les positions
+	position();
+}
+
+/**
+ * Calcul des positions
+ */
+function position() {
+	$("#socialConfigInputs").find(".socialConfigPosition").each(function(i) {
+		$(this).val(i + 1);
+	});
+}
+
+/**
+ * Ajout des champs déjà existant
+ */
+var inputUid = 0;
+var inputs = <?php echo json_encode($this->getData(['config', 'social', 'comment', 'input'])); ?>;
+if(inputs) {
+	var inputsPerPosition = <?php echo json_encode(helper::arrayCollumn($this->getData(['config', 'social', 'comment', 'input']), 'position', 'SORT_ASC')); ?>;
+	$.each(inputsPerPosition, function(id) {
+		add(inputUid, inputs[id]);
+		inputUid++;
+	});
+}
+
+/**
+ * Afficher/cacher les options supplémentaires
+ */
+$(document).on("click", ".socialConfigMoreToggle", function() {
+
+	$(this).parents(".socialConfigInput").find(".socialConfigMore").slideToggle();
+	$(this).parents(".socialConfigInput").find(".socialConfigMoreLabel").slideToggle();
+});
+
+/**
+ * Crée un nouveau champ à partir des champs cachés
+ */
+$("#socialConfigAdd").on("click", function() {
+	add(inputUid);
+	inputUid++;
+});
+
+/**
+ * Actions sur les champs
+ */
+// Tri entre les champs
+sortable("#socialConfigInputs", {
+	forcePlaceholderSize: true,
+	containment: "#socialConfigInputs",
+	handle: ".socialConfigMove"
+});
+$("#socialConfigInputs")
+	// Actualise les positions
+	.on("sortupdate", function() {
+		position();
+	})
+	// Suppression du champ
+	.on("click", ".socialConfigDelete", function() {
+		var inputDOM = $(this).parents(".socialConfigInput");
+		// Cache le champ
+		inputDOM.hide();
+		// Supprime le champ
+		inputDOM.remove();
+		// Affiche le texte d'absence de champ
+		if($("#socialConfigInputs").find(".socialConfigInput").length === 0) {
+			$("#socialConfigNoInput").show();
+		}
+		// Actualise les positions
+		position();
+	});
+
+// Simule un changement de type au chargement de la page
+$(".socialConfigType").trigger("change");
+
+/**
+ * Affiche/cache les options de la case à cocher du mail
+ */
+$("#socialConfigMailOptionsToggle").on("change", function() {
+	if($(this).is(":checked")) {
+		$("#socialConfigMailOptions").slideDown();
+	}
+	else {
+		$("#socialConfigMailOptions").slideUp(function() {
+			$("#socialConfigGroup").val("");
+			$("#socialConfigSubject").val("");
+			$("#socialConfigMail").val("");
+			$("#socialConfigUser").val("");
+		});
+	}
+}).trigger("change");
+
+/**
+ * Affiche/cache les options de la case à cocher de la redirection
+ */
+$("#socialConfigPageIdToggle").on("change", function() {
+	if($(this).is(":checked")) {
+		$("#socialConfigPageIdWrapper").slideDown();
+	}
+	else {
+		$("#socialConfigPageIdWrapper").slideUp(function() {
+			$("#socialConfigPageId").val("");
+		});
+	}
+}).trigger("change");
+
+/**
+* Paramètres par défaut au chargement
+*/
+$( document ).ready(function() {
+
+	/**
+	* Masquer ou afficher la sélection du logo
+	*/
+	if ($("#socialConfigSignature").val() !== "text") {
+		$("#socialConfigLogoWrapper").addClass("disabled");
+		$("#socialConfigLogoWrapper").slideDown();
+		$("#socialConfigLogoWidthWrapper").addClass("disabled");
+		$("#socialConfigLogoWidthWrapper").slideDown();
+	} else {
+		$("#socialConfigLogoWrapper").removeClass("disabled");
+		$("#socialConfigLogoWrapper").slideUp();
+		$("#socialConfigLogoWidthWrapper").removeClass("disabled");
+		$("#socialConfigLogoWidthWrapper").slideUp();
+	}
+});
+
+/**
+ * Masquer ou afficher la sélection du logo
+ */
+var socialConfigSignatureDOM = $("#socialConfigSignature");
+socialConfigSignatureDOM.on("change", function() {
+	if ($(this).val() !== "text") {
+			$("#socialConfigLogoWrapper").addClass("disabled");
+			$("#socialConfigLogoWrapper").slideDown();
+			$("#socialConfigLogoWidthWrapper").addClass("disabled");
+			$("#socialConfigLogoWidthWrapper").slideDown();
+	} else {
+			$("#socialConfigLogoWrapper").removeClass("disabled");
+			$("#socialConfigLogoWrapper").slideUp();
+			$("#socialConfigLogoWidthWrapper").removeClass("disabled");
+			$("#socialConfigLogoWidthWrapper").slideUp();
+	}
+});
+
+

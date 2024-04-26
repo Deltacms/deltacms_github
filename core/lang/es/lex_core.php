@@ -31,6 +31,13 @@ $text['core']['router'][3] = 'Acceso denegado';
 $text['core']['router'][4] = 'No está autorizado para ver esta página (error 403)';
 $text['core']['router'][5] = 'Página no disponible';
 $text['core']['router'][6] = 'La página solicitada no existe o no se encuentra (error 404)';
+$text['core']['showComment'][1] = 'Robot detectado';
+$text['core']['showComment'][2] = 'Asunto';
+$text['core']['showComment'][3] = 'Comentar en la página ';
+$text['core']['showComment'][4] = 'Formulario enviado';
+$text['core']['showComment'][5] = 'Error al enviar el formulario';
+$text['core']['showComment'][6] = 'Aún no hay comentarios';
+$text['core']['showComment'][7] ='es';
 // core.js.php
 $text['core_js'][0] = "¿Realizar actualización?";
 // Seleccione Archivo

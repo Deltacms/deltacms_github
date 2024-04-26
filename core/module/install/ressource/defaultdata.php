@@ -17,7 +17,14 @@ class init extends common {
 				'twitterId' => '',
 				'youtubeId' => '',
 				'youtubeUserId' => '',
-				'githubId' => ''
+				'githubId' => '',
+				'comment' => [
+					'group' => '',
+					'user' => '',
+					'subject' => '',
+					'captcha' => true,
+					'nbItemPage' => '3'					
+				]
 			],
 			'timezone' => 'Europe/Paris',
 			'proxyUrl' => '',
@@ -69,7 +76,7 @@ class init extends common {
 			]
 		],
 		'core' => [
-			'dataVersion' => 4504,
+			'dataVersion' => 5100,
 			'lastBackup' => 0,
 			'lastClearTmp' => 0,
 			'lastAutoUpdate' => 0,
@@ -95,6 +102,7 @@ class init extends common {
 			'title' => 'DeltaCMS',
 			'captchaSimpleText' => 'Je suis un humain',
 			'captchaSimpleHelp' => 'Cochez cette case pour prouver que vous êtes humain',
+			'questionnaireAccept' => 'J\'accepte les conditions d\'utilisation de mes données personnelles',
 			'cookies' => [
 				'cookiesDeltaText' => 'Ce site utilise des cookies nécessaires à son fonctionnement, ils permettent de fluidifier son fonctionnement par exemple en mémorisant les données de connexion, la langue que vous avez choisie ou la validation de ce message.',
 				'cookiesExtText' => '',
@@ -103,6 +111,14 @@ class init extends common {
 				'cookiesCheckboxExtText' => '',
 				'cookiesFooterText' => 'Cookies',
 				'cookiesButtonText' => 'J\'ai compris'
+			],
+			'pageComment' => [
+				'writeComment' => 'Ecrire un commentaire',
+				'commentName' => 'Nom ou pseudo',
+				'comment' => 'Commentaire',
+				'submit' => 'Envoyer',
+				'link' => ', le',
+				'page' => 'Page'
 			],
 			'menuBurger' => [
             'burgerLeftIconLink' => 'accueil',
@@ -138,6 +154,7 @@ class init extends common {
 			]
 		],
 		'module' => [],
+		'comment' => [],
 		'fonts'=> [
 			'liberation-sans'=> [
 				'name'=> 'Liberation Sans',

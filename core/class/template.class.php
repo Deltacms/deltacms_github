@@ -269,11 +269,16 @@ class template {
     /**
     * Ouvre un formulaire protégé par CSRF
     * @param string $id Id du formulaire
+	* @param string $action action du formulaire
     * @return string
     */
-    public static function formOpen($id) {
+    public static function formOpen($id, $action = '') {
         // Ouverture formulaire
-        $html = '<form id="' . $id . '" method="post">';
+		if($action === ''){
+			$html = '<form id="' . $id . '" method="post">';
+		} else {
+			$html = '<form id="' . $id . '" method="post" action="'.$action.'">';
+		}
         // Stock le token CSRF
         $html .= self::hidden('csrf', [
             'value' => $_SESSION['csrf']
@@ -285,11 +290,16 @@ class template {
 	/**
     * Ouvre un formulaire avec pièce jointe protégé par CSRF
     * @param string $id Id du formulaire
+	* @param string $action action du formulaire
     * @return string
     */
-    public static function formOpenFile($id) {
-        // Ouverture formulaire
-        $html = '<form id="' . $id . '" enctype="multipart/form-data" method="post">';
+    public static function formOpenFile($id, $action = '') {
+        // Ouverture formulaire   
+		if($action === ''){
+			$html = '<form id="' . $id . '" enctype="multipart/form-data" method="post">';
+		} else {
+			$html = '<form id="' . $id . '" enctype="multipart/form-data" method="post" action="'.$action.'">';
+		}
         // Stock le token CSRF
         $html .= self::hidden('csrf', [
             'value' => $_SESSION['csrf']
@@ -522,7 +532,8 @@ class template {
             'label' => '',
             'name' => $nameId,
             'selected' => '',
-            'fonts' => false
+            'fonts' => false,
+			'ksort' => true
         ], $attributes);
         // Sauvegarde des données en cas d'erreur
         if($attributes['before'] AND array_key_exists($attributes['id'], common::$inputBefore)) {
@@ -548,7 +559,7 @@ class template {
         $html .= sprintf('<select %s>',
             helper::sprintAttributes($attributes)
         );
-		ksort($options);
+		if( $attributes['ksort'] === true ) ksort($options);
         foreach($options as $value => $text) {
             $html .=   $attributes['fonts'] === true ? sprintf(
                     '<option value="%s"%s style="font-family: %s;"> %s </option>',
@@ -729,7 +740,7 @@ class template {
         // Attributs par défaut
         $attributes = array_merge([
             'before' => true,
-            'class' => '', // editorWysiwyg et editor possible pour utiliser un éditeur (il faut également instancier les librairies)
+            'class' => '', // editorWysiwyg et editorWysiwygComment possible pour utiliser un éditeur (il faut également instancier les librairies)
             'classWrapper' => '',
             'disabled' => false,
             'noDirty' => false,
@@ -761,6 +772,8 @@ class template {
         }
         $html .= self::notice($attributes['id'], $notice);
         // Texte long
+		// Limitation à maxlength
+		if( isset($attributes['maxlength'] ) && $attributes['maxlength'] !== '' && is_string($attributes['value']) ) $attributes['value'] = substr( $attributes['value'] , 0, (int) $attributes['maxlength']);
         $html .= sprintf(
             '<textarea %s>%s</textarea>',
             helper::sprintAttributes($attributes, ['value']),

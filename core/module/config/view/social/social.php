@@ -1,5 +1,6 @@
 <?php
 // Lexique
+$param = 'social_view';
 include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
 ?>
 <div id="socialContainer">
@@ -62,6 +63,69 @@ include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdm
 			</div>
 		</div>
 	</div>
+	<div class="row">
+		<div class="col12">
+			<div class="block">
+				<div class="blockTitle"><?php echo $text['core_config_view']['social'][19]; ?></div>			
+					<div>
+						<?php echo template::checkbox('socialConfigMailOptionsToggle', true, $text['core_config_view']['social'][23], [
+							'checked' => (bool) $this->getData(['config', 'social', 'comment', 'group']) ||
+												!empty($this->getData(['config', 'social', 'comment', 'user'])) ||
+												!empty($this->getData(['config', 'social', 'comment', 'mail'])),
+							'help' => $text['core_config_view']['social'][24]
+						]); ?>
+						<div id="socialConfigMailOptions" class="displayNone">
+							<div class="row">
+								<div class="col11 offset1">
+									<?php echo template::text('socialConfigSubject', [
+										'help' => $text['core_config_view']['social'][25],
+										'label' => $text['core_config_view']['social'][26],
+										'value' => $this->getData(['config', 'social', 'comment', 'subject'])
+									]); ?>
+								</div>
+							</div>
+							<?php
+								// Element 0 quand aucun membre a été sélectionné
+								$groupMembers = [''] + $groupNews;
+							?>
+							<div class="row">
+								<div class="col3 offset1">
+									<?php echo template::select('socialConfigGroup', $groupMembers, [
+										'label' => $text['core_config_view']['social'][27],
+										'selected' => $this->getData(['config', 'social', 'comment', 'group']),
+										'help' => $text['core_config_view']['social'][28]
+									]); ?>
+								</div>
+								<div class="col3">
+									<?php echo template::select('socialConfigUser', config::$listUsers, [
+										'label' => $text['core_config_view']['social'][29],
+										'selected' => $this->getData(['config', 'social', 'comment', 'user'])
+									]); ?>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col4">
+							<?php echo template::checkbox('socialConfigCaptcha', true, $text['core_config_view']['social'][40], [
+								'checked' => $this->getData(['config', 'social', 'comment', 'captcha'])
+							]); ?>
+						</div>
+						<div class="col4">
+							<?php echo template::select('socialConfigNbItemPage', config::$nbItemPage, [
+								'label' => $text['core_config_view']['social'][37],
+								'selected' => $this->getData(['config', 'social', 'comment', 'nbItemPage'])
+							]); ?>
+						</div>
+						<div class="col4 textAlignCenter" style="font-weight: 600">
+							<?php echo template::label('socialConfigCommentLabel', $text['core_config_view']['social'][21], [
+							]); ?>
+						</div>
+					</div>
+			</div>
+		</div>
+	</div>
+
 	<div class="row">
 		<div class="col12">
 			<div class="block">

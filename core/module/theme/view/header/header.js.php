@@ -30,7 +30,7 @@ $("input, select").on("change", function() {
 
 	// Contenu perso
 	if ($("#themeHeaderFeature").val() == "feature") {
-		css = "header{min-height: 20px; height:" + $("#themeHeaderHeight").val() + "; overflow:hidden; background-position:top; background-repeat: no-repeat; line-height:1.15; background-color:unset; background-image:unset; text-align:unset;}";
+		css = "header{min-height: 20px; height:" + $("#themeHeaderHeight").val() + "; overflow:hidden; background-position:top; background-repeat: no-repeat; line-height:1.15; background-color:unset; background-image:unset; text-align:unset;color:" + $("#themeHeaderTextColor").val() + "}";
 		
 		$("#featureContent").appendTo("header").show();
 		$("#themeHeaderTitle").hide();
@@ -243,7 +243,7 @@ $("#themeHeaderFeature").on("change", function() {
 		$(".featureContainer").show();
 		$(".colorsContainer").show();
 		$(".wallpaperContainer").hide();
-		$("#themeHeaderTextColorWrapper").hide();
+		$("#themeHeaderTextColorWrapper").show();
 		$(".swiperContainer").hide();
 	}
 	if($(this).val() === 'swiper') {

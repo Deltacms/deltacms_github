@@ -17,6 +17,15 @@ $("#pageEditModuleId").on("click", function() {
 	protectModule();
 });
 
+// Masquage des boutons des commentaires
+$("#pageEditCommentEnable").on("change", function() {
+	if ($(this).is(':checked') ) {
+		$(".pageCommentEnable").slideDown();
+	} else {
+		$(".pageCommentEnable").slideUp();
+	}
+}).trigger("change");
+
 function protectModule() {
 	var oldModule = $("#pageEditModuleIdOld").val();
 	var oldModuleText =  $("#pageEditModuleIdOldText").val();
@@ -127,6 +136,7 @@ $( document ).ready(function() {
 			break;
 		case "3-6-3":
 		case "2-7-3":
+		case "2-8-2":
 		case "3-7-2":
 			$("#pageEditBarLeftWrapper").addClass("disabled");
 			$("#pageEditBarLeftWrapper").slideDown();
@@ -157,10 +167,12 @@ $( document ).ready(function() {
 			$("#pageEditBlockLayout").removeClass("col6");
 			$("#pageEditBlockLayout").addClass("col12");
 			*/
+			$(".pageEditCommentRow").css("display","none");
 
 	} else {
 			$("#pageEditDisplayMenuWrapper").removeClass("disabled");
 			$("#pageEditDisplayMenuWrapper").slideUp();
+			$(".pageEditCommentRow").css("display","block");
 	}
 
 	/**
@@ -373,6 +385,7 @@ pageEditBlockDOM.on("change", function() {
 			break;
 		case "3-6-3":
 		case "2-7-3":
+		case "2-8-2":
 		case "3-7-2":
 			$("#pageEditBarLeftWrapper").addClass("disabled");
 			$("#pageEditBarLeftWrapper").slideDown();
@@ -403,6 +416,7 @@ pageEditBlockDOM.on("change", function() {
 			$("#pageEditBlockLayout").removeClass("col6");
 			$("#pageEditBlockLayout").addClass("col12");
 			*/
+			$(".pageEditCommentRow").css("display","none");
 	} else {
 			$("#pageEditMenu").addClass("disabled");
 			$("#pageEditMenu").show();
@@ -432,6 +446,7 @@ pageEditBlockDOM.on("change", function() {
 			$("#pageEditBlockLayout").removeClass("col12");
 			$("#pageEditBlockLayout").addClass("col6");
 			*/
+			$(".pageEditCommentRow").css("display","block");
 	}
 });
 
@@ -597,3 +612,11 @@ $("#pageEditParentPageId").on("change", function() {
 	// Sélectionne la bonne position
 	positionDOM.val(positionSelected);
 }).trigger("change");
+
+/*
+* Bouton de configuration des commentaires de page
+*/
+$("#pageEditCommentConfig").on("click", function() {
+	document.cookie = "configLayout" + "=" + ("social" || "")  + "" + "; path=/; samesite=lax";
+	console.log( 'cookie écrit');
+});

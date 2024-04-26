@@ -4,7 +4,7 @@ include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) .
 ?>
 <div class="row">
     <div class="col12">
-	    <?php echo $this->getData(['module', $this->getUrl(0),'posts', $this->getUrl(1), 'content']); ?>
+	    <?php echo $this->getData(['data_module', $this->getUrl(0),'posts', $this->getUrl(1), 'content']); ?>
     </div>
 </div>
 <div class="row verticalAlignMiddle">
@@ -28,14 +28,14 @@ include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) .
 		}
 		echo $module::$articleSignature . ' - ';?>
 		<?php if( function_exists('datefmt_create') && function_exists('datefmt_format') && extension_loaded('intl') ){
-			echo datefmt_format($fmt, strtotime( date('Y/m/d H:i:s',$this->getData(['module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn'])))); 
+			echo datefmt_format($fmt, strtotime( date('Y/m/d H:i:s',$this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn'])))); 
 		} else {
-			$date = mb_detect_encoding(date('d/m/Y', $this->getData(['module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn'])), 'UTF-8', true)
-					? date('d/m/Y', $this->getData(['module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn']))
-					: utf8_encode(date('d/m/Y', $this->getData(['module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn'])));
-			$heure =  mb_detect_encoding(date('H:i', $this->getData(['module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn'])), 'UTF-8', true)
-					? date('H:i', $this->getData(['module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn']))
-					:  utf8_encode(date('H:i', $this->getData(['module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn'])));
+			$date = mb_detect_encoding(date('d/m/Y', $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn'])), 'UTF-8', true)
+					? date('d/m/Y', $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn']))
+					: utf8_encode(date('d/m/Y', $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn'])));
+			$heure =  mb_detect_encoding(date('H:i', $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn'])), 'UTF-8', true)
+					? date('H:i', $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn']))
+					:  utf8_encode(date('H:i', $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn'])));
 			echo $date . $text['news_view']['article'][0] . $heure; 
 		} ?>
 			

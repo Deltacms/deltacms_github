@@ -41,6 +41,15 @@ echo '<script> var lang_admin = "'.$lang_page.'"; </script>';
 
 if($this->getData(['module', $this->getUrl(0), 'input'])): ?>
 	<?php echo template::formOpenFile('formForm'); ?>
+		<?php if($this->getData(['module', $this->getUrl(0), 'config', 'rgpdCheck' ]) === true){ ?>
+		<div class="row">
+			<div class="col12">
+				<?php echo template::checkbox('formRgpdCheck', true, $this->getData(['locale', 'questionnaireAccept']), [
+					'checked' => false
+				]); ?>
+			</div>
+		</div>
+		<?php } ?>
 		<div class="humanBot">
 		<?php $textIndex=0; $selectIndex=0; $checkboxIndex=0;
 		foreach($this->getData(['module', $this->getUrl(0), 'input']) as $index => $input): ?>

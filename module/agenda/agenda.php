@@ -36,7 +36,7 @@ class agenda extends common {
 		'index' => self::GROUP_VISITOR
 	];
 
-	const VERSION = '6.0';	
+	const VERSION = '7.1';	
 	const REALNAME = 'Agenda';
 	const DELETE = true;
 	const UPDATE = '4.1';
@@ -122,6 +122,32 @@ class agenda extends common {
 			$this->setData(['module', $this->getUrl(0),'config', 'gridColor', 'rgba(146, 52, 101, 1)']);
 			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','6.0']);
 		}
+		// Mise à jour vers la version 7.0
+		if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '7.1', '<') ) {
+			// Déplacement des fichiers htaccess une seule fois
+			if(is_file(self::DATAMODULE.'data/.htaccess')){
+				$listDir = scandir(self::DATAMODULE.'data');
+				foreach($listDir as $element) {
+					if($element != "." && $element != "..") {
+						if(is_dir(self::DATAMODULE.'data/'. $element) && is_file(self::DATAMODULE.'data/.htaccess') ) {
+							copy( self::DATAMODULE.'data/.htaccess', self::DATAMODULE.'data/'. $element.'/.htaccess' );
+						}
+					}
+				}
+				unlink( self::DATAMODULE.'data/.htaccess');
+			}
+			// Modification d'emplacement des dossiers de données des pages agenda dans la langue ciblée
+			if(!is_dir(self::DATA_DIR. self::$i18n.'/data_module' ) ) mkdir(self::DATA_DIR. self::$i18n.'/data_module' );
+			if(!is_dir(self::DATA_DIR. self::$i18n.'/data_module/agenda')) mkdir(self::DATA_DIR. self::$i18n.'/data_module/agenda');
+			foreach( $this->getData(['page']) as $page => $value){
+				if( $value['moduleId'] === 'agenda' )
+					if( is_dir( self::DATAMODULE.'data/'.$page)) $this->custom_copy( self::DATAMODULE.'data/'.$page , self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$page);
+					if( is_dir( self::DATAMODULE.'data/'.$page.'_sauve')) $this->custom_copy( self::DATAMODULE.'data/'.$page.'_sauve' , self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$page.'_sauve');
+					if( is_dir( self::DATAMODULE.'data/'.$page.'_affiche')) $this->custom_copy( self::DATAMODULE.'data/'.$page.'_affiche' , self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$page.'_affiche');
+					if( is_dir( self::DATAMODULE.'data/'.$page.'_visible')) $this->custom_copy( self::DATAMODULE.'data/'.$page.'_visible' , self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$page.'_visible');
+			}
+			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','7.1']);
+		}
 	}
 	
 	/**
@@ -157,16 +183,16 @@ class agenda extends common {
 					
 				//Sauvegarder l'agenda
 				if ($fichier_sauve !=''){
-					$json_sauve = file_get_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'/events.json');
-					file_put_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'_sauve/'.$fichier_sauve.'.json', $json_sauve);
+					$json_sauve = file_get_contents(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'/events.json');
+					file_put_contents(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'_sauve/'.$fichier_sauve.'.json', $json_sauve);
 				}
 				
 				//Charger un agenda sauvegardé
 				if (strpos($fichier_restaure,'.json') !== false){
 									
 					//Remplacement par le fichier de restauration
-					$json_restaure = file_get_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'_sauve/'. $fichier_restaure);
-					file_put_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'/events.json', $json_restaure);
+					$json_restaure = file_get_contents(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'_sauve/'. $fichier_restaure);
+					file_put_contents(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'/events.json', $json_restaure);
 					
 					//Sauvegarde dans data_sauve de l'agenda chargé
 					$this->sauve($json_restaure);
@@ -262,14 +288,15 @@ class agenda extends common {
 			}
 			else{
 				// Fichiers sauvegardés
-				if(is_dir(self::DATAMODULE.'data/'.$this->getUrl(0).'_sauve')) {
-					$dir=self::DATAMODULE.'data/'.$this->getUrl(0).'_sauve';
+				if(is_dir(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'_sauve')) {
+					$dir=self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'_sauve';
 					$values = scandir($dir);
 					self::$savedFiles=[];
 					$values[0] = $text['agenda']['config'][0];
 					unset($values[array_search('..', $values)]);
+					unset($values[array_search('.htaccess', $values)]);
 					if (count($values) <= 1){
-						self::$savedFiles = array(0 => $text['agenda']['config'][1]. self::DATAMODULE.'/data');
+						self::$savedFiles = array(0 => $text['agenda']['config'][1]. self::DATA_DIR. self::$i18n.'/data_module');
 					}
 					else{
 						//Modifier les clefs (qui sont les valeurs de retour du formulaire avec 'config_restaure') avec clef = valeur
@@ -277,7 +304,7 @@ class agenda extends common {
 					}
 				}
 				else {
-					self::$savedFiles = array(0 => $text['agenda']['config'][2].self::DATAMODULE.$text['agenda']['config'][3]);
+					self::$savedFiles = array(0 => $text['agenda']['config'][2].self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'_sauve'.$text['agenda']['config'][3]);
 				}
 				// Fichiers ics
 				if(is_dir(self::DATAFILE.'ics')) {
@@ -339,7 +366,7 @@ class agenda extends common {
 	 * Liaison entre edition et suppression d'un évènement
 	 */
 	public function deleteEvent() {
-		$json = file_get_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'/events.json');
+		$json = file_get_contents(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'/events.json');
 		$lid = $this->getUrl(2);
 		$sauve = true;
 		$this->delete($lid, $sauve, $json);
@@ -352,7 +379,7 @@ class agenda extends common {
 		// Autorisation si groupe autorisé à modifier l'evt $lid
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
-		$json = file_get_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'/events.json');
+		$json = file_get_contents(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'/events.json');
 		$tableau = json_decode($json, true);
 		if( $group < $tableau[$lid]['groupe_mod'] ) {
 			// Valeurs en sortie
@@ -387,7 +414,7 @@ class agenda extends common {
 				
 				//Enregistrer le json et sauvegarder dans data_sauve si suppression de l'évènement et non modification
 				if ($sauve == true){
-					file_put_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'/events.json', $json);
+					file_put_contents(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'/events.json', $json);
 					$this->sauve($json);
 					
 					// Emission d'un mailing éventuel en récupérant les valeurs dans le $json initial
@@ -438,12 +465,12 @@ class agenda extends common {
 			// Lexique
 			include('./module/agenda/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_agenda.php');
 			//Sauvegarde dans data de l'agenda actuel bien qu'il soit déjà sauvegardé dans data_sauve
-			$json = file_get_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'/events.json');
-			file_put_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'/events_'.date('YmdHis').'.json', $json);
+			$json = file_get_contents(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'/events.json');
+			file_put_contents(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'/events_'.date('YmdHis').'.json', $json);
 			
 			//Enregistrer le nouveau fichier json vide
 			$json='[]';	
-			file_put_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'/events.json', $json);
+			file_put_contents(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'/events.json', $json);
 			
 			//Valeurs en sortie
 			$this->addOutput([
@@ -616,7 +643,7 @@ class agenda extends common {
 			if ($this->verif_date($date_debut,$date_fin)){ 
 				self::$sujet_mailing = $text['agenda']['creation'][0];
 				//Ajout et enregistrement de l'évènement
-				$json = file_get_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'/events.json');
+				$json = file_get_contents(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'/events.json');
 				$this->nouvel_evenement($evenement_texte,$date_debut,$date_fin,$couleur_fond,$couleur_texte,$groupe_visible,$groupe_mod,$mailing_val,$mailing_adresses,$categorie,$json);
 		
 				//Valeurs en sortie après prise en compte du formulaire
@@ -734,7 +761,7 @@ class agenda extends common {
 		include('./module/agenda/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_agenda.php');
 		//Préparation avant l'édition de l'évènement
 		self::$evenement['id'] = $lid;
-		$json = file_get_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'/events.json');
+		$json = file_get_contents(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'/events.json');
 		$tableau = json_decode($json, true);
 		self::$evenement['groupe_lire'] = $tableau[$lid]['groupe_lire'];
 		self::$evenement['groupe_mod'] = $tableau[$lid]['groupe_mod'];
@@ -858,10 +885,7 @@ class agenda extends common {
 		// Lexique
 		include('./module/agenda/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_agenda.php');
 		// Mise à jour des données de module
-		if (null !== $this->getData(['module', $this->getUrl(0), 'config', 'versionData'])
-			&& version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '5.7', '<')){
-			$this->update();
-		}
+		if (null !== $this->getData(['module', $this->getUrl(0), 'config', 'versionData'])) $this->update();
 		//Pour récupération des données ajax jquery date ou id 
 		$url = $_SERVER['REQUEST_URI'];
 		if (strpos($url,'/da:') !== false){
@@ -903,13 +927,18 @@ class agenda extends common {
 					// Upload des ressources puis création des dossiers de sauvegarde de l'agenda
 					$this->custom_copy('./module/agenda/ressource/data', self::DATA_DIR);
 					$this->custom_copy('./module/agenda/ressource/file', self::FILE_DIR);
-					if(! is_dir(self::DATAMODULE.'data/'.$this->getUrl(0)))mkdir(self::DATAMODULE.'data/'.$this->getUrl(0));
-					if(! is_dir(self::DATAMODULE.'data/'.$this->getUrl(0).'_sauve'))mkdir(self::DATAMODULE.'data/'.$this->getUrl(0).'_sauve');
-					if(! is_dir(self::DATAMODULE.'data/'.$this->getUrl(0).'_visible')) mkdir(self::DATAMODULE.'data/'.$this->getUrl(0).'_visible');
-					if(! is_dir(self::DATAMODULE.'data/'.$this->getUrl(0).'_affiche')) mkdir(self::DATAMODULE.'data/'.$this->getUrl(0).'_affiche');
-					if(! is_dir(self::DATAMODULE.'data/'.$this->getUrl(0))) mkdir(self::DATAMODULE.'data/'.$this->getUrl(0));
+					if(! is_dir(self::DATA_DIR. self::$i18n.'/data_module/agenda/'))mkdir(self::DATA_DIR. self::$i18n.'/data_module/agenda/');
+					if(! is_dir(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0)))mkdir(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0));
+					if(! is_dir(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'_sauve'))mkdir(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'_sauve');
+					if(! is_dir(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'_visible')) mkdir(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'_visible');
+					if(! is_dir(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'_affiche')) mkdir(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'_affiche');
+					if(! is_dir(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0))) mkdir(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0));
 					if(! is_dir(self::DATAFILE.'categories')) mkdir(self::DATAFILE.'categories');
-				
+					// copie des fichiers htaccess
+					copy( 'module/agenda/ressource/data/agenda/module/data/.htaccess', self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'_sauve/.htaccess' );
+					copy( 'module/agenda/ressource/data/agenda/module/data/.htaccess', self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'_visible/.htaccess' );
+					copy( 'module/agenda/ressource/data/agenda/module/data/.htaccess', self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'_affiche/.htaccess' );
+					copy( 'module/agenda/ressource/data/agenda/module/data/.htaccess', self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'/.htaccess' );
 					$this->addOutput([
 							'notification' => $text['agenda']['index'][0],
 							'redirect' => helper::baseUrl() . $this->getUrl(0).'/config/',
@@ -917,14 +946,20 @@ class agenda extends common {
 					]);	
 				}
 				else{
-					//le module existe dans le json, détection du changement de nom de la page pour copier les dossiers avec leur nouveau nom
-					if(! is_dir(self::DATAMODULE.'data/'.$this->getUrl(0))){
+					// Page renommée : détection du changement de nom de la page pour copier les dossiers avec leur nouveau nom
+					if(! is_dir(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0))){
 						$oldname = $this->getData(['module', $this->getUrl(0), 'name']);
 						$newname = $this->getUrl(0);
-						$this->copyDir( self::DATAMODULE.'data/'.$oldname, self::DATAMODULE.'data/'.$newname);
-						$this->copyDir( self::DATAMODULE.'data/'.$oldname.'_visible' , self::DATAMODULE.'data/'.$newname.'_visible');
-						$this->copyDir( self::DATAMODULE.'data/'.$oldname.'_sauve' , self::DATAMODULE.'data/'.$newname.'_sauve');
-						$this->copyDir( self::DATAMODULE.'data/'.$oldname.'_affiche' , self::DATAMODULE.'data/'.$newname.'_affiche');						
+						$this->copyDir( self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$oldname, self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$newname);
+						$this->copyDir( self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$oldname.'_visible' , self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$newname.'_visible');
+						$this->copyDir( self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$oldname.'_sauve' , self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$newname.'_sauve');
+						$this->copyDir( self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$oldname.'_affiche' , self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$newname.'_affiche');	
+						// suppression des anciens dossiers
+						$this->removeDir(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$oldname);
+						$this->removeDir(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$oldname.'_visible');
+						$this->removeDir(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$oldname.'_sauve');
+						$this->removeDir(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$oldname.'_affiche');
+						
 						$this->addOutput([
 								'notification' => $text['agenda']['index'][1],
 								'state' => true
@@ -934,13 +969,13 @@ class agenda extends common {
 					}
 				}	
 				//Si le fichier events.json n'existe pas ou si sa taille est inférieure à 2 on le crée vide
-				if( is_file(self::DATAMODULE.'data/'.$this->getUrl(0).'/events.json') === false || 
-				( is_file(self::DATAMODULE.'data/'.$this->getUrl(0).'/events.json') === true && filesize(self::DATAMODULE.'data/'.$this->getUrl(0).'/events.json')<2)){
-					file_put_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'/events.json', '[]');
+				if( is_file(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'/events.json') === false || 
+				( is_file(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'/events.json') === true && filesize(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'/events.json')<2)){
+					file_put_contents(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'/events.json', '[]');
 				}
 				
 				//Création d'une copie d'events.json visible en fonction des droits
-				$json = file_get_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'/events.json');
+				$json = file_get_contents(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'/events.json');
 				$tableau = json_decode($json, true);
 				foreach($tableau as $key=>$value){
 					if( isset($value['groupe_lire'])){
@@ -958,7 +993,7 @@ class agenda extends common {
 						}
 					}
 				}
-				file_put_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'_affiche/events.json',$json);
+				file_put_contents(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'_affiche/events.json',$json);
 				
 				// Affichage de la page agenda
 				$this->addOutput([
@@ -1075,7 +1110,7 @@ class agenda extends common {
 		$date_fin = substr($date_fin,0,16);
 		
 		//Ouverture et décodage du fichier json
-		if($json == ''){$json = file_get_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'/events.json');}
+		if($json == ''){$json = file_get_contents(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'/events.json');}
 		$tableau = json_decode($json, true);
 		$keynew = count($tableau);
 		
@@ -1094,7 +1129,7 @@ class agenda extends common {
 		$json = str_replace(']',$new,$json);
 		
 		//Enregistrement dans le fichier json et sauvegarde pour restauration par "Agenda précédent"
-		file_put_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'/events.json', $json);
+		file_put_contents(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'/events.json', $json);
 		$this->sauve($json);
 		if($mailing_val === '1') $this->mailing($evenement_texte, $date_debut, $date_fin, $mailing_val, $mailing_adresses);
 	}
@@ -1105,10 +1140,10 @@ class agenda extends common {
 	private function sauve($sauve_json) {
 
 		//Sauvegarde du fichier json actuel
-		file_put_contents(self::DATAMODULE.'data/'.$this->getUrl(0).'_sauve/events_'.date('YmdHis').'.json', $sauve_json);
+		file_put_contents(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'_sauve/events_'.date('YmdHis').'.json', $sauve_json);
 			
 		//Effacement du plus ancien fichier de sauvegarde auto si le nombre de fichiers dépasse 10
-		$dir=self::DATAMODULE.'data/'.$this->getUrl(0).'_sauve';
+		$dir=self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'_sauve';
 		$nom_fichier = scandir($dir);
 		//Comptage du nombre de fichiers de sauvegarde auto
 		$nb_sauve_auto = 0;
@@ -1120,8 +1155,8 @@ class agenda extends common {
 			}
 		}
 		if ($nb_sauve_auto > 10){
-			$handle = opendir(self::DATAMODULE.'data/'.$this->getUrl(0).'_sauve');
-			unlink(self::DATAMODULE.'data/'.$this->getUrl(0).'_sauve/'.$nom_fichier[$plus_ancien_clef]);
+			$handle = opendir(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'_sauve');
+			unlink(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'_sauve/'.$nom_fichier[$plus_ancien_clef]);
 			closedir($handle);
 		}
 	}

@@ -27,7 +27,7 @@ if($module::$articles): ?>
 	
 			<?php foreach($module::$articles as $articleId => $article): ?>
 				<div class="row rowArticle">
-					<?php if(  $this->getData(['module', $this->getUrl(0), 'posts', $articleId, 'picture']) !=='' ){ ?>
+					<?php if(  $this->getData(['data_module', $this->getUrl(0), 'posts', $articleId, 'picture']) !=='' ){ ?>
 						<div class="col3">
 						<?php if ( file_exists(self::FILE_DIR . 'source/' . $article['picture']) ): ?>
 							<?php // Déterminer le nom de la miniature

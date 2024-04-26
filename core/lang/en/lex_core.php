@@ -31,6 +31,13 @@ $text['core']['router'][3] = 'Access denied';
 $text['core']['router'][4] = 'You are not authorised to view this page (error 403)';
 $text['core']['router'][5] = 'Page unavailable';
 $text['core']['router'][6] = 'The requested page does not exist or cannot be found (error 404)';
+$text['core']['showComment'][1] = 'Robot detected';
+$text['core']['showComment'][2] = 'Subject';
+$text['core']['showComment'][3] = 'Comment on the page ';
+$text['core']['showComment'][4] = 'Form submitted';
+$text['core']['showComment'][5] = 'Failed to submit form';
+$text['core']['showComment'][6] = 'No comments yet';
+$text['core']['showComment'][7] ='en_GB';
 // core.js.php
 $text['core_js'][0] = "Updating ?";
 // Select File

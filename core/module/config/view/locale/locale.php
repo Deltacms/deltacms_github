@@ -1,5 +1,6 @@
 <?php
 // Lexique
+$param='';
 include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
 
 // drapeau pour la langue d'origine ou la langue en traduction rédigée
@@ -222,6 +223,59 @@ else{
 	<div class="row">
 		<div class="col12">
 			<div class="block">
+				<div class="blockTitle"><?php echo $text['core_config_view']['locale'][54]; ?><?php echo ' '.template::flag($flag, '20px');?>
+					<span id="labelHelpButton" class="helpDisplayButton">
+						<a href="https://doc.deltacms.fr/localisation#comment" target="_blank">
+							<?php echo template::ico('help', 'left');?>
+						</a>
+					</span>
+				</div>
+				<div class="row">
+					<div class="col4">
+						<?php echo template::text('localeConfigWriteComment', [
+							'label' => $text['core_config_view']['locale'][55],
+							'value' => $this->getData(['locale', 'pageComment', 'writeComment'])
+						]); ?>
+					</div>
+					<div class="col4">
+						<?php echo template::text('localeConfigCommentName', [
+							'label' => $text['core_config_view']['locale'][56],
+							'value' => $this->getData(['locale', 'pageComment', 'commentName'])
+						]); ?>
+					</div>
+					<div class="col4">
+						<?php echo template::text('localeConfigCommentComment', [
+							'label' => $text['core_config_view']['locale'][57],
+							'value' => $this->getData(['locale', 'pageComment', 'comment'])
+						]); ?>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col4">
+						<?php echo template::text('localeConfigCommentSubmit', [
+							'label' => $text['core_config_view']['locale'][53],
+							'value' => $this->getData(['locale', 'pageComment', 'submit'])
+						]); ?>
+					</div>
+					<div class="col4">
+						<?php echo template::text('localeConfigCommentLink', [
+							'label' => $text['core_config_view']['locale'][58],
+							'value' => $this->getData(['locale', 'pageComment', 'link'])
+						]); ?>
+					</div>
+					<div class="col4">
+						<?php echo template::text('localeConfigCommentPage', [
+							'label' => $text['core_config_view']['locale'][59],
+							'value' => $this->getData(['locale', 'pageComment', 'page'])
+						]); ?>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col12">
+			<div class="block">
 				<div class="blockTitle"><?php echo $text['core_config_view']['locale'][42]; echo template::flag($flag, '20px');?>
 					<span id="labelHelpButton" class="helpDisplayButton">
 						<a href="https://doc.deltacms.fr/localisation#captcha" target="_blank">
@@ -248,6 +302,28 @@ else{
 			</div>
 		</div>
 	</div>
+	<div class="row">
+		<div class="col12">
+			<div class="block">
+				<div class="blockTitle"><?php echo $text['core_config_view']['locale'][60]; echo template::flag($flag, '20px');?>
+					<span id="labelHelpButton" class="helpDisplayButton">
+						<a href="https://doc.deltacms.fr/localisation#questionnaire" target="_blank">
+							<?php echo template::ico('help', 'left');?>
+						</a>
+					</span>
+				</div>
+				<div class="row">
+					<div class="col12">
+						<?php echo template::text('localeQuestionnaireAccept', [
+							'label' => $text['core_config_view']['locale'][61],
+							'placeholder' => $text['core_config_view']['locale'][62],
+							'value' => $this->getData(['locale', 'questionnaireAccept'])
+						]); ?>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>	
 	<div class="row">
 		<div class="col12">
 			<div class="block">

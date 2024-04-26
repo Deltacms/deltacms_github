@@ -68,7 +68,7 @@ $lang_flatpickr = $text['news_view']['add'][13];
 						<?php echo template::date('newsAddPublishedOff', [
 							'help' => $text['news_view']['add'][9],
 							'label' => $text['news_view']['add'][10],
-							'value' => $this->getData(['module', $this->getUrl(0),'posts', $this->getUrl(2), 'publishedOff'])
+							'value' => $this->getData(['data_module', $this->getUrl(0),'posts', $this->getUrl(2), 'publishedOff'])
 						]); ?>
 					</div>
 				</div>

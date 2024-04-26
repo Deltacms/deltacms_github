@@ -5,12 +5,12 @@
                 "feeds": true,
                 "feedsLabel": "Sindicación RSS",
                 "itemsperPage": 6,
-                "versionData": "6.8"
+                "versionData": "7.0"
             },
             "texts": {
                 "NoComment": "Aún no hay comentarios",
                 "Write": "Escribe un comentario",
-                "Name": "Nombre",
+                "Name": "Nombre o apodo",
                 "Maxi": "Comentario con máximo",
                 "Cara": "caracteres",
                 "Comment": "comentario",
@@ -27,44 +27,7 @@
                 "ReadMore": "Leer más",
                 "Back": "Atrás"
             },
-            "posts": {
-                "segundo-articulo": {
-                    "comment": [],
-                    "content": "<p>Et prima post Osdroenam quam, ut dictum est, ab hac descriptione discrevimus, Commagena, nunc Euphratensis, clementer adsurgit, Hierapoli, vetere Nino et Samosata civitatibus amplis inlustris.<\/p>\r\n<p>Ob haec et huius modi multa, quae cernebantur in paucis, omnibus timeri sunt coepta. et ne tot malis dissimulatis paulatimque serpentibus acervi crescerent aerumnarum, nobilitatis decreto legati mittuntur: Praetextatus ex urbi praefecto et ex vicario Venustus et ex consulari Minervius oraturi, ne delictis supplicia sint grandiora, neve senator quisquam inusitato et inlicito more tormentis exponeretur.<\/p>\r\n<p>Sed ut tum ad senem senex de senectute, sic hoc libro ad amicum amicissimus scripsi de amicitia. Tum est Cato locutus, quo erat nemo fere senior temporibus illis, nemo prudentior; nunc Laelius et sapiens (sic enim est habitus) et amicitiae gloria excellens de amicitia loquetur. Tu velim a me animum parumper avertas, Laelium loqui ipsum putes. C. Fannius et Q. Mucius ad socerum veniunt post mortem Africani; ab his sermo oritur, respondet Laelius, cuius tota disputatio est de amicitia, quam legens te ipse cognosces.<\/p>",
-                    "picture": "galerie\/geotag\/estaens_2.jpg",
-                    "hidePicture": false,
-                    "pictureSize": "40",
-                    "picturePosition": "right",
-                    "publishedOn": 1639816823,
-                    "state": true,
-                    "title": "Segundo artículo",
-                    "userId": "delta",
-                    "editConsent": "all",
-                    "commentMaxlength": "500",
-                    "commentApproved": false,
-                    "commentClose": false,
-                    "commentNotification": false,
-                    "commentGroupNotification": 1
-                },
-                "primer-articulo": {
-                    "comment": [],
-                    "content": "<p>Et eodem impetu Domitianum praecipitem per scalas itidem funibus constrinxerunt, eosque coniunctos per ampla spatia civitatis acri raptavere discursu. iamque artuum et membrorum divulsa conpage superscandentes corpora mortuorum ad ultimam truncata deformitatem velut exsaturati mox abiecerunt in flumen.<\/p>\r\n<p>Ex his quidam aeternitati se commendari posse per statuas aestimantes eas ardenter adfectant quasi plus praemii de figmentis aereis sensu carentibus adepturi, quam ex conscientia honeste recteque factorum, easque auro curant inbracteari, quod Acilio Glabrioni delatum est primo, cum consiliis armisque regem superasset Antiochum. quam autem sit pulchrum exigua haec spernentem et minima ad ascensus verae gloriae tendere longos et arduos, ut memorat vates Ascraeus, Censorius Cato monstravit. qui interrogatus quam ob rem inter multos... statuam non haberet malo inquit ambigere bonos quam ob rem id non meruerim, quam quod est gravius cur inpetraverim mussitare.<\/p>\r\n<p>Latius iam disseminata licentia onerosus bonis omnibus Caesar nullum post haec adhibens modum orientis latera cuncta vexabat nec honoratis parcens nec urbium primatibus nec plebeiis.<\/p>",
-                    "picture": "galerie\/toctoc\/b.jpg",
-                    "hidePicture": false,
-                    "pictureSize": "20",
-                    "picturePosition": "left",
-                    "publishedOn": 1639816735,
-                    "state": true,
-                    "title": "Primer artículo",
-                    "userId": "delta",
-                    "editConsent": "all",
-                    "commentMaxlength": "500",
-                    "commentApproved": false,
-                    "commentClose": false,
-                    "commentNotification": false,
-                    "commentGroupNotification": 1
-                }
-            }
+            "posts": {}
         },
         "deltacms": {
             "url": "https:\/\/deltacms.fr\/",
@@ -76,7 +39,7 @@
                 "resultHideContent": false,
                 "placeHolder": "Una o más palabras clave separadas por un espacio o por +",
                 "submitText": "Buscar",
-                "versionData": "3.4",
+                "versionData": "3.5",
                 "nearWordText": "Palabras relacionadas",
                 "successTitle": "Resultado de tu busqueda",
                 "failureTitle": "ningún resultado",
@@ -118,7 +81,7 @@
                 "logoUrl": "",
                 "logoWidth": "40",
                 "maxSizeUpload": "500000",
-                "versionData": "5.1",
+                "versionData": "6.0",
                 "uploadJpg": true,
                 "uploadPng": true,
                 "uploadPdf": false,

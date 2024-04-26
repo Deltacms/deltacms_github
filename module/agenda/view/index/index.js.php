@@ -40,7 +40,7 @@
 		selectable: true,
 		editable: true,
 		//afficher les évènements à partir d'un fichier JSON
-		events : '<?php echo $module::DATAMODULE.'data/'.$this->getUrl(0); ?>'+'_affiche/events.json?n='+'<?php echo uniqid(); ?>',
+		events : '<?php echo self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0); ?>'+'_affiche/events.json?n='+'<?php echo uniqid(); ?>',
 		//créer un évènement
 		dateClick: function(info) {
 			  window.open('<?php echo helper::baseUrl() . $this->getUrl(0); ?>'+ '/da:'+ info.dateStr + 'vue:' + info.view.type + 'deb:' + calendar.formatIso(info.view.currentStart),'_self');			  

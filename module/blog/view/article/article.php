@@ -49,14 +49,14 @@ if( function_exists('datefmt_create') && function_exists('datefmt_format') && ex
 
 <div class="row">
 	<div class="col12">
-		<?php $pictureSize =  $this->getData(['module', $this->getUrl(0), 'posts', $this->getUrl(1), 'pictureSize']) === null ? '100' : $this->getData(['module', $this->getUrl(0), 'posts', $this->getUrl(1), 'pictureSize']); ?>
-		<?php if ( $this->getData(['module', $this->getUrl(0), 'posts', $this->getUrl(1), 'hidePicture']) === false
-					&& $this->getData(['module', $this->getUrl(0), 'posts', $this->getUrl(1), 'picture']) !=='' ) {
-			echo '<img class="blogArticlePicture blogArticlePicture' . $this->getData(['module', $this->getUrl(0), 'posts', $this->getUrl(1), 'picturePosition']) .
-			' pict' . $pictureSize . '" src="' . helper::baseUrl(false) . self::FILE_DIR.'source/' . $this->getData(['module', $this->getUrl(0), 'posts', $this->getUrl(1), 'picture']) .
-			'" alt="' . $this->getData(['module', $this->getUrl(0), 'posts', $this->getUrl(1), 'picture']) . '">';
+		<?php $pictureSize =  $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'pictureSize']) === null ? '100' : $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'pictureSize']); ?>
+		<?php if ( $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'hidePicture']) === false
+					&& $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'picture']) !=='' ) {
+			echo '<img class="blogArticlePicture blogArticlePicture' . $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'picturePosition']) .
+			' pict' . $pictureSize . '" src="' . helper::baseUrl(false) . self::FILE_DIR.'source/' . $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'picture']) .
+			'" alt="' . $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'picture']) . '">';
 		} ?>
-		<?php echo $this->getData(['module', $this->getUrl(0),'posts', $this->getUrl(1), 'content']); ?>
+		<?php echo $this->getData(['data_module', $this->getUrl(0),'posts', $this->getUrl(1), 'content']); ?>
 	</div>
 </div>
 <div class="row verticalAlignMiddle">
@@ -64,14 +64,14 @@ if( function_exists('datefmt_create') && function_exists('datefmt_format') && ex
 		<!-- bloc signature et date -->
 		<?php echo $module::$articleSignature . ' - ';?>
 		<?php if( function_exists('datefmt_create') && function_exists('datefmt_format') && extension_loaded('intl') ){
-			echo datefmt_format($fmt, strtotime( date('Y/m/d H:i:s',$this->getData(['module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn']))));
+			echo datefmt_format($fmt, strtotime( date('Y/m/d H:i:s',$this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn']))));
 		} else{
-			$date = mb_detect_encoding( date('d/m/Y', $this->getData(['module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn'])), 'UTF-8', true)
-					? date('d/m/Y', $this->getData(['module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn']))
-					: utf8_encode(date('d/m/Y', $this->getData(['module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn'])));
-			$heure =  mb_detect_encoding(date('H:i', $this->getData(['module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn'])), 'UTF-8', true)
-					? date('H:i', $this->getData(['module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn']))
-					:  utf8_encode(date('H:i', $this->getData(['module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn'])));
+			$date = mb_detect_encoding( date('d/m/Y', $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn'])), 'UTF-8', true)
+					? date('d/m/Y', $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn']))
+					: utf8_encode(date('d/m/Y', $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn'])));
+			$heure =  mb_detect_encoding(date('H:i', $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn'])), 'UTF-8', true)
+					? date('H:i', $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn']))
+					:  utf8_encode(date('H:i', $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn'])));
 			echo $date . ' - ' . $heure;
 		} ?>
 
@@ -82,19 +82,19 @@ if( function_exists('datefmt_create') && function_exists('datefmt_format') && ex
 			AND
 			(  // Propriétaire
 				(
-						$this->getData(['module',  $this->getUrl(0), 'posts', $this->getUrl(1),'editConsent']) === $module::EDIT_OWNER
-						AND ( $this->getData(['module',  $this->getUrl(0), 'posts', $this->getUrl(1),'userId']) === $this->getUser('id')
+						$this->getData(['data_module',  $this->getUrl(0), 'posts', $this->getUrl(1),'editConsent']) === $module::EDIT_OWNER
+						AND ( $this->getData(['data_module',  $this->getUrl(0), 'posts', $this->getUrl(1),'userId']) === $this->getUser('id')
 						OR $this->getUser('group') === self::GROUP_ADMIN )
 			)
 			OR (
 					// Groupe
-					( $this->getData(['module',  $this->getUrl(0), 'posts',  $this->getUrl(1),'editConsent']) === self::GROUP_ADMIN
-					OR $this->getData(['module',  $this->getUrl(0), 'posts',  $this->getUrl(1),'editConsent']) === self::GROUP_MODERATOR)
-					AND $this->getUser('group') >=  $this->getData(['module',$this->getUrl(0), 'posts', $this->getUrl(1),'editConsent'])
+					( $this->getData(['data_module',  $this->getUrl(0), 'posts',  $this->getUrl(1),'editConsent']) === self::GROUP_ADMIN
+					OR $this->getData(['data_module',  $this->getUrl(0), 'posts',  $this->getUrl(1),'editConsent']) === self::GROUP_MODERATOR)
+					AND $this->getUser('group') >=  $this->getData(['data_module',$this->getUrl(0), 'posts', $this->getUrl(1),'editConsent'])
 			)
 			OR (
 					// Tout le monde
-					$this->getData(['module',  $this->getUrl(0), 'posts',  $this->getUrl(1),'editConsent']) === $module::EDIT_ALL
+					$this->getData(['data_module',  $this->getUrl(0), 'posts',  $this->getUrl(1),'editConsent']) === $module::EDIT_ALL
 					AND $this->getUser('group') >= $module::$actions['config']
 				)
 			)
@@ -128,7 +128,7 @@ if( function_exists('datefmt_create') && function_exists('datefmt_format') && ex
 	
 	
 </div>
-<?php if($this->getData(['module', $this->getUrl(0), 'posts', $this->getUrl(1), 'commentClose'])): ?>
+<?php if($this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'commentClose'])): ?>
 	<p><?php echo $this->getData(['module', $this->getUrl(0), 'texts', 'ArticleNoComment']); ?></p>
 <?php else: ?>
 	<h3 id="comment">
@@ -173,10 +173,10 @@ if( function_exists('datefmt_create') && function_exists('datefmt_format') && ex
 			<?php endif; ?>
 			<div class="humanBot">
 			<?php echo template::textarea('blogArticleContent', [
-					'label' => $this->getData(['module', $this->getUrl(0), 'texts', 'Maxi']).' '.$this->getData(['module', $this->getUrl(0), 'posts', $this->getUrl(1), 'commentMaxlength']).' '.$this->getData(['module', $this->getUrl(0), 'texts', 'Cara']),
+					'label' => $this->getData(['module', $this->getUrl(0), 'texts', 'Maxi']).' '.$this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'commentMaxlength']).' '.$this->getData(['module', $this->getUrl(0), 'texts', 'Cara']),
 					'class' => 'editorWysiwygComment',
 					'noDirty' => true,
-					'maxlength' => $this->getData(['module', $this->getUrl(0), 'posts', $this->getUrl(1), 'commentMaxlength']),
+					'maxlength' => $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'commentMaxlength']),
 					'TinymceMaxi' => $this->getData(['module', $this->getUrl(0), 'texts', 'TinymceMaxi']),
 					'TinymceCara' => $this->getData(['module', $this->getUrl(0), 'texts', 'TinymceCara']),
 					'TinymceExceed' => $this->getData(['module', $this->getUrl(0), 'texts', 'TinymceExceed']),

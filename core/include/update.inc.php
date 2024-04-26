@@ -179,7 +179,46 @@ if ($this->getData(['core', 'dataVersion']) < 4502) {
 	$this->deleteData(['theme', 'menu', 'burgerIconLink2']);
 	$this->setData(['core', 'dataVersion', 4502]);
 }
-if ($this->getData(['core', 'dataVersion']) < 4504) {
-	$this->setData(['core', 'dataVersion', 4504]);
+if ($this->getData(['core', 'dataVersion']) < 5001) {
+	$this->setData([ 'config', 'social', 'comment',	'group', '']);
+	$this->setData([ 'config', 'social', 'comment',	'user', '']);
+	$this->setData([ 'config', 'social', 'comment',	'subject', '']);
+	$this->setData([ 'config', 'social', 'comment',	'captcha', true]);
+	$this->setData([ 'config', 'social', 'comment',	'nbItemPage', '3']);
+	copy ('core/module/install/ressource/database_fr/base/comment.json', self::DATA_DIR . 'base' . '/comment.json');
+	$this->setData(['locale', 'pageComment', 'writeComment', 'Ecrire un commentaire']);
+	$this->setData(['locale', 'pageComment', 'commentName', 'Nom ou pseudo']);
+	$this->setData(['locale', 'pageComment', 'comment', 'Commentaire']);
+	$this->setData(['locale', 'pageComment', 'submit', 'Envoyer']);
+	$this->setData(['locale', 'pageComment', 'link', ', le']);
+	$this->setData(['locale', 'pageComment', 'page', 'Page']);
+	foreach( $this->getData(['config', 'i18n']) as $key => $value){
+		if( $value === 'site') copy ('core/module/install/ressource/database_fr/base/comment.json', self::DATA_DIR . $key . '/comment.json');
+	}
+	$this->setData(['core', 'dataVersion', 5001]);
+}
+if ($this->getData(['core', 'dataVersion']) < 5002) {
+	// Nouveau dossier site/data/.../data_module
+	// Tableau des langues installées sauf base
+	$tabLanguages = [];
+	foreach (self::$i18nList as $key => $value) {
+		if ($this->getData(['config','i18n', $key]) === 'site' && $key !== $this->getData(['config','i18n', 'langBase'])) {
+			$tabLanguages[$key] = $value;
+		}
+	}
+	mkdir (self::DATA_DIR .'base/data_module', 0755);
+	foreach( $tabLanguages as $key => $value){
+		mkdir (self::DATA_DIR .$key.'/data_module', 0755);
+	}
+	$this->setData(['core', 'dataVersion', 5002]);
+}
+if ($this->getData(['core', 'dataVersion']) < 5003) {
+	// Label initial de la checkbox rgpdCheck 
+	include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
+	$this->setData(['locale', 'questionnaireAccept', $text['core_config_view']['locale'][62]]);
+	$this->setData(['core', 'dataVersion', 5003]);
+}
+if ($this->getData(['core', 'dataVersion']) < 5100) {
+	$this->setData(['core', 'dataVersion', 5100]);
 }
 ?>

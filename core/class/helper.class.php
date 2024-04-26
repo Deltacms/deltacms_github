@@ -491,7 +491,9 @@ class helper {
 		if($nbPage > 1) {
 			for($i = 1; $i <= $nbPage; $i++) {
 				$disabled = ($i === $currentPage) ? ' class="disabled"' : false;
-				$pages .= '<a href="' . helper::baseUrl() . $urlCurrent . '/' . $i . $sufix . '"' . $disabled . '>' . $i . '</a>';
+			    $pages .= '<a href="' . helper::baseUrl() . $urlCurrent . '/' . $i . $sufix . '"' . $disabled . '>' . $i . '</a>';
+				//$pages .= '<a href="' . helper::baseUrl() . $urlCurrent  . $sufix . '"' . $disabled . '>' . $i . '</a>';
+				
 			}
 			$pages = '<div class="pagination">' . $pages . '</div>';
 		}

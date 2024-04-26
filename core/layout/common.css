@@ -537,12 +537,10 @@ footer #footerSocials .delta-ico-github:hover {
 }
 /* Message sur les cookies */
 #cookieConsent {
-	width: 60%;
-	margin: auto;
+	width: 40%;
 	position: fixed;
-	right: 0;
 	bottom: 5%;
-	left: 0;
+	left: -100%;
 	padding: 10px;
 	z-index: 60;
 	text-align: center;
@@ -622,6 +620,11 @@ footer #footerSocials .delta-ico-github:hover {
 	max-width: 80px;
 	margin: 0 10px;
 }
+
+input[type="checkbox"][name="formRgpdCheck"]{
+	padding: 0 9px;
+}
+
 /* Inputs génériques */
 input[type="email"],
 input[type="text"],
@@ -1089,4 +1092,19 @@ figure.image img {
 figure.image figcaption {
 	margin: 4px;
 	text-align: center;
+}
+/* Template bloc coloré pleine largeur dans tinymce et l'aperçu des templates */
+body.editorWysiwyg > .blockFullWidth {
+	padding: 10px 30px; 
+}
+/* Valeurs par défaut du gabarit Color box */
+.colorbox-0 {
+	color: #F7F6CF;
+	background-color: #5784BA; 
+}
+.colorbox-0 a {
+	color: #FFBF66;
+}
+.colorbox-0 h2, .colorbox-0 h3{
+	color: #F4CFDF;
 }

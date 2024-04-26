@@ -291,6 +291,11 @@ core.start = function() {
 	 $("#footerLinkCookie").on("click", function() {
 		$("#cookieConsent").removeClass("displayNone");
 	});
+	
+	/**
+	 * Animation du panneau des cookies
+	 */
+	$('#cookieConsent').delay(500).animate({ left: '5%' }, 1500);
 
 	/**
 	 * Affiche / Cache le menu en mode responsive
@@ -388,6 +393,7 @@ core.start = function() {
 			.data("maxwidth", _this.width())
 			.removeAttr("width height");
 	});
+	
 	// Prend la largeur du parent et détermine la hauteur à l'aide du ratio lors du resize de la fenêtre
 	$(window).on("resize", function() {
 		elementDOM.each(function() {
@@ -477,6 +483,19 @@ core.start = function() {
 			});
 		}
 	});
+	
+	/*
+	* Retour en grand écran : annulation du padding-left, de la position static et adaptation du décalage si connecté
+	*/
+	$(window).on("resize", function() {
+		if($(window).width() > 799) {
+			$('nav ul li ul').css("position","absolute");
+			$('nav ul li ul').css("padding-left","0px");
+			var barHeight = $(" #bar ").css("height");
+			$("#navfixedconnected").css("top",barHeight);
+			$("nav ul li ul").css("opacity", "");
+		}
+	});
 
 	/*
 	* Largeur minimale des onglets principaux du menu et largeur du sous-menu égale à la largeur de l'onglet parent
@@ -553,10 +572,10 @@ core.relativeLuminanceW3C = function(rgba) {
 		});
 
 	/**
-	 * Chargement paresseux des images et des iframes
+	 * Chargement paresseux des images et des iframes sauf tinymce
 	 */
-	$("img,picture,iframe").attr("loading","lazy");
-
+	$("img,picture,iframe:not([id*='_ifr'])").attr("loading","lazy");
+	
 	/**
 	 * Effet accordéon
 	 */
@@ -685,5 +704,46 @@ core.relativeLuminanceW3C = function(rgba) {
 		});
 	  });
 	<?php } ?>
+	
+	/*
+	* Commentaire de page : affichage du formulaire
+	*/
+	$("#buttonCommentShowForm").click(function() {
+		if( $("#formCommentVisible").css("display") === "none" ){
+			$("#formCommentVisible").css("display","block");
+		} else {
+			$("#formCommentVisible").css("display","none");
+		}
+	});
+	/* Création d'un cookie à l'ouverture de la page formulaire*/
+	$(document).ready(function(){
+		const d = new Date();
+		time = d.getTime();
+		document.cookie = "evtO = " +  time  + ";SameSite=Strict";
+	});
+	/* Création d'un cookie à la validation de la checkbox 'je ne suis pas un robot'*/
+	$( ".commentHumanCheck" ).click(function() {
+		const d = new Date();
+		time = d.getTime();
+		document.cookie = "evtH = " +  time  + ";SameSite=Strict";
+	});
+	/* Création d'un cookie quand on arrive sur la checkbox 'je ne suis pas un robot' */
+	$( ".commentHumanCheck" ).mouseenter(function() {
+		const d = new Date();
+		time = d.getTime();
+		document.cookie = "evtA = " +  time  + ";SameSite=Strict";
+	});
+	/* Création d'un cookie quand on quitte la checkbox 'je ne suis pas un robot' */
+	$( ".commentHumanCheck" ).mouseleave(function() {
+		const d = new Date();
+		time = d.getTime();
+		document.cookie = "evtS = " +  time  + ";SameSite=Strict";
+	});
+	/* Création d'un cookie à la validation du formulaire */
+	$( ".commentHumanBotClose" ).click(function() {
+		const d = new Date();
+		time = d.getTime();
+		document.cookie = "evtV = " +  time  + ";SameSite=Strict";
+	});
 
 });

@@ -1,5 +1,6 @@
 <?php
 // Lexique
+$param='';
 include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
 ?>
 <div id="setupContainer">

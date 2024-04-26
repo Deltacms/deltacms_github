@@ -52,8 +52,8 @@ class common {
 
 	// Numéro de version
 	const DELTA_UPDATE_URL = 'https://update.deltacms.fr/master/';
-	const DELTA_VERSION = '4.5.04';
-	const DELTA_UPDATE_CHANNEL = "v4";
+	const DELTA_VERSION = '5.1.00';
+	const DELTA_UPDATE_CHANNEL = "v5";
 
 	public static $actions = [];
 	public static $coreModuleIds = [
@@ -231,6 +231,7 @@ class common {
 	private $page = [];
 	private $module = [];
 	private $locale = [];
+	private $comment = [];
 
 	// Descripteur de données Entrées / Sorties
 	// Liste ici tous les fichiers de données
@@ -245,7 +246,8 @@ class common {
 		'blacklist' => '',
 		'locale' => '',
 		'fonts' => '',
-		'session' =>''
+		'session' =>'',
+		'comment' =>''
 	];
 
 	/**
@@ -367,7 +369,12 @@ class common {
 				$this->url = $url;
 			}
 			else {
-				$this->url = $this->getData(['locale', 'homePageId']);
+				if( null !== $this->getData(['page', $this->getData(['locale', 'homePageId']) ]) ){
+					$this->url = $this->getData(['locale', 'homePageId']);
+				} else {
+					$pages = array_keys($this->getData(['page']));
+					$this->url = $pages[0];
+				}
 			}
 		}
 
@@ -436,6 +443,19 @@ class common {
 	 * @param array $keys Clé(s) des données
 	 */
 	public function deleteData($keys) {
+		// Instanciation si $keys[0]='data_module' avec $keys[1]= nomdelapage et $keys[2] présent
+		if( $keys[0] === 'data_module' && count($keys) >= 3 ){
+				// Constructeur  JsonDB
+				$this->dataFiles[$keys[2]] = new \Prowebcraft\JsonDb([
+					'name' => $keys[1]. '.json',
+					'dir' => self::DATA_DIR. self::$i18n.'/data_module/',
+					'backup' => file_exists('site/data/.backup')
+				]);
+				unset($keys[0]);
+				unset($keys[1]);
+				$keys = array_values($keys);
+				
+		}
 		// Descripteur
 		$db = $this->dataFiles[$keys[0]];
 		// Aiguillage
@@ -475,6 +495,20 @@ class common {
 			/**
 			 * Lecture directe
 			*/
+			// Instanciation si $keys[0]='data_module' avec $keys[1]= nomdelapage et $keys[2] présent
+			if( $keys[0] === 'data_module' && count($keys) >= 3 ){
+					// Constructeur  JsonDB
+					$this->dataFiles[$keys[2]] = new \Prowebcraft\JsonDb([
+						'name' => $keys[1]. '.json',
+						'dir' => self::DATA_DIR. self::$i18n.'/data_module/',
+						'backup' => file_exists('site/data/.backup')
+					]);
+					unset($keys[0]);
+					unset($keys[1]);
+					$keys = array_values($keys);
+					
+			}
+			// Descripteur
 			$db = $this->dataFiles[$keys[0]];
 			switch(count($keys)) {
 				case 1:
@@ -566,9 +600,21 @@ class common {
 			return false;
 		}
 
+		// Instanciation si $keys[0]='data_module' avec $keys[1]= nomdelapage et $keys[2] présent
+		if( $keys[0] === 'data_module' && count($keys) >= 3 ){
+				// Constructeur  JsonDB
+				$this->dataFiles[$keys[2]] = new \Prowebcraft\JsonDb([
+					'name' => $keys[1]. '.json',
+					'dir' => self::DATA_DIR. self::$i18n.'/data_module/',
+					'backup' => file_exists('site/data/.backup')
+				]);
+				unset($keys[0]);
+				unset($keys[1]);
+				$keys = array_values($keys);
+				
+		}
 		// Descripteur
 		$db = $this->dataFiles[$keys[0]];
-
 		// Aiguillage
 		switch(count($keys)) {
 			case 2:
@@ -622,6 +668,12 @@ class common {
 		if (!is_dir(self::DATA_DIR . $lang . '/content')) {
 			mkdir(self::DATA_DIR . $lang . '/content', 0755);
 		}
+		
+		// Dossier des données de page
+		if (!is_dir(self::DATA_DIR . $lang . '/data_module')) {
+			mkdir(self::DATA_DIR . $lang . '/data_module', 0755);
+		}
+		
 		// Créer le jeu de pages du site de test
 		if ($module === 'page' ) {
 			// Site de test ou page simple
@@ -848,7 +900,8 @@ class common {
 		// Sauf pour les pages et les modules
 		if ($id === 'page' ||
 			$id === 'module'  ||
-			$id === 'locale' ) {
+			$id === 'locale' ||
+			$id === 'comment') {
 				$folder = self::DATA_DIR . $lang . '/' ;
 		} else {
 			$folder = self::DATA_DIR;
@@ -1254,10 +1307,12 @@ class common {
 		}
 		// Page pleine pour la configuration des modules et l'édition des pages sauf l'affichage d'un article de blog
 		$pattern = ['config','edit','add','comment','data'];
-		if ((sizeof($blocks) === 1 ||
-			in_array($this->getUrl(1),$pattern)  )
-			) { // Pleine page en mode configuration
+		if ((sizeof($blocks) === 1 || in_array($this->getUrl(1),$pattern)  ) ) { 
+				// Pleine page en mode configuration
 				$this->showContent();
+				$strlenUrl1 = 0;
+				if( $this->getUrl(1) !== null) $strlenUrl1 = strlen($this->getUrl(1));
+				if( $this->getData(['page', $this->getUrl(0), 'commentEnable']) === true &&  $strlenUrl1 < 3  ) $this->showComment();
 				if (file_exists(self::DATA_DIR . 'body.inc.php')) {
 					include( self::DATA_DIR . 'body.inc.php');
 				}
@@ -1293,6 +1348,9 @@ class common {
 				 */
 				echo '<div class="'. $content . '" id="contentSite">';
 				$this->showContent();
+				$strlenUrl1 = 0;
+				if( $this->getUrl(1) !== null) $strlenUrl1 = strlen($this->getUrl(1));
+				if( $this->getData(['page', $this->getUrl(0), 'commentEnable']) === true &&  $strlenUrl1 < 3  ) $this->showComment();
 				if (file_exists(self::DATA_DIR . 'body.inc.php')) {
 						include(self::DATA_DIR . 'body.inc.php');
 				}
@@ -1345,6 +1403,22 @@ class common {
 
 		echo $this->output['content'];
 	}
+	
+	/**
+	 * Affiche les commentaires de page quand ils sont autorisés
+	 * 
+	 */
+	public function showComment() {	
+		// Si la page est accessible
+		if(	$this->getData(['page', $this->getUrl(0), 'group']) === self::GROUP_VISITOR
+			OR (
+				$this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD')
+				AND $this->getUser('group') >= $this->getData(['page', $this->getUrl(0), 'group'])
+			)
+		) {
+			include('./core/include/comment.inc.php');
+		}	
+	}	
 
 	/**
 	 * Affiche le pied de page
@@ -1593,7 +1667,7 @@ class common {
 				default:
 					$socialUrl = '';
 			}
-			if($socialId !== '') {
+			if($socialId !== '' && is_string($socialName)  && is_string($socialUrl)  && is_string($socialId) ) {
 				$socials .= '<a href="' . $socialUrl . $socialId . '" onclick="window.open(this.href);return false" data-tippy-content="' . $title . '">' . template::ico(substr(str_replace('User','',$socialName), 0, -2)) . '</a>';
 			}
 		}
@@ -2545,8 +2619,9 @@ class core extends common {
 			$css .= 'a{color:' . $colors['normal'] . '}';
 			// Couleurs de site dans TinyMCe
 			$css .= 'div.mce-edit-area {font-family:"' . $this->getData(['fonts', $this->getData(['theme', 'text', 'font']), 'name']) . '",sans-serif}';
-			// Site dans TinyMCE
+			// Site dans TinyMCE pour la class ajoutée par init.js dans l'iframe
 			$css .= '.editorWysiwyg {background-color:' . $this->getData(['theme', 'site', 'backgroundColor']) . '; margin:0 !important; padding-top: 10px;}';
+			$css .= '.editorWysiwygHeader {background-color:' . $this->getData(['theme', 'header', 'backgroundColor']) . '; color:' . $this->getData(['theme', 'header', 'textColor']) . '; margin:0 !important; padding-top: 10px;}';
 			$css .= 'span.mce-text{background-color: unset !important;}';
 			//$css .= 'a:hover:not(.inputFile, button){color:' . $colors['darken'] . '}';
 			$css .= 'body,.row > div{font-size:' . $this->getData(['theme', 'text', 'fontSize']) . '}';
@@ -2612,7 +2687,7 @@ class core extends common {
 				}
 			}
 			$colors = helper::colorVariants($this->getData(['theme', 'header', 'backgroundColor']));
-			$css .= 'header{background-color:' . $colors['normal'] . ';}';
+			$css .= 'header{background-color:' . $colors['normal'] . '; color:' . $this->getData(['theme', 'header', 'textColor']) . ';}';
 			// Calcul de la hauteur du bandeau du menu burger utilisé dans plusieurs cas
 			$fontsize = (int) str_replace('px', '', $this->getData(['theme', 'text', 'fontSize']));
 			$height = $this->getData(['theme', 'menu', 'height']);

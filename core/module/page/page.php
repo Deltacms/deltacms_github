@@ -24,12 +24,18 @@ class page extends common {
 		'add' => self::GROUP_MODERATOR,
 		'delete' => self::GROUP_MODERATOR,
 		'edit' => self::GROUP_EDITOR,
-		'duplicate' => self::GROUP_MODERATOR
+		'duplicate' => self::GROUP_MODERATOR,
+		'comment' => self::GROUP_MODERATOR,
+		'commentDelete' => self::GROUP_MODERATOR,
+		'commentAllDelete' => self::GROUP_MODERATOR,
+		'commentExport2csv' => self::GROUP_MODERATOR
 	];
 
 	public static $moduleIds = [];
 	public static $pagesBarId = [];
 	public static $pagesNoParentId = [];
+	public static $data = [];
+	public static $pages = [];
 
 	/**
 	 * Duplication
@@ -91,6 +97,9 @@ class page extends common {
 					$this->setData (['module',$pageId,$data]);
 					$notification = $text['core_page']['duplicate'][3];
 				}
+				// Duplication des données de page
+				if( is_file(self::DATA_DIR . self::$i18n . '/data_module/' . $url[0] . '.json'))
+				copy( self::DATA_DIR . self::$i18n . '/data_module/' . $url[0] . '.json', self::DATA_DIR . self::$i18n . '/data_module/' . $pageId . '.json');
 				// Valeurs en sortie
 				$this->addOutput([
 					'redirect' => helper::baseUrl() . 'page/edit/' . $pageId,
@@ -250,6 +259,14 @@ class page extends common {
 					'notification' => $text['core_page']['delete'][2]
 				]);
 			}
+			// Impossible de supprimer une page si c'est la seule
+			elseif( count($this->getData(['page'])) === 1 ) {
+				// Valeurs en sortie
+				$this->addOutput([
+					'redirect' => helper::baseUrl() . 'config',
+					'notification' => $text['core_page']['delete'][1]
+				]);
+			}
 			// Jeton incorrect
 			elseif(!isset($_GET['csrf'])) {
 				// Valeurs en sortie
@@ -287,6 +304,11 @@ class page extends common {
 				if (file_exists(self::DATA_DIR . self::$i18n . '/content/' . $url[0] . '.html')) {
 					unlink(self::DATA_DIR . self::$i18n . '/content/' . $url[0] . '.html');
 				}
+				// Effacer le fichier des données de page
+				if (file_exists(self::DATA_DIR . self::$i18n . '/data_module/' . $url[0] . '.json')) {
+					unlink(self::DATA_DIR . self::$i18n . '/data_module/' . $url[0] . '.json');
+				}
+				
 				$this->deleteData(['module', $url[0]]);
 				// Met à jour le site map
 				// $this->createSitemap('all');
@@ -307,6 +329,200 @@ class page extends common {
 		}
 	}
 
+	/**
+	 * Gestion des commentaires
+	 */
+	public function comment() {
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < page::$actions['comment'] ) {
+			// Valeurs en sortie
+			$this->addOutput([
+				'access' => false
+			]);	
+		} else {
+			// Préparation des commentaires avec pagination
+			$data = $this->getData(['comment', $this->getUrl(2), 'data']);
+			if($data) {
+				// Pagination
+				$pagination = helper::pagination($data, $this->getUrl(), $this->getData(['config', 'social', 'comment', 'nbItemPage' ]));
+				// Liste des pages
+				self::$pages = $pagination['pages'];
+				// Inverse l'ordre du tableau
+				$dataIds = array_reverse(array_keys($data));
+				$data = array_reverse($data);
+				// Données en fonction de la pagination
+				for($i = $pagination['first']; $i < $pagination['last']; $i++) {
+					$content = '';
+					foreach($data[$i] as $input => $value) {
+						$value = str_replace('Д','',$value);
+						$content .= $input . ' : ' . $value . '<br>';
+					}
+					self::$data[] = [
+						$content,
+						template::button('formDataDelete' . $dataIds[$i], [
+							'class' => 'formDataDelete buttonRed',
+							'href' => helper::baseUrl() . 'page/commentDelete/' . $this->getUrl(2) .'/'. $dataIds[$i]  . '/' . $_SESSION['csrf'],
+							'value' => template::ico('cancel')
+						])
+					];
+				}
+			}			
+			$this->addOutput([
+				'title' => $this->getData(['page', $this->getUrl(2), 'title']),
+				'view' => 'comment'
+			]);		
+		}
+		
+	}
+	
+	/**
+	* commentDelete
+	*/
+	public function commentDelete() {
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < page::$actions['commentDelete'] ) {
+			// Valeurs en sortie
+			$this->addOutput([
+				'access' => false
+			]);	
+		} else {
+			// Lexique
+			include('./core/module/page/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_page.php');
+			// Jeton incorrect
+			if ($this->getUrl(4) !== $_SESSION['csrf']) {
+				// Valeurs en sortie
+				$this->addOutput([
+					'redirect' => helper::baseUrl() . 'page/edit/' . $this->getUrl(2),
+					'notification' => $text['core_page']['commentDelete'][2]
+				]);
+			} else {
+				// La donnée n'existe pas
+				if( $this->getData(['comment', $this->getUrl(2), 'data', $this->getUrl(3)]) === null) {
+					// Valeurs en sortie
+					$this->addOutput([
+						'access' => false,
+						'redirect' => helper::baseUrl() . 'page/comment/' . $this->getUrl(2)
+					]);
+				}
+				// Suppression
+				else {
+					$this->deleteData(['comment', $this->getUrl(2), 'data', $this->getUrl(3)]);
+					// Valeurs en sortie
+					$this->addOutput([
+						'redirect' => helper::baseUrl() . 'page/comment/' . $this->getUrl(2),
+						'notification' => $text['core_page']['commentDelete'][1],
+						'state' => true
+					]);
+				}
+			}			
+			
+		}
+	}
+	
+	/**
+	* commentAllDelete
+	*/
+	public function commentAllDelete() {
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < page::$actions['commentAllDelete'] ) {
+			// Valeurs en sortie
+			$this->addOutput([
+				'access' => false
+			]);	
+		} else {
+			include('./core/module/page/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_page.php');
+			// Jeton incorrect
+			if ($this->getUrl(3) !== $_SESSION['csrf']) {
+				// Valeurs en sortie
+				$this->addOutput([
+					'redirect' => helper::baseUrl()  . 'page/edit/' . $this->getUrl(2),
+					'notification' => $text['core_page']['commentAllDelete'][1]
+				]);
+			} else {
+				$data = $this->getData(['comment', $this->getUrl(2), 'data']);
+				if (count($data) > 0 ) {
+					// Suppression multiple
+					foreach( $data as $key=>$value ){
+						$this->deleteData(['comment', $this->getUrl(2), 'data', $key]);
+					}
+					// Valeurs en sortie
+					$this->addOutput([
+						'redirect' => helper::baseUrl() . 'page/comment/'. $this->getUrl(2),
+						'notification' => $text['core_page']['commentAllDelete'][2],
+						'state' => true
+					]);
+				} else {
+					// Valeurs en sortie
+					$this->addOutput([
+						'redirect' => helper::baseUrl() . 'page/comment/'. $this->getUrl(2),
+						'notification' => $text['core_page']['commentAllDelete'][3]
+					]);
+				}
+			}			
+			
+		}
+	}
+	
+	/**
+	* commentExport2csv
+	*/
+	public function commentExport2csv() {
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < page::$actions['commentExport2csv'] ) {
+			// Valeurs en sortie
+			$this->addOutput([
+				'access' => false
+			]);	
+		} else {
+			// Lexique
+			include('./core/module/page/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_page.php');
+			// Jeton incorrect
+			if ($this->getUrl(3) !== $_SESSION['csrf']) {
+				// Valeurs en sortie
+				$this->addOutput([
+					'redirect' => helper::baseUrl() . 'page/edit/'. $this->getUrl(2),
+					'notification' => '0'
+				]);
+			} else {
+				$data = $this->getData(['comment', $this->getUrl(2), 'data']);
+				foreach( $data as $key=>$value){
+					$data[$key] = str_replace('Д ','',$value);
+				}
+				if ($data !== []) {
+					$csvfilename = 'data-'.date('dmY').'-'.date('hm').'-'.rand(10,99).'.csv';
+					if (!file_exists(self::FILE_DIR.'source/data')) {
+						mkdir(self::FILE_DIR.'source/data', 0755);
+					}
+					$fp = fopen(self::FILE_DIR.'source/data/'.$csvfilename, 'w');
+					fputcsv($fp, array_keys($data[1]), ';','"');
+					foreach ($data as $fields) {
+						fputcsv($fp, $fields, ';','"');
+					}
+					fclose($fp);
+					// Valeurs en sortie
+					$this->addOutput([
+						'notification' => $text['core_page']['exportToCsv'][1].$csvfilename,
+						'redirect' => helper::baseUrl() . 'page/comment/'. $this->getUrl(2),
+						'state' => true
+					]);
+				} else {
+					$this->addOutput([
+						'notification' => $text['core_page']['exportToCsv'][2],
+						'redirect' => helper::baseUrl() . 'page/edit/'. $this->getUrl(2)
+					]);
+				}
+			}			
+			
+		}
+	}
 
 	/**
 	 * Édition
@@ -372,6 +588,9 @@ class page extends common {
 									$this->setData(['module',$pageId,'theme','style', $modulesData[$moduleId]['dataDirectory']. $pageId]);
 								}
 							}
+							// Change le nom du fichier des données de page dans /data_module/
+							if (file_exists(self::DATA_DIR . self::$i18n . '/data_module/' . $this->getUrl(2) . '.json')) 
+								rename(self::DATA_DIR . self::$i18n . '/data_module/' . $this->getUrl(2) . '.json', self::DATA_DIR . self::$i18n . '/data_module/' . $pageId . '.json');
 							// Si la page correspond à la page d'accueil, change l'id dans la configuration du site
 							if($this->getData(['locale', 'homePageId']) === $this->getUrl(2)) {
 								$this->setData(['locale', 'homePageId', $pageId]);
@@ -462,6 +681,7 @@ class page extends common {
 								'hideMenuSide' => $this->getinput('pageEditHideMenuSide', helper::FILTER_BOOLEAN),
 								'hideMenuHead' => $this->getinput('pageEditHideMenuHead', helper::FILTER_BOOLEAN),
 								'hideMenuChildren' => $this->getinput('pageEditHideMenuChildren', helper::FILTER_BOOLEAN),
+								'commentEnable' => $this->getinput('pageEditBlock') !== 'bar' ? $this->getinput('pageEditCommentEnable', helper::FILTER_BOOLEAN) : false
 							]
 						]);
 						// Creation du contenu de la page
@@ -530,10 +750,12 @@ class page extends common {
 				}
 				// Mise à jour de la liste des pages pour TinyMCE
 				$this->pages2Json();
+				$tinymce = 'tinymce';
+				if( $this->getData(['page', $this->getUrl(2), 'moduleId']) === 'snipcart') $tinymce = 'tinymceV4';
 				// Valeurs en sortie
 				$this->addOutput([
 					'title' => $this->getData(['page', $this->getUrl(2), 'title']),
-					'vendor' => ['tinymce'],
+					'vendor' => [$tinymce],
 					'view' => 'edit'
 				]);
 			}

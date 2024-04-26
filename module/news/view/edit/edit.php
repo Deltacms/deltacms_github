@@ -39,14 +39,14 @@ $lang_flatpickr = $text['news_view']['edit'][13];
 				<div class="blockTitle"><?php echo $text['news_view']['edit'][3]; ?></div>
 				<?php echo template::text('newsEditTitle', [
 					'label' => $text['news_view']['edit'][4],
-					'value' => $this->getData(['module', $this->getUrl(0),'posts', $this->getUrl(2), 'title'])
+					'value' => $this->getData(['data_module', $this->getUrl(0),'posts', $this->getUrl(2), 'title'])
 				]); ?>
 			</div>
 		</div>
 	</div>
 	<?php echo template::textarea('newsEditContent', [
 		'class' => 'editorWysiwyg',
-		'value' => $this->getData(['module', $this->getUrl(0),'posts', $this->getUrl(2), 'content'])
+		'value' => $this->getData(['data_module', $this->getUrl(0),'posts', $this->getUrl(2), 'content'])
 	]); ?>
 	<div class="row">
 		<div class="col12">
@@ -63,14 +63,14 @@ $lang_flatpickr = $text['news_view']['edit'][13];
 						<?php echo template::date('newsEditPublishedOn', [
 							'help' => $text['news_view']['edit'][7],
 							'label' => $text['news_view']['edit'][8],
-							'value' => $this->getData(['module', $this->getUrl(0),'posts', $this->getUrl(2), 'publishedOn'])
+							'value' => $this->getData(['data_module', $this->getUrl(0),'posts', $this->getUrl(2), 'publishedOn'])
 						]); ?>
 					</div>
 					<div class="col4">
 						<?php echo template::date('newsEditPublishedOff', [
 							'help' => $text['news_view']['edit'][9],
 							'label' => $text['news_view']['edit'][10],
-							'value' => $this->getData(['module', $this->getUrl(0),'posts', $this->getUrl(2), 'publishedOff'])
+							'value' => $this->getData(['data_module', $this->getUrl(0),'posts', $this->getUrl(2), 'publishedOff'])
 						]); ?>
 					</div>
 				</div>

@@ -17,6 +17,11 @@ else { echo '<html lang="'.$lang.'">'; }
 		<link rel="stylesheet" href="core/vendor/normalize/normalize.min.css">
 		<link rel="stylesheet" href="core/layout/common.css">
 		<link rel="stylesheet" href="<?php echo self::DATA_DIR; ?>theme.css">
+		<?php $strlenUrl1 = 0;
+		if( $this->getUrl(1) !== null) $strlenUrl1 = strlen($this->getUrl(1));
+		if( $this->getData(['page', $this->getUrl(0), 'commentEnable']) === true &&  $strlenUrl1 < 3 ) { ?> 
+		<link rel="stylesheet" href="core/layout/pageComment.css">
+		<?php } ?>
 		<link rel="stylesheet" href="core/layout/mediaqueries.css">
 		<?php $this->showStyle();
 		$this->showSharedVariables();

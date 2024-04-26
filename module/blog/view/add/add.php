@@ -71,7 +71,7 @@ $lang_flatpickr = $text['blog_view']['add'][25];
 				<div class="row">
 					<div class="col12">
 					<?php echo template::checkbox('blogAddHidePicture', true, $text['blog_view']['add'][10], [
-							'checked' => $this->getData(['module', $this->getUrl(0), 'posts', $this->getUrl(2), 'hidePicture'])
+							'checked' => $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(2), 'hidePicture'])
 							]); ?>
 					</div>
 				</div>

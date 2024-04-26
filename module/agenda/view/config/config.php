@@ -3,7 +3,7 @@
 // Lexique
 include('./module/agenda/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_agenda.php');
 
-if(! is_dir($module::DATAMODULE.'data/'.$this->getUrl(0))){ $readonly = true;}else{ $readonly = false;}
+if(! is_dir(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0))){ $readonly = true;}else{ $readonly = false;}
 echo template::formOpen('configuration'); ?>
 
 <div class="row">

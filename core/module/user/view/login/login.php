@@ -24,31 +24,12 @@ echo template::formOpen('userLoginForm');
 		</div>
 	</div>
 	<?php if ($this->getData(['config', 'connect','captcha'])){ ?>
-		<?php if( ($_SESSION['humanBot']==='bot') || $this->getData(['config', 'connect', 'captchaBot'])=== false ) { ?>
 			<div class="row">
 				<div class="col12 textAlignCenter">
 					<?php echo template::captcha('userLoginCaptcha', ''); ?>
 				</div>
 			</div>
-		<?php } else { ?>
-			<div class="userCheckBlue">
-				<?php echo template::text('userInputBlue', [
-					'label' => 'Input Blue',
-					'value' => ''
-				]); ?>			
-			</div>
-			<br>
-			<div class="userOuter">
-					<div class="userInner humanCheck">
-						<?php echo template::checkbox('userHumanCheck', true, $this->getData(['locale', 'captchaSimpleText']), [
-							'checked' => false,
-							'help' => $this->getData(['locale', 'captchaSimpleHelp']),
-							'required' => true
-						]); ?>
-					</div>
-			</div>
-			<br>
-		<?php } } ?>
+		<?php } ?>
 	<div class="row">
 		<div class="col6">
 			<?php echo template::checkbox('userLoginLongTime', true, $text['core_user_view']['login'][4], [

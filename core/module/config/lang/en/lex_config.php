@@ -17,7 +17,7 @@ $text['core_config_view']['bodyheadscript'][2] = 'Script in body';
 $text['core_config_view']['connect'][0] = 'Login security';
 $text['core_config_view']['connect'][1] = 'Captcha at login';
 $text['core_config_view']['connect'][2] = 'Complex captcha';
-$text['core_config_view']['connect'][3] = 'With this option if you are recognised as human a very simplified captcha will be displayed. This applies to all captchas on the site.';
+$text['core_config_view']['connect'][3] = 'With this option a behavioral captcha will be used. This applies to all captchas on the site except the login one.';
 $text['core_config_view']['connect'][4] = 'Captcha type';
 $text['core_config_view']['connect'][5] = 'Automatic logout';
 $text['core_config_view']['connect'][6] = 'Disconnects previously opened sessions on other browsers or terminals. Activation recommended.';
@@ -41,7 +41,7 @@ $text['core_config_view']['index'][1] = 'Help';
 $text['core_config_view']['index'][2] = 'Configuration';
 $text['core_config_view']['index'][3] = 'Register';
 $text['core_config_view']['index'][4] = 'Location';
-$text['core_config_view']['index'][5] = 'Referencing';
+$text['core_config_view']['index'][5] = 'Social';
 $text['core_config_view']['index'][6] = 'Connection';
 $text['core_config_view']['index'][7] = 'Network';
 $text['core_config_view']['index'][8] = 'Scripts';
@@ -98,6 +98,17 @@ $text['core_config_view']['locale'][49] = 'Member';
 $text['core_config_view']['locale'][50] = 'Editor';
 $text['core_config_view']['locale'][51] = 'Moderator';
 $text['core_config_view']['locale'][52] = 'Administrator';
+$text['core_config_view']['locale'][53] = 'Submit button text';
+$text['core_config_view']['locale'][54] = 'Page comments ';
+$text['core_config_view']['locale'][55] = 'Write a comment';
+$text['core_config_view']['locale'][56] = 'Name or nickname';
+$text['core_config_view']['locale'][57] = 'Comment';
+$text['core_config_view']['locale'][58] = 'Link between name and date';
+$text['core_config_view']['locale'][59] = 'Page';
+$text['core_config_view']['locale'][60] = 'Acceptance of the conditions of use of personal data ';
+$text['core_config_view']['locale'][61] = 'Text associated with the checkbox';
+$text['core_config_view']['locale'][62] = ' I accept the conditions of use of my personal data';
+
 $text['core_config_view']['network'][0] = 'Settings';
 $text['core_config_view']['network'][1] = 'Proxy type';
 $text['core_config_view']['network'][2] = 'Proxy address';
@@ -181,6 +192,21 @@ $text['core_config_view']['social'][15] = 'Enter your Github ID: https://github.
 $text['core_config_view']['social'][16] = 'head Facebook';
 $text['core_config_view']['social'][17] = 'Insert in the head of the page the meta properties specific to Facebook';
 $text['core_config_view']['social'][18] = 'Youtube channel';
+$text['core_config_view']['social'][19] = 'Footer comments';
+$text['core_config_view']['social'][20] = 'Configuration';
+$text['core_config_view']['social'][23] = 'Send the entered data by email:';
+$text['core_config_view']['social'][24] = 'Select at least one group or one user. Your server must allow email sending.';
+$text['core_config_view']['social'][25] = 'Leave empty to keep the default text.';
+$text['core_config_view']['social'][26] = 'Mail subject';
+$text['core_config_view']['social'][27] = 'To groups from ';
+$text['core_config_view']['social'][28] = 'Editors = editors + administrators<br> Members = members + editors + administrators';
+$text['core_config_view']['social'][29] = 'Has one member';
+$text['core_config_view']['social'][31] = 'An email or a mailing list';
+$text['core_config_view']['social'][32] = 'Reply to sender from notification email';
+$text['core_config_view']['social'][33] = 'This option allows you to respond directly to the sender of the message if they have indicated a valid email.';
+$text['core_config_view']['social'][37] = 'Number of comments displayed on a page';
+$text['core_config_view']['social'][40] = 'Validate a captcha in order to submit the form';
+$text['core_config_view']['social'][21] = 'Texts should be put in the language of your visitors in the "Location" tab';
 $text['core_config']['generateFiles'][0] = 'Updated sitemap and robots.txt files';
 $text['core_config']['generateFiles'][1] = 'Writing failure, site map not updated';
 $text['core_config']['backup'][0] = 'Save';
@@ -246,5 +272,27 @@ $anonIP = [
 $captchaTypes = [
 	'num' => 'Numbers',
 	'alpha' => 'Letters'
+];
+if( $param === 'social_view'){
+	$groupNews = [
+		self::GROUP_MEMBER => 'Member',
+		self::GROUP_EDITOR => 'Editor',
+		self::GROUP_MODERATOR => 'Moderator',
+		self::GROUP_ADMIN => 'Administrator'
+	];
+	$commentTypes = [
+		$module::TYPE_TEXT => 'Champ texte',
+		$module::TYPE_TEXTAREA => 'Grand champ texte',
+		$module::TYPE_MAIL => 'Champ mail'
+	];
+}
+// Initialisation de flatpickr
+$lang_flatpickr = 'default';
+// Langue d'administration pour tinymce
+$lang_admin = 'en_GB';
+// Selects
+$signature = [
+	'text' => 'Site name',
+	'logo' => 'Site logo'
 ];
 ?>

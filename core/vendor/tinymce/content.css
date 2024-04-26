@@ -85,12 +85,12 @@ html {
 .offset11 {
 	margin-left: 91.66666667%;
 }
- /*Simulation du responsive des vidéos dans l'éditeur */
+ /*Simulation du responsive des vidéos dans l'éditeur
 .mce-preview-object,
 .mce-preview-object > * {
 	width: auto !important;
 	height: auto !important;
-}
+} */
 .mce-content-body {
 	padding-left: 5px !important;
 	padding-right: 5px !important;

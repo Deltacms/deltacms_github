@@ -18,6 +18,7 @@
         "title": "Deltacms",
         "captchaSimpleText": "No soy un robot",
         "captchaSimpleHelp": "Marque esta casilla para demostrar que no es un robot",
+		"questionnaireAccept": "Acepto las condiciones de uso de mis datos personales",
         "cookies": {
             "cookiesDeltaText": "Este sitio utiliza cookies necesarias para su funcionamiento, facilitan su funcionamiento, por ejemplo, al memorizar los datos de conexión, el idioma que ha elegido o la validación de este mensaje.",
             "cookiesExtText": "",
@@ -26,6 +27,18 @@
             "cookiesCheckboxExtText": "",
             "cookiesFooterText": "Cookies",
             "cookiesButtonText": "He entendido"
+        },
+		"pageComment": {
+			"writeComment":  "Escribe un comentario",
+			"commentName": "Nombre o apodo",
+			"comment": "Comentario",
+			"submit": "Enviar",
+			"link": ",",
+			"page": "Página"		
+		},	
+		"menuBurger": {
+            "burgerLeftIconLink": "inicio",
+            "burgerCenterIconLink": "investigacion"
         }
     }
 }

@@ -455,30 +455,7 @@ class user extends common {
 			if(	$this->getData(['config','connect','captcha']) ){
 				$code ='';
 				if( isset( $_REQUEST['codeCaptcha'])) $code = strtoupper($_REQUEST['codeCaptcha']);
-				// option de détection de robot en premier cochée et $_SESSION['humanBot']==='human'
-				if(	$_SESSION['humanBot']==='human' && $this->getData(['config', 'connect', 'captchaBot'])=== true ) {
-					// Présence des cookies et checkbox cochée ?
-					$detectBot ='bot';
-					$captcha = false;
-					if ( isset ($_COOKIE['evtX']) && isset ($_COOKIE['evtO']) && isset ($_COOKIE['evtV']) && isset ($_COOKIE['evtA'])
-						&& isset ($_COOKIE['evtH']) && isset ($_COOKIE['evtS']) && $this->getInput('userHumanCheck', helper::FILTER_BOOLEAN) === true ) {
-						// Calcul des intervals de temps
-						$time1 = 0;
-						if( isset ($_COOKIE['evtC'])) $time1 = $_COOKIE['evtC'] - $_COOKIE['evtO']; // temps entre fin de saisie et ouverture de la page
-						$time2 = $_COOKIE['evtH'] - $_COOKIE['evtO']; // temps entre click checkbox et ouverture de la page
-						$time3 = $_COOKIE['evtV'] - $_COOKIE['evtH']; // temps entre validation formulaire et click checkbox
-						$time4 = $_COOKIE['evtS'] - $_COOKIE['evtA']; // temps passé sur la checkbox
-						if( ( $time1 >= 1000 || ( isset ($_COOKIE['evtX']) && !isset ($_COOKIE['evtC']) ) ) && $time2 >= 1000 
-							&& $time3 >=300 && $time4 >=300 && $this->getInput('userInputBlue')==='' ) {
-							$detectBot = 'human';
-							$captcha = true;
-						}
-					}
-					// Bot présumé
-					if( $detectBot === 'bot') $_SESSION['humanBot']='bot';
-				}
-				// $_SESSION['humanBot']==='bot' ou option 'Pas de Captcha pour un humain' non validée
-				elseif( md5($code) !== $_SESSION['captcha'] ) {
+				if( md5($code) !== $_SESSION['captcha'] ) {
 					$captcha = false;
 				} else {
 					$captcha = true;

@@ -154,12 +154,12 @@ echo template::formOpen('statisliteConfigForm'); ?>
 				<?php if(is_file( $module::$fichiers_json.'robots.json')){
 					copy( $module::$fichiers_json.'robots.json', $module::$tmp.'robots.json');
 					echo $text['statislite_view']['config'][30];
-					echo '<p><a href="'. helper::baseUrl(false).'site/data/statislite/module/tmp/robots.json" target="_blank">Fichier robots.json</a></p>';
+					echo '<p><a href="'. helper::baseUrl(false).$module::$tmp.'robots.json" target="_blank">Fichier robots.json</a></p>';
 				}
 				if(is_file( $module::$fichiers_json.'sessionInvalide.json')){
 					copy( $module::$fichiers_json.'sessionInvalide.json', $module::$tmp.'sessionInvalide.json');
 					echo $text['statislite_view']['config'][31];
-					echo '<p><a href="'.helper::baseUrl(false).'site/data/statislite/module/tmp/sessionInvalide.json" target="_blank">Fichier sessionInvalide.json</a></p>';
+					echo '<p><a href="'.helper::baseUrl(false). $module::$tmp.'sessionInvalide.json" target="_blank">Fichier sessionInvalide.json</a></p>';
 				}
 				?>
 			</div>

@@ -4,7 +4,7 @@
 */
 
 // Paramètres
-$fichiers_json = './site/data/statislite/module/json/';
+$fichiers_json = './site/data/'.self::$i18n.'/data_module/statislite/json/';
 $filtres_primaires = './site/data/statislite/module/filtres_primaires/';
 
 // Ne peut s'exécuter que si filtre_primaire.json existe

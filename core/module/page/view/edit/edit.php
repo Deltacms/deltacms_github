@@ -147,6 +147,43 @@ else {
 	echo '<div style="display: block;">';
 }
 ?>
+	<div class="row pageEditCommentRow">
+	<div class="col12" >
+		<div class="block">
+			<div class="blockTitle"><?php echo $text['core_page_view']['edit'][47]; ?>
+				<span id="specialeHelpButton" class="helpDisplayButton">
+					<a href="https://doc.deltacms.fr/commentaires-de-page" target="_blank">
+						<?php echo template::ico('help', 'left');?>
+					</a>
+				</span>
+			</div>
+			<div class="blockContainer">
+					<div class="row">
+						<div class="col4">
+							<?php echo template::checkbox('pageEditCommentEnable', true, $text['core_page_view']['edit'][50], [
+								'checked' => $this->getData(['page', $this->getUrl(2), 'commentEnable']),
+								'help' => $text['core_page_view']['edit'][46]
+							]); ?>
+						</div>
+						<div class="col4 pageCommentEnable">
+							<?php echo template::button('pageEditCommentConfig', [
+								'href' => helper::baseUrl() . 'config',
+								'ico' => 'gear',
+								'value' => $text['core_page_view']['edit'][48]
+							]); ?>
+						</div>
+						<div class="col4 pageCommentEnable">
+							<?php echo template::button('pageEditCommentManage', [
+								'href' => helper::baseUrl() . 'page/comment/' . $this->getUrl(2),
+								'ico' => 'gear',
+								'value' => $text['core_page_view']['edit'][49]
+							]); ?>
+						</div>
+					</div>
+			</div>
+		</div>
+	</div>
+	</div>
 	<div class="row">
 		<div class="col12" id="pageEditBlockLayout">
 			<div class="block">

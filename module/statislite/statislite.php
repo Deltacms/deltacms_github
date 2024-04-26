@@ -32,7 +32,7 @@ class statislite extends common {
 		'conversionTime' => self::GROUP_VISITOR
 	];
 	
-	const VERSION = '4.9';	
+	const VERSION = '5.0';	
 	const REALNAME = 'Statislite';
 	const DELETE = true;
 	const UPDATE = '2.6';
@@ -60,11 +60,12 @@ class statislite extends common {
 	public static $scoremaxse = 0;
 	public static $chronoaffi = [];
 	public static $affidetaille = [];
-	public static $fichiers_json = self::DATAMODULE.'/json/';
-	public static $tmp = self::DATAMODULE.'/tmp/';
+	// Initialisation des 3 dossiers json déclarés dans index.php car incluant self::$i18n
+	public static $fichiers_json = '';
+	public static $json_sauve = '';
+	public static $tmp = '';
 	public static $base = self::DATAMODULE.'/';
 	public static $downloadLink = self::DATAMODULE.'/download_counter/';
-	public static $json_sauve = self::DATAMODULE.'/json_sauve/';
 	public static $filtres_primaires = self::DATAMODULE.'/filtres_primaires/';
 	public static $filesSaved = [];
 	
@@ -103,6 +104,18 @@ class statislite extends common {
 			copy('./module/statislite/ressource/download_counter/download_counter.php', self::DATAMODULE.'/download_counter/download_counter.php');
 			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','4.9']);
 		}
+		// Version 5.0
+		if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '5.0', '<') ) {	
+			// copier les 3 dossiers json, json_sauve et tmp de site/data/statislite/module/ vers site/data/base/data_module/statislite/
+			if( !is_dir('./site/data/base/data_module/statislite')) mkdir('./site/data/base/data_module/statislite');
+			$this->custom_copy('site/data/statislite/module/json', 'site/data/base/data_module/statislite/json');
+			$this->custom_copy('site/data/statislite/module/json_sauve', 'site/data/base/data_module/statislite/json_sauve');
+			$this->custom_copy('site/data/statislite/module/tmp', 'site/data/base/data_module/statislite/tmp');
+			$this->removeDir('site/data/statislite/module/json');
+			$this->removeDir('site/data/statislite/module/json_sauve');
+			$this->removeDir('site/data/statislite/module/tmp');
+			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','5.0']);
+		}
 	}
 	
 	/**
@@ -120,7 +133,10 @@ class statislite extends common {
 		} else {
 			// Lexique
 			include('./module/statislite/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_statislite.php');
-				
+			// Initialisations des dossiers des json
+			self::$fichiers_json = self::DATA_DIR.self::$i18n.'/data_module/statislite/json/';
+			self::$tmp = self::DATA_DIR.self::$i18n.'/data_module/statislite/tmp/';
+			self::$json_sauve = self::DATA_DIR.self::$i18n.'/data_module/statislite/json_sauve/';	
 			// Détection d'un changement de nom de la page statistique pour mettre à jour listeQS
 			if( is_file( self::$fichiers_json.'filtre_primaire.json')){
 				$json = file_get_contents(self::$fichiers_json.'filtre_primaire.json');
@@ -259,7 +275,10 @@ class statislite extends common {
 		} else {
 			// Lexique
 			include('./module/statislite/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_statislite.php');
-
+			// Initialisations des dossiers des json
+			self::$fichiers_json = self::DATA_DIR.self::$i18n.'/data_module/statislite/json/';
+			self::$tmp = self::DATA_DIR.self::$i18n.'/data_module/statislite/tmp/';
+			self::$json_sauve = self::DATA_DIR.self::$i18n.'/data_module/statislite/json_sauve/';
 			// Liste des pages du site
 			$i=0;
 			foreach($this->getData(['page']) as $key=>$page){
@@ -427,7 +446,10 @@ class statislite extends common {
 		} else {
 			// Lexique
 			include('./module/statislite/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_statislite.php');
-
+			// Initialisations des dossiers des json
+			self::$fichiers_json = self::DATA_DIR.self::$i18n.'/data_module/statislite/json/';
+			self::$tmp = self::DATA_DIR.self::$i18n.'/data_module/statislite/tmp/';
+			self::$json_sauve = self::DATA_DIR.self::$i18n.'/data_module/statislite/json_sauve/';
 			// Jeton incorrect
 			if ($this->getUrl(2) !== $_SESSION['csrf']) {
 				// Valeurs en sortie
@@ -472,7 +494,10 @@ class statislite extends common {
 		} else {
 			// Lexique
 			include('./module/statislite/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_statislite.php');
-
+			// Initialisations des dossiers des json
+			self::$fichiers_json = self::DATA_DIR.self::$i18n.'/data_module/statislite/json/';
+			self::$tmp = self::DATA_DIR.self::$i18n.'/data_module/statislite/tmp/';
+			self::$json_sauve = self::DATA_DIR.self::$i18n.'/data_module/statislite/json_sauve/';
 			// Sauvegarde des fichiers json
 			$this->sauvegardeJson();
 			// Valeurs en sortie
@@ -526,15 +551,20 @@ class statislite extends common {
 	public function index() {
 		// Lexique
 		include('./module/statislite/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_statislite.php');
-	
+		// Initialisations des dossiers des json
+		self::$fichiers_json = self::DATA_DIR.self::$i18n.'/data_module/statislite/json/';
+		self::$tmp = self::DATA_DIR.self::$i18n.'/data_module/statislite/tmp/';
+		self::$json_sauve = self::DATA_DIR.self::$i18n.'/data_module/statislite/json_sauve/';
 		// Si le module n'existe pas, copie des ressources, on le crée avec des valeurs par défaut et on demande une validation de la configuration
 		if( $this->getData(['module', $this->getUrl(0), 'config', 'config']) !== true){
 			// Copie des fichiers de module/statislite/ressource/ vers self::DATAMODULE
 			if( !is_dir( self::DATAMODULE)) mkdir( self::DATAMODULE, 0755, true);
-			$this->custom_copy('./module/statislite/ressource', self::DATAMODULE);	
-			if( !is_dir( self::DATAMODULE.'/json' )) mkdir( self::DATAMODULE.'/json', 0755);
-			if( !is_dir( self::DATAMODULE.'/json_sauve' ))mkdir( self::DATAMODULE.'/json_sauve', 0755);
-			if( !is_dir( self::DATAMODULE.'/tmp' ))mkdir( self::DATAMODULE.'/tmp', 0755);
+			$this->custom_copy('./module/statislite/ressource', self::DATAMODULE);
+			if( !is_dir(self::DATA_DIR.self::$i18n.'/data_module/statislite')) mkdir( self::DATA_DIR.self::$i18n.'/data_module/statislite' , 0755);
+			if( !is_dir( self::$fichiers_json )) mkdir( self::$fichiers_json, 0755);
+			if( !is_dir( self::$tmp ))mkdir( self::$tmp, 0755);
+			if( !is_dir( self::$json_sauve ))mkdir( self::$json_sauve, 0755);
+			copy('./module/statislite/ressource/tmp/.htaccess', self::$tmp.'.htaccess');
 			
 			$this->setData(['module', $this->getUrl(0), 'config',[
 				'timeVisiteMini' => '30',

@@ -18,11 +18,11 @@
  
 class form extends common {
 
-	const VERSION = '5.1';
+	const VERSION = '6.0';
 	const REALNAME = 'Formulaire';
 	const DELETE = true;
 	const UPDATE = '0.0';
-	const DATADIRECTORY = ''; // Contenu localisé inclus par défaut (page.json et module.json)
+	const DATADIRECTORY = '';
 
 	public static $actions = [
 		'config' => self::GROUP_EDITOR,
@@ -84,8 +84,11 @@ class form extends common {
 			$this->setData(['module', $this->getUrl(0), 'config', 'uploadTxt',false]);
 			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','4.1']);
 		}
-		if( version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '5.1', '<') ){
-			$this->setData(['module', $this->getUrl(0), 'config', 'versionData', '5.1']);
+		if( version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '6.0', '<') ){
+			// Déplacement des données de page de module.json 'data' vers data_module/nom_page.json 'data'
+			$this->setData(['data_module', $this->getUrl(0), 'data', $this->getData(['module', $this->getUrl(0), 'data']) ]);
+			$this->deleteData(['module', $this->getUrl(0), 'data']);
+			$this->setData(['module', $this->getUrl(0), 'config', 'versionData', '6.0']);
 		}
 	}
 	
@@ -138,12 +141,13 @@ class form extends common {
 						'uploadPng' => $this->getInput('formConfigUploadPng', helper::FILTER_BOOLEAN),
 						'uploadPdf' => $this->getInput('formConfigUploadPdf', helper::FILTER_BOOLEAN),
 						'uploadZip' => $this->getInput('formConfigUploadZip', helper::FILTER_BOOLEAN),
-						'uploadTxt' => $this->getInput('formConfigUploadTxt', helper::FILTER_BOOLEAN)
+						'uploadTxt' => $this->getInput('formConfigUploadTxt', helper::FILTER_BOOLEAN),
+						'rgpdCheck' => $this->getInput('formConfigRgpdCheck', helper::FILTER_BOOLEAN)
 					]
 				]);
 				// Génération des données vides
-				if ($this->getData(['module', $this->getUrl(0), 'data']) === null) {
-					$this->setData(['module', $this->getUrl(0), 'data', []]);
+				if ($this->getData(['data_module', $this->getUrl(0), 'data']) === null) {
+					$this->setData(['data_module', $this->getUrl(0), 'data', []]);
 				}
 				// Génération des champs
 				$inputs = [];
@@ -199,7 +203,7 @@ class form extends common {
 			// Lexique
 			$param = '';
 			include('./module/form/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_form.php');
-			$data = $this->getData(['module', $this->getUrl(0), 'data']);
+			$data = $this->getData(['data_module', $this->getUrl(0), 'data']);
 			if($data) {
 				// Pagination
 				$pagination = helper::pagination($data, $this->getUrl(),self::ITEMSPAGE);
@@ -256,14 +260,19 @@ class form extends common {
 					'notification' => $text['form']['export2csv'][0]
 				]);
 			} else {
-				$data = $this->getData(['module', $this->getUrl(0), 'data']);
+				$data = $this->getData(['data_module', $this->getUrl(0), 'data']);
 				if ($data !== []) {
-					$csvfilename = 'data-'.date('dmY').'-'.date('hm').'-'.rand(10,99).'.csv';
+					$csvfilename = 'data-'.date('dmY').'-'.date('Hi').'-'.rand(10,99).'.csv';
 					if (!file_exists(self::FILE_DIR.'source/data')) {
 						mkdir(self::FILE_DIR.'source/data', 0755);
 					}
 					$fp = fopen(self::FILE_DIR.'source/data/'.$csvfilename, 'w');
-					fputcsv($fp, array_keys($data[1]), ';','"');
+					// Récupérer les bonnes clefs
+					foreach($data as $key=>$value){
+						$tabdata = array_keys($data[$key]);
+						break;
+					}
+					fputcsv($fp, $tabdata, ';','"');
 					foreach ($data as $fields) {
 						fputcsv($fp, $fields, ';','"');
 					}
@@ -309,11 +318,11 @@ class form extends common {
 					'notification' => $text['form']['deleteall'][0]
 				]);
 			} else {
-				$data = ($this->getData(['module', $this->getUrl(0), 'data']));
+				$data = ($this->getData(['data_module', $this->getUrl(0), 'data']));
 				if (count($data) > 0 ) {
 					// Suppression multiple
 					for ($i = 1; $i <= count($data) ; $i++) {
-						echo $this->deleteData(['module', $this->getUrl(0), 'data', $i]);
+						echo $this->deleteData(['data_module', $this->getUrl(0), 'data', $i]);
 					}
 					// Valeurs en sortie
 					$this->addOutput([
@@ -358,7 +367,7 @@ class form extends common {
 				]);
 			} else {
 				// La donnée n'existe pas
-				if($this->getData(['module', $this->getUrl(0), 'data', $this->getUrl(2)]) === null) {
+				if($this->getData(['data_module', $this->getUrl(0), 'data', $this->getUrl(2)]) === null) {
 					// Valeurs en sortie
 					$this->addOutput([
 						'access' => false
@@ -366,7 +375,7 @@ class form extends common {
 				}
 				// Suppression
 				else {
-					$this->deleteData(['module', $this->getUrl(0), 'data', $this->getUrl(2)]);
+					$this->deleteData(['data_module', $this->getUrl(0), 'data', $this->getUrl(2)]);
 					// Valeurs en sortie
 					$this->addOutput([
 						'redirect' => helper::baseUrl() . $this->getUrl(0) . '/data',
@@ -466,6 +475,9 @@ class form extends common {
 						$filter = helper::FILTER_STRING_SHORT;						
 				}
 			}
+			
+			// Ajout d'une notice sur la case à cocher d'acceptation des conditions si elle est utilisée et non cochée 
+			if(	$this->getData(['module', $this->getUrl(0), 'config', 'rgpdCheck'])) $rgpdCheckbox = $this->getInput('formRgpdCheck', helper::FILTER_BOOLEAN,true);
 			
 			// Préparation du contenu du mail
 			$data = [];
@@ -572,7 +584,11 @@ class form extends common {
 			$sent = true;
 			if( $notice === ''){
 				// Crée les données
-				$this->setData(['module', $this->getUrl(0), 'data', helper::increment(1, $this->getData(['module', $this->getUrl(0), 'data'])), $data]);
+				if( null !== $this->getData(['data_module', $this->getUrl(0), 'data']) ) {
+					$this->setData(['data_module', $this->getUrl(0), 'data', helper::increment(1, $this->getData(['data_module', $this->getUrl(0), 'data'])), $data]);
+				} else {
+					$this->setData(['data_module', $this->getUrl(0), 'data', 1, $data]);
+				}
 				// Emission du mail
 				// Rechercher l'adresse en fonction du mail
 				$singleuser = $this->getData(['user',

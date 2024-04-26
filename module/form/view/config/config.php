@@ -184,9 +184,15 @@ include('./module/form/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) .
 					</div>
 				</div>
 				<div class="row" <?php if($this->getUser('group') < self::GROUP_MODERATOR) echo '<div style="display: none;">'; ?>>
-					<div class="col6">
+					<div class="col4">
 						<?php echo template::checkbox('formConfigCaptcha', true, $text['form_view']['config'][26], [
 							'checked' => $this->getData(['module', $this->getUrl(0), 'config', 'captcha'])
+						]); ?>
+					</div>
+					<div class="col6">
+						<?php echo template::checkbox('formConfigRgpdCheck', true, $text['form_view']['config'][41], [
+							'checked' => $this->getData(['module', $this->getUrl(0), 'config', 'rgpdCheck']),
+							'help' => $text['form_view']['config'][42]
 						]); ?>
 					</div>
 				</div>

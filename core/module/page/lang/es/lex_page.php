@@ -46,6 +46,11 @@ $text['core_page_view']['edit'][42] = "Datos del módulo";
 $text['core_page_view']['edit'][43] = "será eliminado. ¿Confirmas?";
 $text['core_page_view']['edit'][44] = "Se requiere grupo para editar la página:";
 $text['core_page_view']['edit'][45] = "No tiene derechos de edición, póngase en contacto con un administrador.";
+$text['core_page_view']['edit'][46] = 'Permite a los visitantes dejar un comentario en la página. La configuración es común a todas las páginas, la gestión específica de cada página.';
+$text['core_page_view']['edit'][47] = 'Comentarios';
+$text['core_page_view']['edit'][48] = 'Configurar';
+$text['core_page_view']['edit'][49] = 'Administrar comentarios';
+$text['core_page_view']['edit'][50] = 'Permitir comentarios';
 $text['core_page']['duplicate'][0] = "Token no válido";
 $text['core_page']['duplicate'][1] = "Duplicación no autorizada";
 $text['core_page']['duplicate'][2] = "La página ha sido duplicada";
@@ -60,7 +65,20 @@ $text['core_page']['delete'][3] = "No se puede eliminar una página que contiene
 $text['core_page']['delete'][4] = "Página eliminada";
 $text['core_page']['edit'][0] = "Cambios guardados";
 $text['core_page']['edit'][1] = "Ninguno";
-
+$text['core_page_view']['comment'][1] = 'Volver';
+$text['core_page_view']['comment'][2] = 'Datos';
+$text['core_page_view']['comment'][3] = 'Exportar CSV';
+$text['core_page_view']['comment'][4] = 'Borrar todo';
+$text['core_page_view']['comment'][5] = 'Sin datos';
+$text['core_page_view']['comment'][6] = '¿Está seguro de que desea eliminar estos datos?';
+$text['core_page_view']['comment'][7] = '¿Está seguro de que desea eliminar todos los datos?';
+$text['core_page']['commentDelete'][1] = 'Datos eliminados';
+$text['core_page']['commentDelete'][2] = 'Acceso no autorizado';
+$text['core_page']['exportToCsv'][1] = 'Datos exportados al archivo';
+$text['core_page']['exportToCsv'][2] = 'No hay datos para exportar';
+$text['core_page']['commentAllDelete'][1] = 'Acceso no autorizado';
+$text['core_page']['commentAllDelete'][2] = 'Datos eliminados';
+$text['core_page']['commentAllDelete'][3] = 'No hay datos para eliminar';
 
 // Tinymce et Flatpickr
 $lang_admin = 'es'; 
@@ -92,6 +110,7 @@ $pageBlocks = [
 	'3-6-3' => 'Barra 1/4 - página 1/2 - barra 1/4',
 	'2-7-3' => 'Barra 2/12 - página 7/12 - barra 3/12 ',
 	'3-7-2' => 'Barra 3/12 - página 7/12 - barra 2/12 ',
+	'2-8-2' => 'Barra 2/12 - página 8/12 - barra 2/12 ',
 	'bar'	=> 'Barra lateral'
 ];
 $displayMenu = [

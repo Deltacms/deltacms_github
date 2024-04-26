@@ -18,6 +18,7 @@
         "title": "DeltaCMS",
 		"captchaSimpleText": "I'am not a robot",
         "captchaSimpleHelp": "Check this box to prove that you are human",
+		"questionnaireAccept": "I accept the conditions of use of my personal data",
         "cookies": {
             "cookiesDeltaText": "This site uses cookies which are necessary for its operation. They enable it to function more smoothly, for example by memorising connection data, the language you have chosen or the validation of this message.",
             "cookiesExtText": "",
@@ -27,6 +28,14 @@
             "cookiesFooterText": "Cookies",
             "cookiesButtonText": "I understand"
         },
+		"pageComment": {
+			"writeComment":  "Write a comment",
+			"commentName": "Name or nickname",
+			"comment": "Comment",
+			"submit": "Send",
+			"link": ",",
+			"page": "Page"
+		},	
 		"menuBurger": {
             "burgerLeftIconLink": "home",
             "burgerCenterIconLink": "recherche"

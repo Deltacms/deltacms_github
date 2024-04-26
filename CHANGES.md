@@ -1,5 +1,42 @@
 # Changelog
 
+## Version 5.1.00 de Deltacms
+- Modifications :
+	- Modules Blog 7.0 /  Form 6.0 / News 5.0 / Agenda 7.1 / Statislite 5.0 :
+	  Pour alléger le fichier module.json commun à l'ensemble des modules, certaines données de module de page sont enregistrées dans des fichiers json distincts,
+	  1 fichier pour Blog, Form et News (au nom de la page), 1 dossier pour Agenda, Statislite. Les autres modules livrés ne sont pas concernés,
+	- Module Form 6.0 : nouvelle option "acceptation des conditions d'utilisation des données personnelles".
+- Correction :
+	- Filemanager : correction d'instructions dépréciées.
+- Sur le site :
+	- Bonus / Modules / sondage 2.0 : nouvelle structure pour l'enregistrement des données de module de page et nouvelles options "validation de la participation par courriel" et
+	  "acceptation des conditions d'utilisation des données personnelles",
+	- Bonus / Modules / guestbook 2.0 : nouvelle structure pour l'enregistrement des données de module de page et nouvelle option "acceptation des conditions d'utilisation des données personnelles".
+
+## Version 5.0.02 de Deltacms
+- Modifications :
+	- animation et réduction du panneau cookies,
+	- édition avec Tinymce : nouveaux templates pour insérer un bloc ou une image en pleine largeur quelque soit l'écran et un bloc de texte sans titre,
+	- configuration / connexion : le captcha à la connexion est toujours de type opération, 
+	  le captcha comportemental reste disponible pour les autres usages (blog, formulaire, commentaires de page,...)
+- Correction :
+	- gestion des langues / copie d'une page : si la page d'accueil est absente, une autre page est utilisée pour l'url par défaut.
+- Sur le site :
+	- Bonus / Modules : un nouveau module pour réaliser des questionnaires nommé 'Sondage',
+	- Bonus / Vidéos : module sondage.
+
+## Version 5.0.01 de Deltacms
+- Modifications :
+	- Edition de page : nouvelle option avec la possibilité d'autoriser des commentaires sur une page. la configuration des commentaires est commune à toutes les pages, la gestion propre à chaque page. Cette option n'utilise pas de module.
+	- Edition de page : nouveau gabarit de page "barre 2/12 - page 8/12 - barre 2/12"
+	- Gestion des langues : l'utilitaire de copie permet d'ajouter ou de modifier une page, sous-page ou barre,
+	- Editeur Tinymce : Tinymce passe en version 5.10.9. Les utlisateurs du module Snipcart devront faire une mise à jour vers Snipcart V30.
+- Corrections :
+	- Menu : suppression de l'aléa lors du passage de petit écran à grand écran,
+	- Theme / Bannière / option contenu personnalisé : les couleurs dans l'éditeur Tinymce sont celles réglées dans cette option.
+- Sur le site :
+	- Snipcart V30 : mise à jour indispensable pour compatibilité avec Deltacms 5.0.01
+	
 ## Version 4.5.04 de Deltacms
 - Modifications :
 	- Agenda 6.0 : la couleur de la grille est réglable en configuration,

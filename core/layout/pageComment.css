@@ -1,0 +1,89 @@
+/**
+ * This file is part of DeltaCMS.
+ */
+
+
+#formFileReset {
+	background-color: red;
+	border-width:1px;
+	border-color: orange;
+	font-size: 1.15em;
+	font-style: bold;
+	color: yellow;
+}
+
+#formFileReset:hover {
+	background-color: orange;
+	border-color: orange;
+	font-style: normal;
+	color:black;
+}
+
+.formInputFile {
+	padding: 9px;
+	border-radius: 2px;
+	border: 1px solid;
+}
+
+.formOuter{
+	text-align: center;
+    margin: 0 auto;
+    width: 50%;
+	border-radius: 2px;
+	border: 1px solid;
+}
+
+/*formulaire*/
+#commentPageFormForm {
+	max-width: 85vw;
+	margin: auto;
+}
+
+/* messages */
+.msgs {
+	max-width: 85vw;
+	margin: auto;
+}
+
+.msgs .block .dataNameDate {
+	font-family: var(--dataNameDate_font );
+	font-weight: normal;
+}
+
+.msgs .block .dataComment{
+	
+}
+
+.msgs .block .dataComment > p {
+    margin: 0;
+    line-height: 1.2;	
+}
+
+
+#commentPageFormForm .editorWysiwygComment {
+	overflow: auto;
+	resize: vertical;
+	min-height: 220px;
+}
+
+.formInner{
+	display: inline-block;
+}
+
+.formCheckBlue {
+	display: none;
+}
+
+.commentPageButtonPrevNext{ 
+	border-radius: 10%; 
+	width: 60px;
+	font-size: 1.2em;
+}
+.commentPageButtonPageNb{
+	width: 120px;
+  	font-size: 1em;	
+}
+
+#buttonCommentShowForm {
+	margin: 15px auto;
+}

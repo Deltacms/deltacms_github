@@ -18,7 +18,7 @@
 
 class search extends common {
 
-	const VERSION = '3.4';
+	const VERSION = '3.5';
 	const REALNAME = 'Recherche';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -88,9 +88,9 @@ class search extends common {
 			$this->setData(['module',$this->getUrl(0),'config', 'versionData', '3.2' ]);
 		}
 		// Mise à jour 3.4
-		if (version_compare($versionData, '3.4', '<') ) {
+		if (version_compare($versionData, '3.5', '<') ) {
 			// Mettre à jour la version
-			$this->setData(['module',$this->getUrl(0),'config', 'versionData', '3.4' ]);
+			$this->setData(['module',$this->getUrl(0),'config', 'versionData', '3.5' ]);
 		}
 	}
 
@@ -302,11 +302,11 @@ class search extends common {
 							}
 
 							// Articles d'une sous-page blog ou de news
-							if ($this->getData(['page', $childId, 'moduleId']) === 'blog' || $this->getData(['page', $childId, 'moduleId']) === 'news'
-							 && $this->getData(['module',$parentId,'posts']) )
+							if (($this->getData(['page', $childId, 'moduleId']) === 'blog' || $this->getData(['page', $childId, 'moduleId']) === 'news')
+							 && $this->getData(['data_module',$childId,'posts']) )
 							{
-								foreach($this->getData(['module',$childId,'posts']) as $articleId => $article) {
-									if($this->getData(['module',$childId,'posts',$articleId,'state']) === true)  {
+								foreach($this->getData(['data_module',$childId,'posts']) as $articleId => $article) {
+									if($this->getData(['data_module',$childId,'posts',$articleId,'state']) === true)  {
 										$url = $childId . '/' . $articleId;
 										$titre = $article['title'];
 										$contenu = ' ' . $titre . ' ' . $article['content'];
@@ -321,10 +321,10 @@ class search extends common {
                     }
 
 					// Articles d'un blog ou de news
-					if ( $this->getData(['page', $parentId, 'moduleId']) === 'blog' || $this->getData(['page', $parentId, 'moduleId']) === 'news'
-						 && $this->getData(['module',$parentId,'posts']) ) {
-						foreach($this->getData(['module',$parentId,'posts']) as $articleId => $article) {
-							if($this->getData(['module',$parentId,'posts',$articleId,'state']) === true)
+					if ( ($this->getData(['page', $parentId, 'moduleId']) === 'blog' || $this->getData(['page', $parentId, 'moduleId']) === 'news')
+						 && $this->getData(['data_module',$parentId,'posts']) ) {
+						foreach($this->getData(['data_module',$parentId,'posts']) as $articleId => $article) {
+							if($this->getData(['data_module',$parentId,'posts',$articleId,'state']) === true)
 							{
 								$url = $parentId. '/' . $articleId;
 								$titre = $article['title'];

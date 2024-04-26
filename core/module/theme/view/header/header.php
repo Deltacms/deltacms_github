@@ -1,9 +1,9 @@
 <?php
 // Lexique
 include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
-// Passage de la langue d'administration à Tinymce
+// Passage de la langue d'administration à Tinymce et de la class utilisée par tinymce dans le body de l'iframe
 ?>
-<script> var lang_admin = "<?php echo $lang_admin; ?>"; </script>
+<script> var lang_admin = "<?php echo $lang_admin; ?>"; var bodyIframe = "editorWysiwygHeader"; </script>
 <?php echo template::formOpen('themeHeaderForm'); ?>
 <div class="row">
     <div class="col2">
@@ -230,7 +230,7 @@ include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmi
 <div class="row featureContainer">
     <div class="col12">
         <div class="row">
-            <div class="col12">
+            <div class="col12" style="margin-top: 90px">
                 <?php echo template::textarea('themeHeaderText', [
                     'label' => '<div class="titleWysiwygContent">'.$text['core_theme_view']['header'][33].'</div>',
                     'class' => 'editorWysiwyg',
