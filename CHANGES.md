@@ -1,5 +1,41 @@
 # Changelog
 
+## Version 5.1.02 de Deltacms
+- Modifications :
+	- Page / Edition : si le groupe requis pour accéder à la page est 'Membre', 2 nouvelles options sont disponibles :
+		- Visibilité de la page pour tous les membres ou pour un membre particulier (les éditeurs, modérateurs, administrateurs ont accès à la page),
+		- Affichage de documents ou de liens dans la page, visibles uniquement par le ou les membres. Les fichiers sont à placer dans le dossier 'site/file/source/membersDirectory/identifiant_du_membre'.
+	- Commentaires de page : remplissage automatique du champ 'Nom ou pseudo' pour les utilisateurs connectés, les notifications comme 'Commentaire soumis' sont traduisibles dans la langue de vos visiteurs,
+	- Agenda 7.3, Album 4.7, Blog 7.2, News 5.2, Search 3.7, Form 6.2 : tous les textes affichés par le CMS, comme 'Retour', 'Lire la suite', sont traduisibles dans la langue de vos visiteurs. 
+	  Un drapeau du pays indique la langue ciblée,
+	- Configuration / localisation : internationalisation des messages "Obligatoire" et "Impossible de soumettre..." utilisés dans plusieurs modules.
+- Correction :
+	- Commentaires de page / configuration : un label erroné,
+	- Commentaires de page : si la page change de nom les commentaires sont conservés,
+	- Modules : les données volumineuses produites par les modules de page, et spécifiques à la page, sont supprimées à son effacement,
+	- Statislite 5.2 : rétablissement de l'accès aux fichiers robots.json et sessionInvalide.json,
+	- Form 6.2 : configuration / Gérer les données / Tout effacer, effacement complet,
+	- Modules Blog 7.2, Form 6.2, Sondage 2.2 : gestion des captchas,
+	- Modules Blog 7.2, News 5.2 : suppression du warning si un article est ouvert sans passer par la page principale du module,
+	- Module search : création des fichiers de thèmes à l'installation.
+- Sur le site :
+	- Modules Sondage 2.2, Guestbook 2.2, Geophoto 2.4 : vous pouvez traduire ou adapter les messages à destination de vos visiteurs,
+
+## Version 5.1.01 de Deltacms
+- Modifications :
+	- Module Blog 7.1 : boutons article suivant, article précédent en vue article,
+	- Modules de page : amélioration de l'initialisation et de la mise à jour des modules,
+	- Configuration / Social : nouveau réseau Mastodon et mise à jour de l'icône Twitter,
+	- Thème / Menu : nouvelle option 'Inversion des couleurs du site', une icône dans le menu permet de commuter, pour la partie principale du site, entre l'affichage avec les couleurs du thème ou l'affichage avec des couleurs inversées ( hors bannière, menu, images, vidéos...).
+	- Thème / Menu : nouvelle option 'Augmentation de la taille des caractères du site', une icône dans le menu permet de modifier, pour la partie principale du site, la taille des caractères ( +2px, +4px, taille initiale, +2px,...)
+- Correction :
+	- Footer / icônes des réseaux sociaux : taille des icônes SVG et disposition des icônes en petit écran.
+- Sur le site :
+	- Modules Sondage 2.1, Guestbook 2.1, Snipcart 3.1, Gallery 5.0 : amélioration de l'initialisation et de la mise à jour des modules,
+	- Module Sondage 2.1 : amélioration du fonctionnement lorsque l'option 'validation de la participation par courriel' est choisie,
+	- Module Géo Photo 2.0 : augmentation du choix de cartes (on passe de 2 à 7 cartes), ajout des surcouches rando, cyclo, vtt, accès et possibilité de masquer la trace GPS,
+	- Attention le module Gallery ne sera plus maintenu à partir du 1/1/2025, on vous conseille de migrer vers le module Album inclus dans le zip.
+	
 ## Version 5.1.00 de Deltacms
 - Modifications :
 	- Modules Blog 7.0 /  Form 6.0 / News 5.0 / Agenda 7.1 / Statislite 5.0 :

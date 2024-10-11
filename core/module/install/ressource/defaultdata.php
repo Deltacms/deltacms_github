@@ -76,7 +76,7 @@ class init extends common {
 			]
 		],
 		'core' => [
-			'dataVersion' => 5100,
+			'dataVersion' => 5102,
 			'lastBackup' => 0,
 			'lastClearTmp' => 0,
 			'lastAutoUpdate' => 0,
@@ -118,12 +118,16 @@ class init extends common {
 				'comment' => 'Commentaire',
 				'submit' => 'Envoyer',
 				'link' => ', le',
-				'page' => 'Page'
+				'page' => 'Page',
+				'submitted' => 'Commentaire soumis',
+				'failed' => 'Echec d\'envoi du commentaire'
 			],
 			'menuBurger' => [
             'burgerLeftIconLink' => 'accueil',
             'burgerCenterIconLink' => 'recherche'
-			]
+			],
+			'mandatoryText' => 'Obligatoire',
+			'impossibleText' => 'Impossible de soumettre le formulaire, car il contient des erreurs'
 		],
 		'page' => [
 			'accueil' => [
@@ -141,6 +145,8 @@ class init extends common {
 			'parentPageId' => '',
 			'position' => 1,
 			'group' => self::GROUP_VISITOR,
+			'member' => 'allMembers',
+			'memberFile' => false,
 			'groupEdit' => self::GROUP_EDITOR,
 			'targetBlank' => false,
 			'title' => 'Accueil',
@@ -413,7 +419,9 @@ class init extends common {
 				'burgerBackgroundColorSub' => 'rgba(83, 107, 143, 1)',
 				'burgerIconLink1' => 'accueil',
 				'burgerIconLink2' => '',
-				'burgerOverlay' => true
+				'burgerOverlay' => true,
+				'invertColor' => false,
+				'changeFontSize' => false
 				],
 			'site' => [
 				'backgroundColor' => 'rgba(255, 255, 255, 1)',

@@ -92,16 +92,14 @@ echo template::formOpen('pageEditForm'); ?>
 									'value' => array_key_exists($this->getData(['page', $this->getUrl(2), 'moduleId']),$module::$moduleIds)? $module::$moduleIds[$this->getData(['page', $this->getUrl(2), 'moduleId'])] : ucfirst($this->getData(['page', $this->getUrl(2), 'moduleId']))
 								]); ?>
 							</div>
-							<div class="col3 verticalAlignBottom">
-								<?php $state = true;
-								if( null !== $this->getData(['page', $this->getUrl(2), 'moduleId']) && $this->getData(['page', $this->getUrl(2), 'moduleId']) !== '' ) $state= false?>
+							<?php if( null !== $this->getData(['page', $this->getUrl(2), 'moduleId']) && $this->getData(['page', $this->getUrl(2), 'moduleId']) !== '' ) { ?>
+								<div class="col3 verticalAlignBottom">
 								<?php echo template::button('pageEditModuleConfig', [
-									//'disabled' => (bool) $this->getData(['page', $this->getUrl(2), 'moduleId']) === false,
-									'disabled' => $state,
 									'uniqueSubmission' => true,
 									'value' => template::ico('gear')
 								]); ?>
-							</div>
+								</div>
+							<?php } ?>
 						</div>
 					</div>
 				</div>
@@ -168,7 +166,7 @@ else {
 						<div class="col4 pageCommentEnable">
 							<?php echo template::button('pageEditCommentConfig', [
 								'href' => helper::baseUrl() . 'config',
-								'ico' => 'gear',
+								'ico' => 'cogs',
 								'value' => $text['core_page_view']['edit'][48]
 							]); ?>
 						</div>
@@ -342,19 +340,43 @@ else {
 				</div>
 				<div class="blockContainer">
 					<div class="row">
-						<div class='col6'>
+						<div class='col4'>
 							<?php echo template::select('pageEditGroup', $groupPublics, [
 								'label' => $text['core_page_view']['edit'][34],
 								'selected' => $this->getData(['page', $this->getUrl(2), 'group'])
 							]); ?>
 						</div>
-						<div class='col6'>
+						<div class='col4'>
+							<?php 
+							$selectedId = $this->getData(['page', $this->getUrl(2), 'member' ]);
+							if( $selectedId === 'allMembers'){
+								$selected = 0;
+							} else {
+								$tab =  array_flip($module::$memberIds);
+								$selected =$tab[$selectedId];
+							}
+							echo template::select('pageEditMember', $module::$memberIds, [
+								'label' => $text['core_page_view']['edit'][51],
+								'selected' => $selected
+							]); ?>
+						</div>
+						<div class='col4'>
 							<?php if( $this->getUser('group') === self::GROUP_MODERATOR ) $groupEdit = $groupEditModerator;
 							echo template::select('pageEditGroupEdit', $groupEdit, [
 								'label' => $text['core_page_view']['edit'][44],
 								'selected' => $this->getData(['page', $this->getUrl(2), 'groupEdit'])
 							]); ?>
 						</div>
+					</div>
+					<div class="row">
+						<div class='col4'>
+							<?php echo template::checkbox('pageEditMemberFileEnable', true, $text['core_page_view']['edit'][52], [
+								'checked' => $this->getData(['page', $this->getUrl(2), 'memberFile']),
+								'help' => $text['core_page_view']['edit'][53]
+							]); ?>
+						</div>
+					</div>
+					<div class="row">
 						<div class='col12'>
 							<?php echo template::text('pageEditMetaTitle', [
 								'label' => $text['core_page_view']['edit'][35],

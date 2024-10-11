@@ -18,7 +18,7 @@
 
 class news extends common {
 
-	const VERSION = '5.0';
+	const VERSION = '5.2';
 	const REALNAME = 'News';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -183,9 +183,6 @@ class news extends common {
 		} else {
 			// Lexique
 			include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_news.php');
-			// Mise à jour des données de module
-			$this->update();
-
 			// Soumission du formulaire
 			if($this->isPost()) {
 
@@ -200,18 +197,27 @@ class news extends common {
 				$style .= '.newsFrame a{ color:'. $this->getInput('newsThemeLinkColor') .'}';
 				$style .= '.newsFrame h1,.newsFrame h2,.newsFrame h3,.newsFrame h4,.newsFrame h5,.newsFrame h6{ color:'. $this->getInput('newsThemeTitleColor') .'}';
 				$style .= '.newsSignature { color:' . $this->getInput('newsThemeSignatureColor') . ';';
-				
+				// Générer la feuille de CSS avec les couleurs inverses
+				$style_invert =  '.newsFrame {';
+				$style_invert .= 'border: solid ' . helper::invertColor($this->getInput('newsThemeBorderColor'))  . ' ' . $this->getInput('newsThemeBorderWidth',helper::FILTER_STRING_SHORT) . ';';
+				$style_invert .= 'border-radius:' . $this->getInput('newsBorderRadius',helper::FILTER_STRING_SHORT).';';
+				$style_invert .= 'box-shadow:' . $this->getInput('newsBorderShadows',helper::FILTER_STRING_SHORT).';';
+				$style_invert .= 'background-color:' . helper::invertColor($this->getInput('newsThemeBackgroundColor')) . ';';
+				$style_invert .= 'color:' . helper::invertColor($this->getInput('newsThemeTextColor')) . ';';
+				$style_invert .= '}';
+				$style_invert .= '.newsFrame a{ color:'. helper::invertColor($this->getInput('newsThemeLinkColor')) .'}';
+				$style_invert .= '.newsFrame h1,.newsFrame h2,.newsFrame h3,.newsFrame h4,.newsFrame h5,.newsFrame h6{ color:'. helper::invertColor($this->getInput('newsThemeTitleColor')) .'}';
+				$style_invert .= '.newsSignature { color:' . helper::invertColor($this->getInput('newsThemeSignatureColor')) . ';';				
 				// Dossier de l'instance
-				if (!is_dir(self::DATADIRECTORY . $this->getUrl(0))) {
-					mkdir (self::DATADIRECTORY . $this->getUrl(0), 0755, true);
-				}
-
-				$success = file_put_contents(self::DATADIRECTORY . $this->getUrl(0) . '/theme.css', $style );
-
+				$dircss = self::DATA_DIR.self::$i18n.'/data_module/news/'. $this->getUrl(0);
+				if( !is_dir($dircss)) mkdir($dircss, 0755, true);
+				$success = file_put_contents($dircss . '/theme.css', $style );
+				$success = file_put_contents($dircss . '/theme_invert.css', $style_invert );				
 				// Fin feuille de style
 
 				$this->setData(['module', $this->getUrl(0), 'theme',[
-					'style'       => $success ? self::DATADIRECTORY . $this->getUrl(0) . '/theme.css' : '',
+					'style'       => $success ? $dircss . '/theme.css' : '',
+					'style_invert' => $success ? $dircss . '/theme_invert.css' : '', 
 					'borderColor' => $this->getInput('newsThemeBorderColor'),
 					'borderWidth'	  => $this->getInput('newsThemeBorderWidth',helper::FILTER_STRING_SHORT),
 					'backgroundColor' => $this->getInput('newsThemeBackgroundColor'),
@@ -235,7 +241,11 @@ class news extends common {
 					'sameHeight' => $this->getInput('newsThemeSameHeight',helper::FILTER_BOOLEAN),
 					'noMargin' => $this->getInput('newsThemeNoMargin',helper::FILTER_BOOLEAN)
 				]]);
-
+				$this->setData(['module', $this->getUrl(0), 'config', 'texts',[
+					'readmore' => $this->getInput('newsConfigTextsReadmore',helper::FILTER_STRING_SHORT),
+					'back' => $this->getInput('newsConfigTextsBack',helper::FILTER_STRING_SHORT),
+					'noNews' => $this->getInput('newsConfigTextsNoNews',helper::FILTER_STRING_SHORT)
+				]]);
 
 				// Valeurs en sortie
 				$this->addOutput([
@@ -422,7 +432,7 @@ class news extends common {
 						'state' => true
 					]);
 				}
-				// Mise à jour ou création du fichier site/data/news/themeNews.css
+				// Mise à jour ou création du fichier site/data/news/themeNews.css destiné à tinymce
 				$style =  '.editorWysiwyg{';
 				$style .= 'background-color:' . $this->getData(['module', $this->getUrl(0), 'theme', 'backgroundColor']) . ';';
 				$style .= '}';
@@ -457,8 +467,8 @@ class news extends common {
 		// Lexique
 		include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_news.php');
 
-		// Mise à jour des données de module
-		$this->update();
+		// Mise à jour des données de module ou initialisation à la création de la page
+		if( null === $this->getData(['module', $this->getUrl(0), 'config', 'versionData']) || version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), self::VERSION, '<') ) $this->update();
 
 		// Affichage d'un article
 		if(
@@ -573,7 +583,7 @@ class news extends common {
 									// paragraphe trop long à abréger
 									$arrayContent[$key] = strip_tags($arrayContent[$key]);
 									$arrayContent[$key] = '<p>'.substr( $arrayContent[$key], 0, $charRemain).'</p>';
-									$arrayContent[$key] .= '<p> ... <a href="'. helper::baseUrl(true) . $this->getUrl(0) . '/' . $newsIds[$i] . '"><span class="newsSuite">'.$text['news_view']['index'][0].'</span></a></p>' ;
+									$arrayContent[$key] .= '<p> ... <a href="'. helper::baseUrl(true) . $this->getUrl(0) . '/' . $newsIds[$i] . '"><span class="newsSuite">'.$this->getData(['module', $this->getUrl(0), 'config','texts', 'readmore']).'</span></a></p>' ;
 									$charDisplay = $charDisplay + 1000;
 								} 
 								self::$news[$newsIds[$i]]['content'] .= $arrayContent[$key];
@@ -590,12 +600,17 @@ class news extends common {
 				// Mise en forme de la signature
 				self::$news[$newsIds[$i]]['userId'] = $this->signature($this->getData(['data_module', $this->getUrl(0), 'posts', $newsIds[$i], 'userId']));
 			}
+			if( isset( $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] ) && $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] === 'true' ) { 
+				$style = 'style_invert';
+			} else {
+				$style = 'style';
+			} 
 			// Valeurs en sortie
 			$this->addOutput([
 				'showBarEditButton' => true,
 				'showPageContent' => true,
 				'view' => 'index',
-				'style' => $this->getData(['module', $this->getUrl(0),'theme', 'style'])
+				'style' => $this->getData(['module', $this->getUrl(0),'theme', $style ])
 			]);
 
 		}
@@ -628,54 +643,72 @@ class news extends common {
 	 * Appelée par les fonctions index et config
 	 */
 	private function update() {
+		// Lexique
+		include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_news.php');
 
 		$versionData = $this->getData(['module',$this->getUrl(0),'config', 'versionData' ]);
 
 		// le module n'est pas initialisé
-		if ($versionData === null || !file_exists(self::DATADIRECTORY . $this->getUrl(0)  . '/theme.css')) {
+		if ($versionData === null || !file_exists(self::DATA_DIR . self::$i18n . '/data_module/news/' . $this->getUrl(0)  . '/theme.css')) {
 			$this->init();
-		}
-		$versionData = $this->getData(['module',$this->getUrl(0),'config', 'versionData' ]);
-		
-		// Mise à jour 4.1
-		if (version_compare($versionData, '4.1', '<') ) {
-			// Mettre à jour la version
-			$this->setData(['module',$this->getUrl(0),'config', 'hiddeTitle', false ]);
-			$this->setData(['module',$this->getUrl(0),'config', 'sameHeight', false ]);
-			$this->setData(['module',$this->getUrl(0),'theme', 'borderRadius', '0px' ]);
-			$this->setData(['module',$this->getUrl(0),'theme', 'borderShadows', '0px 0px 0px' ]);
-			$this->deleteData(['module',$this->getUrl(0),'theme', 'borderStyle' ]);
-			$this->setData(['module',$this->getUrl(0),'config', 'versionData', '4.1' ]);	
-		}
-		// Mise à jour 4.2
-		if (version_compare($versionData, '4.2', '<') ) {
-			// Mettre à jour la version
-			$this->setData(['module',$this->getUrl(0),'config', 'noMargin', true ]);
-			$this->setData(['module',$this->getUrl(0),'config', 'versionData', '4.2' ]);	
-		}
-		// Mise à jour 4.5
-		if (version_compare($versionData, '4.5', '<') ) {
-			// Mettre à jour la version
-			$this->setData(['module',$this->getUrl(0),'config', 'hideMedia', false ]);
-			$this->setData(['module',$this->getUrl(0),'config', 'versionData', '4.5' ]);	
-		}
-		// Mise à jour 4.8
-		if (version_compare($versionData, '4.8', '<') ) {
-			// Nouvelles couleurs par défaut en configuration
-			$this->setData(['module', $this->getUrl(0), 'theme','textColor', $this->getData(['theme', 'text', 'textColor' ]) ]);
-			$this->setData(['module', $this->getUrl(0), 'theme','linkColor', $this->getData(['theme', 'text', 'linkColor' ]) ]);
-			$this->setData(['module', $this->getUrl(0), 'theme','titleColor', $this->getData(['theme', 'title', 'textColor' ]) ]);
-			$this->setData(['module', $this->getUrl(0), 'theme','signatureColor', $this->getData(['theme', 'text', 'textColor' ]) ]);
-			// Mettre à jour la version
-			$this->setData(['module',$this->getUrl(0),'config', 'versionData', '4.8' ]);	
-		}
-		// Mise à jour 5.0
-		if (version_compare($versionData, '5.0', '<') ) {
-			// Déplacement des 'posts' de module.json vers data_module/nomdelapage.json		
-			$this->setData(['data_module', $this->getUrl(0), 'posts', $this->getData(['module', $this->getUrl(0), 'posts']) ]);
-			$this->deleteData(['module', $this->getUrl(0), 'posts']);
-			// Mettre à jour la version
-			$this->setData(['module',$this->getUrl(0),'config', 'versionData', '5.0' ]);	
+		} else {
+			// Mise à jour 4.1
+			if (version_compare($versionData, '4.1', '<') ) {
+				// Mettre à jour la version
+				$this->setData(['module',$this->getUrl(0),'config', 'hiddeTitle', false ]);
+				$this->setData(['module',$this->getUrl(0),'config', 'sameHeight', false ]);
+				$this->setData(['module',$this->getUrl(0),'theme', 'borderRadius', '0px' ]);
+				$this->setData(['module',$this->getUrl(0),'theme', 'borderShadows', '0px 0px 0px' ]);
+				$this->deleteData(['module',$this->getUrl(0),'theme', 'borderStyle' ]);
+				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '4.1' ]);	
+			}
+			// Mise à jour 4.2
+			if (version_compare($versionData, '4.2', '<') ) {
+				// Mettre à jour la version
+				$this->setData(['module',$this->getUrl(0),'config', 'noMargin', true ]);
+				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '4.2' ]);	
+			}
+			// Mise à jour 4.5
+			if (version_compare($versionData, '4.5', '<') ) {
+				// Mettre à jour la version
+				$this->setData(['module',$this->getUrl(0),'config', 'hideMedia', false ]);
+				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '4.5' ]);	
+			}
+			// Mise à jour 4.8
+			if (version_compare($versionData, '4.8', '<') ) {
+				// Nouvelles couleurs par défaut en configuration
+				$this->setData(['module', $this->getUrl(0), 'theme','textColor', $this->getData(['theme', 'text', 'textColor' ]) ]);
+				$this->setData(['module', $this->getUrl(0), 'theme','linkColor', $this->getData(['theme', 'text', 'linkColor' ]) ]);
+				$this->setData(['module', $this->getUrl(0), 'theme','titleColor', $this->getData(['theme', 'title', 'textColor' ]) ]);
+				$this->setData(['module', $this->getUrl(0), 'theme','signatureColor', $this->getData(['theme', 'text', 'textColor' ]) ]);
+				// Mettre à jour la version
+				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '4.8' ]);	
+			}
+			// Mise à jour 5.0
+			if (version_compare($versionData, '5.0', '<') ) {
+				// Déplacement des 'posts' de module.json vers data_module/nomdelapage.json		
+				$this->setData(['data_module', $this->getUrl(0), 'posts', $this->getData(['module', $this->getUrl(0), 'posts']) ]);
+				$this->deleteData(['module', $this->getUrl(0), 'posts']);
+				// Mettre à jour la version
+				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '5.0' ]);	
+			}
+			// Mise à jour 5.2
+			if (version_compare($versionData, '5.2', '<') ) {
+				// Déplacement des dossiers des fichiers theme.css et theme_invert.css
+				if( is_dir( self::DATA_DIR.'/news')){
+					// Pour toutes les langues du site
+					foreach( $this->getData(['config', 'i18n' ]) as $lang=>$state ){
+						if( $state === 'site') $this->copyDir( self::DATA_DIR.'news', self::DATA_DIR.$lang.'/data_module/news');						
+					}
+					$this->copyDir( self::DATA_DIR.'news', self::DATA_DIR.'base/data_module/news');
+				}
+				// Initialisation de nouvelles variables
+				$this->setData(['module', $this->getUrl(0), 'config', 'texts', 'readmore', $text['news_view']['config'][41] ]);
+				$this->setData(['module', $this->getUrl(0), 'config', 'texts', 'back', $text['news_view']['config'][42] ]);
+				$this->setData(['module', $this->getUrl(0), 'config', 'texts', 'noNews', $text['news_view']['config'][43] ]);
+				// Mettre à jour la version
+				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '5.2' ]);	
+			}
 		}
 	}
 
@@ -683,9 +716,14 @@ class news extends common {
 	 * Initialisation du thème d'un nouveau module
 	 */
 	private function init() {
-
-		$fileCSS = self::DATADIRECTORY . $this->getUrl(0) . '/theme.css';
-
+		
+		// Lexique
+		include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_news.php');
+		
+		$dircss = self::DATA_DIR . self::$i18n . '/data_module/news/' . $this->getUrl(0);
+		// Création du dossier pour le thème associé à tinymce
+		if( !is_dir( self::DATADIRECTORY  )) mkdir( self::DATADIRECTORY, 0755, true );
+		
 		// Données du module absentes
 		require_once('module/news/ressource/defaultdata.php');
 		if ($this->getData(['module', $this->getUrl(0), 'config' ]) === null) {
@@ -694,7 +732,7 @@ class news extends common {
 		if ($this->getData(['module', $this->getUrl(0), 'theme' ]) === null) {
 			// Données de thème
 			$this->setData(['module', $this->getUrl(0), 'theme', init::$defaultTheme]);
-			$this->setData(['module', $this->getUrl(0), 'theme', 'style', self::DATADIRECTORY .   $this->getUrl(0) . '/theme.css' ]);
+			$this->setData(['module', $this->getUrl(0), 'theme', 'style', $dircss . '/theme.css' ]);
 		}
 		
 		// Couleurs initialisées à celles du site
@@ -705,12 +743,10 @@ class news extends common {
 		$this->setData(['module', $this->getUrl(0), 'theme', 'signatureColor', $this->getData(['theme', 'text', 'textColor' ]) ]);
 
 		// Dossier de l'instance
-		if (!is_dir(self::DATADIRECTORY . $this->getUrl(0) )) {
-			mkdir (self::DATADIRECTORY . $this->getUrl(0), 0755, true);
-		}
+		if (!is_dir($dircss )) mkdir ($dircss, 0755, true);
 
 		// Check la présence de la feuille de style
-		if ( !file_exists(self::DATADIRECTORY . $this->getUrl(0)  . '/theme.css')) {
+		if ( !file_exists( $dircss . '/theme.css')) {
 			// Générer la feuille de CSS
 			$style =  '.newsFrame {';
 			$style .= 'border:' .  $this->getData(['module', $this->getUrl(0), 'theme', 'borderStyle' ]) . ' ' .$this->getData(['module', $this->getUrl(0), 'theme', 'borderColor' ])  . ' ' . $this->getData(['module', $this->getUrl(0), 'theme', 'borderWidth' ]) . ';';
@@ -722,9 +758,14 @@ class news extends common {
 			$style .= '.newsSignature { color:' . $this->getData(['module', $this->getUrl(0), 'theme', 'signatureColor' ]) . ';';
 			
 			// Sauver la feuille de style
-			file_put_contents(self::DATADIRECTORY . $this->getUrl(0) . '/theme.css' , $style );
+			file_put_contents( $dircss. '/theme.css' , $style );
 			// Stocker le nom de la feuille de style
-			$this->setData(['module',  $this->getUrl(0), 'theme', 'style', self::DATADIRECTORY . $this->getUrl(0) . '/theme.css']);
+			$this->setData(['module',  $this->getUrl(0), 'theme', 'style', $dircss . '/theme.css']);
 		}
+		
+		// Textes initialisés dans la langue d'administration
+		$this->setData(['module', $this->getUrl(0), 'config', 'texts', 'readmore', $text['news_view']['config'][41] ]);
+		$this->setData(['module', $this->getUrl(0), 'config', 'texts', 'back', $text['news_view']['config'][42] ]);
+		$this->setData(['module', $this->getUrl(0), 'config', 'texts', 'noNews', $text['news_view']['config'][43] ]);
 	}
 }

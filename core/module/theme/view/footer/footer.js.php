@@ -20,7 +20,7 @@ $("input, select").on("change", function() {
 	css += "footer #footersite > div{margin:" + $("#themeFooterHeight").val() + " 0}";
 	css += "footer #footerbody > div{margin:" + $("#themeFooterHeight").val() + " 0}";
 	// Alignement du contenu
-	css += "#footerSocials{text-align:" + $("#themeFooterSocialsAlign").val() + "}";
+	css += "#footerSocials{justify-content:" + $("#themeFooterSocialsAlign").val() + "}";
 	css += "#footerText > p {text-align:" + $("#themeFooterTextAlign").val() + "}";
 	css += "#footerCopyright{text-align:" + $("#themeFooterCopyrightAlign").val() + "}";
 	// Taille, couleur, épaisseur et capitalisation du titre de la bannière

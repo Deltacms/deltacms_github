@@ -1,3 +1,7 @@
+<?php
+if( !isset( $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] )) setcookie( 'DELTA_COOKIE_INVERTCOLOR', 'false',['expires' => 0, 'path' => '/', 'samesite' => 'Strict']);
+if( !isset( $_COOKIE['DELTA_COOKIE_FONTSIZE'] )) setcookie( 'DELTA_COOKIE_FONTSIZE', '0',['expires' => 0, 'path' => '/', 'samesite' => 'Strict']);
+?>
 <!DOCTYPE html>
 <?php
 $lang = $this->getData(['config', 'i18n', 'langBase']);
@@ -17,7 +21,17 @@ else { echo '<html lang="'.$lang.'">'; }
 		<link rel="stylesheet" href="core/vendor/normalize/normalize.min.css">
 		<link rel="stylesheet" href="core/layout/common.css">
 		<link rel="stylesheet" href="<?php echo self::DATA_DIR; ?>theme.css">
-		<?php $strlenUrl1 = 0;
+		<?php if( isset( $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] ) && $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] === 'true' ) { ?>
+			<link rel="stylesheet" href="<?php echo self::DATA_DIR; ?>theme_invert.css">
+		<?php }
+		if( isset( $_COOKIE['DELTA_COOKIE_FONTSIZE'] ) && $_COOKIE['DELTA_COOKIE_FONTSIZE']  !== '0') {
+			$originalVal = (int) substr($this->getData(['theme', 'text', 'fontSize']), 0, -2);
+			$cookieVal = (int) $_COOKIE['DELTA_COOKIE_FONTSIZE'];
+			$newVal = $originalVal + 2*$cookieVal;
+			$fontSize = (string) $newVal .'px';
+			echo '<style> section, section .row > div{font-size: '.$fontSize.'</style>';
+		}
+		$strlenUrl1 = 0;
 		if( $this->getUrl(1) !== null) $strlenUrl1 = strlen($this->getUrl(1));
 		if( $this->getData(['page', $this->getUrl(0), 'commentEnable']) === true &&  $strlenUrl1 < 3 ) { ?> 
 		<link rel="stylesheet" href="core/layout/pageComment.css">

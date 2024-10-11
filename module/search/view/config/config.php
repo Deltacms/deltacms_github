@@ -49,53 +49,52 @@ else{
 							]); ?>
 					</div>
 					<div class="col6">
-						<?php echo template::select('searchPreviewLength', $module::$previewLength, [
-								'label' => $text['search_view']['config'][3],
-								'selected' => $this->getData(['module', $this->getUrl(0), 'config', 'previewLength'])
-							]); ?>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col6">
 						<?php echo template::text('searchPlaceHolder', [
 								'label' => $text['search_view']['config'][4],
 								'value' => $this->getData(['module', $this->getUrl(0), 'config', 'placeHolder'])
 							]); ?>
 					</div>
+				</div>
+				<div class="row">
 					<div class="col6">
 						<?php echo template::text('searchNearWordText', [
 								'label' => $text['search_view']['config'][12],
 								'value' => $this->getData(['module', $this->getUrl(0), 'config', 'nearWordText'])
 							]); ?>
 					</div>
-				</div>
-				<div class="row">
 					<div class="col6">
 						<?php echo template::text('searchSuccessTitle', [
 								'label' => $text['search_view']['config'][13],
 								'value' => $this->getData(['module', $this->getUrl(0), 'config', 'successTitle'])
 							]); ?>
 					</div>
+				</div>
+				<div class="row">
 					<div class="col6">
 						<?php echo template::text('searchFailureTitle', [
 								'label' => $text['search_view']['config'][14],
 								'value' => $this->getData(['module', $this->getUrl(0), 'config', 'failureTitle'])
 							]); ?>
 					</div>
-				</div>
-				<div class="row">
 					<div class="col6">
 						<?php echo template::text('searchCommentFailureTitle', [
 								'label' => $text['search_view']['config'][15],
 								'value' => $this->getData(['module', $this->getUrl(0), 'config', 'commentFailureTitle'])
 							]); ?>
-					</div>
+					</div>					
 				</div>
 				<div class="row">
 					<div class="col6">
-						<?php echo template::checkbox('searchResultHideContent', true, $text['search_view']['config'][5], [
-							'checked' => $this->getData(['module', $this->getUrl(0), 'config', 'resultHideContent']),
-						]); ?>
+						<?php echo template::text('searchCommentMatch', [
+								'label' => $text['search_view']['config'][19],
+								'value' => $this->getData(['module', $this->getUrl(0), 'config', 'commentMatch'])
+							]); ?>
+					</div>
+					<div class="col6">
+						<?php echo template::text('searchCommentMatches', [
+								'label' => $text['search_view']['config'][20],
+								'value' => $this->getData(['module', $this->getUrl(0), 'config', 'commentMatches'])
+							]); ?>
 					</div>
 				</div>
 			</div>
@@ -104,9 +103,29 @@ else{
 	<div class="row">
 		<div class="col12">
 			<div class="block">
+				<div class="blockTitle"><?php echo $text['search_view']['config'][18]; ?></div>
+				<div class="row">
+					<div class="col3">
+						<?php echo template::select('searchPreviewLength', $module::$previewLength, [
+								'label' => $text['search_view']['config'][3],
+								'help' => $text['search_view']['config'][21],
+								'selected' => $this->getData(['module', $this->getUrl(0), 'config', 'previewLength'])
+							]); ?>
+					</div>
+					<div class="col6 offset3">
+						<?php echo template::checkbox('searchResultHideContent', true, $text['search_view']['config'][5], [
+							'checked' => $this->getData(['module', $this->getUrl(0), 'config', 'resultHideContent']),
+						]); ?>
+					</div>
+				</div>			
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col12">
+			<div class="block">
 			<div class="blockTitle"><?php echo $text['search_view']['config'][7]; ?>
-				<?php echo template::help( $text['search_view']['config'][8] );
-				?>
+				<?php echo template::help( $text['search_view']['config'][8] );	?>
 			</div>
 				<div class="row">
 					<div class="col4">

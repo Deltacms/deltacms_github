@@ -1,5 +1,5 @@
 
-# DeltaCMS 5.1.00
+# DeltaCMS 5.1.02
 
 DeltaCMS est un CMS sans base de données (flat-file) qui permet de créer et gérer facilement un site web sans aucune connaissance en programmation.
 L'administration du site est trilingue espagnol (castillan), anglais ou français, le site peut être rédigé dans une langue quelconque.
@@ -60,6 +60,7 @@ En cas de difficulté avec la nouvelle version, il suffira de téléverser la sa
   [R] include              Dossier des includes
 	[F]	update.inc.php	   Update des données 
 	[F] comment.inc.php	   Pseudo module des commentaires de page
+	[F] member.inc.php	   Affichage des fichiers pour un membre particulier	
   [R] layout               Mise en page
   [R] module               Modules du cœur
   [R] vendor               Librairies extérieures
@@ -80,7 +81,7 @@ En cas de difficulté avec la nouvelle version, il suffira de téléverser la sa
 [R] site                   Contenu du site
   [R] backup               Sauvegardes automatiques
   [R] data                 Répertoire des données
-    [R] base               Dossier localisé, un dossier par langue rédigée, exemple en, es, de
+    [R] base               Dossier localisé, un dossier par langue rédigée, exemples base, en, es, de
 	  [F] comment.json	   Commentaires de page
       [F] page.json        Données des pages
       [F] module.json      Données des modules de page
@@ -93,12 +94,16 @@ En cas de difficulté avec la nouvelle version, il suffira de téléverser la sa
     [F] admin.css          Thème des pages d'administration
     [F] admin.json         Données de thème des pages d'administration
     [F] blacklist.json     Journalisation des tentatives de connexion avec des comptes inconnus
+	[F] body.inc.php       Script personnalisable affiché en bas de page
     [F] config.json        Configuration du site
     [F] core.json          Configuration du noyau
     [F] custom.css         Feuille de style de la personnalisation avancée
     [F] fonts.json         Polices du site
+	[F] header.inc.php     Script personnalisable placé dans le header de la page
     [F] journal.log        Journalisation des actions
+	[F] session.json       Affichage des utilisateurs en ligne	    
     [F] theme.css          Thème du site
+    [F] theme_invert.css   Thème du site avec couleurs inversées
     [F] theme.json         Données du site
     [F] user.json          Données des utilisateurs
     [F] .backup            Marqueur de la sauvegarde des fichiers si présent

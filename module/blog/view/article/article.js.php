@@ -80,8 +80,13 @@ $( ".humanBotClose" ).click(function() {
 
 /* Affecter la couleur de bordure des blocs à la class blogOuter */
 $(document).ready(function(){
-	borderColor = "<?php echo $this->getData(['theme', 'block', 'borderColor']); ?>";
-	bgColor = "<?php echo $this->getData(['theme', 'site', 'backgroundColor']); ?>";
+	<?php if( isset( $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] ) && $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] === 'true' ) {?>
+		borderColor = "<?php echo helper::invertColor($this->getData(['theme', 'block', 'borderColor'])); ?>";
+		bgColor = "<?php echo helper::invertColor($this->getData(['theme', 'site', 'backgroundColor'])); ?>";	
+	<?php } else { ?>
+		borderColor = "<?php echo $this->getData(['theme', 'block', 'borderColor']); ?>";
+		bgColor = "<?php echo $this->getData(['theme', 'site', 'backgroundColor']); ?>";		
+	<?php }	?>
 	$(".blogOuter").css("background-color", bgColor);
 	$(".blogOuter").css("border","solid 1px");
 	$(".blogOuter").css("border-color", borderColor);

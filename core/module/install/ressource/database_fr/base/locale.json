@@ -1,14 +1,14 @@
 {
     "locale": {
         "homePageId": "accueil",
-        "page302": "none",
-        "page403": "none",
-        "page404": "none",
-        "legalPageId": "none",
-        "searchPageId": "none",
+        "page404": "erreur404",
+        "page403": "erreur403",
+        "page302": "erreur302",
+        "legalPageId": "mentions-legales",
+        "searchPageId": "recherche",
         "searchPageLabel": "Rechercher",
-        "sitemapPageLabel": "Plan du site",
         "legalPageLabel": "Mentions légales",
+        "sitemapPageLabel": "Plan du site",
 		"visitorLabel": "Visiteur",
 		"memberLabel": "Membre",
 		"editorLabel": "Editeur",
@@ -16,7 +16,7 @@
 		"administratorLabel": "Administrateur",
         "metaDescription": "DeltaCMS est un CMS sans base de données qui permet de créer et gérer facilement un site web sans aucune connaissance en programmation.",
         "title": "DeltaCMS",
-		"captchaSimpleText": "Je ne suis pas un robot",
+		"captchaSimpleText": "Je suis un humain",
         "captchaSimpleHelp": "Cochez cette case pour prouver que vous êtes humain",
 		"questionnaireAccept":  "J'accepte les conditions d'utilisation de mes données personnelles",
         "cookies": {
@@ -34,11 +34,15 @@
 			"comment": "Commentaire",
 			"submit": "Envoyer",
 			"link": ", le",
-			"page": "Page"
+			"page": "Page",
+			"submitted": "Commentaire soumis",
+			"failed": "Echec d'envoi du commentaire"
 		},		
 		"menuBurger": {
             "burgerLeftIconLink": "accueil",
             "burgerCenterIconLink": "recherche"
-        }
+        },
+		"mandatoryText": "Obligatoire",
+		"impossibleText": "Impossible de soumettre le formulaire, car il contient des erreurs"
     }
 }

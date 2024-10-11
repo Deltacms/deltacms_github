@@ -31,6 +31,7 @@
     width: 50%;
 	border-radius: 2px;
 	border: 1px solid;
+	border-color: var(--borderColor);
 }
 
 /*formulaire*/

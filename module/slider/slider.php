@@ -26,7 +26,7 @@ class slider extends common {
 		'index' => self::GROUP_VISITOR
 	];
 	
-	const VERSION = '6.3';	
+	const VERSION = '6.4';	
 	const REALNAME = 'Slider';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -94,8 +94,9 @@ class slider extends common {
 	*/
 	private function update() {
 		
-		// Mise à jour version 5.0 vers 6.0 ou Initialisation
-		if (null === $this->getData(['module', $this->getUrl(0), 'config', 'versionData']) ) {	
+		// Mise à jour depuis version 5.0 ( < deltacms 4301 06/2022) ou Initialisation
+		if (null === $this->getData(['module', $this->getUrl(0), 'config', 'versionData']) ) {
+			// Détection d'une version < 6.0
 			if(null !== $this->getData(['module', $this->getUrl(0) ]) ){ 
 				$name = array_key_first(  $this->getData(['module', $this->getUrl(0) ]) );
 				// Copie des clefs et données
@@ -108,15 +109,23 @@ class slider extends common {
 				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','6.0']);
 			}else{
 				// Initialisation
-				$this->setData(['module', $this->getUrl(0), 'config', 'versionData', self::VERSION]);
+				$this->init();
 			}
-		}
-		// Version 6.3
-		if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '6.3', '<') ) {
-			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','6.3']);
+		} else {
+			// Version 6.4
+			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '6.4', '<') ) {
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','6.4']);
+			}
 		}		
 	}	
-
+	
+	/**
+	* Initialisation
+	*/
+	private function init() {
+		$this->setData(['module', $this->getUrl(0), 'config', 'versionData', self::VERSION]);
+		// Les autres données de configuration sont inscrites par config()
+	}
 
 	/**
 	 * Configuration
@@ -151,7 +160,7 @@ class slider extends common {
 				}
 			}
 			// Valeurs par défaut si le slider n'existe pas encore
-			if($this->getData(['module', $this->getUrl(0), 'config', 'directory']) === null){
+			if( null === $this->getData(['module', $this->getUrl(0), 'config', 'directory'])){
 				$this->setData(['module', $this->getUrl(0), [
 					'config' => [
 						'directory' => self::$listDirs[0],
@@ -263,7 +272,7 @@ class slider extends common {
 	 * Vue publique du slider
 	 */
 	public function index() {
-		$this->update();
+		if( null === $this->getData(['module', $this->getUrl(0), 'config', 'versionData']) ||  version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), self::VERSION, '<') ) $this->update();
 		$gallery = $this->getData(['module', $this->getUrl(0),'config','directory']);
 		if( isset($gallery)){
 			self::$galleries[0] = $gallery;

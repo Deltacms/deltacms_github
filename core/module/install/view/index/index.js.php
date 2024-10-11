@@ -35,21 +35,21 @@ $("#installId").on("change keydown keyup", function(event) {
 $("#installLang").change( function(e) {	
 	if( $("#installLang").val() === 'en'){
 		//English
-		for (var i = 1; i < 11; i++) {
+		for (var i = 1; i < 13; i++) {
 			$("#m"+i+"f").hide();
 			$("#m"+i+"s").hide();
 			$("#m"+i+"e").show();
 		}
 	} else if( $("#installLang").val() === 'fr'){
 		//Français
-		for (var i = 1; i < 11; i++) {
+		for (var i = 1; i < 13; i++) {
 			$("#m"+i+"e").hide();
 			$("#m"+i+"s").hide();
 			$("#m"+i+"f").show();
 		}
 	} else {
 		//Espagnol
-		for (var i = 1; i < 11; i++) {
+		for (var i = 1; i < 13; i++) {
 			$("#m"+i+"f").hide();
 			$("#m"+i+"e").hide();
 			$("#m"+i+"s").show();

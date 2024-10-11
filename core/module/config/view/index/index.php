@@ -2,6 +2,13 @@
 // Lexique
 $param='';
 include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
+// drapeau pour la langue d'origine ou la langue en traduction rédigée
+if( $this->getInput('DELTA_I18N_SITE') === '' || $this->getInput('DELTA_I18N_SITE')=== null || $this->getInput('DELTA_I18N_SITE') === 'base'){
+	$flag = $this->getData(['config', 'i18n', 'langBase']);
+}
+else{
+	$flag = $this->getInput('DELTA_I18N_SITE');
+}
 
 echo template::formOpen('configForm');?>
 <div class="row">
@@ -38,7 +45,7 @@ echo template::formOpen('configForm');?>
             </div>
             <div class="col2">
                 <?php echo template::button('configLocaleButton', [
-                    'value' => $text['core_config_view']['index'][4]
+                    'value' => $text['core_config_view']['index'][4].' '.template::flag($flag, '20px')
                 ]); ?>
             </div>
             <div class="col2">

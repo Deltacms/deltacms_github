@@ -51,6 +51,9 @@ $text['core_page_view']['edit'][47] = 'Comments';
 $text['core_page_view']['edit'][48] = 'Configure';
 $text['core_page_view']['edit'][49] = 'Manage comments';
 $text['core_page_view']['edit'][50] = 'Allow comments';
+$text['core_page_view']['edit'][51] = 'A particular member or all members:';
+$text['core_page_view']['edit'][52] = 'Personal documents view';
+$text['core_page_view']['edit'][53] = 'These documents are placed in the folder membersDirectory/id_membre';
 $text['core_page']['duplicate'][0] = "Invalid token";
 $text['core_page']['duplicate'][1] = "Unauthorised duplication";
 $text['core_page']['duplicate'][2] = "The page has been duplicated";
@@ -132,5 +135,8 @@ $groupEdit = [
 $groupEditModerator = [
 	self::GROUP_EDITOR => 'Editor',
 	self::GROUP_MODERATOR => 'Moderator'
+];
+$memberIds0 = [
+	0 => 'All members'
 ];
 ?>

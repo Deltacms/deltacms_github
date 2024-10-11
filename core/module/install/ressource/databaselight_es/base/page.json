@@ -14,6 +14,8 @@
             "parentPageId": "",
             "position": 1,
             "group": 0,
+			"member": "allMembers",
+			"memberFile": false,
             "groupEdit": 2,
             "targetBlank": false,
             "title": "Inicio",

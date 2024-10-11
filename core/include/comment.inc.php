@@ -1,7 +1,13 @@
 <?php // Commentaires de page, fichier inclus dans showComment() ?>
 
-<?php // Style lié au thème du site ?>
-<style>.msgs .block .dataNameDate {  --dataNameDate_font : <?=$this->getData(['theme', 'text', 'font'])?>; }</style>
+<?php // Style lié au thème du site 
+if( isset( $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] ) && $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] === 'true' ) { 
+	$borderColor = helper::invertColor($this->getData(['theme', 'block', 'borderColor']));
+} else {
+	$borderColor = $this->getData(['theme', 'block', 'borderColor']);
+} ?>
+<style>.msgs .block .dataNameDate {  --dataNameDate_font : <?=$this->getData(['theme', 'text', 'font'])?>; }
+#commentPageFormForm .formOuter{ --borderColor : <?=$borderColor?>;}</style>
 
 <?php
 // Lexique
@@ -23,6 +29,14 @@ if( function_exists('datefmt_create') && function_exists('datefmt_format') && ex
 		IntlDateFormatter::GREGORIAN
 	);
 }
+
+// Sécurité en cas d'absence des textes dans configuration localisation commentaires
+if( null === $this->getData(['locale', 'pageComment', 'commentName']) || $this->getData(['locale', 'pageComment', 'commentName']) ==="") $this->setData(['locale', 'pageComment', 'commentName', 'Name or nickname']);
+if( null === $this->getData(['locale', 'pageComment', 'comment']) || $this->getData(['locale', 'pageComment', 'comment']) ==="") $this->setData(['locale', 'pageComment', 'comment', 'Comment']);
+if( null === $this->getData(['locale', 'pageComment', 'writeComment']) || $this->getData(['locale', 'pageComment', 'writeComment']) ==="") $this->setData(['locale', 'pageComment', 'writeComment', 'Write a comment']);
+if( null === $this->getData(['locale', 'pageComment', 'submit']) || $this->getData(['locale', 'pageComment', 'submit']) ==="") $this->setData(['locale', 'pageComment', 'submit', 'Go']);
+if( null === $this->getData(['locale', 'pageComment', 'link']) || $this->getData(['locale', 'pageComment', 'link']) ==="") $this->setData(['locale', 'pageComment', 'link', '-']);
+if( null === $this->getData(['locale', 'pageComment', 'page']) || $this->getData(['locale', 'pageComment', 'page']) ==="") $this->setData(['locale', 'pageComment', 'page', 'Page']);
 
 // Création du brouillon s'il n'existe pas
 if( !isset($_SESSION[$this->getUrl()]['draft'])){
@@ -66,7 +80,7 @@ if($this->isPost() && isset($_POST['commentPageFormSubmit']) ) {
 		}
 		// $_SESSION['humanBot']==='bot' ou option 'Pas de Captcha pour un humain' non validée
 		elseif( md5($code) !== $_SESSION['captcha'] ) {
-			$notice = $text['core']['showComment'][1];
+			$notice = 'bot';
 		}
 	}
 
@@ -77,7 +91,7 @@ if($this->isPost() && isset($_POST['commentPageFormSubmit']) ) {
 	// Mise à jour du brouillon
 	$_SESSION[$this->getUrl()]['draft']['text'] = $valueText;
 	$_SESSION[$this->getUrl()]['draft']['textarea']  = $valueTextarea;
-
+	
 	// Préparation du contenu des données ($data) et du mail
 	$data = [];
 	$content = '';
@@ -90,7 +104,7 @@ if($this->isPost() && isset($_POST['commentPageFormSubmit']) ) {
 	$data[$this->getData(['locale', 'pageComment', 'comment'])] = $valueTextarea;
 
 	// Bot présumé, la page sera actualisée avec l'affichage du captcha complet
-	if( $detectBot === 'bot') $notice = $text['core']['showComment'][1];
+	if( $detectBot === 'bot') $notice = 'bot';
 
 	// Si absence d'erreur
 	$sent = true;
@@ -172,11 +186,11 @@ if($this->isPost() && isset($_POST['commentPageFormSubmit']) ) {
 
 	// Notifications
 	if( $sent === true) {
-		$_SESSION['DELTA_NOTIFICATION_SUCCESS']= $text['core']['showComment'][4];
+		$_SESSION['DELTA_NOTIFICATION_SUCCESS']= $this->getData(['locale', 'pageComment', 'submitted' ]);
 		$_SESSION['DELTA_NOTIFICATION_ERROR'] = '';
 	} else {
 		$_SESSION['DELTA_NOTIFICATION_SUCCESS']= '';
-		$_SESSION['DELTA_NOTIFICATION_ERROR'] = $text['core']['showComment'][5];
+		$_SESSION['DELTA_NOTIFICATION_ERROR'] = $this->getData(['locale', 'pageComment', 'failed' ]);
 	}
 	$this->showNotification();
 }
@@ -251,10 +265,17 @@ $action =  helper::baseUrl().$this->getUrl().'#commentAnchor';
 echo template::formOpenFile('commentPageFormForm', $action);
 ?>
 	<div class="humanBot">
-		<?php echo template::text('commentPageFormInput[0]', [
+		<?php 
+		$valueName = "";
+		if( $_SESSION[$this->getUrl()]['draft']['text'] !== "" ) {
+			$valueName = $_SESSION[$this->getUrl()]['draft']['text'];
+		} elseif($this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD') ) {
+			$valueName = $this->getUser('id');
+		}
+		echo template::text('commentPageFormInput[0]', [
 			'id' => 'commentPageFormInput_0',
 			'label' => $this->getData(['locale', 'pageComment', 'commentName']),
-			'value' => $_SESSION[$this->getUrl()]['draft']['text']
+			'value' => $valueName
 		]);
 		echo template::textarea('commentPageFormInput[1]', [
 			'id' => 'commentPageFormInput_1',
@@ -264,14 +285,14 @@ echo template::formOpenFile('commentPageFormForm', $action);
 			'noDirty' => true
 		]); ?>
 	</div>
-	<?php if( $this->getData(['config', 'social', 'comment',  'captcha']) && ( $_SESSION['humanBot']==='bot') || $this->getData(['config', 'connect', 'captchaBot'])===false ): ?>
+	<?php if( $this->getData(['config', 'social', 'comment',  'captcha']) ){
+		if ( $_SESSION['humanBot']==='bot' || $this->getData(['config', 'connect', 'captchaBot'])===false ){?>
 		<div class="row">
 			<div class="col12 textAlignCenter">
 				<?php echo template::captcha('commentPageFormCaptcha', ''); ?>
 			</div>
 		</div>
-	<?php endif; ?>
-	<?php if( $this->getData(['config', 'social', 'comment',  'captcha'])	&&  $_SESSION['humanBot']==='human' && $this->getData(['config', 'connect', 'captchaBot']) ): ?>
+		<?php } else {?>
 		<div class="row formCheckBlue">
 			<?php echo template::text('commentPageFormInputBlue', [
 				'label' => 'Input Blue',
@@ -288,7 +309,8 @@ echo template::formOpenFile('commentPageFormForm', $action);
 			</div>
 		</div>
 		<br>
-	<?php endif; ?>
+		<?php } ; 
+	} ?>
 	<div class="row textAlignCenter">
 		<div class="formInner commentHumanBotClose">
 			<?php echo template::submit('commentPageFormSubmit', [

@@ -103,7 +103,6 @@ if($this->getData(['module', $this->getUrl(0), 'input'])): ?>
 				<div class="formInputFile">
 					<input type="hidden" name="MAX_FILE_SIZE" value="5000000">
 					<input type="file" name="fileToUpload" id="fileToUpload"> 
-					<input type="button" id="formFileReset" value="X">
 				</div>
 			<?php elseif($input['type'] === $module::TYPE_LABEL): ?>
 				<p class='formLabel'> <?php echo $input['name']; ?> </p>
@@ -111,37 +110,36 @@ if($this->getData(['module', $this->getUrl(0), 'input'])): ?>
 				
 		<?php endforeach; ?>
 		</div>
-		<?php if( $this->getData(['module', $this->getUrl(0), 'config', 'captcha']) 
-				&& ( $_SESSION['humanBot']==='bot') || $this->getData(['config', 'connect', 'captchaBot'])===false ): ?>
+		<?php if( $this->getData(['module', $this->getUrl(0), 'config', 'captcha']) ) { 
+			if ( $_SESSION['humanBot']==='bot' || $this->getData(['config', 'connect', 'captchaBot'])===false ){ ?>
 			<div class="row">
 				<div class="col12 textAlignCenter">
 					<?php echo template::captcha('formCaptcha', ''); ?>
 				</div>
 			</div>
-		<?php endif; ?>
-		<?php if( $this->getData(['module', $this->getUrl(0), 'config', 'captcha']) 
-			&&  $_SESSION['humanBot']==='human' && $this->getData(['config', 'connect', 'captchaBot']) ): ?>
-		<div class="row formCheckBlue">
-			<?php echo template::text('formInputBlue', [
-				'label' => 'Input Blue',
-				'value' => ''
-			]); ?>			
-		</div>
-		<br>
-		<div class="row formOuter">
-				<div class="formInner humanCheck">
-					<?php echo template::checkbox('formHumanCheck', true, $this->getData(['locale', 'captchaSimpleText']), [
-						'checked' => false,
-						'help' => $this->getData(['locale', 'captchaSimpleHelp'])
-					]); ?>
+			<?php } else { ?>
+				<div class="row formCheckBlue">
+					<?php echo template::text('formInputBlue', [
+						'label' => 'Input Blue',
+						'value' => ''
+					]); ?>			
 				</div>
-		</div>
-		<br>
-		<?php endif; ?>
+				<br>
+				<div class="row formOuter">
+						<div class="formInner humanCheck">
+							<?php echo template::checkbox('formHumanCheck', true, $this->getData(['locale', 'captchaSimpleText']), [
+								'checked' => false,
+								'help' => $this->getData(['locale', 'captchaSimpleHelp'])
+							]); ?>
+						</div>
+				</div>
+				<br>
+			<?php } ; 
+		} ?>
 		<div class="row textAlignCenter">
 			<div class="formInner humanBotClose">
 				<?php echo template::submit('formSubmit', [
-					'value' => $this->getData(['module', $this->getUrl(0), 'config', 'button']) ? $this->getData(['module', $this->getUrl(0), 'config', 'button']) : $text['form_view']['index'][0],
+					'value' => $this->getData(['module', $this->getUrl(0), 'texts', 'button']),
 					'ico' => ''
 				]); ?>
 			</div>

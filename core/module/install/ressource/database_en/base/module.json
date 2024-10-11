@@ -5,7 +5,7 @@
                 "feeds": true,
                 "feedsLabel": "Syndication RSS",
                 "itemsperPage": 6,
-                "versionData": "7.0"
+                "versionData": "7.2"
             },
             "texts": {
                 "NoComment": "No comment yet",
@@ -14,6 +14,7 @@
                 "Maxi": "Comment with maximum",
                 "Cara": "characters",
                 "Comment": "comment",
+				"Comments": "comments",
                 "CommentOK": "Comment filed",
                 "Waiting": "Comment submitted pending approval",
                 "ArticleNoComment": "This article does not receive comments",
@@ -35,7 +36,6 @@
         },
         "contact": {
             "config": {
-                "button": "",
                 "captcha": true,
                 "group": 3,
                 "user": "",
@@ -47,12 +47,24 @@
                 "logoUrl": "",
                 "logoWidth": "40",
                 "maxSizeUpload": "500000",
-                "versionData": "6.0",
+                "versionData": "6.2",
                 "uploadJpg": true,
                 "uploadPng": true,
                 "uploadPdf": false,
                 "uploadZip": false,
                 "uploadTxt": false
+			},
+			"texts": {
+                "button": "Send",
+				"wrongCaptcha": "Wrong Captcha",
+				"formSubmitted": "Form submitted",
+				"notImage": "File is not an image",
+				"sizeExceeds": "File size exceeds",
+				"notAllowed": "This type of file is not allowed",
+				"errorUploading": "Error while uploading file",
+				"notPdf": "The attachment is not a pdf document",
+				"notZip": "The attachment is not a zip document",
+				"fillCaptcha": " Fill in the Captcha "				
             },
             "data": [],
             "input": [
@@ -90,14 +102,16 @@
         "recherche": {
             "config": {
                 "submitText": "Search",
-                "placeHolder": "One or more keywords separated by a space or +.",
+                "placeHolder": "One or more keywords",
                 "resultHideContent": false,
                 "previewLength": 100,
-                "versionData": "3.5",
+                "versionData": "3.7",
                 "nearWordText": "Related words",
                 "successTitle": "Result of your search",
                 "failureTitle": "No results",
-                "commentFailureTitle": ""
+                "commentFailureTitle": "",
+				"commentMatch": "match",
+				"commentMatches": "matches"
             },
             "theme": {
                 "keywordColor": "rgba(229, 229, 1, 1)",
@@ -108,13 +122,15 @@
             "config": {
                 "previewLength": 100,
                 "resultHideContent": false,
-                "placeHolder": "Un ou plusieurs mots-clés séparés par un espace ou par +",
-                "submitText": "Rechercher",
-                "versionData": "3.4",
-                "nearWordText": "Mots approchants",
-                "successTitle": "Résultat de votre recherche",
-                "failureTitle": "Aucun résultat",
-                "commentFailureTitle": "Avez-vous pensé aux accents"
+                "placeHolder": "One or more keywords",
+                "submitText": "Search",
+                "versionData": "3.7",
+                "nearWordText": "Related words",
+                "successTitle": "Result of your search",
+                "failureTitle": "No results",
+                "commentFailureTitle": "",
+				"commentMatch": "match",
+				"commentMatches": "matches"
             },
             "theme": {
                 "keywordColor": "rgba(229, 229, 1, 1)",
@@ -153,7 +169,12 @@
                 "order": []
             },
 			"config": {
-				"versionData": "4.5"
+				"versionData": "4.7",
+				"texts": {
+					"backButton": "Return",
+					"geolocation": "Geolocalisation",
+					"noAlbum": "No album"
+				}
 			}
         }
     }

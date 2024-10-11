@@ -52,7 +52,7 @@ class common {
 
 	// Numéro de version
 	const DELTA_UPDATE_URL = 'https://update.deltacms.fr/master/';
-	const DELTA_VERSION = '5.1.00';
+	const DELTA_VERSION = '5.1.02';
 	const DELTA_UPDATE_CHANNEL = "v5";
 
 	public static $actions = [];
@@ -281,7 +281,7 @@ class common {
 				'name' => $keys . '.json',
 				'dir' => $this->dataPath ($keys, self::$i18n),
 				'backup' => file_exists('site/data/.backup')
-			]);;
+			]);
 		}
 
 
@@ -323,9 +323,10 @@ class common {
 						OR (
 							$this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD')
 							AND $this->getUser('group') >= $this->getData(['page', $pageId, 'group'])
+							AND ( $this->getUser('group') > 1 OR $this->getData(['page', $pageId, 'member']) === 'allMembers' OR $this->getData(['page', $pageId, 'member']) === $this->getUser('id') )
 						)
 					)
-				) {
+				) { 
 					if($pagePosition !== 0) {
 						$this->hierarchy['visible'][$pageId] = [];
 					}
@@ -350,6 +351,7 @@ class common {
 							$this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD')
 							AND $this->getUser('group') >= $this->getData(['page', $parentId, 'group'])
 							AND $this->getUser('group') >= $this->getData(['page', $pageId, 'group'])
+							AND ( $this->getUser('group') > 1 OR $this->getData(['page', $pageId, 'member']) === 'allMembers' OR $this->getData(['page', $pageId, 'member']) === $this->getUser('id') )
 						)
 					)
 				) {
@@ -422,12 +424,12 @@ class common {
 			$firstKey = explode('[', $key)[0];
 			$secondKey = $secondKey[1];
 			if(empty($this->input['_POST'][$firstKey][$secondKey])) {
-				common::$inputNotices[$firstKey . '_' . $secondKey] = $text['core']['addRequiredInputNotices'][0];
+				common::$inputNotices[$firstKey . '_' . $secondKey] = $this->getData(['locale', 'mandatoryText' ]);
 			}
 		}
 		// La clef est une chaine
 		elseif(empty($this->input['_POST'][$key])) {
-			common::$inputNotices[$key] = $text['core']['addRequiredInputNotices'][0];
+			common::$inputNotices[$key] = $this->getData(['locale', 'mandatoryText' ]);
 		}
 	}
 
@@ -1313,6 +1315,7 @@ class common {
 				$strlenUrl1 = 0;
 				if( $this->getUrl(1) !== null) $strlenUrl1 = strlen($this->getUrl(1));
 				if( $this->getData(['page', $this->getUrl(0), 'commentEnable']) === true &&  $strlenUrl1 < 3  ) $this->showComment();
+				if( $this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD')  && $this->getData(['page', $this->getUrl(0), 'memberFile']) === true && $this->getData(['page', $this->getUrl(0), 'group']) === 1) $this->showMemberFile(); 
 				if (file_exists(self::DATA_DIR . 'body.inc.php')) {
 					include( self::DATA_DIR . 'body.inc.php');
 				}
@@ -1351,6 +1354,8 @@ class common {
 				$strlenUrl1 = 0;
 				if( $this->getUrl(1) !== null) $strlenUrl1 = strlen($this->getUrl(1));
 				if( $this->getData(['page', $this->getUrl(0), 'commentEnable']) === true &&  $strlenUrl1 < 3  ) $this->showComment();
+				// Ajouter et si option fichiers visibles est validée
+				if( $this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD') && $this->getData(['page', $this->getUrl(0), 'memberFile']) === true && $this->getData(['page', $this->getUrl(0), 'group']) === 1 ) $this->showMemberFile(); 
 				if (file_exists(self::DATA_DIR . 'body.inc.php')) {
 						include(self::DATA_DIR . 'body.inc.php');
 				}
@@ -1419,6 +1424,18 @@ class common {
 			include('./core/include/comment.inc.php');
 		}	
 	}	
+	
+	/**
+	 * Affiche les fichiers destinés à un membre particulier
+	 * 
+	 */
+	public function showMemberFile() {	
+		// Si la page est accessible à ce membre
+	//	if(	( $this->getUser('group') > 1 && $this->getData(['page', $this->getUrl(0), 'member']) !== 'allMembers' ) || $this->getData(['page', $this->getUrl(0), 'member']) === $this->getUser('id') ) {
+		if( $this->getUser('group') === 1){
+			include('./core/include/member.inc.php');
+		}	
+	}
 
 	/**
 	 * Affiche le pied de page
@@ -1635,40 +1652,52 @@ class common {
 				case 'facebookId':
 					$socialUrl = 'https://www.facebook.com/';
 					$title = 'Facebook';
+					$icon = 'fontello';
 					break;
 				case 'linkedinId':
 					$socialUrl = 'https://fr.linkedin.com/in/';
 					$title = 'Linkedin';
+					$icon = 'fontello';
 					break;
 				case 'instagramId':
 					$socialUrl = 'https://www.instagram.com/';
 					$title = 'Instagram';
+					$icon = 'fontello';
 					break;
 				case 'pinterestId':
 					$socialUrl = 'https://pinterest.com/';
 					$title = 'Pinterest';
+					$icon = 'fontello';
 					break;
 				case 'twitterId':
 					$socialUrl = 'https://twitter.com/';
 					$title = 'Twitter';
+					$icon =' src="./site/file/source/icones/twitter.svg" width="33px" height="33px" ';
 					break;
 				case 'youtubeId':
 					$socialUrl = 'https://www.youtube.com/channel/';
 					$title = 'Chaîne YouTube';
+					$icon = 'fontello';
 					break;
 				case 'youtubeUserId':
 					$socialUrl = 'https://www.youtube.com/user/';
 					$title = 'YouTube';
+					$icon = 'fontello';
 					break;
-				case 'githubId':
-					$socialUrl = 'https://www.github.com/';
-					$title = 'Github';
+				case 'mastodonId':
+					$socialUrl = '';
+					$title = 'Mastodon';
+					$icon =' src="./site/file/source/icones/mastodon.svg" width="33px" height="33px" ';
 					break;
 				default:
 					$socialUrl = '';
 			}
 			if($socialId !== '' && is_string($socialName)  && is_string($socialUrl)  && is_string($socialId) ) {
-				$socials .= '<a href="' . $socialUrl . $socialId . '" onclick="window.open(this.href);return false" data-tippy-content="' . $title . '">' . template::ico(substr(str_replace('User','',$socialName), 0, -2)) . '</a>';
+				if( $icon === 'fontello'){
+					$socials .= '<a href="' . $socialUrl . $socialId . '" onclick="window.open(this.href);return false" data-tippy-content="' . $title . '">' . template::ico(substr(str_replace('User','',$socialName), 0, -2)) . '</a>';
+				} else {
+					$socials .= '<a href="' . $socialUrl . $socialId . '" onclick="window.open(this.href);return false" data-tippy-content="' . $title . '">' . '<img class="socialIconSvg" alt='. $title . $icon . '></a>';
+				}
 			}
 		}
 		if($socials !== '') {
@@ -1958,6 +1987,14 @@ class common {
 			$itemsRight .= '<li class="smallScreenInline"><a href="' . helper::baseUrl() . 'user/edit/' . $this->getUser('id'). '/' . $_SESSION['csrf'] . '" data-tippy-content="'.$text['core']['showmenu'][1].'">' . template::ico('user', 'right') . '</a></li>';
 			$itemsRight .= '<li class="smallScreenInline"><a id="barLogout" href="' . helper::baseUrl() . 'user/logout" data-tippy-content="'.$text['core']['showmenu'][2].'">' . template::ico('logout') . '</a></li>';
 		}
+		// Inversion des couleurs du site si option sélectionnée
+		if( $this->getData(['theme', 'menu', 'invertColor' ]) === true ){
+			$itemsRight .= '<li class="smallScreenInline"><a class="invertColorButton" href="'.helper::baseUrl().$this->getUrl().'"><img alt="" src="'. helper::baseUrl(false) .self::FILE_DIR.'source/icones/invertcolor.gif" style="height:'.$heightLogo.'px; width:auto;"></a></li>';
+		}
+		// Augmentation de font-size
+		if( $this->getData(['theme', 'menu', 'changeFontSize' ]) === true ){
+			$itemsRight .= '<li class="smallScreenInline"><a class="increaseFontBtn" href="'.helper::baseUrl().$this->getUrl().'"><img alt="" src="'. helper::baseUrl(false) .self::FILE_DIR.'source/icones/fontsize.gif" style="height:'.$heightLogo.'px; width:auto;"></a></li>';
+		}
 
 		// Affichage du menu
 		// En commençant par lien de connexion, barre de membre et les drapeaux uniquement en petit écran
@@ -2112,7 +2149,7 @@ class common {
 			$notificationClass = 'notificationSuccess';
 		}
 		if(common::$inputNotices) {
-			$notification = $text['core']['showNotification'][0];
+			$notification = $this->getData(['locale', 'impossibleText' ]);
 			$notificationClass = 'notificationError';
 		}
 		if (common::$coreNotices) {
@@ -2259,7 +2296,7 @@ class common {
 				// Afficher le bouton : Mise à jour détectée + activée
 				if ( $this->getData(['core','updateAvailable']) === true &&
 					$this->getData(['config','autoUpdate']) === true  ) {
-					$rightItems .= '<li><a id="barUpdate" href="' . helper::baseUrl() . 'install/update" data-tippy-content="'.$text['core']['showBar'][15]. common::DELTA_VERSION .' vers '. helper::getOnlineVersion() .'">' . template::ico('update colorRed') . '</a></li>';
+					$rightItems .= '<li><a id="barUpdate" href="' . helper::baseUrl() . 'install/update" data-tippy-content="'.$text['core']['showBar'][15]. common::DELTA_VERSION .' vers '. helper::getOnlineVersion() .'">' . template::ico('spin colorRed') . '</a></li>';
 				}
 			}
 			if($this->getUser('group') >= self::GROUP_EDITOR) {
@@ -2841,7 +2878,7 @@ class core extends common {
 
 			$css .= 'footer #footerbody > div  {margin:' . $this->getData(['theme', 'footer', 'height']) . ' 0}';
 			$css .= '@media (max-width: 799px) {footer #footerbody > div { padding: 2px }}';
-			$css .= '#footerSocials{text-align:' . $this->getData(['theme', 'footer', 'socialsAlign']) . '}';
+			$css .= '#footerSocials{justify-content:' . $this->getData(['theme', 'footer', 'socialsAlign']) . '}';
 			$css .= '#footerText > p {text-align:' . $this->getData(['theme', 'footer', 'textAlign']) . '}';
 			$css .= '#footerCopyright{text-align:' . $this->getData(['theme', 'footer', 'copyrightAlign']) . '}';
 
@@ -2858,6 +2895,57 @@ class core extends common {
 			// Enregistre la personnalisation
 			$this->setData([ 'theme', 'update', false]);
 			file_put_contents(self::DATA_DIR.'theme.css', $css);
+			
+			// Thème avec couleurs inversées pour le site
+			$css_invert = "";
+			$textColorInvert = helper::invertColor( $this->getData(['theme', 'text', 'textColor']) );
+			$backgroundColorInvert = helper::invertColor( $this->getData(['theme', 'site', 'backgroundColor'])  );
+			$backgroundBorderColorInvert = helper::invertColor($this->getData(['theme', 'block', 'borderColor']));
+
+			// couleur du texte
+			$css_invert .= 'body{color:' . $textColorInvert . '}';
+			$css_invert .= 'select,input[type=\'password\'],input[type=\'email\'],input[type=\'text\'],.inputFile,select,textarea{color:' . $textColorInvert .';background-color:'.$backgroundColorInvert.';border-color:'.$backgroundBorderColorInvert.';}';
+			$css_invert .= '.blogDate {color:' . $textColorInvert . ';}.blogPicture img{border:1px solid ' . $textColorInvert . '; box-shadow: 1px 1px 5px ' . $textColorInvert . ';}';
+			//Background
+			$css_invert .= '.editorWysiwyg {background-color:' . $backgroundColorInvert . '; margin:0 !important; padding-top: 10px;}';
+			$css_invert .= '@media (min-width: 800px) { #site{background-color:' . $backgroundColorInvert . ';border-radius:' . $this->getData(['theme', 'site', 'radius']) . ';box-shadow:' . $this->getData(['theme', 'site', 'shadow']) . ' #212223;} }';
+			$css_invert .= '@media (max-width: 799px) { #site{background-color:' . $backgroundColorInvert . ';border-radius: 0px; box-shadow: none;} }';
+			$css_invert .= '@media (max-width: 799px) { body {background-color:'.$backgroundColorInvert.'}}';
+			// Icône BacktoTop
+			$css_invert .= '#backToTop {background-color:' .helper::invertColor($this->getData(['theme', 'body', 'toTopbackgroundColor'])). ';color:'.helper::invertColor($this->getData(['theme', 'body', 'toTopColor'])).';}';
+			// Titres
+			$colors = helper::colorVariants(helper::invertColor($this->getData(['theme', 'title', 'textColor'])));
+			$css_invert .= 'h1,h2,h3,h4,h5,h6,h1 a,h2 a,h3 a,h4 a,h5 a,h6 a,.blockTitle,.accordion-title{color:' . $colors['normal'] . ';font-family:"' . $this->getData(['fonts', $this->getData(['theme', 'title', 'font']), 'name']) . '",sans-serif;font-weight:' . $this->getData(['theme', 'title', 'fontWeight']) . ';text-transform:' . $this->getData(['theme', 'title', 'textTransform']) . '}';
+			$css_invert .= 'h1 a:hover,h2 a:hover,h3 a:hover,h4 a:hover,h5 a:hover,h6 a:hover{color:' . $colors['darken'] . '}';
+			//liens
+			$colors = helper::colorVariants(helper::invertColor($this->getData(['theme', 'text', 'linkColor'])));
+			$css_invert .= 'a{color:' . $colors['normal'] . '}';
+			// blocks
+			$colors = helper::colorVariants(helper::invertColor($this->getData(['theme', 'block', 'backgroundTitleColor'])));
+			$css_invert .= '.block {border: 1px solid ' . helper::invertColor($this->getdata(['theme','block','borderColor'])) .  ';background-color: ' . helper::invertColor($this->getdata(['theme','block','backgroundColor'])) .';border-radius: ' . $this->getdata(['theme','block','blockBorderRadius']) . ';box-shadow :' . $this->getdata(['theme','block','blockBorderShadow']) . ' ' . helper::invertColor($this->getdata(['theme','block','borderColor'])) . ';}';
+			$css_invert .= '.block > h4, .blockTitle {background-color:'. $colors['normal'] . ';color:' . $colors['text'] .';border-radius: ' . $this->getdata(['theme','block','blockBorderRadius']) . ' ' . $this->getdata(['theme','block','blockBorderRadius']) . ' 0px 0px;}';
+			$css_invert .= 'select:focus-visible,input[type=\'password\']:focus-visible,input[type=\'email\']:focus-visible,input[type=\'text\']:focus-visible,.inputFile:focus-visible,textarea:focus-visible{border-color:'.$backgroundBorderColorInvert.';}';
+			$css_invert .= 'select:hover,input[type=\'password\']:hover,input[type=\'email\']:hover,input[type=\'text\']:hover,.inputFile:hover,textarea:hover{border-color:'.$backgroundBorderColorInvert.';}';
+			// boutons
+			$colors = helper::colorVariants(helper::invertColor($this->getData(['theme', 'button', 'backgroundColor'])));
+			$css_invert .= '.speechBubble,.button,.button:hover,button[type=\'submit\'],.pagination a,.pagination a:hover,input[type=\'checkbox\']:checked + label:before,input[type=\'radio\']:checked + label:before,.helpContent{background-color:' . $colors['normal'] . ';color:' . $colors['text'] . '}';
+			$css_invert .= '.helpButton span{color:' . $colors['normal'] . '}';
+			$css_invert .= '.speechBubble:before{border-color:' . $colors['normal'] . ' transparent transparent transparent}';
+			$css_invert .= '.button:hover,button[type=\'submit\']:hover,.pagination a:hover,input[type=\'checkbox\']:not(:active):checked:hover + label:before,input[type=\'checkbox\']:active + label:before,input[type=\'radio\']:checked:hover + label:before,input[type=\'radio\']:not(:checked):active + label:before{background-color:' . $colors['darken'] . '}';
+			$css_invert .= '.helpButton span:hover{color:' . $colors['darken'] . '}';
+			$css_invert .= '.button:active,button[type=\'submit\']:active,.pagination a:active{background-color:' . $colors['veryDarken'] . '}';
+			// Figure Image
+			$css_invert .= 'figure.image { border-color: ' . helper::invertColor($this->getdata(['theme','block','borderColor'])) . '; background-color: ' . helper::invertColor($this->getdata(['theme','block','backgroundColor'])).'}';
+			// footer
+			$colors = helper::colorVariants(helper::invertColor($this->getData(['theme', 'footer', 'backgroundColor'])));
+			$footerColorInvert =  helper::invertColor($this->getData(['theme', 'footer', 'textColor']));
+			$css_invert .= 'footer span, #footerText > p {color:' . $footerColorInvert . ';font-family:"' . $this->getData(['fonts', $this->getData(['theme', 'footer', 'font']), 'name']) . '",sans-serif;font-weight:' . $this->getData(['theme', 'footer', 'fontWeight']) . ';font-size:' . $this->getData(['theme', 'footer', 'fontSize']) . ';text-transform:' . $this->getData(['theme', 'footer', 'textTransform']) . '}';
+			$css_invert .= 'footer {background-color:' . $colors['normal'] . ';color:' . $footerColorInvert . '}';
+			$css_invert .= 'footer a{color:' . $footerColorInvert . '}';
+
+			// Enregistre le fichier theme_invert.css
+			file_put_contents(self::DATA_DIR.'theme_invert.css', $css_invert);
+			
 			// Effacer le cache pour tenir compte de la couleur de fond TinyMCE
 			header("Expires: Tue, 01 Jan 2000 00:00:00 GMT");
 			header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
@@ -3247,7 +3335,7 @@ class core extends common {
 									'style' => file_get_contents($stylePath)
 								]);
 							}
-							if ($output['style']) {
+							if ($output['style'] && is_file($output['style'])) {
 								$this->addOutput([
 									'style' => $this->output['style'] . file_get_contents($output['style'])
 								]);

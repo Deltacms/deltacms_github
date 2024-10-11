@@ -150,6 +150,18 @@ echo template::formOpen('themeMenuForm'); ?>
                                 'help' => $text['core_theme_view']['menu'][15]
                         ]); ?>
                 </div>
+                <div class="col3">
+                        <?php echo template::checkbox('themeMenuInvertColor', true, $text['core_theme_view']['menu'][61], [
+                                'checked' =>  $this->getData(['theme', 'menu', 'invertColor']),
+                                'help' => $text['core_theme_view']['menu'][62]
+                        ]); ?>
+                </div>
+                <div class="col3">
+                        <?php echo template::checkbox('themeMenuChangeFontSize', true, $text['core_theme_view']['menu'][63], [
+                                'checked' =>  $this->getData(['theme', 'menu', 'changeFontSize']),
+                                'help' => $text['core_theme_view']['menu'][64]
+                        ]); ?>
+                </div>
             </div>
         </div>
     </div>

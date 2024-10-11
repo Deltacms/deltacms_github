@@ -98,9 +98,42 @@
 		</div>
 	</div>	
 	<div class="row">
-		<div class="col3 offset9">
+		<div class="col8">
+			<?php $listMod = get_loaded_extensions();
+			natcasesort($listMod);
+			$listModText = '';
+			$listModSmall = [];
+			foreach( $listMod as $key=>$value){
+				$listModText .= $value.' - ';
+				$listModSmall[$key] = strtolower($value);
+			}
+			$listModRequired = array('exif', 'gd', 'mbstring', 'xmlwriter', 'zip', 'date', 'fileinfo', 'phar');
+			$listDiff = array_diff( $listModRequired, $listModSmall );
+			if( count($listDiff) > 0) {
+				$listModText = '';
+				foreach( $listDiff as $key=>$value){
+					$listModText .= $value.' - ';
+				}
+				$listModText = substr( $listModText, 0, strlen($listModText) - 3);
+				$missingExt = '<span style="font-weight: bold;">'.$listModText.'</span>';
+				if( count($listDiff) > 1) {?>
+					<div id="m11f">Attention ces extensions php sont absentes: <?php  echo $missingExt; ?></div>
+					<div id="m11e">Please note that these php extensions are missing: <?php  echo $missingExt; ?></div>
+					<div id="m11s">Tenga en cuenta que faltan estas extensiones de PHP: <?php  echo $missingExt; ?></div>
+				<?php } else { ?>
+					<div id="m11f">Attention cette extension php est absente: <?php  echo $missingExt; ?></div>
+					<div id="m11e">Please note that this php extension is missing: <?php  echo $missingExt; ?></div>
+					<div id="m11s">Tenga en cuenta que falta esta extensión de PHP: <?php  echo $missingExt; ?></div> 
+				<?php } ?>
+				<div id="m12f"><p><a href="https://deltacms.fr/installer" target="_blank">Voir le guide d'installation</a></div>
+				<div id="m12e"><p><a href="https://deltacms.fr/installer" target="_blank">See the installation guide</a></div>
+				<div id="m12s"><p><a href="https://deltacms.fr/installer" target="_blank">Ver guía de instalación</a></div>
+			<?php } ?>
+		</div>
+		<div class="col3 offset1">
 			<?php echo template::submit('installSubmit', [
-				'value' => 'OK'
+				'value' => 'OK',
+				'disabled' => count($listDiff) > 0
 			]); ?>
 		</div>
 	</div>

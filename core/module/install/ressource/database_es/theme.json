@@ -84,7 +84,9 @@
 			"burgerTextColor": "#DDD",
 			"burgerFontSize": "1.5em",
 			"minWidthTab": "auto",
-			"minWidthParentOrAll": false	
+			"minWidthParentOrAll": false,
+			"invertColor": false,
+			"changeFontSize": false
         },
         "site": {
             "backgroundColor": "rgba(255, 255, 255, 1)",

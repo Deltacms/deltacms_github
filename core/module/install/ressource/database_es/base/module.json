@@ -5,7 +5,7 @@
                 "feeds": true,
                 "feedsLabel": "Sindicación RSS",
                 "itemsperPage": 6,
-                "versionData": "7.0"
+                "versionData": "7.2"
             },
             "texts": {
                 "NoComment": "Aún no hay comentarios",
@@ -14,6 +14,7 @@
                 "Maxi": "Comentario con máximo",
                 "Cara": "caracteres",
                 "Comment": "comentario",
+				"Comments": "comentarios",
                 "CommentOK": "Comentario enviado",
                 "Waiting": "Comentario publicado pendiente de aprobación",
                 "ArticleNoComment": "Esta publicación no tiene comentarios",
@@ -37,13 +38,15 @@
             "config": {
                 "previewLength": 100,
                 "resultHideContent": false,
-                "placeHolder": "Una o más palabras clave separadas por un espacio o por +",
+                "placeHolder": "Una o más palabras",
                 "submitText": "Buscar",
-                "versionData": "3.5",
+                "versionData": "3.7",
                 "nearWordText": "Palabras relacionadas",
                 "successTitle": "Resultado de tu busqueda",
                 "failureTitle": "ningún resultado",
-                "commentFailureTitle": "¿Has pensado en los acentos?"
+                "commentFailureTitle": "¿Has pensado en los acentos?",
+				"commentMatch": "coincidencia",
+				"commentMatches": "coincidencias"
             },
             "theme": {
                 "keywordColor": "rgba(229, 229, 1, 1)",
@@ -53,14 +56,16 @@
         "investigacion": {
             "config": {
                 "submitText": "Buscar",
-                "placeHolder": "Una o más palabras clave separadas por un espacio o por +",
+                "placeHolder": "Una o más palabras",
                 "resultHideContent": false,
                 "previewLength": 100,
-                "versionData": "3.4",
+                "versionData": "3.7",
                 "nearWordText": "Palabras relacionadas",
                 "successTitle": "Resultado de tu busqueda",
                 "failureTitle": "ningún resultado",
-                "commentFailureTitle": "¿Has pensado en los acentos?"
+                "commentFailureTitle": "¿Has pensado en los acentos?",
+				"commentMatch": "coincidencia",
+				"commentMatches": "coincidencias"
             },
             "theme": {
                 "keywordColor": "rgba(229, 229, 1, 1)",
@@ -69,7 +74,6 @@
         },
         "contactenos": {
             "config": {
-                "button": "",
                 "captcha": true,
                 "group": 3,
                 "user": "",
@@ -81,12 +85,24 @@
                 "logoUrl": "",
                 "logoWidth": "40",
                 "maxSizeUpload": "500000",
-                "versionData": "6.0",
+                "versionData": "6.2",
                 "uploadJpg": true,
                 "uploadPng": true,
                 "uploadPdf": false,
                 "uploadZip": false,
                 "uploadTxt": false
+			},
+			"texts": {
+				"button": "Enviar",
+				"wrongCaptcha": "Captcha no válido",
+				"formSubmitted": "Formulario enviado",
+				"notImage": "El archivo adjunto no es una imagen",
+				"sizeExceeds": "El tamaño del archivo excede",
+				"notAllowed": "Este tipo de archivo no está permitido",
+				"errorUploading": "Error al cargar el archivo",
+				"notPdf": "El adjunto no es un documento pdf",
+				"notZip": "El archivo adjunto no es un documento zip",
+				"fillCaptcha": " Complete el Captcha "			
             },
             "data": [],
             "input": [
@@ -153,7 +169,12 @@
                 "order": []
             },
 			"config": {
-				"versionData": "4.5"
+				"versionData": "4.7",
+				"texts": {
+					"backButton": "Atrás",
+					"geolocation": "Geolocalización",
+					"noAlbum": "Sin álbum"
+				}
 			}
         }
     }

@@ -270,6 +270,20 @@ else{
 						]); ?>
 					</div>
 				</div>
+				<div class="row">
+					<div class="col4">
+						<?php echo template::text('localeConfigCommentSubmitted', [
+							'label' => $text['core_config_view']['locale'][66],
+							'value' => $this->getData(['locale', 'pageComment', 'submitted'])
+						]); ?>
+					</div>
+					<div class="col4">
+						<?php echo template::text('localeConfigCommentFailed', [
+							'label' => $text['core_config_view']['locale'][67],
+							'value' => $this->getData(['locale', 'pageComment', 'failed'])
+						]); ?>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -324,6 +338,33 @@ else{
 			</div>
 		</div>
 	</div>	
+	<div class="row">
+		<div class="col12">
+			<div class="block">
+				<div class="blockTitle"><?php echo $text['core_config_view']['locale'][63]; echo template::flag($flag, '20px');?>
+					<span id="labelHelpButton" class="helpDisplayButton">
+						<a href="https://doc.deltacms.fr/localisation#texts" target="_blank">
+							<?php echo template::ico('help', 'left');?>
+						</a>
+					</span>
+				</div>
+				<div class="row">
+					<div class="col6">
+						<?php echo template::text('localeMandatoryText', [
+							'label' => $text['core_config_view']['locale'][64],
+							'value' => $this->getData(['locale', 'mandatoryText'])
+						]); ?>
+					</div>
+					<div class="col6">
+						<?php echo template::text('localeImpossibleText', [
+							'label' => $text['core_config_view']['locale'][65],
+							'value' => $this->getData(['locale', 'impossibleText'])
+						]); ?>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 	<div class="row">
 		<div class="col12">
 			<div class="block">

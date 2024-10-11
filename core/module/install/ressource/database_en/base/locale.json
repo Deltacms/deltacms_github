@@ -34,11 +34,15 @@
 			"comment": "Comment",
 			"submit": "Send",
 			"link": ",",
-			"page": "Page"
+			"page": "Page",
+			"submitted": "Comment submitted",
+			"failed": "Comment submission failed"
 		},	
 		"menuBurger": {
             "burgerLeftIconLink": "home",
             "burgerCenterIconLink": "recherche"
-        }
+        },
+		"mandatoryText": "Required",
+		"impossibleText": "The form cannot be submitted because it contains errors"
     }
 }

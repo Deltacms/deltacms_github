@@ -197,11 +197,11 @@ include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdm
 						]); ?>
 					</div>
 					<div class="col3">
-							<?php echo template::text('socialGithubId', [
-								'help' => $text['core_config_view']['social'][15],
-								'label' => 'Github',
-								'value' => $this->getData(['config', 'social', 'githubId'])
-							]); ?>
+							<?php echo template::text('socialMastodonId', [
+								'help' => $text['core_config_view']['social'][22],
+								'label' => 'Mastodon',
+							'value' => $this->getData(['config', 'social', 'mastodonId'])
+						]); ?>
 					</div>
 				</div>
 			</div>

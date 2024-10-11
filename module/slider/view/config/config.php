@@ -132,3 +132,6 @@ echo template::formOpen('galleryEditForm'); ?>
 		endif;
 	echo template::formClose();
 	?>
+	<div class="moduleVersion">
+	<?php echo $text['slider_view']['config'][10] . $module::VERSION; ?>
+	</div>

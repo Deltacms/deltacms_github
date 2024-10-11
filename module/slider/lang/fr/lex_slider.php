@@ -45,6 +45,7 @@ $text['slider_view']['config'][6] = 'Aucune galerie.';
 $text['slider_view']['config'][7] = 'Module Slider version n°';
 $text['slider_view']['config'][8] = 'module/slider/view/config/config.help.html';
 $text['slider_view']['config'][9] = 'Dossier modifié, enregistrez avant de poursuivre';
+$text['slider_view']['config'][10] = 'Version n°';
 // Selects
 //Visibilité des boutons de navigation
 $boutonsVisibles = [

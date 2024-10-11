@@ -101,7 +101,7 @@ echo template::formOpen('themeSiteForm'); ?>
 									'class' => 'colorPicker',
 									'help' => $text['core_theme_view']['site'][9],
 									'label' => $text['core_theme_view']['site'][13],
-									'value' => $this->getData(['theme',  'text', 'linkColor'])
+									'value' => $this->getData(['theme', 'text', 'linkColor'])
 								]); ?>
 							</div>
 						</div>

@@ -620,3 +620,18 @@ $("#pageEditCommentConfig").on("click", function() {
 	document.cookie = "configLayout" + "=" + ("social" || "")  + "" + "; path=/; samesite=lax";
 	console.log( 'cookie écrit');
 });
+
+/*
+* Masquer démasquer la liste des membres et l'option affichage des fichiers
+*/
+$("#pageEditGroup").on("change", function() {
+	if( $("#pageEditGroup").val() !== "1" ) {
+		$("#pageEditMemberWrapper").slideUp();
+		$("#pageEditMemberFileEnableWrapper").slideUp();
+	}
+	else {
+		$("#pageEditMemberWrapper").slideDown();
+		$("#pageEditMemberFileEnableWrapper").slideDown();
+	}
+}).trigger("change");
+

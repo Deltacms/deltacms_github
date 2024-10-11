@@ -36,6 +36,7 @@ class page extends common {
 	public static $pagesNoParentId = [];
 	public static $data = [];
 	public static $pages = [];
+	public static $memberIds = [];
 
 	/**
 	 * Duplication
@@ -145,6 +146,9 @@ class page extends common {
 					'modulePosition' => 'bottom',
 					'position' => 100,
 					'group' => self::GROUP_VISITOR,
+					'member' => 'allMembers',
+					'memberFile' => false,
+					'groupEdit' => self::GROUP_EDITOR,
 					'targetBlank' => false,
 					'title' => $pageTitle,
 					'shortTitle' => $pageTitle,
@@ -293,12 +297,15 @@ class page extends common {
 			// Suppression
 			else {
 
-				// Effacer le dossier du module
+				// Effacer le dossier du module 
+				// Attention ces données spécifiques à une page $url[0] devrait être dans un dossier data_module 
+				// Si dans 2 langues on utilise un même nom de page, ces données seront perdues pour les 2 langues.
 				$moduleId = $this->getData(['page',$url[0],'moduleId']);
 				$modulesData = helper::getModules();
-				if (is_dir($modulesData[$moduleId]['dataDirectory']. $url[0])) {
-					$this->removeDir( $modulesData[$moduleId]['dataDirectory']. $url[0] );
-				}
+				if (is_dir($modulesData[$moduleId]['dataDirectory']. $url[0]))	$this->removeDir( $modulesData[$moduleId]['dataDirectory']. $url[0]);
+				// Effacer les données de la page dans data_module
+				$dirdata = self::DATA_DIR.self::$i18n.'/data_module/'.$moduleId.'/'. $url[0];
+				if (is_dir($dirdata)) $this->removeDir( $dirdata );
 				// Effacer la page
 				$this->deleteData(['page', $url[0]]);
 				if (file_exists(self::DATA_DIR . self::$i18n . '/content/' . $url[0] . '.html')) {
@@ -548,6 +555,11 @@ class page extends common {
 			}
 			// La page existe
 			else {
+				// Liste des membres précédée de l'option par défaut 'Tous les membres'
+				self::$memberIds = $memberIds0;
+				foreach( $this->getData(['user']) as $id => $value){
+				  if($value['group'] === 1) self::$memberIds = array_merge( self::$memberIds, array($id));
+				} 
 				// Soumission du formulaire
 				if($this->isPost()) {
 					// Si le Title n'est pas vide, premier test pour positionner la notification du champ obligatoire
@@ -591,6 +603,11 @@ class page extends common {
 							// Change le nom du fichier des données de page dans /data_module/
 							if (file_exists(self::DATA_DIR . self::$i18n . '/data_module/' . $this->getUrl(2) . '.json')) 
 								rename(self::DATA_DIR . self::$i18n . '/data_module/' . $this->getUrl(2) . '.json', self::DATA_DIR . self::$i18n . '/data_module/' . $pageId . '.json');
+							// Change l'Id de la page dans comment.json si des commentaires existent
+							if( null !== $this->getData(['comment', $this->getUrl(2) ]) ){
+								$this->setData(['comment', $pageId, $this->getData(['comment', $this->getUrl(2) ]) ]);
+								$this->deleteData(['comment', $this->getUrl(2) ]);
+							}
 							// Si la page correspond à la page d'accueil, change l'id dans la configuration du site
 							if($this->getData(['locale', 'homePageId']) === $this->getUrl(2)) {
 								$this->setData(['locale', 'homePageId', $pageId]);
@@ -652,6 +669,13 @@ class page extends common {
 							$position = 0;
 							$hideTitle = true;
 						}
+						// Lecture de la sélection des membres, c'est l'identifiant qui est mémorisé
+						$memberSelect =  $this->getInput('pageEditMember', helper::FILTER_INT);
+						if( $memberSelect === 0){
+							$member = 'allMembers';
+						} else { // $member prend la valeur de l'id du membre choisi
+							$member = self::$memberIds[$memberSelect];
+						}
 						// Modifie la page ou en crée une nouvelle si l'id a changé
 						$this->setData([
 							'page',
@@ -670,6 +694,8 @@ class page extends common {
 								'parentPageId' => $this->getInput('pageEditParentPageId'),
 								'position' => $position,
 								'group' => $this->getinput('pageEditBlock') !== 'bar' ? $this->getInput('pageEditGroup', helper::FILTER_INT) : 0,
+								'member' => $member,
+								'memberFile' => $this->getInput('pageEditMemberFileEnable', helper::FILTER_BOOLEAN),
 								'groupEdit' => $this->getInput('pageEditGroupEdit', helper::FILTER_INT),
 								'targetBlank' => $this->getInput('pageEditTargetBlank', helper::FILTER_BOOLEAN),
 								'title' => $this->getInput('pageEditTitle', helper::FILTER_STRING_SHORT),

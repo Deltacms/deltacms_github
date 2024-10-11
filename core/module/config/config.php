@@ -471,8 +471,12 @@ class config extends common {
 							'comment' => $this->getInput('localeConfigCommentComment', helper::FILTER_STRING_SHORT),
 							'submit' => $this->getInput('localeConfigCommentSubmit', helper::FILTER_STRING_SHORT),
 							'link' => $this->getInput('localeConfigCommentLink', helper::FILTER_STRING_SHORT),
-							'page' => $this->getInput('localeConfigCommentPage', helper::FILTER_STRING_SHORT)
-						]
+							'page' => $this->getInput('localeConfigCommentPage', helper::FILTER_STRING_SHORT),
+							'submitted' => $this->getInput('localeConfigCommentSubmitted', helper::FILTER_STRING_SHORT),
+							'failed' => $this->getInput('localeConfigCommentFailed', helper::FILTER_STRING_SHORT)
+						],
+						'mandatoryText' => $this->getInput('localeMandatoryText', helper::FILTER_STRING_SHORT),
+						'impossibleText' => $this->getInput('localeImpossibleText', helper::FILTER_STRING_SHORT)
 					]
 				]);
 
@@ -499,7 +503,7 @@ class config extends common {
 							'twitterId' => $this->getInput('socialTwitterId'),
 							'youtubeId' => $this->getInput('socialYoutubeId'),
 							'youtubeUserId' => $this->getInput('socialYoutubeUserId'),
-							'githubId' => $this->getInput('socialGithubId'),
+							'mastodonId' => $this->getInput('socialMastodonId'),
 							'headFacebook' => $this->getInput('socialHeadFacebook', helper::FILTER_BOOLEAN),
 							'comment' => [
 								'group' => $this->getInput('socialConfigGroup'),

@@ -7,8 +7,6 @@ $text['form_view']['config'][3] = 'Champ obligatoire';
 $text['form_view']['config'][4] = 'Retour';
 $text['form_view']['config'][5] = 'Gérer les données';
 $text['form_view']['config'][6] = 'Configuration';
-$text['form_view']['config'][7] = 'Laissez vide afin de conserver le texte par défaut.';
-$text['form_view']['config'][8] = 'Texte du bouton de soumission';
 $text['form_view']['config'][9] = 'Envoyer par mail les données saisies :';
 $text['form_view']['config'][10] = 'Sélectionnez au moins un groupe, un utilisateur ou saississez un email. Votre serveur doit autoriser les envois de mail.';
 $text['form_view']['config'][11] = 'Laissez vide afin de conserver le texte par défaut.';
@@ -43,6 +41,7 @@ $text['form_view']['config'][39] = 'Aide';
 $text['form_view']['config'][40] = 'module/form/view/config/config.help.html';
 $text['form_view']['config'][41] = 'Case à cocher d\'acceptation des conditions d\utilisation des données personnelles (RGPD)';
 $text['form_view']['config'][42] = 'Si votre questionnaire concerne des données personnelles la RGPD de certains pays requiert l\'acceptation de leur condition d\'utilisation par le participant. Vous devez également expliquer pour quelle raison vous utilisez ces données. Le texte associé est à mettre à jour dans configuration localisation.';
+$text['form_view']['config'][43] = 'Textes ';
 $text['form_view']['data'][0] = 'Retour';
 $text['form_view']['data'][1] = 'Tout effacer';
 $text['form_view']['data'][2] = 'Export CSV';
@@ -54,8 +53,17 @@ $text['form_view']['data'][7] = "Êtes-vous sûr de vouloir supprimer toutes les
 $text['form_view']['index'][0] = 'Envoyer';
 $text['form_view']['index'][1] = 'Le formulaire ne contient aucun champ.';
 $text['form_view']['index'][2] = 'fr';
+
+$text['form_view']['texts'][0] = 'Retour';
+$text['form_view']['texts'][1] = 'Enregistrer';
+$text['form_view']['texts'][2] = 'Adapter ces textes dans la langue de vos visiteurs ';
+$text['form_view']['texts'][4] = 'Texte du bouton de soumission';
+$text['form_view']['texts'][5] = 'Version n° ';
+
 $text['form']['config'][0] = 'Modifications enregistrées';
 $text['form']['config'][1] = 'Configuration du module';
+$text['form']['texts'][0] = 'Textes visibles par un visiteur';
+$text['form']['texts'][1] = 'Textes enregistrés';
 $text['form']['data'][0] = 'Données enregistrées';
 $text['form']['export2csv'][0] = 'Action non autorisée';
 $text['form']['export2csv'][1] = 'Export CSV effectué dans le gestionnaire de fichiers<br />sous le nom ';
@@ -65,19 +73,21 @@ $text['form']['deleteall'][1] = 'Données supprimées';
 $text['form']['deleteall'][2] = 'Aucune donnée à supprimer';
 $text['form']['delete'][0] = 'Action non autorisée';
 $text['form']['delete'][1] = 'Donnée supprimée';
-$text['form']['index'][0] = 'Captcha incorrect';
+
 $text['form']['index'][1] = 'Nouveau message en provenance de votre site';
 $text['form']['index'][2] = 'Nouveau message en provenance de la page "';
-$text['form']['index'][3] = 'Formulaire soumis';
-$text['form']['index'][4] = 'La pièce jointe n\'est pas une image';
-$text['form']['index'][5] = '?';
-$text['form']['index'][6] = 'La taille du fichier excède ';
-$text['form']['index'][7] = 'Ce type de fichier n\'est pas autorisé';
-$text['form']['index'][8] = 'Erreur pendant le téléversement du fichier';
-$text['form']['index'][9] = 'échec le message n\'est pas envoyé car ';
-$text['form']['index'][10] = 'La pièce jointe n\'est pas un document pdf';
-$text['form']['index'][11] = 'La pièce jointe n\'est pas un document zip';
-$text['form']['index'][12] = ' Renseignez le Captcha ';
+
+$text['form']['init'][0] = 'Captcha incorrect';
+$text['form']['init'][3] = 'Formulaire soumis';
+$text['form']['init'][4] = 'La pièce jointe n\'est pas une image';
+//$text['form']['index'][5] = '?';
+$text['form']['init'][6] = 'La taille du fichier excède';
+$text['form']['init'][7] = 'Ce type de fichier n\'est pas autorisé';
+$text['form']['init'][8] = 'Erreur pendant le téléversement du fichier';
+//$text['form']['index'][9] = 'échec le message n\'est pas envoyé car ';
+$text['form']['init'][10] = 'La pièce jointe n\'est pas un document pdf';
+$text['form']['init'][11] = 'La pièce jointe n\'est pas un document zip';
+$text['form']['init'][12] = ' Renseignez le Captcha ';
 // Initialisation de flatpickr 
 $lang_flatpickr = 'fr';
 // Langue d'administration pour tinymce

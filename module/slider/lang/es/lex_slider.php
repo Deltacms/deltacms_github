@@ -45,6 +45,7 @@ $text['slider_view']['config'][6] = 'Sin galería.';
 $text['slider_view']['config'][7] = 'Slider module version n°';
 $text['slider_view']['config'][8] = 'module/slider/view/config/config.help_en.html';
 $text['slider_view']['config'][9] = 'Carpeta cambiada, guardar antes de continuar';
+$text['slider_view']['config'][10] = 'N° de versión ';
 // Selects
 //Visibilité des boutons de navigation
 $boutonsVisibles = [

@@ -34,11 +34,15 @@
 			"comment": "Comentario",
 			"submit": "Enviar",
 			"link": ",",
-			"page": "Página"		
+			"page": "Página",
+			"submitted": "Comentario enviado",
+			"failed": "Error al enviar el comentario"			
 		},	
 		"menuBurger": {
             "burgerLeftIconLink": "inicio",
             "burgerCenterIconLink": "investigacion"
-        }
+        },
+		"mandatoryText": "Obligatorio",
+		"impossibleText": "El formulario no se puede enviar porque contiene errores"
     }
 }

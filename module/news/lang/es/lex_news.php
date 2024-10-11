@@ -19,7 +19,7 @@ $text['news_view']['config'][16] = 'Título';
 $text['news_view']['config'][17] = 'Publicar';
 $text['news_view']['config'][18] = 'Despublicar';
 $text['news_view']['config'][19] = 'Estado';
-$text['news_view']['config'][20] = 'Sin noticias.';
+$text['news_view']['config'][20] = 'Sin noticias';
 $text['news_view']['config'][21] = 'Número de versión';
 $text['news_view']['config'][22] = 'Esquinas redondeadas';
 $text['news_view']['config'][23] = 'Sombra en los bordes';
@@ -39,8 +39,11 @@ $text['news_view']['config'][36] = 'Color del texto';
 $text['news_view']['config'][37] = 'Color del encabezado';
 $text['news_view']['config'][38] = 'Color del enlace';
 $text['news_view']['config'][39] = 'Color de firma y fecha';
-$text['news_view']['index'][0] = 'leer más';
-$text['news_view']['index'][1] = 'Sin noticias.';
+$text['news_view']['config'][40] = 'Adapte estos textos al idioma de sus visitantes';
+$text['news_view']['config'][41] = 'Leer más';
+$text['news_view']['config'][42] = 'Volver';
+$text['news_view']['config'][43] = 'Sin noticias';
+
 $text['news_view']['index'][2] = 'Editar';
 $text['news_view']['add'][0] = 'Atrás';
 $text['news_view']['add'][1] = 'Guardar como borrador';
@@ -56,9 +59,8 @@ $text['news_view']['add'][10] = 'Fecha de anulación de la publicación';
 // Pour Tinymce et Flatpickr
 $text['news_view']['add'][12] = 'es';
 $text['news_view']['add'][13] = 'es';
-$text['news_view']['article'][0] = ' to ';
+
 $text['news_view']['article'][1] = 'Editar';
-$text['news_view']['article'][2] = 'Atrás';
 $text['news_view']['edit'][0] = 'Atrás';
 $text['news_view']['edit'][1] = 'Guardar como borrador';
 $text['news_view']['edit'][2] = 'Publicar';

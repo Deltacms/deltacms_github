@@ -1,10 +1,8 @@
 <?php
 // Lexique du module du coeur core.php et core.js.php en français
-$text['core']['addRequiredInputNotices'][0] = 'Obligatoire';
 $text['core']['showmenu'][0] = 'Gérer les fichiers';
 $text['core']['showmenu'][1] = 'Gérer mon compte';
 $text['core']['showmenu'][2] = 'Me déconnecter';
-$text['core']['showNotification'][0] = 'Impossible de soumettre le formulaire, car il contient des erreurs';
 $text['core']['showNotification'][1] = 'Données absentes, restauration de  ';
 $text['core']['showBar'][0] = 'Choisissez une page';
 $text['core']['showBar'][1] = 'Pages orphelines';
@@ -31,13 +29,15 @@ $text['core']['router'][3] = 'Accès interdit';
 $text['core']['router'][4] = 'Vous n\'êtes pas autorisé à consulter cette page (erreur 403)';
 $text['core']['router'][5] = 'Page indisponible';
 $text['core']['router'][6] = 'La page demandée n\'existe pas ou est introuvable (erreur 404)';
-$text['core']['showComment'][1] = 'Robot détecté';
 $text['core']['showComment'][2] = 'Sujet';
 $text['core']['showComment'][3] = 'Commentaire sur la page ';
-$text['core']['showComment'][4] = 'Formulaire soumis';
-$text['core']['showComment'][5] = 'Echec d\'envoi du formulaire';
-$text['core']['showComment'][6] = 'Pas encore de commentaire';
-$text['core']['showComment'][7] ='fr_FR';
+$text['core']['showComment'][7] = 'fr_FR';
+$text['core']['showMemberFile'][0] = 'Documents pour ';
+$text['core']['showMemberFile'][1] = 'Aucun document pour ';
+$text['core']['showMemberFile'][2] = 'Actualiser la liste des fichiers';
+$text['core']['showMemberFile'][3] = 'Télécharger ce fichier -> clic droit - enregistrer la cible du lien';
+$text['core']['showMemberFile'][4] = 'Afficher ce fichier';
+$text['core']['showMemberFile'][5] = 'Téléchargez le fichier : ';
 // core.js.php
 $text['core_js'][0] = "Effectuer la mise à jour ?";
 // Select File

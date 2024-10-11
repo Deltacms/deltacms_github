@@ -1,10 +1,8 @@
 <?php
 // Lexique du module du coeur core.php et core.js.php en espagnol
-$text['core']['addRequiredInputNotices'][0] = 'Obligatorio';
 $text['core']['showmenu'][0] = 'Gestionar archivos';
 $text['core']['showmenu'][1] = 'Gestionar mi cuenta';
 $text['core']['showmenu'][2] = 'Cerrar sesión';
-$text['core']['showNotification'][0] = 'No se puede enviar el formulario, contiene errores';
 $text['core']['showNotification'][1] = 'Faltan datos, restaurando ';
 $text['core']['showBar'][0] = 'Elige una página';
 $text['core']['showBar'][1] = 'Páginas huérfanas';
@@ -31,13 +29,15 @@ $text['core']['router'][3] = 'Acceso denegado';
 $text['core']['router'][4] = 'No está autorizado para ver esta página (error 403)';
 $text['core']['router'][5] = 'Página no disponible';
 $text['core']['router'][6] = 'La página solicitada no existe o no se encuentra (error 404)';
-$text['core']['showComment'][1] = 'Robot detectado';
 $text['core']['showComment'][2] = 'Asunto';
 $text['core']['showComment'][3] = 'Comentar en la página ';
-$text['core']['showComment'][4] = 'Formulario enviado';
-$text['core']['showComment'][5] = 'Error al enviar el formulario';
-$text['core']['showComment'][6] = 'Aún no hay comentarios';
 $text['core']['showComment'][7] ='es';
+$text['core']['showMemberFile'][0] = 'Archivos para ';
+$text['core']['showMemberFile'][1] = 'Sin archivo';
+$text['core']['showMemberFile'][2] = 'Actualizar lista de archivos';
+$text['core']['showMemberFile'][3] = 'Descargar este archivo -> clic derecho - guardar destino del enlace';
+$text['core']['showMemberFile'][4] = 'Mostrar este archivo';
+$text['core']['showMemberFile'][5] = 'Descargar archivo: ';
 // core.js.php
 $text['core_js'][0] = "¿Realizar actualización?";
 // Seleccione Archivo

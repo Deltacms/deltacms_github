@@ -206,9 +206,9 @@ if ($this->getData(['core', 'dataVersion']) < 5002) {
 			$tabLanguages[$key] = $value;
 		}
 	}
-	mkdir (self::DATA_DIR .'base/data_module', 0755);
+	if( !is_dir(self::DATA_DIR .'base/data_module')) mkdir (self::DATA_DIR .'base/data_module', 0755);
 	foreach( $tabLanguages as $key => $value){
-		mkdir (self::DATA_DIR .$key.'/data_module', 0755);
+		if( !is_dir(self::DATA_DIR .$key.'/data_module')) mkdir (self::DATA_DIR .$key.'/data_module', 0755);
 	}
 	$this->setData(['core', 'dataVersion', 5002]);
 }
@@ -218,7 +218,41 @@ if ($this->getData(['core', 'dataVersion']) < 5003) {
 	$this->setData(['locale', 'questionnaireAccept', $text['core_config_view']['locale'][62]]);
 	$this->setData(['core', 'dataVersion', 5003]);
 }
-if ($this->getData(['core', 'dataVersion']) < 5100) {
-	$this->setData(['core', 'dataVersion', 5100]);
+if ($this->getData(['core', 'dataVersion']) < 5101) {
+	// Inversion des couleurs et augmentation des caractères non sélectionnées
+	$this->setData(['theme', 'menu', 'invertColor', false ]);
+	$this->setData(['theme', 'menu', 'changeFontSize', false ]);
+	$this->setData(['core', 'dataVersion', 5101]);
+}
+if ($this->getData(['core', 'dataVersion']) < 5102) {
+	// Nouveaux paramètres dans les pages
+	foreach($this->getData(['page']) as $id => $values ) {
+		$this->setData(['page', $id, 'member', 'allMembers' ]);
+		$this->setData(['page', $id, 'memberFile', false ]);
+	}
+	// Ajout de variables locales pour toutes les langues
+	$param='';
+	include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
+	$tabLanguages = [];
+	foreach (self::$i18nList as $key => $value) {
+		if ($this->getData(['config','i18n', $key]) === 'site' && $key !== $this->getData(['config','i18n', 'langBase'])) {
+			$tabLanguages[$key] = $value;
+		}
+	}
+	$tabLanguages = array_merge( $tabLanguages, array('base'=>'base'));
+	foreach($tabLanguages as $key=>$value ){
+		if( is_file('./site/data/'.$key.'/module.json' ) ){
+			$this->dataFiles['locale'] = new \Prowebcraft\JsonDb([
+				'name' => 'locale.json',
+				'dir' => self::DATA_DIR . $key . '/',
+				'backup' => file_exists('site/data/.backup')
+			]);
+			$this->setData(['locale', 'mandatoryText', $text['core_config_view']['locale'][64] ]);
+			$this->setData(['locale', 'impossibleText', $text['core_config_view']['locale'][65] ]);
+			$this->setData(['locale', 'pageComment', 'submitted', $text['core_config_view']['locale'][66] ]);
+			$this->setData(['locale', 'pageComment', 'failed', $text['core_config_view']['locale'][67] ]);
+		}
+	}
+	$this->setData(['core', 'dataVersion', 5102]);
 }
 ?>

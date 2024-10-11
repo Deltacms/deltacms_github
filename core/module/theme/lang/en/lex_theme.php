@@ -265,7 +265,10 @@ $text['core_theme_view']['menu'][57] = 'Overlay menu banner and header';
 $text['core_theme_view']['menu'][58] = 'The header, when visible, will be superimposed on the menu banner, which usually involves making the color of the menu banner transparent';
 $text['core_theme_view']['menu'][59] = "Only the 'Hidden' option has an effect in small screen (<800 pixels) if the burger menu is fixed.";
 $text['core_theme_view']['menu'][60] = 'Settings for wide screens >= 800 pixels';
-
+$text['core_theme_view']['menu'][61] = 'Site color inversion';
+$text['core_theme_view']['menu'][62] = 'Allows you to switch between the display with the theme colors and a display with inverted colors for the main part of the site (excluding banner, menu, footer , images, videos...)';
+$text['core_theme_view']['menu'][63] = 'Increase character size';
+$text['core_theme_view']['menu'][64] = 'This option places an icon in the menu which allows you to increase the font size in the main part of the site.';
 $text['core_theme_view']['site'][0] = 'Back';
 $text['core_theme_view']['site'][1] = 'Help';
 $text['core_theme_view']['site'][2] = 'Save';

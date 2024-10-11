@@ -71,7 +71,11 @@ if($module::$articles): ?>
 							} ?>
 						</div>
 						<p class="blogContent">
-							<?php echo helper::subword(strip_tags($article['content']), 0, 400); ?>...
+							<?php 
+							$sea = ['<br />', '<br>'];
+							$rep = ' ';
+							$article['content'] = str_replace($sea, $rep, $article['content']);							
+							echo helper::subword(strip_tags($article['content']), 0, 400); ?>...
 							<a href="<?php echo helper::baseUrl() . $this->getUrl(0) . '/' . $articleId;?>"><?php echo $this->getData(['module', $this->getUrl(0), 'texts', 'ReadMore']); ?></a>
 						</p>
 					</div>
@@ -91,5 +95,5 @@ if($module::$articles): ?>
 		</div>
 	<?php endif; ?>
 <?php else: ?>
-	<?php echo template::speech($text['blog_view']['indext'][1]); ?>
+	<?php echo template::speech($text['blog_view']['index'][1]); ?>
 <?php endif; ?>

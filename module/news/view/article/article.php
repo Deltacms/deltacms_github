@@ -36,7 +36,7 @@ include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) .
 			$heure =  mb_detect_encoding(date('H:i', $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn'])), 'UTF-8', true)
 					? date('H:i', $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn']))
 					:  utf8_encode(date('H:i', $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn'])));
-			echo $date . $text['news_view']['article'][0] . $heure; 
+			echo $date .' - '. $heure; 
 		} ?>
 			
 		<!-- Bloc edition -->
@@ -67,10 +67,12 @@ include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) .
 	
 	<!--Bouton Retour sur la page active-->
 	<div class="col2">	
-		<?php echo template::button('newsArticleBack', [
-			'href' => helper::baseUrl() . $_SESSION['pageActive'],
+		<?php 
+		$backUrl = isset($_SESSION['pageActive']) ? $_SESSION['pageActive'] : $this->getUrl(0);		
+		echo template::button('newsArticleBack', [
+			'href' => helper::baseUrl() . $backUrl,
 			'ico' => 'left',
-			'value' => $text['news_view']['article'][2]
+			'value' => $this->getData(['module', $this->getUrl(0), 'config', 'texts', 'back'])
 		]); ?>
 	</div>
 	

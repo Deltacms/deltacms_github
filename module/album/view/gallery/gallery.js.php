@@ -12,11 +12,16 @@
 
 /* Affecte la bordure des blocs à la class galleryGalleryPicture */
 $(document).ready(function(){
-	borderColor = "<?=$this->getData(['theme', 'block', 'borderColor'])?>";
+	<?php if( isset( $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] ) && $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] === 'true' ) {?>
+		borderColor = "<?php echo helper::invertColor($this->getData(['theme', 'block', 'borderColor'])); ?>";
+		textColor = "<?php echo helper::invertColor($this->getData(['theme', 'text', 'textColor']));?>";
+		linkColor = "<?php echo helper::invertColor($this->getData(['theme', 'text', 'linkColor']));?>";
+	<?php } else { ?>
+		borderColor = "<?php echo $this->getData(['theme', 'block', 'borderColor']); ?>";
+		textColor = "<?php echo $this->getData(['theme', 'text', 'textColor']);?>";
+		linkColor = "<?php echo $this->getData(['theme', 'text', 'linkColor']);?>";
+	<?php }	?>
 	borderRadius = "<?=$this->getdata(['theme', 'block', 'blockBorderRadius'])?>";
-	textColor = "<?=$this->getData(['theme', 'text', 'textColor'])?>";
-	linkColor = "<?=$this->getData(['theme', 'text', 'linkColor'])?>";
-
 	$(".galleryGalleryPicture").css("border","solid 1px");
 	$(".galleryGalleryPicture").css("border-color", borderColor);
 	$(".galleryGalleryPicture").css("border-radius", borderRadius);

@@ -51,6 +51,10 @@ $text['core_page_view']['edit'][47] = 'Commentaires';
 $text['core_page_view']['edit'][48] = 'Configurer';
 $text['core_page_view']['edit'][49] = 'Gérer les commentaires';
 $text['core_page_view']['edit'][50] = 'Autoriser les commentaires';
+$text['core_page_view']['edit'][51] = 'Un membre particulier ou tous les membres :';
+$text['core_page_view']['edit'][52] = 'Affichage des documents personnels';
+$text['core_page_view']['edit'][53] = 'Ces documents sont placés dans le dossier membersDirectory/id_membre';
+
 $text['core_page']['duplicate'][0] = "Jeton invalide";
 $text['core_page']['duplicate'][1] = "Duplication non autorisée";
 $text['core_page']['duplicate'][2] = "La page a été dupliquée";
@@ -133,5 +137,8 @@ $groupEdit = [
 $groupEditModerator = [
 	self::GROUP_EDITOR => 'Editeur',
 	self::GROUP_MODERATOR => 'Modérateur'
+];
+$memberIds0 = [
+	0 => 'Tous les membres'
 ];
 ?>

@@ -29,6 +29,7 @@ if($i % 4 === 1):
 	$i++;
 	endforeach;
 	else:
-echo template::speech($text['album_view']['index'][0]);
+		$speechText = null === $this->getData(['module', $this->getUrl(0), 'config', 'texts', 'noAlbum'])? $text['album']['init'][2] : $this->getData(['module', $this->getUrl(0), 'config', 'texts', 'noAlbum']);
+		echo template::speech( $speechText );
 	endif;
 	?>

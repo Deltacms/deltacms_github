@@ -3,6 +3,14 @@
 $param = 'blog_view';
 include('./module/blog/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_blog.php');
 
+// drapeau pour la langue d'origine ou la langue en traduction rédigée
+if( $this->getInput('DELTA_I18N_SITE') === '' || $this->getInput('DELTA_I18N_SITE')=== null || $this->getInput('DELTA_I18N_SITE') === 'base'){
+	$flag = $this->getData(['config', 'i18n', 'langBase']);
+}
+else{
+	$flag = $this->getInput('DELTA_I18N_SITE');
+}
+
 echo template::formOpen('blogConfig'); ?>
 	<div class="row">
 		<div class="col2">
@@ -20,21 +28,21 @@ echo template::formOpen('blogConfig'); ?>
 				'value' => $text['blog_view']['config'][15]
 			]); ?>
 		</div>
-		<div class="col2 offset2 <?php if($this->getUser('group') < self::GROUP_MODERATOR) echo 'displayNone'; ?> ">
+		<div class="col2 offset2 <?php if($this->getUser('group') < self::GROUP_MODERATOR) echo 'displayNone';?>">
 			<?php echo template::button('blogConfigTexts', [
 				'href' => helper::baseUrl() . $this->getUrl(0) . '/texts',
-				'ico' => '',
-				'value' => $text['blog_view']['config'][13]
+				'ico' => 'pencil',
+				'value' => $text['blog_view']['config'][13].' '.template::flag($flag, '20px')
 			]); ?>
 		</div>
-		<div class="col2 <?php if($this->getUser('group') < self::GROUP_MODERATOR) echo 'offset8'; ?>">
+		<div class="col2 <?php if($this->getUser('group') < self::GROUP_MODERATOR) echo 'offset6';?>">
 			<?php echo template::button('blogConfigAdd', [
 				'href' => helper::baseUrl() . $this->getUrl(0) . '/add',
 				'ico' => 'plus',
 				'value' => $text['blog_view']['config'][1]
 			]); ?>
 		</div>
-		<div class="col2 <?php if($this->getUser('group') < self::GROUP_MODERATOR) echo 'displayNone'; ?> ">
+		<div class="col2 <?php if($this->getUser('group') < self::GROUP_MODERATOR) echo 'displayNone';?>">
 			<?php echo template::submit('blogConfigSubmit',[
 				'value' => $text['blog_view']['config'][2]
 			]); ?>

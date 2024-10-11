@@ -32,7 +32,7 @@ class statislite extends common {
 		'conversionTime' => self::GROUP_VISITOR
 	];
 	
-	const VERSION = '5.0';	
+	const VERSION = '5.2';	
 	const REALNAME = 'Statislite';
 	const DELETE = true;
 	const UPDATE = '2.6';
@@ -84,6 +84,8 @@ class statislite extends common {
 	 * Appelée par les fonctions index et config
 	*/
 	private function update() {
+		
+		if ( null===$this->getData(['module', $this->getUrl(0), 'config', 'versionData']) ) $this->setData(['module', $this->getUrl(0), 'config', 'versionData',self::VERSION]);
 
 		// Installation ou mise à jour vers la version 4.4
 		if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '4.4', '<') ) {		
@@ -115,6 +117,11 @@ class statislite extends common {
 			$this->removeDir('site/data/statislite/module/json_sauve');
 			$this->removeDir('site/data/statislite/module/tmp');
 			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','5.0']);
+		}
+		// Version 5.2
+		if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '5.2', '<') ) {	
+			copy('./module/statislite/ressource/tmp/.htaccess', self::DATA_DIR.self::$i18n.'/data_module/statislite/tmp/.htaccess');
+			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','5.2']);
 		}
 	}
 	
@@ -592,8 +599,8 @@ class statislite extends common {
 			]);
 		}
 		else{
-			// Mise à jour des données de module
-			$this->update();
+			// Mise à jour des données de module si nécessaire
+			if ( null===$this->getData(['module', $this->getUrl(0), 'config', 'versionData']) || version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), self::VERSION, '<') ) $this->update();
 			
 			/* 
 			 * Paramètres réglés en configuration du module

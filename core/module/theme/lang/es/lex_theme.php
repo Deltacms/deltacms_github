@@ -265,7 +265,10 @@ $text['core_theme_view']['menu'][57] = 'Banner y banner de menú superpuesto';
 $text['core_theme_view']['menu'][58] = 'El banner, cuando esté visible, se superpondrá al banner del menú, lo que generalmente implica hacer que el color del banner del menú sea transparente';
 $text['core_theme_view']['menu'][59] = "Solo la opción 'Oculto' tiene efecto en pantalla pequeña (<800 píxeles) si el menú de hamburguesas está fijo.";
 $text['core_theme_view']['menu'][60] = 'Ajustes para pantallas anchas >= 800 píxeles';
-
+$text['core_theme_view']['menu'][61] = 'Inversión de color del sitio';
+$text['core_theme_view']['menu'][62] = 'Le permite cambiar entre la visualización con los colores del tema y una visualización con colores invertidos para la parte principal del sitio (excluyendo banner, menú, pie de página, imágenes, vídeos...)';
+$text['core_theme_view']['menu'][63] = 'Aumentar el tamaño de los caracteres';
+$text['core_theme_view']['menu'][64] = 'Esta opción coloca un icono en el menú que le permite aumentar el tamaño de fuente en la parte principal del sitio.';
 $text['core_theme_view']['site'][0] = 'Atrás';
 $text['core_theme_view']['site'][1] = 'Ayuda';
 $text['core_theme_view']['site'][2] = 'Guardar';

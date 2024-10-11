@@ -76,8 +76,8 @@ $text['blog_view']['edit'][23] = 'Editores = editores + administradores<br/> Mie
 // pour Tinymce et Flatpickr
 $text['blog_view']['edit'][24] = 'es';
 $text['blog_view']['edit'][25] = 'es';
-$text['blog_view']['indext'][0] = 'Leer más';
-$text['blog_view']['indext'][1] = 'Sin publicación';
+$text['blog_view']['index'][0] = 'Leer más';
+$text['blog_view']['index'][1] = 'Sin publicación';
 $text['blog_view']['texts'][0] = 'Atrás';
 $text['blog_view']['texts'][1] = 'Adapte estos textos al idioma de sus visitantes';
 $text['blog_view']['texts'][2] = 'Guardar';
@@ -100,6 +100,7 @@ $text['blog_view']['texts'][20] ='Ibas a exceder el máximo por ';
 $text['blog_view']['texts'][25] ='Número de versión';
 $text['blog_view']['texts'][26] = 'Leer más';
 $text['blog_view']['texts'][27] ='Atrás';
+$text['blog_view']['texts'][28] ='comentarios';
 $text['blog_view']['article'][0] = 'es';
 $text['blog']['config'][0] = 'Cambios guardados';
 $text['blog']['config'][1] = 'Configuración del módulo';
@@ -130,6 +131,7 @@ $text['blog']['index'][24] = 'Incorrecto';
 $text['blog']['index'][25] = 'Comenzar de nuevo y completar el Captcha';
 $text['blog']['index'][26] = 'Leer más';
 $text['blog']['index'][27] = 'Atrás';
+$text['blog']['index'][28] = 'comentarios';
 $text['blog']['edit'][0] = 'Acción no permitida';
 $text['blog']['edit'][1] = 'Ediciones guardadas';
 $text['blog']['delete'][0] = 'Acción no permitida';

@@ -73,6 +73,12 @@ else{
 				</div>
 				<div class="row">
 					<div class="col4">
+						<?php echo template::text('blogTextsComments', [
+							'label' => $text['blog_view']['texts'][28],
+							'value' => $this->getData(['module', $this->getUrl(0), 'texts', 'Comments'])
+						]); ?>
+					</div>
+					<div class="col4">
 						<?php echo template::text('blogTextsCommentOK', [
 							'label' => $text['blog_view']['texts'][9],
 							'value' => $this->getData(['module', $this->getUrl(0), 'texts', 'CommentOK'])
@@ -84,14 +90,14 @@ else{
 							'value' => $this->getData(['module', $this->getUrl(0), 'texts', 'Waiting'])
 						]); ?>
 					</div>
+				</div>
+				<div class="row">
 					<div class="col4">
 						<?php echo template::text('blogTextsArticleNoComment', [
 							'label' => $text['blog_view']['texts'][11],
 							'value' => $this->getData(['module', $this->getUrl(0), 'texts', 'ArticleNoComment'])
 						]); ?>
-					</div>
-				</div>
-				<div class="row">
+					</div>				
 					<div class="col4">
 						<?php echo template::text('blogTextsConnection', [
 							'label' => $text['blog_view']['texts'][13],
@@ -104,14 +110,14 @@ else{
 							'value' => $this->getData(['module', $this->getUrl(0), 'texts', 'Edit'])
 						]); ?>
 					</div>
+				</div>
+				<div class="row">
 					<div class="col4">
 						<?php echo template::text('blogTextsCancel', [
 							'label' => $text['blog_view']['texts'][16],
 							'value' => $this->getData(['module', $this->getUrl(0), 'texts', 'Cancel'])
 						]); ?>
 					</div>
-				</div>
-				<div class="row">
 					<div class="col4">
 						<?php echo template::text('blogTextsSend', [
 							'label' => $text['blog_view']['texts'][17],
@@ -124,14 +130,14 @@ else{
 							'value' => $this->getData(['module', $this->getUrl(0), 'texts', 'TinymceMaxi'])
 						]); ?>
 					</div>
+				</div>
+				<div class="row">
 					<div class="col4">
 						<?php echo template::text('blogTextsTinymceCara', [
 							'label' => $text['blog_view']['texts'][19],
 							'value' => $this->getData(['module', $this->getUrl(0), 'texts', 'TinymceCara'])
 						]); ?>
-					</div>
-				</div>
-				<div class="row">
+					</div>				
 					<div class="col4">
 						<?php echo template::text('blogTextsTinymceExceed', [
 							'label' => $text['blog_view']['texts'][20],
@@ -144,6 +150,8 @@ else{
 							'value' => $this->getData(['module', $this->getUrl(0), 'texts', 'ReadMore'])
 						]); ?>
 					</div>
+				</div>
+				<div class="row">
 					<div class="col4">
 						<?php echo template::text('blogTextsBack', [
 							'label' => $text['blog_view']['texts'][27],

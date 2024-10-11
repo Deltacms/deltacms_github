@@ -51,6 +51,9 @@ $text['core_page_view']['edit'][47] = 'Comentarios';
 $text['core_page_view']['edit'][48] = 'Configurar';
 $text['core_page_view']['edit'][49] = 'Administrar comentarios';
 $text['core_page_view']['edit'][50] = 'Permitir comentarios';
+$text['core_page_view']['edit'][51] = 'Un miembro en particular o todos los miembros:';
+$text['core_page_view']['edit'][52] = 'Vista de documentos personales';
+$text['core_page_view']['edit'][53] = 'Estos documentos se colocan en el directorio de miembros/id_miembro';
 $text['core_page']['duplicate'][0] = "Token no válido";
 $text['core_page']['duplicate'][1] = "Duplicación no autorizada";
 $text['core_page']['duplicate'][2] = "La página ha sido duplicada";
@@ -133,5 +136,8 @@ $groupEdit = [
 $groupEditModerator = [
 	self::GROUP_EDITOR => 'Editor',
 	self::GROUP_MODERATOR => 'Moderador'
+];
+$memberIds0 = [
+	0 => 'Todos los miembros'
 ];
 ?>

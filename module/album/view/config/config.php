@@ -2,6 +2,13 @@
 // Lexique
 $param = '';
 include('./module/album/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_album.php');
+// drapeau pour la langue d'origine ou la langue en traduction rédigée
+if( $this->getInput('DELTA_I18N_SITE') === '' || $this->getInput('DELTA_I18N_SITE')=== null || $this->getInput('DELTA_I18N_SITE') === 'base'){
+	$flag = $this->getData(['config', 'i18n', 'langBase']);
+}
+else{
+	$flag = $this->getInput('DELTA_I18N_SITE');
+}
 
 echo template::formOpen('galleryConfigForm'); ?>
 	<div class="row">
@@ -18,6 +25,13 @@ echo template::formOpen('galleryConfigForm'); ?>
 				'class' => 'buttonHelp',
 				'ico' => 'help',
 				'value' => $text['album_view']['config'][10]
+			]); ?>
+		</div>
+		<div class="col2 offset6 <?php if($this->getUser('group') < self::GROUP_MODERATOR) echo 'displayNone'; ?> ">
+			<?php echo template::button('albumConfigTexts', [
+				'href' => helper::baseUrl() . $this->getUrl(0) . '/texts',
+				'ico' => 'pencil',
+				'value' => $text['album_view']['config'][11].' '.template::flag($flag, '20px')
 			]); ?>
 		</div>
 	</div>

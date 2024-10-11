@@ -45,24 +45,25 @@ $text['slider_view']['config'][6] = 'No gallery';
 $text['slider_view']['config'][7] = 'Slider module version no.';
 $text['slider_view']['config'][8] = 'module/slider/view/config/config.help_en.html';
 $text['slider_view']['config'][9] = 'Modified file, save before continuing';
+$text['slider_view']['config'][10] = 'Version nÂ°';
 // Selects
-//Visibilité des boutons de navigation
+//VisibilitÃ© des boutons de navigation
 $boutonsVisibles = [
 	'slider1' => 'Next or previous button',
 	'slider2' => 'Right or left area of the image'
 ];
-//Visibilité des puces de navigation ou pager
+//VisibilitÃ© des puces de navigation ou pager
 $pagerVisible = [
 	'true' => 'Visible bullets',
 	'false' => 'Invisible bullets'
 ];
-//Visibilité de la lègende
+//VisibilitÃ© de la lÃ¨gende
 $visibilite_legende = [
 	'survol' => 'On hover',
 	'toujours' => 'Always visible',
 	'jamais' => 'Never visible'
 ];	
-//Position de la lègende
+//Position de la lÃ¨gende
 $position_legende = [
 	'haut' => 'Top',
 	'bas' => 'Bottom'

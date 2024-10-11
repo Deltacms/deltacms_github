@@ -265,7 +265,10 @@ $text['core_theme_view']['menu'][57] = 'Superposition du bandeau du menu et de l
 $text['core_theme_view']['menu'][58] = 'La bannière, quand elle est visible, sera superposée au bandeau du menu, ce qui implique le plus souvent de rendre la couleur du bandeau du menu transparente';
 $text['core_theme_view']['menu'][59] = "Seule l'option 'Caché' a un effet en petit écran (<800 pixels) si le menu burger est fixe.";
 $text['core_theme_view']['menu'][60] = 'Paramètres pour les écrans larges >= 800 pixels';
-
+$text['core_theme_view']['menu'][61] = 'Inversion des couleurs du site';
+$text['core_theme_view']['menu'][62] = 'Permet de commuter, pour la partie principale du site, entre l\'affichage avec les couleurs du thème ou l\'affichage avec des couleurs inversées ( hors bannière, menu, footer, images, vidéos...)';
+$text['core_theme_view']['menu'][63] = 'Augmenter la taille des caractères';
+$text['core_theme_view']['menu'][64] = 'Cette option place dans le menu une icône qui permet d\'augmenter la taille des caractères dans la partie principale du site.';
 $text['core_theme_view']['site'][0] = 'Retour';
 $text['core_theme_view']['site'][1] = 'Aide';
 $text['core_theme_view']['site'][2] = 'Enregistrer';

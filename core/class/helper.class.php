@@ -308,6 +308,21 @@ class helper {
 			'rgb' => 'rgb(' . $rgba[0] . ',' . $rgba[1] . ',' . $rgba[2]  . ')'
 		];
 	}
+	
+	/**
+	 * Inverse une couleur rgba
+	 * @param string $rgba Code rgba de la couleur
+	 * @return string
+	 */
+	public static function invertColor($rgba) {
+		// Extraire les valeurs RGBA
+		list($r, $g, $b, $a) = sscanf($rgba, 'rgba(%d, %d, %d, %f)');
+		// Inverser les couleurs
+		$r = 255 - $r;
+		$g = 255 - $g;
+		$b = 255 - $b;
+		return sprintf('rgba(%d, %d, %d, %.1F)', $r, $g, $b, $a);
+	}	
 
 	/**
 	 * Supprime un cookie

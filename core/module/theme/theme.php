@@ -62,7 +62,8 @@ class theme extends common {
 	
 	//Liste des pages
 	public static $pageList = [];
-
+	
+	
 	/**
 	 * Thème des écrans d'administration
 	 */
@@ -688,6 +689,8 @@ class theme extends common {
 					'radius' => $this->getInput('themeMenuRadius'),
 					'burgerTitle' => $this->getInput('themeMenuBurgerTitle', helper::FILTER_BOOLEAN),
 					'memberBar' =>  $this->getInput('themeMenuMemberBar', helper::FILTER_BOOLEAN),
+					'invertColor' =>  $this->getInput('themeMenuInvertColor', helper::FILTER_BOOLEAN),
+					'changeFontSize' => $this->getInput('themeMenuChangeFontSize', helper::FILTER_BOOLEAN),
 					'burgerIcon1' => $this->getInput('themeMenuBurgerIcon1'),
 					'burgerIcon2' => $this->getInput('themeMenuBurgerIcon2'),
 					'burgerContent' => $this->getInput('themeMenuBurgerContent'),

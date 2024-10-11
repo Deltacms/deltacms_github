@@ -135,8 +135,18 @@
 	.blockFullWidth {
 		margin: 0 -20px;
 		padding: 10px;
-	}	
+	}
+	.socialIconSvg {
+		margin: 0 5px -10px 5px;
+	}
+	#footerSocials {
+		display: flex;
+		flex-wrap: nowrap;
+		font-size: 15px;
+		padding-bottom: 3px;
+	}
 }
+
 
 /*					Ecrans < 800px					*/
 
@@ -331,7 +341,11 @@
 	#footerText,
 	#footerSocials {
 	   display: flex;
+	   flex-wrap: wrap;
 	   justify-content: center;
+	}
+	#footerSocials {
+	   font-size: 15px;
 	}
 /* Message sur les cookies */
 	#cookieConsent {
@@ -356,6 +370,10 @@
 	.blockFullWidth {
 		margin: 0 -10px;
 		padding: 10px;
+	}
+	.socialIconSvg {
+		margin: 0 5px;
+		max-width: none;
 	}  	
 }
 

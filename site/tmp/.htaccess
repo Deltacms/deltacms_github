@@ -1,0 +1,4 @@
+Require all denied
+<Files *.png>
+Require all granted
+</Files>

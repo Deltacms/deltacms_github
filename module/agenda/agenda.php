@@ -36,7 +36,7 @@ class agenda extends common {
 		'index' => self::GROUP_VISITOR
 	];
 
-	const VERSION = '7.1';	
+	const VERSION = '7.3';	
 	const REALNAME = 'Agenda';
 	const DELETE = true;
 	const UPDATE = '4.1';
@@ -90,63 +90,72 @@ class agenda extends common {
 	* Appelée par les fonctions index et config
 	*/
 	private function update() {
-	
-		// Mise à jour vers la version 4.7
-		if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '4.7', '<') ) {	
-			if(! is_dir(self::DATAMODULE.'data/'.$this->getUrl(0).'_affiche')) mkdir(self::DATAMODULE.'data/'.$this->getUrl(0).'_affiche');
-			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','4.7']);
-		}	
 		
-		// Mise à jour vers la version 5.0
-		if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '5.0', '<') ) {
-			$this->setData(['module', $this->getUrl(0), 'texts',[
-				'configTextButtonBack' => 'Retour',
-				'configTextDateStart' => 'Début : ',
-				'configTextDateEnd' =>'Fin : '
-				]
-			]);
+		if ( null===$this->getData(['module', $this->getUrl(0), 'config', 'versionData']) ) {
+			$this->setData(['module', $this->getUrl(0), 'config', 'versionData', self::VERSION ]);
+			// le reste de l'initialisation, complexe, est réalisée par index()
+		} else {
+			// Mise à jour vers la version 4.7
+			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '4.7', '<') ) {	
+				if(! is_dir(self::DATAMODULE.'data/'.$this->getUrl(0).'_affiche')) mkdir(self::DATAMODULE.'data/'.$this->getUrl(0).'_affiche');
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','4.7']);
+			}	
 			
-			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','5.0']);
-		}
-		// Mise à jour vers la version 5.2
-		if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '5.2', '<') ) {	
-			// Mise à jour des .htaccess avec Apache2.4
-			copy( './module/agenda/ressource/data/agenda/module/adresses/.htaccess', './site/data/agenda/module/adresses/.htaccess');
-			copy( './module/agenda/ressource/data/agenda/module/data/.htaccess', './site/data/agenda/module/data/.htaccess');
-			copy( './module/agenda/ressource/file/source/agenda/adresses/.htaccess', './site/file/source/agenda/adresses/.htaccess');
-			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','5.2']);
-		}
-		// Mise à jour vers la version 6.0
-		if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '6.0', '<') ) {	
-			// Couleur de la grille
-			$this->setData(['module', $this->getUrl(0),'config', 'gridColor', 'rgba(146, 52, 101, 1)']);
-			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','6.0']);
-		}
-		// Mise à jour vers la version 7.0
-		if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '7.1', '<') ) {
-			// Déplacement des fichiers htaccess une seule fois
-			if(is_file(self::DATAMODULE.'data/.htaccess')){
-				$listDir = scandir(self::DATAMODULE.'data');
-				foreach($listDir as $element) {
-					if($element != "." && $element != "..") {
-						if(is_dir(self::DATAMODULE.'data/'. $element) && is_file(self::DATAMODULE.'data/.htaccess') ) {
-							copy( self::DATAMODULE.'data/.htaccess', self::DATAMODULE.'data/'. $element.'/.htaccess' );
+			// Mise à jour vers la version 5.0
+			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '5.0', '<') ) {
+				$this->setData(['module', $this->getUrl(0), 'texts',[
+					'configTextButtonBack' => 'Retour',
+					'configTextDateStart' => 'Début : ',
+					'configTextDateEnd' =>'Fin : '
+					]
+				]);
+				
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','5.0']);
+			}
+			// Mise à jour vers la version 5.2
+			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '5.2', '<') ) {	
+				// Mise à jour des .htaccess avec Apache2.4
+				copy( './module/agenda/ressource/data/agenda/module/adresses/.htaccess', './site/data/agenda/module/adresses/.htaccess');
+				copy( './module/agenda/ressource/data/agenda/module/data/.htaccess', './site/data/agenda/module/data/.htaccess');
+				copy( './module/agenda/ressource/file/source/agenda/adresses/.htaccess', './site/file/source/agenda/adresses/.htaccess');
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','5.2']);
+			}
+			// Mise à jour vers la version 6.0
+			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '6.0', '<') ) {	
+				// Couleur de la grille
+				$this->setData(['module', $this->getUrl(0),'config', 'gridColor', 'rgba(146, 52, 101, 1)']);
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','6.0']);
+			}
+			// Mise à jour vers la version 7.1
+			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '7.1', '<') ) {
+				// Déplacement des fichiers htaccess une seule fois
+				if(is_file(self::DATAMODULE.'data/.htaccess')){
+					$listDir = scandir(self::DATAMODULE.'data');
+					foreach($listDir as $element) {
+						if($element != "." && $element != "..") {
+							if(is_dir(self::DATAMODULE.'data/'. $element) && is_file(self::DATAMODULE.'data/.htaccess') ) {
+								copy( self::DATAMODULE.'data/.htaccess', self::DATAMODULE.'data/'. $element.'/.htaccess' );
+							}
 						}
 					}
+					unlink( self::DATAMODULE.'data/.htaccess');
 				}
-				unlink( self::DATAMODULE.'data/.htaccess');
+				// Modification d'emplacement des dossiers de données des pages agenda dans la langue ciblée
+				if(!is_dir(self::DATA_DIR. self::$i18n.'/data_module' ) ) mkdir(self::DATA_DIR. self::$i18n.'/data_module' );
+				if(!is_dir(self::DATA_DIR. self::$i18n.'/data_module/agenda')) mkdir(self::DATA_DIR. self::$i18n.'/data_module/agenda');
+				foreach( $this->getData(['page']) as $page => $value){
+					if( $value['moduleId'] === 'agenda' )
+						if( is_dir( self::DATAMODULE.'data/'.$page)) $this->custom_copy( self::DATAMODULE.'data/'.$page , self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$page);
+						if( is_dir( self::DATAMODULE.'data/'.$page.'_sauve')) $this->custom_copy( self::DATAMODULE.'data/'.$page.'_sauve' , self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$page.'_sauve');
+						if( is_dir( self::DATAMODULE.'data/'.$page.'_affiche')) $this->custom_copy( self::DATAMODULE.'data/'.$page.'_affiche' , self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$page.'_affiche');
+						if( is_dir( self::DATAMODULE.'data/'.$page.'_visible')) $this->custom_copy( self::DATAMODULE.'data/'.$page.'_visible' , self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$page.'_visible');
+				}
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','7.1']);
 			}
-			// Modification d'emplacement des dossiers de données des pages agenda dans la langue ciblée
-			if(!is_dir(self::DATA_DIR. self::$i18n.'/data_module' ) ) mkdir(self::DATA_DIR. self::$i18n.'/data_module' );
-			if(!is_dir(self::DATA_DIR. self::$i18n.'/data_module/agenda')) mkdir(self::DATA_DIR. self::$i18n.'/data_module/agenda');
-			foreach( $this->getData(['page']) as $page => $value){
-				if( $value['moduleId'] === 'agenda' )
-					if( is_dir( self::DATAMODULE.'data/'.$page)) $this->custom_copy( self::DATAMODULE.'data/'.$page , self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$page);
-					if( is_dir( self::DATAMODULE.'data/'.$page.'_sauve')) $this->custom_copy( self::DATAMODULE.'data/'.$page.'_sauve' , self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$page.'_sauve');
-					if( is_dir( self::DATAMODULE.'data/'.$page.'_affiche')) $this->custom_copy( self::DATAMODULE.'data/'.$page.'_affiche' , self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$page.'_affiche');
-					if( is_dir( self::DATAMODULE.'data/'.$page.'_visible')) $this->custom_copy( self::DATAMODULE.'data/'.$page.'_visible' , self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$page.'_visible');
+			// Mise à jour vers la version 7.3
+			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '7.3', '<') ) {	
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','7.3']);
 			}
-			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','7.1']);
 		}
 	}
 	
@@ -165,9 +174,6 @@ class agenda extends common {
 		} else {
 			// Lexique
 			include('./module/agenda/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_agenda.php');
-			// Mise à jour des données de module
-			$this->update();
-			
 			// Soumission du formulaire
 			if($this->isPost()) {
 				$notification = $text['agenda']['config'][6];
@@ -885,7 +891,7 @@ class agenda extends common {
 		// Lexique
 		include('./module/agenda/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_agenda.php');
 		// Mise à jour des données de module
-		if (null !== $this->getData(['module', $this->getUrl(0), 'config', 'versionData'])) $this->update();
+		if (null === $this->getData(['module', $this->getUrl(0), 'config', 'versionData']) || version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), self::VERSION, '<')) $this->update();
 		//Pour récupération des données ajax jquery date ou id 
 		$url = $_SERVER['REQUEST_URI'];
 		if (strpos($url,'/da:') !== false){

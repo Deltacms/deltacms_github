@@ -5,7 +5,7 @@
                 "feeds": true,
                 "feedsLabel": "Syndication RSS",
                 "itemsperPage": 4,
-                "versionData": "7.0"
+                "versionData": "7.2"
             },
             "texts": {
                 "NoComment": "Pas encore de commentaire",
@@ -14,6 +14,7 @@
                 "Maxi": "Commentaire avec maximum",
                 "Cara": "caractères",
                 "Comment": "commentaire",
+				"Comments": "commentaires",
                 "CommentOK": "Commentaire déposé",
                 "Waiting": "Commentaire déposé en attente d'approbation",
                 "ArticleNoComment": "Cet article ne reçoit pas de commentaire",
@@ -27,7 +28,7 @@
                 "ReadMore": "Lire la suite",
                 "Back": "Retour"
             },
-            "posts": {}
+            "posts": []
         },
         "deltacms": {
             "url": "https:\/\/deltacms.fr\/",
@@ -35,7 +36,6 @@
         },
         "contact": {
             "config": {
-                "button": "",
                 "captcha": true,
                 "group": 3,
                 "user": "",
@@ -47,12 +47,24 @@
                 "logoUrl": "",
                 "logoWidth": "40",
                 "maxSizeUpload": "1000000",
-                "versionData": "6.0",
+                "versionData": "6.2",
                 "uploadJpg": true,
                 "uploadPng": true,
                 "uploadPdf": false,
                 "uploadZip": false,
                 "uploadTxt": false
+			},
+			"texts": {
+				"button": "Envoyer",
+				"wrongCaptcha": "Captcha incorrect",
+				"formSubmitted": "Formulaire soumis",
+				"notImage": "La pièce jointe n'est pas une image",
+				"sizeExceeds": "La taille du fichier excède",
+				"notAllowed": "Ce type de fichier n'est pas autorisé",
+				"errorUploading": "Erreur pendant le téléversement du fichier",
+				"notPdf": "La pièce jointe n'est pas un document pdf",
+				"notZip": "La pièce jointe n'est pas un document zip",
+				"fillCaptcha": " Renseignez le Captcha "				
             },
             "data": [],
             "input": [
@@ -91,13 +103,15 @@
             "config": {
                 "previewLength": 100,
                 "resultHideContent": false,
-                "placeHolder": "Un ou plusieurs mots-clés séparés par un espace ou par +",
+                "placeHolder": "Un ou plusieurs mots-clés",
                 "submitText": "Rechercher",
-                "versionData": "3.5",
+                "versionData": "3.7",
                 "nearWordText": "Mots approchants",
                 "successTitle": "Résultat de votre recherche",
                 "failureTitle": "Aucun résultat",
-                "commentFailureTitle": "Avez-vous pensé aux accents"
+                "commentFailureTitle": "Avez-vous pensé aux accents",
+				"commentMatch": "correspondance",
+				"commentMatches": "correspondances"
             },
             "theme": {
                 "keywordColor": "rgba(229, 229, 1, 1)",
@@ -135,9 +149,33 @@
                 },
                 "order": []
             },
-			"config": {
-				"versionData": "4.5"
-			}
+            "config": {
+                "versionData": "4.7",
+				"texts": {
+					"backButton": "Retour",
+					"geolocation": "Géolocalisation",
+					"noAlbum": "Aucun album"
+				}
+            }
+        },
+        "recherche": {
+            "config": {
+                "previewLength": 100,
+                "resultHideContent": false,
+                "placeHolder": "Un ou plusieurs mots-clés",
+                "submitText": "Rechercher",
+                "versionData": "3.7",
+                "nearWordText": "Mots approchants",
+                "successTitle": "Résultat de votre recherche",
+                "failureTitle": "Aucun résultat",
+                "commentFailureTitle": "Avez-vous pensé aux accents ?",
+				"commentMatch": "correspondance",
+				"commentMatches": "correspondances"
+            },
+            "theme": {
+                "keywordColor": "rgba(229, 229, 1, 1)",
+                "style": "site\/data\/search\/recherche\/theme.css"
+            }
         }
     }
 }

@@ -80,5 +80,7 @@ if($module::$news):
 		</div>
 	<?php endif; ?>
 <?php else: ?>
-	<?php echo template::speech($text['news_view']['index'][1]); ?>
+	<?php 
+	$textNoNews = null === $this->getData(['module', $this->getUrl(0), 'config', 'texts', 'noNews']) ? $text['news_view']['config'][20] : $this->getData(['module', $this->getUrl(0), 'config', 'texts', 'noNews']);
+	echo template::speech($textNoNews); ?>
 <?php endif; ?>

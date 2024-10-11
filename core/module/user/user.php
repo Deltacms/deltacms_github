@@ -101,7 +101,11 @@ class user extends common {
 						"redirectPageId" => $this->getInput('userRedirectPageId', helper::FILTER_STRING_SHORT)
 					]
 				]);
-
+				// Création du dossier site/file/source/membersDirectory/id_membre_particulier
+				if( $check === true && $this->getData(['user', $userId, 'group']) === 1 ){
+					if( !is_dir('site/file/source/membersDirectory')) mkdir('site/file/source/membersDirectory',0705);
+					if( !is_dir('site/file/source/membersDirectory/'.$userId)) mkdir('site/file/source/membersDirectory/'.$userId,0705);
+				}				
 				// Envoie le mail
 				$sent = true;
 				if($this->getInput('userAddSendMail', helper::FILTER_BOOLEAN) && $check === true) {

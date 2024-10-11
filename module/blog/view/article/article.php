@@ -116,14 +116,34 @@ if( function_exists('datefmt_create') && function_exists('datefmt_format') && ex
 		<?php endif; ?>
 	</div>
 	
-	
-	<!--Bouton Retour sur la page active-->
-	<div class="col2">	
-		<?php echo template::button('blogArticleBack', [
-			'href' => helper::baseUrl() . $_SESSION['pageActive'],
+	<div class="col4">	
+		<?php
+		// Bouton suivant
+		if( $module::$urlPreviousArticle !== ''){
+			echo template::button('blogPreviousButton',[
+				'class' =>  'blogArticleButton',
+				'ico' => 'left-open',
+				'value' => '',
+				'href' => $module::$urlPreviousArticle
+			]);
+		}
+		// Bouton retour
+		$backUrl = isset($_SESSION['pageActive']) ? $_SESSION['pageActive'] : $this->getUrl(0);
+		echo template::button('blogArticleBack', [
+			'href' => helper::baseUrl() . $backUrl,
 			'ico' => 'left',
+			'class' => 'blogArticleButtonBack',
 			'value' => $this->getData(['module', $this->getUrl(0), 'texts', 'Back'])
-		]); ?>
+		]);
+		// Bouton précédent
+		if( $module::$urlNextArticle !== ''){
+			echo template::button('blogNextButton',[
+				'class' =>  'blogArticleButton',
+				'ico' => 'right-open',
+				'value' => '',
+				'href' => $module::$urlNextArticle
+			]);
+		} ?>
 	</div>
 	
 	
@@ -132,10 +152,9 @@ if( function_exists('datefmt_create') && function_exists('datefmt_format') && ex
 	<p><?php echo $this->getData(['module', $this->getUrl(0), 'texts', 'ArticleNoComment']); ?></p>
 <?php else: ?>
 	<h3 id="comment">
-		<?php  //$commentsNb = count($module::$comments); ?>
-		<?php $commentsNb = $module::$nbCommentsApproved; ?>
-		<?php $s =  $commentsNb === 1 ? '': 's' ?>
-		<?php echo $commentsNb > 0 ? $commentsNb . ' ' .  $this->getData(['module', $this->getUrl(0), 'texts', 'Comment']) . $s : $this->getData(['module', $this->getUrl(0), 'texts', 'NoComment']); ?>
+		<?php $commentsNb = $module::$nbCommentsApproved;
+		$textComment =  $commentsNb > 1 ? $this->getData(['module', $this->getUrl(0), 'texts', 'Comments']) :  $this->getData(['module', $this->getUrl(0), 'texts', 'Comment']);
+		echo $commentsNb > 0 ? $commentsNb . ' ' .  $textComment : $this->getData(['module', $this->getUrl(0), 'texts', 'NoComment']); ?>
 	</h3>
 	<?php echo template::formOpen('blogArticleForm'); ?>
 		<?php echo template::text('blogArticleCommentShow', [
@@ -186,7 +205,7 @@ if( function_exists('datefmt_create') && function_exists('datefmt_format') && ex
 			</div>
 			<div id="blogArticleContentAlarm"> </div>
 			<?php if($this->getUser('password') !== $this->getInput('DELTA_USER_PASSWORD')): ?>
-				<?php if( ($_SESSION['humanBot']==='bot') || $this->getData(['config', 'connect', 'captchaBot'])=== false ) { ?>
+				<?php if( $_SESSION['humanBot']==='bot' || $this->getData(['config', 'connect', 'captchaBot'])=== false ) { ?>
 					<div class="row">
 						<div class="col12">
 							<?php echo template::captcha('blogArticleCaptcha', ''); ?>

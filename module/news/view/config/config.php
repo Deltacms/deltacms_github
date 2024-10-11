@@ -1,6 +1,13 @@
 <?php
 // Lexique
 include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_news.php');
+// drapeau pour la langue d'origine ou la langue en traduction rédigée
+if( $this->getInput('DELTA_I18N_SITE') === '' || $this->getInput('DELTA_I18N_SITE')=== null || $this->getInput('DELTA_I18N_SITE') === 'base'){
+	$flag = $this->getData(['config', 'i18n', 'langBase']);
+}
+else{
+	$flag = $this->getInput('DELTA_I18N_SITE');
+}
 
 echo template::formOpen('newsConfig'); ?>
 	<div class="row">
@@ -104,6 +111,35 @@ echo template::formOpen('newsConfig'); ?>
 			</div>
 		</div>
 	</div>
+	
+	<div class="row">
+	<div class="col12">
+		<div class="block">
+			<div class="blockTitle"><?php echo $text['news_view']['config'][40].' '.template::flag($flag, '20px');?></div>
+			<div class="row">
+				<div class="col4">
+					<?php echo template::text('newsConfigTextsReadmore', [
+						'label' => $text['news_view']['config'][41],
+						'value' => $this->getData(['module', $this->getUrl(0), 'config','texts', 'readmore'])
+					]); ?>
+				</div>
+				<div class="col4">
+					<?php echo template::text('newsConfigTextsBack', [
+						'label' => $text['news_view']['config'][42],
+						'value' => $this->getData(['module', $this->getUrl(0), 'config', 'texts', 'back'])
+					]); ?>
+				</div>
+				<div class="col4">
+					<?php echo template::text('newsConfigTextsNoNews', [
+						'label' => $text['news_view']['config'][43],
+						'value' => $this->getData(['module', $this->getUrl(0), 'config', 'texts', 'noNews'])
+					]); ?>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+	
 	<div class="row <?php if($this->getUser('group') < self::GROUP_MODERATOR) echo 'displayNone'; ?> ">
 		<div class="col12">
 			<div class="block">

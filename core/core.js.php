@@ -250,7 +250,6 @@ core.start = function() {
 		var samesite = "samesite=lax";
 		var getUrl   = window.location;
 		var domain   = "domain=" + getUrl.hostname;
-		// var path     = "path=" + getUrl.pathname.split('/')[1];
 		var e = new Date();
 		e.setFullYear(e.getFullYear() + 1);
 		var expires = "expires=" + e.toUTCString();
@@ -262,18 +261,15 @@ core.start = function() {
 			// Traitement du retour de la checkbox
 			if ($("#cookiesExt").is(":checked")) {
 				// L'URL du serveur faut TRUE
-				//document.cookie = "DELTA_COOKIE_EXT_CONSENT=true;" + domain + ";" + path + ";" + samesite + ";" + expires;
-				document.cookie = "DELTA_COOKIE_EXT_CONSENT=true;" + domain + ";" + samesite + ";" + expires;
+				document.cookie = "DELTA_COOKIE_EXT_CONSENT=true;" + domain + ";path=/" + ";" + samesite + ";" + expires;
 			} else {
-				//document.cookie = "DELTA_COOKIE_EXT_CONSENT=false;" + domain + ";" + path + ";" + samesite + ";" + expires;
-				document.cookie = "DELTA_COOKIE_EXT_CONSENT=false;" + domain + ";" + samesite + ";" + expires;
+				document.cookie = "DELTA_COOKIE_EXT_CONSENT=false;" + domain + ";path=/" + ";" + samesite + ";" + expires;
 			}
 
 		}
 
 		// Stocke le cookie d'acceptation
-		//document.cookie = "DELTA_COOKIE_CONSENT=true;" + domain + ";" + path + ";" + samesite + ";" + expires;
-		document.cookie = "DELTA_COOKIE_CONSENT=true;" + domain + ";" + samesite + ";" + expires;
+		document.cookie = "DELTA_COOKIE_CONSENT=true;" + domain + ";path=/" + ";" + samesite + ";" + expires;
 	});
 
 
@@ -719,31 +715,57 @@ core.relativeLuminanceW3C = function(rgba) {
 	$(document).ready(function(){
 		const d = new Date();
 		time = d.getTime();
-		document.cookie = "evtO = " +  time  + ";SameSite=Strict";
+		document.cookie = "evtO = " +  time  + ";path=/" + ";SameSite=Strict";
 	});
 	/* Création d'un cookie à la validation de la checkbox 'je ne suis pas un robot'*/
 	$( ".commentHumanCheck" ).click(function() {
 		const d = new Date();
 		time = d.getTime();
-		document.cookie = "evtH = " +  time  + ";SameSite=Strict";
+		document.cookie = "evtH = " +  time  + ";path=/" + ";SameSite=Strict";
 	});
 	/* Création d'un cookie quand on arrive sur la checkbox 'je ne suis pas un robot' */
 	$( ".commentHumanCheck" ).mouseenter(function() {
 		const d = new Date();
 		time = d.getTime();
-		document.cookie = "evtA = " +  time  + ";SameSite=Strict";
+		document.cookie = "evtA = " +  time  + ";path=/" + ";SameSite=Strict";
 	});
 	/* Création d'un cookie quand on quitte la checkbox 'je ne suis pas un robot' */
 	$( ".commentHumanCheck" ).mouseleave(function() {
 		const d = new Date();
 		time = d.getTime();
-		document.cookie = "evtS = " +  time  + ";SameSite=Strict";
+		document.cookie = "evtS = " +  time  + ";path=/" + ";SameSite=Strict";
 	});
 	/* Création d'un cookie à la validation du formulaire */
 	$( ".commentHumanBotClose" ).click(function() {
 		const d = new Date();
 		time = d.getTime();
-		document.cookie = "evtV = " +  time  + ";SameSite=Strict";
+		document.cookie = "evtV = " +  time  + ";path=/" + ";SameSite=Strict";
 	});
-
+	
+	/* Inversion des couleurs du site par chargement dans main.php de theme_invert.css */
+	$('.invertColorButton').on('click', function() {
+		var cook =  document.cookie.split('; ');
+		cook.forEach((item, index) => {
+		  if(item ==='DELTA_COOKIE_INVERTCOLOR=true'){
+			document.cookie = "DELTA_COOKIE_INVERTCOLOR=false" + ";path=/" + ";SameSite=Strict";
+		  }
+		  if(item ==='DELTA_COOKIE_INVERTCOLOR=false'){
+			document.cookie = "DELTA_COOKIE_INVERTCOLOR=true" + ";path=/" +  ";SameSite=Strict";
+		  }
+		});
+	});
+	
+	/* Modification de la taille des caractères */
+	$('.increaseFontBtn').on('click', function() {
+		var cook =  document.cookie.split('; ');
+		cook.forEach((item, index) => {
+		  if(item.includes('DELTA_COOKIE_FONTSIZE')){
+			var value = parseInt(item.split('=')[1]);
+			// incrémenter la valeur du cookie et le mémoriser
+			value++;
+			if(value > 2 ) value=0;
+			document.cookie = "DELTA_COOKIE_FONTSIZE=" + value + ";path=/" +  ";SameSite=Strict";
+		  }
+		});
+	});
 });

@@ -2,10 +2,15 @@
 <?php
 // Lexique
 include('./module/agenda/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_agenda.php');
-
+// drapeau pour la langue d'origine ou la langue en traduction rédigée
+if( $this->getInput('DELTA_I18N_SITE') === '' || $this->getInput('DELTA_I18N_SITE')=== null || $this->getInput('DELTA_I18N_SITE') === 'base'){
+	$flag = $this->getData(['config', 'i18n', 'langBase']);
+}
+else{
+	$flag = $this->getInput('DELTA_I18N_SITE');
+}
 if(! is_dir(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0))){ $readonly = true;}else{ $readonly = false;}
 echo template::formOpen('configuration'); ?>
-
 <div class="row">
 	<div class="col2">
 		<?php echo template::button('config_retour', [
@@ -176,7 +181,7 @@ if( null === $this->getData(['module', $this->getUrl(0), 'texts', 'configTextDat
 if( null === $this->getData(['module', $this->getUrl(0), 'texts', 'configTextDateEnd'])) $this->setData(['module', $this->getUrl(0), 'texts', 'configTextDateEnd', $text['agenda_view']['config'][34]]);
 ?>
 <div class="block">
-	<div class="blockTitle"><?php echo $text['agenda_view']['config'][26]; ?></div>
+	<div class="blockTitle"><?php echo $text['agenda_view']['config'][26].' '.template::flag($flag, '20px'); ?></div>
 	<div class="row">
 		<div class="col4">
 			<?php echo template::text('configTextButtonBack', [

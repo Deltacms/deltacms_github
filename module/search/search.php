@@ -18,7 +18,7 @@
 
 class search extends common {
 
-	const VERSION = '3.5';
+	const VERSION = '3.7';
 	const REALNAME = 'Recherche';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -51,46 +51,48 @@ class search extends common {
 	 */
 	private function update() {
 
-
 		$versionData = $this->getData(['module',$this->getUrl(0),'config', 'versionData' ]);
 
 		// le module n'est pas initialisé
 		if ($versionData === NULL || !file_exists(self::DATADIRECTORY . $this->getUrl(0)  . '/theme.css')){
 			$this->init();
-		}
-		
-		$versionData = $this->getData(['module',$this->getUrl(0),'config', 'versionData' ]);
-		
-		// Mise à jour 2.2
-		if (version_compare($versionData, '2.2', '<') ) {
-			if (is_dir(self::DATADIRECTORY . 'pages/')) {
-				// Déplacer les données du dossier Pages
-				$this->copyDir(self::DATADIRECTORY . 'pages/' . $this->getUrl(0), self::DATADIRECTORY . $this->getUrl(0));
-				$this->removeDir(self::DATADIRECTORY . 'pages/');
+		} else {
+			include('./module/search/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_search.php');
+			// Mise à jour 2.2
+			if (version_compare($versionData, '2.2', '<') ) {
+				if (is_dir(self::DATADIRECTORY . 'pages/')) {
+					// Déplacer les données du dossier Pages
+					$this->copyDir(self::DATADIRECTORY . 'pages/' . $this->getUrl(0), self::DATADIRECTORY . $this->getUrl(0));
+					$this->removeDir(self::DATADIRECTORY . 'pages/');
+				}
+				// Mettre à jour la version
+				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '2.2' ]);
 			}
-			// Mettre à jour la version
-			$this->setData(['module',$this->getUrl(0),'config', 'versionData', '2.2' ]);
-		}
-		// Mise à jour 3.0
-		if (version_compare($versionData, '3.0', '<') ) {
-			// Nouveaux paramètres
-			$this->setData(['module', $this->getUrl(0), 'config', 'nearWordText', 'Mots approchants' ]);
-			$this->setData(['module', $this->getUrl(0), 'config', 'successTitle', 'Résultat de votre recherche' ]);
-			$this->setData(['module', $this->getUrl(0), 'config', 'failureTitle', 'Aucun résultat' ]);
-			$this->setData(['module', $this->getUrl(0), 'config', 'commentFailureTitle', 'Avez-vous pensé aux accents' ]);
-			// Mettre à jour la version
-			$this->setData(['module',$this->getUrl(0),'config', 'versionData', '3.0' ]);
-		}
-		// Mise à jour 3.2
-		if (version_compare($versionData, '3.2', '<') ) {
-			// Mettre à jour la version
-			if(is_dir('./module/search/ressource/')) $this->removeDir('./module/search/ressource/');
-			$this->setData(['module',$this->getUrl(0),'config', 'versionData', '3.2' ]);
-		}
-		// Mise à jour 3.4
-		if (version_compare($versionData, '3.5', '<') ) {
-			// Mettre à jour la version
-			$this->setData(['module',$this->getUrl(0),'config', 'versionData', '3.5' ]);
+			// Mise à jour 3.0
+			if (version_compare($versionData, '3.0', '<') ) {
+				// Nouveaux paramètres
+				$this->setData(['module', $this->getUrl(0), 'config', 'nearWordText', 'Mots approchants' ]);
+				$this->setData(['module', $this->getUrl(0), 'config', 'successTitle', 'Résultat de votre recherche' ]);
+				$this->setData(['module', $this->getUrl(0), 'config', 'failureTitle', 'Aucun résultat' ]);
+				$this->setData(['module', $this->getUrl(0), 'config', 'commentFailureTitle', 'Avez-vous pensé aux accents' ]);
+				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '3.0' ]);
+			}
+			// Mise à jour 3.2
+			if (version_compare($versionData, '3.2', '<') ) {
+				if(is_dir('./module/search/ressource/')) $this->removeDir('./module/search/ressource/');
+				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '3.2' ]);
+			}
+			// Mise à jour 3.5
+			if (version_compare($versionData, '3.5', '<') ) {
+				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '3.5' ]);
+			}
+			// Mise à jour 3.7
+			if (version_compare($versionData, '3.7', '<') ) {
+				// Nouveaux textes en frontend
+				$this->setData(['module', $this->getUrl(0), 'config', 'commentMatch', $text['search']['init'][9] ]);
+				$this->setData(['module', $this->getUrl(0), 'config', 'commentMatches', $text['search']['init'][10] ]);
+				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '3.7' ]);
+			}
 		}
 	}
 
@@ -101,40 +103,40 @@ class search extends common {
 		include('./module/search/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_search.php');
 
 		$fileCSS = self::DATADIRECTORY . $this->getUrl(0) . '/theme.css' ;
-
-		if ( null === $this->getData(['module', $this->getUrl(0)]) ) {
-			// Données du module
-			$this->setData(['module', $this->getUrl(0), 'config',[
-			        'previewLength'      => intval($text['search']['init'][0]),
-					'resultHideContent'  => boolval($text['search']['init'][1]),
-					'placeHolder'        => $text['search']['init'][2],
-					'submitText'         => $text['search']['init'][3],
-					'versionData'        => self::VERSION,
-					'nearWordText'		 => $text['search']['init'][5],
-					'successTitle'		 => $text['search']['init'][6],
-					'failureTitle'		 => $text['search']['init'][7],
-					'commentFailureTitle' => $text['search']['init'][8]
-			]]);
-			// Données de thème
-			$this->setData(['module', $this->getUrl(0), 'theme','keywordColor','rgba(229, 229, 1, 1)']);
-			$this->setData(['module', $this->getUrl(0), 'theme', 'style', self::DATADIRECTORY . $this->getUrl(0) . '/theme.css' ]);
-			// Recharger la page pour éviter une config vide
-			//header("Refresh:0");
-		}
+		$fileCSSInvert = self::DATADIRECTORY . $this->getUrl(0) . '/theme_invert.css' ;
+		
+		// Données du module
+		$this->setData(['module', $this->getUrl(0), 'config',[
+				'previewLength'      => intval($text['search']['init'][0]),
+				'resultHideContent'  => boolval($text['search']['init'][1]),
+				'placeHolder'        => $text['search']['init'][2],
+				'submitText'         => $text['search']['init'][3],
+				'versionData'        => self::VERSION,
+				'nearWordText'		 => $text['search']['init'][5],
+				'successTitle'		 => $text['search']['init'][6],
+				'failureTitle'		 => $text['search']['init'][7],
+				'commentFailureTitle' => $text['search']['init'][8],
+				'commentMatch' => $text['search']['init'][9],
+				'commentMatches' => $text['search']['init'][10]
+		]]);
+		// Données de thème
+		$this->setData(['module', $this->getUrl(0), 'theme','keywordColor','rgba(229, 229, 1, 1)']);
+		$this->setData(['module', $this->getUrl(0), 'theme', 'style', self::DATADIRECTORY . $this->getUrl(0) . '/theme.css' ]);
 
 		// Dossier de l'instance
-		if (!is_dir(self::DATADIRECTORY . $this->getUrl(0))) {
-			mkdir (self::DATADIRECTORY . $this->getUrl(0), 0755, true);
-		}
+		if (!is_dir(self::DATADIRECTORY . $this->getUrl(0))) mkdir (self::DATADIRECTORY . $this->getUrl(0), 0755, true);
 
-		// Check la présence de la feuille de style
-		if ( !file_exists(self::DATADIRECTORY . $this->getUrl(0) . '/theme.css')) {
-			// Générer la feuille de CSS
+		// Check la présence des feuilles de style
+		if ( !file_exists($fileCSS) || !file_exists($fileCSSInvert)) {
+			// Générer les feuilles de style
 			$style = '.keywordColor {background: ' . $this->getData([ 'module', $this->getUrl(0), 'theme', 'keywordColor'  ]) . ';}';
-			// Sauver la feuille de style
-			file_put_contents(self::DATADIRECTORY . $this->getUrl(0) . '/theme.css', $style );
+			$style_invert = '.keywordColor {background:' . helper::invertColor($this->getData([ 'module', $this->getUrl(0), 'theme', 'keywordColor'  ])) . ';}';
+			// Sauver les feuilles de style
+			file_put_contents($fileCSS , $style ); 
+			file_put_contents($fileCSSInvert , $style_invert );
 			// Stocker le nom de la feuille de style
 			$this->setData(['module', $this->getUrl(0) , 'theme', 'style', $fileCSS]);
+			$this->setData(['module', $this->getUrl(0) , 'theme', 'style_invert', $fileCSSInvert]);
 		}
 
 	}
@@ -153,15 +155,13 @@ class search extends common {
 		} else {
 			// Lexique
 			include('./module/search/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_search.php');
-
-			// Mise à jour des données de module
-			$this->update();
-
 			if($this->isPost())  {
-
 				// Générer la feuille de CSS
 				$style = '.keywordColor {background:' . $this->getInput('searchKeywordColor') . ';}';
+				$style_invert = '.keywordColor {background:' . helper::invertColor($this->getInput('searchKeywordColor')) . ';}';
+				if (!is_dir(self::DATADIRECTORY . $this->getUrl(0))) mkdir (self::DATADIRECTORY . $this->getUrl(0), 0755, true);
 				$success = file_put_contents(self::DATADIRECTORY . $this->getUrl(0) . '/theme.css' , $style );
+				$success = file_put_contents(self::DATADIRECTORY . $this->getUrl(0) . '/theme_invert.css' , $style_invert );
 				// Fin feuille de style
 
 				// Soumission du formulaire
@@ -174,11 +174,14 @@ class search extends common {
 					'nearWordText' => $this->getInput('searchNearWordText'),
 					'successTitle' => $this->getInput('searchSuccessTitle'),
 					'failureTitle' => $this->getInput('searchFailureTitle'),
-					'commentFailureTitle'=> $this->getInput('searchCommentFailureTitle')
+					'commentFailureTitle'=> $this->getInput('searchCommentFailureTitle'),
+					'commentMatch' => $this->getInput('searchCommentMatch'),
+					'commentMatches' => $this->getInput('searchCommentMatches')
 				]]);
 				$this->setData(['module', $this->getUrl(0), 'theme',[
 					'keywordColor' => $this->getInput('searchKeywordColor'),
 					'style' => $success ? self::DATADIRECTORY . $this->getUrl(0) . '/theme.css' : '',
+					'style_invert' => $success ? self::DATADIRECTORY . $this->getUrl(0) . '/theme_invert.css' : '',
 				]]);
 
 
@@ -204,8 +207,10 @@ class search extends common {
 	public function index() {
 
 		// Mise à jour des données de module
-		$this->update();
-
+		if( null === $this->getData(['module', $this->getUrl(0), 'config', 'versionData']) 
+			||  version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), self::VERSION, '<') 
+			|| !file_exists(self::DATADIRECTORY . $this->getUrl(0)  . '/theme.css') ) $this->update();
+			
 		if($this->isPost())  {
 			//Initialisations variables
 			$success = true;
@@ -217,43 +222,6 @@ class search extends common {
 			self::$motclef=$this->getInput('searchMotphraseclef');
 			// Variable de travail, on conserve la variable globale pour l'affichage du résultat
 			$motclef = self::$motclef;
-
-			// Traduction du mot clé si le script Google Trad est actif
-			// Le multi langue est sélectionné
-			if (  $this->getData(['config','i18n','scriptGoogle']) === true
-			AND
-				// et la traduction de la langue courante est automatique
-				(   isset($_COOKIE['googtrans'])
-					AND ( $this->getData(['config','i18n', substr($_COOKIE['googtrans'],4,2)]) === 'script'
-					// Ou traduction automatique
-						OR 	$this->getData(['config','i18n','autoDetect']) === true )
-				)
-			// Cas des pages d'administration
-			// Pas connecté
-			AND ( $this->getUser('password') !== $this->getInput('DELTA_USER_PASSWORD')
-				// Ou connecté avec option active
-				OR ($this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD')
-					AND $this->getData(['config','i18n','admin']) === true
-					)
-				)
-			AND !isset($_COOKIE['DELTA_I18N_SITE'])
-			)
-			{
-				// Découper la chaîne
-				$f = str_getcsv($motclef, ' ');
-				// Supprimer les espaces et les guillemets
-				$f = str_replace(' ','',$f);
-				$f = str_replace('"','',$f);
-				// Lire le cookie GoogTrans et déterminer les langues cibles
-				$language['origin'] = substr($_COOKIE['googtrans'],4,2);
-				$language['target'] = substr($_COOKIE['googtrans'],1,2);
-				if ($language['target'] !== $language['origin']) {
-					foreach ($f as $key => $value) {
-						$e = $this->translate($language['origin'],$language['target'],$value);
-						$motclef = str_replace($value,$e,$motclef);
-					}
-				}
-			}
 
 			// Suppression des mots < 3  caractères et des articles > 2 caractères de la chaîne $motclef
 			$arraymotclef = explode(' ', $motclef);
@@ -353,13 +321,17 @@ class search extends common {
 					self::$resultList= implode("", $r);
 				}
 			}
-
+			if( isset( $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] ) && $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] === 'true' ) { 
+				$style = 'style_invert';
+			} else {
+				$style = 'style';
+			} 			
 			// Valeurs en sortie, affichage du résultat
 			$this->addOutput([
 				'view' => 'index',
 				'showBarEditButton' => true,
 				'showPageContent' => !$this->getData(['module', $this->getUrl(0), 'config', 'resultHideContent']),
-				'style' => $this->getData(['module', $this->getUrl(0), 'theme', 'style'])
+				'style' => $this->getData(['module', $this->getUrl(0), 'theme', $style])
 			]);
 		} else {
 			// Valeurs en sortie, affichage du formulaire
@@ -406,13 +378,21 @@ class search extends common {
 				$d = $matches[0][0][1] - 50 < 0 ? 1 : $matches[0][0][1] - 50;
 				// Rechercher l'espace le plus proche
 				$d = $d >= 1 ? strpos($contenu,' ',$d) : $d;
+				// Calcul pour la découpe finale
+				if( $d + $this->getData(['module',$this->getUrl(0), 'config', 'previewLength']) < strlen($contenu)){
+					$f = strpos($contenu,' ',$d + $this->getData(['module',$this->getUrl(0), 'config', 'previewLength'])); 
+				} else {
+					$f = $this->getData(['module',$this->getUrl(0), 'config', 'previewLength']) + $d;
+				}
 				// Découper l'aperçu
-				$t = substr($contenu, $d ,$this->getData(['module',$this->getUrl(0), 'config', 'previewLength']));
+				//$t = substr($contenu, $d ,$this->getData(['module',$this->getUrl(0), 'config', 'previewLength']));
+				$t = substr($contenu, $d , $f-$d);
 				// Applique une mise en évidence
 				$t = preg_replace($keywords, '<span class= "keywordColor">\1</span>',$t);
 				// Sauver résultat
+				$occurence = count($matches[0]) === 1 ? $this->getData(['module', $this->getUrl(0), 'config', 'commentMatch']) : $this->getData(['module', $this->getUrl(0), 'config', 'commentMatches']);
 				$resultat .= '<p class="searchResult">'.$t.'...</p>';
-				$resultat .= '<p class="searchTitle">' . count($matches[0]) . (count($matches[0]) === 1 ? $text['search']['occurence'][0].'<p>' : $text['search']['occurence'][1].'<p>');
+				$resultat .= '<p class="searchTitle">' . count($matches[0]). ' ' . $occurence.'<p>';
 				//}
 				return ([
 					'matches' => count($matches[0]),
@@ -420,11 +400,5 @@ class search extends common {
 				]);
 			}
 		}
-	}
-
-	// Requête de traduction avec le script Google
-	private function translate($from_lan, $to_lan, $text) {
-		$arrayjson = json_decode(file_get_contents('https://translate.googleapis.com/translate_a/single?client=gtx&sl='.$from_lan.'&tl=fr&dt=t&q='.$text),true);
-		return $arrayjson[0][0][0];
 	}
 }

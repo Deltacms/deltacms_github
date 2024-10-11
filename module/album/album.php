@@ -6,7 +6,7 @@
  */
 setlocale(LC_NUMERIC,'English','en_US','en_US.UTF-8');
 class album extends common {
-	const VERSION = '4.5';
+	const VERSION = '4.7';
 	const REALNAME = 'Album Photo';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -29,21 +29,43 @@ class album extends common {
 		'sortGalleries' => self::GROUP_EDITOR,
 		'sortPictures' 	=> self::GROUP_EDITOR,
 		'edit' => self::GROUP_EDITOR,
+		'texts' => self::GROUP_EDITOR,
 		'index' => self::GROUP_VISITOR
 	];
 	
 	/**
 	 * Mise à jour du module
-	 * Appelée par la fonction index
+	 * Appelée par les fonctions index et config
 	*/
 	private function update() {	
-		// Versions < 4.4 : versionData absent
-		if( null === $this->getData(['module', $this->getUrl(0), 'config', 'versionData']) ) $this->setData(['module', $this->getUrl(0), 'config', 'versionData', '4.3']);
-
-		// Version 4.5
-		if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '4.5', '<') ) {
-			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','4.5']);
+		// Lexique
+		$param = '';
+		include('./module/album/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_album.php');	
+		// Versions < 4.4 : versionData absent ou données module absentes
+		if( null === $this->getData(['module', $this->getUrl(0), 'config', 'versionData']) ) {
+			$this->init();
+		} else {
+			// Version 4.7
+			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '4.7', '<') ) {
+				$this->setData(['module', $this->getUrl(0), 'config', 'texts', 'backButton', $text['album']['init'][0]]);
+				$this->setData(['module', $this->getUrl(0), 'config', 'texts', 'geolocation', $text['album']['init'][1]]);	
+				$this->setData(['module', $this->getUrl(0), 'config', 'texts', 'noAlbum', $text['album']['init'][2]]);				
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','4.7']);
+			}
 		}
+	}
+
+	/**
+	 * Initialisation 
+	*/
+	private function init() {
+		// Lexique
+		$param = '';
+		include('./module/album/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_album.php');		
+		$this->setData(['module', $this->getUrl(0), 'config', 'versionData', self::VERSION]);
+		$this->setData(['module', $this->getUrl(0), 'config', 'texts', 'backButton', $text['album']['init'][0]]);
+		$this->setData(['module', $this->getUrl(0), 'config', 'texts', 'geolocation', $text['album']['init'][1]]);
+		$this->setData(['module', $this->getUrl(0), 'config', 'texts', 'noAlbum', $text['album']['init'][2]]);
 	}
 
 	/**
@@ -59,25 +81,68 @@ class album extends common {
 				'access' => false
 			]);
 		} else {
-		if($_POST['response']) {
-			$data = explode('&',$_POST['response']);
-		$data = str_replace('galleryTable%5B%5D=','',$data);
-		for($i=0;$i<count($data);$i++) {
-			$this->setData(['module', $this->getUrl(0), $data[$i], [
-				'config' => [
-					'name' => $this->getData(['module',$this->getUrl(0),$data[$i],'config','name']),
-					'directory' => $this->getData(['module',$this->getUrl(0),$data[$i],'config','directory']),
-					'homePicture' => $this->getData(['module',$this->getUrl(0),$data[$i],'config','homePicture']),
-					'sort' => $this->getData(['module',$this->getUrl(0),$data[$i],'config','sort']),
-					'position' => $i
-				],
-					'legend' => $this->getData(['module',$this->getUrl(0),$data[$i],'legend']),
-					'order' => $this->getData(['module',$this->getUrl(0),$data[$i],'order'])
-			]]);
+			if($_POST['response']) {
+				$data = explode('&',$_POST['response']);
+				$data = str_replace('galleryTable%5B%5D=','',$data);
+				for($i=0;$i<count($data);$i++) {
+					$this->setData(['module', $this->getUrl(0), $data[$i], [
+						'config' => [
+							'name' => $this->getData(['module',$this->getUrl(0),$data[$i],'config','name']),
+							'directory' => $this->getData(['module',$this->getUrl(0),$data[$i],'config','directory']),
+							'homePicture' => $this->getData(['module',$this->getUrl(0),$data[$i],'config','homePicture']),
+							'sort' => $this->getData(['module',$this->getUrl(0),$data[$i],'config','sort']),
+							'position' => $i
+						],
+							'legend' => $this->getData(['module',$this->getUrl(0),$data[$i],'legend']),
+							'order' => $this->getData(['module',$this->getUrl(0),$data[$i],'order'])
+					]]);
+				}
 			}
 		}
 	}
-}
+
+	/**
+	 * Traduction de textes en langue frontend
+	 *
+	 */
+	public function texts() {
+		// Autorisation
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < album::$actions['texts'] ) {
+			// Valeurs en sortie
+			$this->addOutput([
+				'access' => false
+			]);
+		} else {
+			// Lexique
+			$param = '';
+			include('./module/album/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_album.php');
+
+			// Soumission du formulaire
+			if($this->isPost()) {	
+				$this->setData(['module', $this->getUrl(0), 'config', 'texts',[
+					'backButton' => $this->getInput('albumTextsBackButton',helper::FILTER_STRING_SHORT),
+					'geolocation' => $this->getInput('albumTextsGeolocation',helper::FILTER_STRING_SHORT),
+					'noAlbum' => $this->getInput('albumTextsNoAlbum',helper::FILTER_STRING_SHORT)
+				]]);
+				
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData', self::VERSION]);
+			
+				$this->addOutput([
+					'redirect' => helper::baseUrl() . $this->getUrl(0) . '/config',
+					'notification' => $text['album']['texts'][0],
+					'state' => true
+				]);
+			}
+			
+			$this->addOutput([
+				'title' => $text['album']['texts'][1],
+				'view' => 'texts',
+			]);
+		}		
+	}
+
 
 	/**
 	 * Tri de la liste des images
@@ -131,82 +196,81 @@ class album extends common {
 			// Lexique
 			$param = '';
 			include('./module/album/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_album.php');
-
-		//Affichage de l'album triée sauf le faux tableau 'config'
-		$g = $this->getData(['module', $this->getUrl(0)]);
-		unset($g['config']);
-		$p = helper::arrayCollumn(helper::arrayCollumn($g,'config'),'position');
-		asort($p,SORT_NUMERIC);
-		$galleries = [];
-		foreach ($p as $positionId => $item) {
-			$galleries [$positionId] = $g[$positionId];
-		}
-		// Traitement de l'affichage
-		if($galleries) {
-			foreach($galleries as $galleryId => $gallery) {
-			// pour ne pas prendre en compte la fausse galerie 'config'
-			if (isset($gallery['config']['directory']) && is_dir($gallery['config']['directory'])) {
-				if(count(scandir($gallery['config']['directory'])) === 2) {
-					$gallery['config']['directory'] = '<span class="galleryConfigError">' . $gallery['config']['directory'] . $text['gallery']['config'][0].'</span>';
+			//Affichage de l'album triée sauf le faux tableau 'config'
+			$g = $this->getData(['module', $this->getUrl(0)]);
+			unset($g['config']);
+			$p = helper::arrayCollumn(helper::arrayCollumn($g,'config'),'position');
+			asort($p,SORT_NUMERIC);
+			$galleries = [];
+			foreach ($p as $positionId => $item) {
+				$galleries [$positionId] = $g[$positionId];
+			}
+			// Traitement de l'affichage
+			if($galleries) {
+				foreach($galleries as $galleryId => $gallery) {
+				// pour ne pas prendre en compte la fausse galerie 'config'
+				if (isset($gallery['config']['directory']) && is_dir($gallery['config']['directory'])) {
+					if(count(scandir($gallery['config']['directory'])) === 2) {
+						$gallery['config']['directory'] = '<span class="galleryConfigError">' . $gallery['config']['directory'] . $text['gallery']['config'][0].'</span>';
+					}
+				}
+				// Erreur dossier supprimé
+				else {
+					$gallery['config']['directory'] = '<span class="galleryConfigError">' . $gallery['config']['directory'] . $text['gallery']['config'][1].'</span>';
+				}
+				// Met en forme le tableau
+				self::$galleries[] = [
+					template::ico('sort'),
+					$gallery['config']['name'],
+					str_replace('site/file/source/','',$gallery['config']['directory']),
+					template::button('galleryConfigEdit' . $galleryId , [
+						'href' => helper::baseUrl() . $this->getUrl(0) . '/edit/' . $galleryId  . '/' . $_SESSION['csrf'],
+						'value' => template::ico('pencil')
+					]),
+					template::button('galleryConfigDelete' . $galleryId, [
+						'class' => 'galleryConfigDelete buttonRed',
+						'href' => helper::baseUrl() . $this->getUrl(0) . '/delete/' . $galleryId . '/' . $_SESSION['csrf'],
+						'value' => template::ico('cancel'),
+						'disabled' => $this->getUser('group') >= self::GROUP_MODERATOR ? false : true
+					])
+				];
+				// Tableau des id des galleries pour le drag and drop
+				self::$galleriesId[] = $galleryId;				
 				}
 			}
-			// Erreur dossier supprimé
-			else {
-				$gallery['config']['directory'] = '<span class="galleryConfigError">' . $gallery['config']['directory'] . $text['gallery']['config'][1].'</span>';
+			// Soumission du formulaire
+			if($this->isPost()) {
+				if (!$this->getInput('galleryConfigFilterResponse')) {
+					$galleryId = helper::increment($this->getInput('galleryConfigName', helper::FILTER_ID, true), (array) $this->getData(['module', $this->getUrl(0)]));
+					$this->setData(['module', $this->getUrl(0), $galleryId, [
+						'config' => [
+							'name' => $this->getInput('galleryConfigName'),
+							'directory' => $this->getInput('galleryConfigDirectory', helper::FILTER_STRING_SHORT, true),
+							'homePicture' => NULL, // homePicture non préalablement définie
+							'sort' => self::SORT_ASC,
+							'position' => $this->getData(['module',$this->getUrl(0)]) !== null ? count($this->getData(['module',$this->getUrl(0)])) + 1 : 0
+						],
+							'legend' => [],
+							'order' => []
+					]]);
+					// Valeurs en sortie
+					$this->addOutput([
+						'redirect' => helper::baseUrl() . $this->getUrl(),
+						'notification' => $text['gallery']['config'][2],
+						'state' => true
+					]);
+				}
 			}
-			// Met en forme le tableau
-			self::$galleries[] = [
-				template::ico('sort'),
-				$gallery['config']['name'],
-				str_replace('site/file/source/','',$gallery['config']['directory']),
-				template::button('galleryConfigEdit' . $galleryId , [
-					'href' => helper::baseUrl() . $this->getUrl(0) . '/edit/' . $galleryId  . '/' . $_SESSION['csrf'],
-					'value' => template::ico('pencil')
-				]),
-				template::button('galleryConfigDelete' . $galleryId, [
-					'class' => 'galleryConfigDelete buttonRed',
-					'href' => helper::baseUrl() . $this->getUrl(0) . '/delete/' . $galleryId . '/' . $_SESSION['csrf'],
-					'value' => template::ico('cancel'),
-					'disabled' => $this->getUser('group') >= self::GROUP_MODERATOR ? false : true
-				])
-			];
-			// Tableau des id des galleries pour le drag and drop
-			self::$galleriesId[] = $galleryId;				
-			}
+			// Valeurs en sortie
+			$this->addOutput([
+				'title' => $text['gallery']['config'][3],
+				'view' => 'config',
+				'vendor' => [
+					'tablednd'
+				]
+			]);
 		}
-		// Soumission du formulaire d'ajout d'un album
-		if($this->isPost()) {
-			if (!$this->getInput('galleryConfigFilterResponse')) {
-				$galleryId = helper::increment($this->getInput('galleryConfigName', helper::FILTER_ID, true), (array) $this->getData(['module', $this->getUrl(0)]));
-				$this->setData(['module', $this->getUrl(0), $galleryId, [
-					'config' => [
-						'name' => $this->getInput('galleryConfigName'),
-						'directory' => $this->getInput('galleryConfigDirectory', helper::FILTER_STRING_SHORT, true),
-						'homePicture' => NULL, // homePicture non préalablement définie
-						'sort' => self::SORT_ASC,
-						'position' => $this->getData(['module',$this->getUrl(0)]) !== null ? count($this->getData(['module',$this->getUrl(0)])) + 1 : 0
-					],
-						'legend' => [],
-						'order' => []
-				]]);
-				// Valeurs en sortie
-				$this->addOutput([
-					'redirect' => helper::baseUrl() . $this->getUrl(),
-					'notification' => $text['gallery']['config'][2],
-					'state' => true
-				]);
-			}
-		}
-		// Valeurs en sortie
-		$this->addOutput([
-			'title' => $text['gallery']['config'][3],
-			'view' => 'config',
-			'vendor' => [
-				'tablednd'
-			]
-		]);
 	}
-}
 
 	/**
 	 * Suppression
@@ -225,34 +289,34 @@ class album extends common {
 			$param = '';
 			include('./module/album/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_album.php');
 
-		// $url prend l'adresse sans le token
-		// La galerie n'existe pas
-		if($this->getData(['module', $this->getUrl(0), $this->getUrl(2)]) === null) {
-			// Valeurs en sortie
-			$this->addOutput([
-				'access' => false
-			]);
-		}
-		// Jeton incorrect
-		if ($this->getUrl(3) !== $_SESSION['csrf']) {
-			// Valeurs en sortie
-			$this->addOutput([
-				'redirect' => helper::baseUrl() . $this->getUrl(0) . '/config',
-				'notification' => $text['gallery']['delete'][0]
-			]);
-		}
-		// Suppression
-		else {
-			$this->deleteData(['module', $this->getUrl(0), $this->getUrl(2)]);
-			// Valeurs en sortie
-			$this->addOutput([
-				'redirect' => helper::baseUrl() . $this->getUrl(0) . '/config',
-				'notification' => $text['gallery']['delete'][1],
-				'state' => true
-			]);
+			// $url prend l'adresse sans le token
+			// La galerie n'existe pas
+			if($this->getData(['module', $this->getUrl(0), $this->getUrl(2)]) === null) {
+				// Valeurs en sortie
+				$this->addOutput([
+					'access' => false
+				]);
+			}
+			// Jeton incorrect
+			if ($this->getUrl(3) !== $_SESSION['csrf']) {
+				// Valeurs en sortie
+				$this->addOutput([
+					'redirect' => helper::baseUrl() . $this->getUrl(0) . '/config',
+					'notification' => $text['gallery']['delete'][0]
+				]);
+			}
+			// Suppression
+			else {
+				$this->deleteData(['module', $this->getUrl(0), $this->getUrl(2)]);
+				// Valeurs en sortie
+				$this->addOutput([
+					'redirect' => helper::baseUrl() . $this->getUrl(0) . '/config',
+					'notification' => $text['gallery']['delete'][1],
+					'state' => true
+				]);
+			}
 		}
 	}
-}
 
 	/**
 	 * Liste des dossiers
@@ -266,14 +330,14 @@ class album extends common {
 				'access' => false
 			]);
 		} else {
-		// Valeurs en sortie
-		$filter = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-		$this->addOutput([
-			'display' => self::DISPLAY_JSON,
-			'content' => helper::scanDir(self::FILE_DIR.'source', $filter)
-		]);
+			// Valeurs en sortie
+			$filter = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+			$this->addOutput([
+				'display' => self::DISPLAY_JSON,
+				'content' => helper::scanDir(self::FILE_DIR.'source', $filter)
+			]);
+		}
 	}
-}
 
 	/**
 	 * Édition
@@ -423,11 +487,11 @@ class album extends common {
 }
 
 	/**
-	 * Accueil (deux affichages en un pour éviter une url à rallonge)
+	 * Accueil
 	 */
 	public function index() {
 		// Mise à jour des données de module
-		$this->update();
+		if ( null===$this->getData(['module', $this->getUrl(0), 'config', 'versionData']) || version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), self::VERSION, '<') ) $this->update();
 		// Images d'une galerie
 		if($this->getUrl(1)) {
 			// La galerie n'existe pas

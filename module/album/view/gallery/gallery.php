@@ -59,7 +59,7 @@ $get_location = albumHelper::gps_exif($picture);
 	}
 	$exif_data = "lat=".$lis[0]."&lon=".$lis[1]."&alt=".$lis[2]."&zoom=15";
 	?>
-	<div class="osm"><a href="module/album/plugins/map.php?<?=$exif_data?>" rel="data-lity" title="<?=$text['album_view']['gallery'][1]?>"><img src="module/album/plugins/leaflet/images/marker-icon.png" style="width: 20px; height: auto;" alt="GPS"></a></div>
+	<div class="osm"><a href="module/album/plugins/map.php?<?=$exif_data?>" rel="data-lity" title="<?=$this->getData(['module', $this->getUrl(0), 'config', 'texts', 'geolocation'])?>"><img src="module/album/plugins/leaflet/images/marker-icon.png" style="width: 20px; height: auto;" alt="GPS"></a></div>
 	<?php } ?>
 	</div>
 	<?php if($i % 6 === 0 OR $i === $picturesNb): ?>
@@ -75,7 +75,7 @@ $get_location = albumHelper::gps_exif($picture);
 			'class' => 'buttonGrey',
 			'href' => helper::baseUrl() . $this->getUrl(0),
 			'ico' => 'left',
-			'value' => $text['album_view']['gallery'][0]
+			'value' => $this->getData(['module', $this->getUrl(0), 'config', 'texts', 'backButton'])
 		]); ?>
 	</div>
 </div>

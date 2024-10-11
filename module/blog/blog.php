@@ -21,7 +21,7 @@
 
 class blog extends common {
 
-	const VERSION = '7.0';
+	const VERSION = '7.2';
 	const REALNAME = 'Blog';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -52,89 +52,134 @@ class blog extends common {
 
 	// Signature du commentaire
 	public static $editCommentSignature = '';
-
 	public static $comments = [];
-
 	public static $nbCommentsApproved = 0;
-
 	public static $commentsDelete;
 
 	// Signatures des commentaires déjà saisis
 	public static $commentsSignature = [];
-
 	public static $pages;
-
 	public static $users = [];
-
+	
+	// Boutons suivant et précédent dans les articles
+	public static $urlPreviousArticle = '';
+	public static $urlNextArticle = '';
 
 	/**
 	 * Mise à jour du module
 	 * Appelée par les fonctions index et config
 	 */
 	private function update() {	
-		// Version 5.0
-		if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '5.0', '<') ) {
-			$this->setData(['module', $this->getUrl(0), 'config', 'itemsperPage', 6]);
-			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','5.0']);
-		}
-		// Version 6.0
-		if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '6.0', '<') ) {
-			if( $this->getData(['config', 'i18n', 'langAdmin']) === 'en'){
-				$this->setData(['module', $this->getUrl(0), 'texts',[
-					'NoComment'  => 'No comment yet',
-					'Write'  => 'Write a comment',
-					'Name'  => 'Name',
-					'Maxi'  => 'Comment with maximum',
-					'Cara'  => 'characters',
-					'Comment'  => 'comment',
-					'CommentOK'  => 'Comment filed',
-					'Waiting'  => 'Comment submitted pending approval',
-					'ArticleNoComment' => 'This article does not receive comments',
-					'Connection' => 'Login',
-					'Edit' => 'Edit',
-					'Cancel' => 'Cancel',
-					'Send' => 'Send',
-					'TinymceMaxi' => 'You have reached the maximum of',
-					'TinymceCara' => 'characters left',
-					'TinymceExceed' => 'You were about to exceed the maximum of '
-				]]);			
+	
+		if( null === $this->getData(['module', $this->getUrl(0), 'config', 'versionData']) ) {
+			$this->init();
+		} else {
+			// Lexique
+			$param = 'blog';
+			include('./module/blog/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_blog.php');		
+			// Version 5.0
+			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '5.0', '<') ) {
+				$this->setData(['module', $this->getUrl(0), 'config', 'itemsperPage', 6]);
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','5.0']);
 			}
-			else{
-				$this->setData(['module', $this->getUrl(0), 'texts',[
-					'NoComment'  => 'Pas encore de commentaire',
-					'Write'  => 'Ecrire un commentaire',
-					'Name'  => 'Nom',
-					'Maxi'  => 'Commentaire avec maximum',
-					'Cara'  => 'caractères',
-					'Comment'  => 'commentaire',
-					'CommentOK'  => 'Commentaire déposé',
-					'Waiting'  => 'Commentaire déposé en attente d\'approbation',
-					'ArticleNoComment' => 'Cet article ne reçoit pas de commentaire',
-					'Connection' => 'Connexion',
-					'Edit' => 'Editer',
-					'Cancel' => 'Annuler',
-					'Send' => 'Envoyer',
-					'TinymceMaxi' => 'Vous avez atteint le maximum de',
-					'TinymceCara' => 'caractères restants',
-					'TinymceExceed' => 'Vous alliez dépasser le maximum de '
-				]]);
+			// Version 6.0
+			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '6.0', '<') ) {
+				if( $this->getData(['config', 'i18n', 'langAdmin']) === 'en'){
+					$this->setData(['module', $this->getUrl(0), 'texts',[
+						'NoComment'  => 'No comment yet',
+						'Write'  => 'Write a comment',
+						'Name'  => 'Name',
+						'Maxi'  => 'Comment with maximum',
+						'Cara'  => 'characters',
+						'Comment'  => 'comment',
+						'CommentOK'  => 'Comment filed',
+						'Waiting'  => 'Comment submitted pending approval',
+						'ArticleNoComment' => 'This article does not receive comments',
+						'Connection' => 'Login',
+						'Edit' => 'Edit',
+						'Cancel' => 'Cancel',
+						'Send' => 'Send',
+						'TinymceMaxi' => 'You have reached the maximum of',
+						'TinymceCara' => 'characters left',
+						'TinymceExceed' => 'You were about to exceed the maximum of '
+					]]);			
+				}
+				else{
+					$this->setData(['module', $this->getUrl(0), 'texts',[
+						'NoComment'  => 'Pas encore de commentaire',
+						'Write'  => 'Ecrire un commentaire',
+						'Name'  => 'Nom',
+						'Maxi'  => 'Commentaire avec maximum',
+						'Cara'  => 'caractères',
+						'Comment'  => 'commentaire',
+						'CommentOK'  => 'Commentaire déposé',
+						'Waiting'  => 'Commentaire déposé en attente d\'approbation',
+						'ArticleNoComment' => 'Cet article ne reçoit pas de commentaire',
+						'Connection' => 'Connexion',
+						'Edit' => 'Editer',
+						'Cancel' => 'Annuler',
+						'Send' => 'Envoyer',
+						'TinymceMaxi' => 'Vous avez atteint le maximum de',
+						'TinymceCara' => 'caractères restants',
+						'TinymceExceed' => 'Vous alliez dépasser le maximum de '
+					]]);
+				}
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','6.0']);
 			}
-			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','6.0']);
-		}
-		// Version 6.3
-		if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '6.3', '<') ) {
-			$this->setData(['module', $this->getUrl(0), 'texts', 'ReadMore', 'Lire la suite']);
-			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','6.3']);
-		}
-		// Version 7.0
-		if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '7.0', '<') ) {
-			$this->setData(['data_module', $this->getUrl(0), 'posts', $this->getData(['module', $this->getUrl(0), 'posts']) ]);
-			$this->deleteData(['module', $this->getUrl(0), 'posts']);
-			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','7.0']);
+			// Version 6.3
+			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '6.3', '<') ) {
+				$this->setData(['module', $this->getUrl(0), 'texts', 'ReadMore', $text['blog']['index'][26] ]);
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','6.3']);
+			}
+			// Version 7.0
+			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '7.0', '<') ) {
+				$this->setData(['data_module', $this->getUrl(0), 'posts', $this->getData(['module', $this->getUrl(0), 'posts']) ]);
+				$this->deleteData(['module', $this->getUrl(0), 'posts']);
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','7.0']);
+			}
+			// Version 7.2
+			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '7.2', '<') ) {
+				$this->setData(['module', $this->getUrl(0), 'texts', 'Comments', $text['blog']['index'][28] ]);
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','7.2']);
+			}
 		}
 	}
 
-
+	/**
+	 * Initialisation
+	 */
+	private function init(){
+		// Lexique
+		$param = 'blog';
+		include('./module/blog/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_blog.php');
+		$this->setData(['module', $this->getUrl(0), 'config',[
+			'feeds' 	 => false,
+			'feedsLabel' => '',
+			'itemsperPage' => 4,
+			'versionData' => self::VERSION
+		]]);
+		$this->setData(['module', $this->getUrl(0), 'texts',[
+			'NoComment'  => $text['blog']['index'][8],
+			'Write'  => $text['blog']['index'][9],
+			'Name'  => $text['blog']['index'][10],
+			'Maxi'  => $text['blog']['index'][11],
+			'Cara'  => $text['blog']['index'][12],
+			'Comment'  => $text['blog']['index'][13],
+			'CommentOK'  => $text['blog']['index'][14],
+			'Waiting'  => $text['blog']['index'][15],
+			'ArticleNoComment' => $text['blog']['index'][16],
+			'Connection' => $text['blog']['index'][17],
+			'Edit' => $text['blog']['index'][18],
+			'Cancel' => $text['blog']['index'][19],
+			'Send' => $text['blog']['index'][20],
+			'TinymceMaxi' => $text['blog']['index'][21],
+			'TinymceCara' => $text['blog']['index'][22],
+			'TinymceExceed' => $text['blog']['index'][23],
+			'ReadMore' => $text['blog']['index'][26],
+			'Back' => $text['blog']['index'][27],
+			'Comments' => $text['blog']['index'][28]
+		]]);	
+	}
 
 	/**
 	 * Flux RSS
@@ -236,7 +281,8 @@ class blog extends common {
 					'TinymceCara' => $this->getInput('blogTextsTinymceCara',helper::FILTER_STRING_SHORT),
 					'TinymceExceed' => $this->getInput('blogTextsTinymceExceed',helper::FILTER_STRING_SHORT),
 					'ReadMore' => $this->getInput('blogTextsReadMore',helper::FILTER_STRING_SHORT),
-					'Back' => $this->getInput('blogTextsBack',helper::FILTER_STRING_SHORT)
+					'Back' => $this->getInput('blogTextsBack',helper::FILTER_STRING_SHORT),
+					'Comments' => $this->getInput('blogTextsComments',helper::FILTER_STRING_SHORT)
 				]]);
 			
 				$this->addOutput([
@@ -556,9 +602,6 @@ class blog extends common {
 			// Lexique
 			$param = 'blog';
 			include('./module/blog/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_blog.php');
-
-			// Mise à jour des données de module
-			if( null === $this->getData(['module', $this->getUrl(0), 'config', 'versionData']) )$this->update();
 			// Soumission du formulaire
 			if($this->isPost()) {
 				$this->setData(['module', $this->getUrl(0), 'config',[
@@ -816,38 +859,8 @@ class blog extends common {
 		// Lexique
 		$param = 'blog';
 		include('./module/blog/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_blog.php');
-		// Installation ?
-		if( null === $this->getData(['module', $this->getUrl(0), 'config', 'versionData']) ){
-			$this->setData(['module', $this->getUrl(0), 'config',[
-				'feeds' 	 => false,
-				'feedsLabel' => '',
-				'itemsperPage' => 4,
-				'versionData' => self::VERSION
-			]]);
-			$this->setData(['module', $this->getUrl(0), 'texts',[
-				'NoComment'  => $text['blog']['index'][8],
-				'Write'  => $text['blog']['index'][9],
-				'Name'  => $text['blog']['index'][10],
-				'Maxi'  => $text['blog']['index'][11],
-				'Cara'  => $text['blog']['index'][12],
-				'Comment'  => $text['blog']['index'][13],
-				'CommentOK'  => $text['blog']['index'][14],
-				'Waiting'  => $text['blog']['index'][15],
-				'ArticleNoComment' => $text['blog']['index'][16],
-				'Connection' => $text['blog']['index'][17],
-				'Edit' => $text['blog']['index'][18],
-				'Cancel' => $text['blog']['index'][19],
-				'Send' => $text['blog']['index'][20],
-				'TinymceMaxi' => $text['blog']['index'][21],
-				'TinymceCara' => $text['blog']['index'][22],
-				'TinymceExceed' => $text['blog']['index'][23],
-				'ReadMore' => $text['blog']['index'][26],
-				'Back' => $text['blog']['index'][27]
-			]]);
-		} else{
-			// Mise à jour des données de module
-			$this->update();
-		}
+		// Installation ou mise à jour
+		if( null === $this->getData(['module', $this->getUrl(0), 'config', 'versionData']) || version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), self::VERSION, '<') ) $this->update();
 		// Affichage d'un article
 		if(
 			$this->getUrl(1)
@@ -887,7 +900,7 @@ class blog extends common {
 								$time3 = $_COOKIE['evtV'] - $_COOKIE['evtH']; // temps entre validation formulaire et click checkbox
 								$time4 = $_COOKIE['evtS'] - $_COOKIE['evtA']; // temps passé sur la checkbox
 								if( $time1 >= 5000 && $time2 >= 1000 && $time3 >=300 
-									&& $time4 >=300 && $this->getInput('blogInputBlue')==='' ) $detectBot = 'human';
+									&& $time4 >=100 && $this->getInput('blogInputBlue')==='' ) $detectBot = 'human';
 							}
 							// Bot présumé
 							if( $detectBot === 'bot') $_SESSION['humanBot']='bot';
@@ -994,7 +1007,23 @@ class blog extends common {
 					if ($this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'comment', $commentIds[$i],'approval']) === true ) {
 						self::$comments[$commentIds[$i]] = $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'comment', $commentIds[$i]]);
 					}
-				}					
+				}
+				
+				// Boutons précédent et suivant par ordre de parution
+				// Ids des articles par ordre de publication
+				$articleIds = $this->listPublishedArticles();
+				// Liste classée avec insertion d'une clef numérique et numéro de l'article visionné
+				$orderedListArticles = []; 
+				$numberArticle = '';
+				foreach( $articleIds as $key=>$title ){
+				  $orderedListArticles[$key][$title] = $this->getData(['data_module', $this->getUrl(0), 'posts', $title ]);
+				  if($title === $this->getUrl(1)) $numberArticle = $key;
+				}
+				// Bouton article précédent
+				if( $numberArticle!=='' && $numberArticle > 0 ) self::$urlPreviousArticle = helper::baseUrl().$this->getUrl(0).'/'.key($orderedListArticles[$numberArticle -1]);
+				// Bouton article suivant
+				if( $numberArticle!=='' && $numberArticle < count ($articleIds) -1 ) self::$urlNextArticle = helper::baseUrl().$this->getUrl(0).'/'.key($orderedListArticles[$numberArticle + 1]); 			
+				
 				// Valeurs en sortie (activation de tinymce déporté dans article.php)
 				$this->addOutput([
 					'showBarEditButton' => true,
@@ -1008,14 +1037,7 @@ class blog extends common {
 		// Liste des articles
 		else {
 			// Ids des articles par ordre de publication
-			$articleIdsPublishedOns = helper::arrayCollumn($this->getData(['data_module', $this->getUrl(0),'posts']), 'publishedOn', 'SORT_DESC');
-			$articleIdsStates = helper::arrayCollumn($this->getData(['data_module', $this->getUrl(0), 'posts']), 'state', 'SORT_DESC');
-			$articleIds = [];
-			foreach($articleIdsPublishedOns as $articleId => $articlePublishedOn) {
-				if($articlePublishedOn <= time() AND $articleIdsStates[$articleId]) {
-					$articleIds[] = $articleId;
-				}
-			}
+			$articleIds = $this->listPublishedArticles();
 			// Pagination
 			$pagination = helper::pagination($articleIds, $this->getUrl(), $this->getData(['module', $this->getUrl(0),'config', 'itemsperPage']));
 			// Liste des pages
@@ -1031,6 +1053,21 @@ class blog extends common {
 				'view' => 'index'
 			]);
 		}
+	}
+
+	/**
+	 * Retourne la liste des articles publiés par ordre de publication
+	 */
+	private function listPublishedArticles(){
+		$articleIdsPublishedOns = helper::arrayCollumn($this->getData(['data_module', $this->getUrl(0),'posts']), 'publishedOn', 'SORT_DESC');
+		$articleIdsStates = helper::arrayCollumn($this->getData(['data_module', $this->getUrl(0), 'posts']), 'state', 'SORT_DESC');
+		$articleIds = [];
+		foreach($articleIdsPublishedOns as $articleId => $articlePublishedOn) {
+			if($articlePublishedOn <= time() AND $articleIdsStates[$articleId]) {
+				$articleIds[] = $articleId;
+			}
+		}
+		return $articleIds;
 	}
 
 	/**

@@ -76,8 +76,8 @@ $text['blog_view']['edit'][23] = 'Editors = editors + administrators<br/> Member
 // For Tinymce and Flatpickr
 $text['blog_view']['edit'][24] = 'en_GB';
 $text['blog_view']['edit'][25] = 'default';
-$text['blog_view']['indext'][0] = 'Read more';
-$text['blog_view']['indext'][1] = 'No article';
+$text['blog_view']['index'][0] = 'Read more';
+$text['blog_view']['index'][1] = 'No article';
 $text['blog_view']['texts'][0] = 'Back';
 $text['blog_view']['texts'][1] = 'Adapt these texts into the language of your visitors';
 $text['blog_view']['texts'][2] = 'Save';
@@ -100,6 +100,7 @@ $text['blog_view']['texts'][20] = 'You were about to exceed the maximum of ';
 $text['blog_view']['texts'][25] = 'Version no.';
 $text['blog_view']['texts'][26] ='Read more';
 $text['blog_view']['texts'][27] ='Back';
+$text['blog_view']['texts'][28] ='comments';
 $text['blog_view']['article'][0] = 'en_GB';				
 $text['blog']['config'][0] = 'Saved changes';
 $text['blog']['config'][1] = 'Module configuration';	
@@ -130,6 +131,7 @@ $text['blog']['index'][24] = 'Incorrect ';
 $text['blog']['index'][25] = ' Repeat and fill in the Captcha ';
 $text['blog']['index'][26] = 'Read more';
 $text['blog']['index'][27] = 'Return';
+$text['blog']['index'][28] = 'comments';
 $text['blog']['edit'][0] = 'Unauthorised action';
 $text['blog']['edit'][1] = 'Changes saved';
 $text['blog']['delete'][0] = 'Unauthorised action';

@@ -2,6 +2,13 @@
 // Lexique
 $param = 'form_view';
 include('./module/form/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_form.php');
+// drapeau pour la langue d'origine ou la langue en traduction rédigée
+if( $this->getInput('DELTA_I18N_SITE') === '' || $this->getInput('DELTA_I18N_SITE')=== null || $this->getInput('DELTA_I18N_SITE') === 'base'){
+	$flag = $this->getData(['config', 'i18n', 'langBase']);
+}
+else{
+	$flag = $this->getInput('DELTA_I18N_SITE');
+}
 ?>
 <div id="formConfigCopy" class="displayNone">
 	<div class="formConfigInput">
@@ -70,13 +77,21 @@ include('./module/form/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) .
 				'value' => $text['form_view']['config'][39]
 			]); ?>
 		</div>
-		<div class="col3 offset3" <?php if($this->getUser('group') < self::GROUP_MODERATOR) echo '<div style="display: none;">'; ?>>
+		<div class="col2 offset2 <?php if($this->getUser('group') < self::GROUP_MODERATOR) echo 'displayNone';?>">
+			<?php echo template::button('formConfigTexts', [
+				'href' => helper::baseUrl() . $this->getUrl(0) . '/texts',
+				'ico' => 'pencil',
+				'value' => $text['form_view']['config'][43].' '.template::flag($flag, '20px')
+			]); ?>
+		</div>
+		<div class="col2 <?php if($this->getUser('group') < self::GROUP_MODERATOR) echo 'displayNone';?>">
 			<?php echo template::button('formConfigData', [
 				'href' => helper::baseUrl() . $this->getUrl(0) . '/data',
+				'ico' => 'gear',
 				'value' => $text['form_view']['config'][5]
 			]); ?>
 		</div>
-		<div class="col2 <?php if($this->getUser('group') < self::GROUP_MODERATOR) echo 'offset8'; ?>">
+		<div class="col2 <?php if($this->getUser('group') < self::GROUP_MODERATOR) echo 'offset6';?>">
 			<?php echo template::submit('formConfigSubmit',[
 				'value' => $text['form_view']['config'][30]
 			]); ?>
@@ -90,11 +105,7 @@ include('./module/form/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) .
 		<div class="col12">
 			<div class="block">
 				<div class="blockTitle"><?php echo $text['form_view']['config'][6]; ?></div>
-				<?php echo template::text('formConfigButton', [
-					'help' => $text['form_view']['config'][7],
-					'label' => $text['form_view']['config'][8],
-					'value' => $this->getData(['module', $this->getUrl(0), 'config', 'button'])
-				]); ?>
+
 				<div <?php if($this->getUser('group') < self::GROUP_MODERATOR) echo '<div style="display: none;">'; ?> >
 					<?php echo template::checkbox('formConfigMailOptionsToggle', true, $text['form_view']['config'][9], [
 						'checked' => (bool) $this->getData(['module', $this->getUrl(0), 'config', 'group']) ||

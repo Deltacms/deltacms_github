@@ -39,8 +39,11 @@ $text['news_view']['config'][36] = 'Text color';
 $text['news_view']['config'][37] = 'Heading color';
 $text['news_view']['config'][38] = 'Link color';
 $text['news_view']['config'][39] = 'Date and signature color';
-$text['news_view']['index'][0] = 'read more';
-$text['news_view']['index'][1] = 'No news.';
+$text['news_view']['config'][40] = 'Adapt these texts into the language of your visitors';
+$text['news_view']['config'][41] = 'Read more';
+$text['news_view']['config'][42] = 'Back';
+$text['news_view']['config'][43] = 'No news';
+
 $text['news_view']['index'][2] = ' Edit';
 $text['news_view']['add'][0] = 'Back';
 $text['news_view']['add'][1] = 'Save as draft';
@@ -56,9 +59,8 @@ $text['news_view']['add'][10] = 'Unpublish date';
 // For Tinymce and Flatpickr
 $text['news_view']['add'][12] = 'en_GB';
 $text['news_view']['add'][13] = 'default';
-$text['news_view']['article'][0] = ' at ';
+
 $text['news_view']['article'][1] = 'Edit';
-$text['news_view']['article'][2] = 'Back';
 $text['news_view']['edit'][0] = 'Back';
 $text['news_view']['edit'][1] = 'Save as draft';
 $text['news_view']['edit'][2] = 'Publish';
@@ -73,7 +75,6 @@ $text['news_view']['edit'][10] = 'Unpublish date';
 // For Tinymce and Flatpickr
 $text['news_view']['edit'][12] = 'en_GB';
 $text['news_view']['edit'][13] = 'default';
-
 $text['news']['add'][0] = 'New news created';
 $text['news']['add'][1] = 'New news';
 $text['news']['config'][0] = 'Changes saved';

@@ -82,3 +82,17 @@
 .blogInner{
 	display: inline-block;
 }
+
+/* Boutons suivant précédent et retour */
+.blogArticleButton{
+	width: 10%;
+}
+.blogArticleButtonBack{
+	width: 35%;
+	margin: 0 3% 0 3%;
+}
+@media screen and (max-width: 799px) {
+	.blogArticleButtonBack{
+		width: 50%;
+	}
+}

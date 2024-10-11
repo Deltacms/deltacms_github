@@ -19,7 +19,7 @@ $text['news_view']['config'][16] = 'Titre';
 $text['news_view']['config'][17] = 'Publication';
 $text['news_view']['config'][18] = 'Dépublication';
 $text['news_view']['config'][19] = 'Etat';
-$text['news_view']['config'][20] = 'Aucune news.';
+$text['news_view']['config'][20] = 'Aucune news';
 $text['news_view']['config'][21] = 'Version n°';
 $text['news_view']['config'][22] = 'Arrondi des angles';
 $text['news_view']['config'][23] = 'Ombre sur les bords';
@@ -39,8 +39,11 @@ $text['news_view']['config'][36] = 'Couleur du texte';
 $text['news_view']['config'][37] = 'Couleur des titres';
 $text['news_view']['config'][38] = 'Couleur des liens';
 $text['news_view']['config'][39] = 'Couleur de la date et de la siganture';
-$text['news_view']['index'][0] = 'lire la suite';
-$text['news_view']['index'][1] = 'Aucune news.';
+$text['news_view']['config'][40] = 'Adapter ces textes dans la langue de vos visiteurs';
+$text['news_view']['config'][41] = 'Lire la suite';
+$text['news_view']['config'][42] = 'Retour';
+$text['news_view']['config'][43] = 'Aucune news';
+
 $text['news_view']['index'][2] = ' Editer';
 $text['news_view']['add'][0] = 'Retour';
 $text['news_view']['add'][1] = 'Enregistrer en brouillon';
@@ -56,9 +59,8 @@ $text['news_view']['add'][10] = 'Date de dépublication';
 // Pour Tinymce et Flatpickr
 $text['news_view']['add'][12] = 'fr_FR';
 $text['news_view']['add'][13] = 'fr';
-$text['news_view']['article'][0] = ' à ';
+
 $text['news_view']['article'][1] = 'Editer';
-$text['news_view']['article'][2] = 'Retour';
 $text['news_view']['edit'][0] = 'Retour';
 $text['news_view']['edit'][1] = 'Enregistrer en brouillon';
 $text['news_view']['edit'][2] = 'Publier';

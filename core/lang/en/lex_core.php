@@ -1,10 +1,8 @@
 <?php
 // Lexique du module du coeur core.php et core.js.php en anglais
-$text['core']['addRequiredInputNotices'][0] = 'Mandatory';
 $text['core']['showmenu'][0] = 'Manage files';
 $text['core']['showmenu'][1] = 'Manage my account';
 $text['core']['showmenu'][2] = 'Logout';
-$text['core']['showNotification'][0] = 'Unable to submit the form as it contains errors';
 $text['core']['showNotification'][1] = 'Missing data, restoration of ';
 $text['core']['showBar'][0] = 'Choose a page';
 $text['core']['showBar'][1] = 'Orphan pages';
@@ -31,13 +29,15 @@ $text['core']['router'][3] = 'Access denied';
 $text['core']['router'][4] = 'You are not authorised to view this page (error 403)';
 $text['core']['router'][5] = 'Page unavailable';
 $text['core']['router'][6] = 'The requested page does not exist or cannot be found (error 404)';
-$text['core']['showComment'][1] = 'Robot detected';
 $text['core']['showComment'][2] = 'Subject';
 $text['core']['showComment'][3] = 'Comment on the page ';
-$text['core']['showComment'][4] = 'Form submitted';
-$text['core']['showComment'][5] = 'Failed to submit form';
-$text['core']['showComment'][6] = 'No comments yet';
 $text['core']['showComment'][7] ='en_GB';
+$text['core']['showMemberFile'][0] = 'Files for ';
+$text['core']['showMemberFile'][1] = 'No file';
+$text['core']['showMemberFile'][2] = 'Refresh file list';
+$text['core']['showMemberFile'][3] = 'Download this file -> right click - save link target';
+$text['core']['showMemberFile'][4] = 'Show this file';
+$text['core']['showMemberFile'][5] = 'Download file: ';
 // core.js.php
 $text['core_js'][0] = "Updating ?";
 // Select File
