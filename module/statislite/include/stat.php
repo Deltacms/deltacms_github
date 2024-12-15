@@ -112,7 +112,11 @@ if( file_exists($fichiers_json.'filtre_primaire.json')){
 			else{
 				$type = 'ip';
 			}
-			$fp['robots'][$type] = $fp['robots'][$type] + 1;
+			if( isset($fp['robots'][$type])) {
+				$fp['robots'][$type] = $fp['robots'][$type] + 1;
+			} else {
+				$fp['robots'][$type] = 1;
+			}
 		}
 		$_SESSION['filtrage'] = $resultat;
 	}

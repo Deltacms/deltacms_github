@@ -740,10 +740,11 @@ function fix_filename($str, $config, $is_folder = false)
 
 	if ($config['transliteration'])
 	{
-		if (!mb_detect_encoding($str, 'UTF-8', true))
+		$encodage = mb_detect_encoding($str, ['ISO-8859-15', 'ISO-8859-1', 'ISO-8859-5', 'ASCII', 'WINDOWS-1252', 'UTF-8'], true);
+		if ($encodage != 'UTF-8') 
 		{
-			$str = utf8_encode($str);
-		}
+			$str = mb_convert_encoding($str, 'UTF-8', $encodage);
+		}		
 		if (function_exists('transliterator_transliterate'))
 		{
 			$str = transliterator_transliterate('Any-Latin; Latin-ASCII', $str);

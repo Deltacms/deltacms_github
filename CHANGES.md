@@ -1,12 +1,35 @@
 # Changelog
 
+## Version 5.2.01 de Deltacms
+- Modifications :
+	- Suppression de fonctions dépréciées par php 8.1, 8.2 et 8.3. Deltacms est compatible avec php 8.3,
+	- Commentaires de page et de blog : les modérateurs peuvent les éditer pour par exemple saisir une réponse,
+	- Module du coeur / addon : suppression des fonctions export et import,
+	- Coeur : amélioration de la prise en compte des informations de localisation du serveur,
+	- Nouvelles informations en configuration du site /  configuration : prise en compte du format avif, locale actuelle,
+	- Filemanager, modules blog et album : les images au format avif et webp animé sont autorisées.
+- Correction :
+	- Correction de 2 textes en espagnol et en anglais dans la partie configuration du site / localisation,
+	- Site en maintenance / login : l'appui sur le bouton "Annuler" provoquait un warning,
+	- Commentaires de page : l'export csv est fonctionnel.
+- Sur le site :
+	- Geophoto en version 2.6 :
+		- diminution d'1 point des zooms de la carte CyclOSM
+		- édition du texte descriptif avec tinymce, dans toutes les langues
+		- ajout des surcouches ombrage et pente IGN fr
+		- le thème de la trace s'affiche dans la fenêtre du sélecteur
+		- centrage du sélecteur dans la page et amélioration de son style
+		- ajout du contrôle de l'échelle des cartes
+		- le bouton "afficher ou cacher la galerie" est plus grand, évitant l'affichage sur 2 lignes du texte par défaut
+	- Vidéo : Nouveau module de type galerie, recherche des vidéos mp4 et webm dans un dossier défini, les affiche en vignette, avec ou sans image poster, et les lit dans la lightbox du CMS.
+
 ## Version 5.1.02 de Deltacms
 - Modifications :
 	- Page / Edition : si le groupe requis pour accéder à la page est 'Membre', 2 nouvelles options sont disponibles :
 		- Visibilité de la page pour tous les membres ou pour un membre particulier (les éditeurs, modérateurs, administrateurs ont accès à la page),
 		- Affichage de documents ou de liens dans la page, visibles uniquement par le ou les membres. Les fichiers sont à placer dans le dossier 'site/file/source/membersDirectory/identifiant_du_membre'.
 	- Commentaires de page : remplissage automatique du champ 'Nom ou pseudo' pour les utilisateurs connectés, les notifications comme 'Commentaire soumis' sont traduisibles dans la langue de vos visiteurs,
-	- Agenda 7.3, Album 4.7, Blog 7.2, News 5.2, Search 3.7, Form 6.2 : tous les textes affichés par le CMS, comme 'Retour', 'Lire la suite', sont traduisibles dans la langue de vos visiteurs. 
+	- Agenda 7.3, Album 4.7, Blog 7.2, News 5.2, Search 3.7, Form 6.2 : tous les textes affichés par le CMS, comme 'Retour', 'Lire la suite', sont traduisibles dans la langue de vos visiteurs.
 	  Un drapeau du pays indique la langue ciblée,
 	- Configuration / localisation : internationalisation des messages "Obligatoire" et "Impossible de soumettre..." utilisés dans plusieurs modules.
 - Correction :
@@ -35,7 +58,7 @@
 	- Module Sondage 2.1 : amélioration du fonctionnement lorsque l'option 'validation de la participation par courriel' est choisie,
 	- Module Géo Photo 2.0 : augmentation du choix de cartes (on passe de 2 à 7 cartes), ajout des surcouches rando, cyclo, vtt, accès et possibilité de masquer la trace GPS,
 	- Attention le module Gallery ne sera plus maintenu à partir du 1/1/2025, on vous conseille de migrer vers le module Album inclus dans le zip.
-	
+
 ## Version 5.1.00 de Deltacms
 - Modifications :
 	- Modules Blog 7.0 /  Form 6.0 / News 5.0 / Agenda 7.1 / Statislite 5.0 :
@@ -53,7 +76,7 @@
 - Modifications :
 	- animation et réduction du panneau cookies,
 	- édition avec Tinymce : nouveaux templates pour insérer un bloc ou une image en pleine largeur quelque soit l'écran et un bloc de texte sans titre,
-	- configuration / connexion : le captcha à la connexion est toujours de type opération, 
+	- configuration / connexion : le captcha à la connexion est toujours de type opération,
 	  le captcha comportemental reste disponible pour les autres usages (blog, formulaire, commentaires de page,...)
 - Correction :
 	- gestion des langues / copie d'une page : si la page d'accueil est absente, une autre page est utilisée pour l'url par défaut.
@@ -72,7 +95,7 @@
 	- Theme / Bannière / option contenu personnalisé : les couleurs dans l'éditeur Tinymce sont celles réglées dans cette option.
 - Sur le site :
 	- Snipcart V30 : mise à jour indispensable pour compatibilité avec Deltacms 5.0.01
-	
+
 ## Version 4.5.04 de Deltacms
 - Modifications :
 	- Agenda 6.0 : la couleur de la grille est réglable en configuration,
@@ -88,7 +111,7 @@
 ## Version 4.5.03 de Deltacms
 - Modifications :
 	- Mise à jour des icônes,
-	- Gabarits de page : Color box, une boîte colorée, sans marge en petit écran, couleurs paramétrables dans l'éditeur CSS, 
+	- Gabarits de page : Color box, une boîte colorée, sans marge en petit écran, couleurs paramétrables dans l'éditeur CSS,
 	- Thème / Editeur CSS : ajout d'une pipette à couleurs et d'une popup de recherche dans l'éditeur,
 	- Album Photo en version 4.5 : mise à jour des fichiers d'aide et du tri des galeries, prise en compte du nouveau jeu d'icônes
 	- Form 5.0 : Saisie et mise en forme des messages avec Tinymce,
@@ -114,7 +137,7 @@
 	- Une troisième langue d'administration est disponible : espagnol / castillan,
 	- Thème / Menu : le menu en petit écran (burger) dispose maintenant de ses propres paramètres,
 	- Modules du coeur et de page : renforcement de la sécurité,
-	- Module de type galerie: 'Album' remplace 'Gallery', les vignettes respectent le format des photos, 'Album' permet de géo-localiser sur quatre cartes disponibles les photos qui intègrent la balise EXIF GPS, et de donner leur altitude 
+	- Module de type galerie: 'Album' remplace 'Gallery', les vignettes respectent le format des photos, 'Album' permet de géo-localiser sur quatre cartes disponibles les photos qui intègrent la balise EXIF GPS, et de donner leur altitude
 	- Module mis à jour : Gallery n'est plus distribué dans le zip d'installation ou dans les mises à jour en ligne. La version 4.4 est disponible en téléchargement sur https://deltacms.fr/modules, la mise à jour est conseillée,
 	- Langues : la traduction automatique est supprimée, ce qui parachève la dégooglisation de Deltacms,
 	- Edition de page / emplacement dans le menu : une page désactivée est signalée par le curseur 'not-allowed' et par une typographie italique en petit écran, son lien est inactif,
@@ -126,7 +149,7 @@
 	- Theme / Footer : amélioration, 'Qui est en ligne ?' s'affiche dans la langue de rédaction du site avec les labels réglables dans Configuration / Localisation.
 	- Scripts : les fichiers body.inc.html et head.inc.html sont renommés body.inc.php et head.inc.php,
 	- Modules mis à jour : Snipcart, Modèle, Galerie GPS, Gallery sont disponible en téléchargement sur https://deltacms.fr/modules, la mise à jour est conseillée.
-- Correction : 
+- Correction :
 	- Langues : la langue originale de rédaction du site choisie à l'installation peut être modifiée
 	- Slider 4.8 / Configuration : les liens sur les images étaient modifiés au changement de l'ordre des pages.
 
@@ -134,14 +157,14 @@
 - Modifications :
 	- Changement d'hébergeur pour les vidéos,
 	- Suspension de la traduction automatique.
-	
+
 ## Version 4.4.09 de Deltacms
-- Corrections : 
+- Corrections :
 	- Statislite / configuration : erreur qui effaçait l'information 'configuration validée',
 	- Thème / header : bannière sur page d'accueil seulement, correction.
 
 ## Version 4.4.08 de Deltacms
-- Correction : 
+- Correction :
 	- Thème / bannière : perte de contrôle du thème si la case 'Masquer la bannière en écran réduit' était décochée.
 
 ## Version 4.4.07 de Deltacms
@@ -149,9 +172,9 @@
 	- Thème / Gestion : possibilité de saisir un nom lors de la sauvegarde ou de l'export d'un thème,
 	- Masquage des commentaires dans le layout,
 	- Thème / bannière : sur petit écran possibilité de configurer la bannière même quand elle est masquée en petit écran,
-- Corrections : 
+- Corrections :
 	- Thème / menu : problème de défilement du menu sur petit écran quand il était hors du site et fixe,
-	- Thème / menu / configuration : erreur qui modifiait l'ordre d'affichage des blocs en petit écran,	 
+	- Thème / menu / configuration : erreur qui modifiait l'ordre d'affichage des blocs en petit écran,
 
 ## Version 4.4.06 de Deltacms
 - Modifications :
@@ -159,7 +182,7 @@
 	- Réécriture du layout, l'affichage des pages est plus rapide,
 	- Module Form : un brouillon trop ancien est effacé pour détruire les traces de robots malveillants,
 	- Configuration / configuration : message de confirmation avant une mise à jour de DeltaCMS.
-- Corrections : 
+- Corrections :
 	- Module Form : messages liés au captcha,
 	- Thème / menu : l'aperçu en direct pendant sa configuration est amélioré,
 	- Configuration / configuration : lien du bouton Réinstaller neutralisé si le bouton est désactivé.
@@ -170,7 +193,7 @@
 	- Le fichier pdf pour les informations de debug est remplacé par un copier / coller assisté,
 	- Thème / menu : modification de la largeur du menu si la bannière est au dessus du site et limitée au site, améliorations,
 	- Thème / bannière : amélioration de l'affichage de la bannière animée.
-- Corrections : 
+- Corrections :
 	- Initialisation d'une variable utilisée dans la capture d'écran,
 	- Encodage de certaines pages de configuration de module.
 
@@ -181,7 +204,7 @@
 	- Modules de page / thème : le thème des modules de page est maintenant modifiable par custom.css,
 	- Site fluide sur petit écran : nouveau seuil à 800px, nettoyage et réorganisation du fichier css principal,
 	- Configuration / configuration : modification de la mise à jour automatique pour prendre en compte les incompatibilités du serveur.
-- Corrections : 
+- Corrections :
 	- Module Form : en absence de champ 'File' un fichier fantôme était émis, logo associé au message compatible avec androïd,
 	- Thème / gestion / sauvegarde : le dossier et les images de la bannière animée sont sauvegardés dans le zip.
 
@@ -191,18 +214,18 @@
 	- Configuration / connexion : nouvelle option permettant de dévoiler le mot de passe,
 	- Module News : amélioration de l'affichage de l'aperçu,
 	- Configuration / référencement : les données meta propres à Facebook, insérées dans le head de la page, sont maintenant optionnelles.
-- Corrections : 
+- Corrections :
 	- Theme / footer : sélection du template sur une colonne et différents aperçus,
 	- Module Agenda : changement de nom du dossier xxxx_affiche quand le nom de la page est modifié.
 
 ## Version 4.4.02 de Deltacms
 - Modifications :
 	- mise en conformité W3C des blocs utilisés en édition et en administration,
-	- modification du panneau cookie, 
+	- modification du panneau cookie,
 	- mise à jour des mentions légales,
 	- modification de la redirection aprés une mise à jour de Deltacms,
 	- aide en ligne sous forme de vidéos pour les 9 modules de page Agenda, Slider, Statislite, Blog, Form, Gallery, News, Redirection, Search.
-- Corrections : 
+- Corrections :
 	- gestion des utilisateurs : description des droits éditeur et modérateur.
 
 ## Version 4.4.01 de Deltacms
@@ -212,18 +235,18 @@
 	- Nouvelle option dans l'édition d'une page, permissions : sélection du groupe requis pour modifier la page,
 	- Modules Gallery et Slider, sélection du dossier : seuls les dossiers incluant au moins une image sont proposés et exclusion de certains dossiers
 	- Nettoyage : suppression de fichiers inutiles (2.5Mo),
-- Corrections : 
-	- Affichage du sous-menu avec un alignement du contenu à droite : il y avait un décalage du site quand les pages situées à la droite du menu possédaient des pages enfants.  
+- Corrections :
+	- Affichage du sous-menu avec un alignement du contenu à droite : il y avait un décalage du site quand les pages situées à la droite du menu possédaient des pages enfants.
 	- Affichage du menu : quand le menu comprenait de nombreux items certains pouvaient être masqués dans une fenêtre de taille moyenne.
 
 ## Version 4.3.08 de Deltacms
 - Modifications :
-	- Captcha : nouvelle option 'Captcha simple pour les humains', le Captcha se réduit à une simple case à cocher, une analyse comportementale 
+	- Captcha : nouvelle option 'Captcha simple pour les humains', le Captcha se réduit à une simple case à cocher, une analyse comportementale
 	qualifie le type de visiteur,
 	- Captcha : nouveau captcha, suppression des options captcha renforcé et type de captcha,
 	- Tinymce / image : nouvelle option permettant d'afficher un titre sous l'image,
 	- News 4.3 prise en compte de l'option titre sous l'image,
-- Corrections : 
+- Corrections :
 	- Configuration / configuration : 2 'textarea' avaient le même identifiant.
 	- News 4.3 déplacement de l'initialisation de tinymce et flatpickr,
 	- Blog 6.4 déplacement de l'initialisation de tinymce et flatpickr,
@@ -333,7 +356,7 @@
 	- Agenda : si la langue originale du site n'est pas reconnue, la langue d'administration est utilisée,
 	- Blog : dans les labels de Tinymce si la langue originale du site n'est pas reconnue, la langue d'administration est utilisée,
 	- Langues : si le dapeau correspondant au langage du site n'existe pas un drapeau par défaut est affiché dans les pages de localisation.
-- Correction : 
+- Correction :
 	- Statislite : modification de l'initialisation du filtrage primaire.
 
 ## Version 4.1.02 de Deltacms
@@ -342,18 +365,18 @@
 
 ## Version 4.1.01 de Deltacms
 - Modifications :
-	- Installation et configuration de la langue originale du site : ajout des langues grec, finnois, irlandais, suédois, danois, 
+	- Installation et configuration de la langue originale du site : ajout des langues grec, finnois, irlandais, suédois, danois,
 	- Configuration de la langue originale du site : option 'Autre langue' avec saisie du code de langue ISO, la traduction automatique par script
 	  est maintenant possible depuis n'importe quelle langue vers les 12 langues européennes proposées.
 - Correction :
-	- Cookie pour le script de traduction automatique Google : correction d'un bug qui se produisait avec Chrome et associés dans le cas d'un site 
+	- Cookie pour le script de traduction automatique Google : correction d'un bug qui se produisait avec Chrome et associés dans le cas d'un site
 	implanté dans un sous-domaine.
 
 ## Version 4.0.02 de Deltacms
 - Modifications :
 	- Administration : totalement bilingue y compris pour les modules de page,
 	- Blog et Search : Les textes relatifs aux commentaires visibles par un visiteur peuvent être traduits dans la langue du site,
-	- Blog : pour les saisies de commentaire les aides dans Tinymce sont dans la langue du site, 
+	- Blog : pour les saisies de commentaire les aides dans Tinymce sont dans la langue du site,
 	- Installation : améliorations,
 	- Site exemple : le site créé à l'installation est intégralement en anglais ou en français suivant la langue d'administration choisie.
 

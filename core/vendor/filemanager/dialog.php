@@ -221,7 +221,7 @@ if (isset($_GET["sort_by"])) {
 
 
 if (!isset($_SESSION['RF']['descending'])) {
-    $_SESSION['RF']['descending'] = TRUE;
+    $_SESSION['RF']['descending'] = false;
 }
 
 if (isset($_GET["descending"])) {
@@ -354,7 +354,7 @@ $get_params = http_build_query($get_params);
             var image_editor= <?php echo $config['tui_active']?"true":"false";?>;
         </script>
 
-        
+
         <script src="js/include.js?v=<?php echo $version; ?>"></script>
 </head>
 <body>
@@ -536,7 +536,7 @@ $get_params = http_build_query($get_params);
                         <tr class="template-download">
                             <td>
                                 <span class="preview">
-                                    {% if (file.error) { %}
+                                    {% if (file.error && file.error !='SyntaxError: JSON.parse: unexpected character at line 1 column 1 of the JSON data') { %}
                                     <i class="icon icon-remove"></i>
                                     {% } else { %}
                                     <i class="icon icon-ok"></i>
@@ -551,7 +551,7 @@ $get_params = http_build_query($get_params);
                                         <span>{%=file.name%}</span>
                                     {% } %}
                                 </p>
-                                {% if (file.error) { %}
+                                {% if (file.error && file.error !='SyntaxError: JSON.parse: unexpected character at line 1 column 1 of the JSON data') { %}
                                     <div><span class="label label-danger">Error</span> {%=file.error%}</div>
                                 {% } %}
                             </td>
@@ -1155,7 +1155,7 @@ $files = $sorted;
                 <a href="javascript:void('')" class="link" data-file="<?php echo $file;?>" data-function="<?php echo $apply;?>">
                 <div class="img-precontainer">
                     <?php if($is_icon_thumb){ ?><div class="filetype"><?php echo $file_array['extension'] ?></div><?php } ?>
-                    
+
                     <div class="img-container">
                         <img class="<?php echo $show_original ? "original" : "" ?><?php echo $is_icon_thumb ? " icon" : "" ?>" data-src="<?php echo $src_thumb;?>">
                     </div>
@@ -1271,11 +1271,11 @@ $files = $sorted;
                         echo "'$aopt_key':".json_encode($aopt_val).",";
                     }
                 } ?>
-            }; 
+            };
         </script>
 
         <script>
-        if (image_editor) { 
+        if (image_editor) {
             //TUI initial init with a blank image (Needs to be initiated before a dynamic image can be loaded into it)
             var imageEditor = new tui.ImageEditor('#tui-image-editor', {
                 includeUI: {

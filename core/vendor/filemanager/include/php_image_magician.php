@@ -340,14 +340,22 @@ class imageLib {
         // *** Make sure the file passed in is valid
         if ( ! $this->image)
         {
-            if ($this->debug)
-            {
-                throw new Exception('file ' . $this->getFileName() . ' is missing or invalid');
-            }
-            else
-            {
-                throw new Exception();
-            }
+ 			$file = $this->getFileName();
+			$textExcept = 'file ' . $file . ' is missing or invalid';
+			// Image webp animée ? masquage de la fausse erreur
+			$extension = mime_content_type($file);
+			$extension = fix_strtolower($extension);
+			$extension = str_replace('image/', '', $extension);
+			$webpContents = file_get_contents($file);
+		    if( ($extension === 'webp' && ( strpos($webpContents, 'ANIM') !== false || strpos($webpContents, 'ANMF') !== false )) || $extension === 'avif' ) $textExcept='';
+			if ($this->debug)
+			{
+			   throw new Exception($textExcept);
+			}
+			else
+			{
+				throw new Exception();
+			}
         };
 
         // *** Get optimal width and height - based on $option
@@ -2564,7 +2572,7 @@ class imageLib {
 
                 case 'tr':
                     $width = $this->width - $assetWidth - $padding;
-                    $height = 0 + $padding;;
+                    $height = 0 + $padding;
                     break;
 
                 case 'l':
@@ -2726,16 +2734,33 @@ class imageLib {
         {
             case 'jpg':
             case 'jpeg':
-                $img = @imagecreatefromjpeg($file);
+                $img = imagecreatefromjpeg($file);
                 break;
             case 'webp':
-                $img = @imagecreatefromwebp($file);
+				$webpContents = file_get_contents($file);
+				$anim = ( strpos($webpContents, 'ANIM') !== false || strpos($webpContents, 'ANMF') !== false );
+				if ($anim === false) {
+				$img = imagecreatefromwebp($file);
+				} else { 
+					$img = false; 
+					$dest = str_replace('/source/','/thumb/',$file);
+					copy($file,$dest);
+				}
+                break;
+            case 'avif':
+				if( function_exists('imagecreatefromavif') ){
+					$img =imagecreatefromavif($file);
+				} else {
+					$img = false;
+					$dest = str_replace('/source/','/thumb/',$file);
+					copy($file,$dest);
+				}
                 break;
             case 'gif':
-                $img = @imagecreatefromgif($file);
+                $img = imagecreatefromgif($file);
                 break;
             case 'png':
-                $img = @imagecreatefrompng($file);
+                $img = imagecreatefrompng($file);
                 break;
             case 'bmp':
             case 'x-ms-bmp':
@@ -2849,6 +2874,17 @@ class imageLib {
                 }
                 break;
 
+            case '.avif':
+                if (imagetypes() & IMG_AVIF)
+                {
+                    imageavif($this->imageResized, $savePath, $imageQuality);
+                }
+                else
+                {
+                    $error = 'avif';
+                }
+                break;
+
             case '.gif':
                 $this->checkInterlaceImage($this->isInterlace);
                 if (imagetypes() & IMG_GIF)
@@ -2936,6 +2972,10 @@ class imageLib {
             case 'webp':
                 header('Content-type: image/webp');
                 imagewebp($this->imageResized, '', $imageQuality);
+                break;
+            case 'avif':
+                header('Content-type: image/avif');
+                imageavif($this->imageResized, '', $imageQuality);
                 break;
             case 'gif':
                 header('Content-type: image/gif');

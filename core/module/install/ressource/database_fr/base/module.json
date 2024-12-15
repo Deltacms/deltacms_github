@@ -5,7 +5,7 @@
                 "feeds": true,
                 "feedsLabel": "Syndication RSS",
                 "itemsperPage": 4,
-                "versionData": "7.2"
+                "versionData": "7.3"
             },
             "texts": {
                 "NoComment": "Pas encore de commentaire",
@@ -150,7 +150,7 @@
                 "order": []
             },
             "config": {
-                "versionData": "4.7",
+                "versionData": "4.9",
 				"texts": {
 					"backButton": "Retour",
 					"geolocation": "Géolocalisation",

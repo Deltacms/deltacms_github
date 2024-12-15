@@ -1,9 +1,5 @@
 <?php
 // Lexique du module du coeur Addon en espagnol
-$text['core_addon_view']['import'][0] = 'Volver';
-$text['core_addon_view']['import'][1] = 'Aplicar';
-$text['core_addon_view']['import'][2] = 'Archivo ZIP:';
-$text['core_addon_view']['import'][3] = 'Instalar datos adicionales';
 $text['core_addon_view']['index'][0] = 'Atrás';
 $text['core_addon_view']['index'][1] = 'Ayuda';
 $text['core_addon_view']['index'][2] = 'Instalar complemento';
@@ -12,8 +8,6 @@ $text['core_addon_view']['index'][4] = 'Alias';
 $text['core_addon_view']['index'][5] = 'Versión';
 $text['core_addon_view']['index'][6] = 'Página(s)';
 $text['core_addon_view']['index'][7] = 'Quitar';
-$text['core_addon_view']['index'][8] = 'Exportar';
-$text['core_addon_view']['index'][9] = 'Importar';
 $text['core_addon_view']['index'][10] = 'Ningún complemento instalado.';
 $text['core_addon_view']['index'][11] = "¿Está seguro de que desea eliminar este complemento?";
 $text['core_addon_view']['upload'][0] = 'Atrás';
@@ -39,13 +33,4 @@ $text['core_addon']['install'][8] = 'Actualización por este proceso prohibida, 
 $text['core_addon']['install'][9] = 'No se puede abrir el archivo';
 $text['core_addon']['upload'][0] = 'Instalar complemento';
 $text['core_addon']['index'][0] = 'Administración de módulos';
-$text['core_addon']['export'][0] = 'Acción no permitida';
-$text['core_addon']['export'][1] = 'Algo salió mal';
-$text['core_addon']['import'][0] = 'Acción no permitida';
-$text['core_addon']['import'][1] = 'Importar no es posible, la siguiente página debe ser renombrada:';
-$text['core_addon']['import'][2] = 'Importar no es posible, las siguientes páginas deben ser renombradas:';
-$text['core_addon']['import'][3] = 'Importación exitosa';
-$text['core_addon']['import'][4] = 'Importar datos del módulo';
-
-
 ?>

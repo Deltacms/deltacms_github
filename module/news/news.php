@@ -280,11 +280,11 @@ class news extends common {
 					} else {
 						$dateOn = mb_detect_encoding(date('d/m/Y',  $this->getData(['data_module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOn'])), 'UTF-8', true)
 								? date('d/m/Y', $this->getData(['data_module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOn']))
-								: utf8_encode(date('d/m/Y', $this->getData(['data_module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOn'])));
+								: helper::utf8Encode(date('d/m/Y', $this->getData(['data_module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOn'])));
 						$dateOn .= $text['news']['config'][3];
 						$dateOn .= mb_detect_encoding(date('H:i',  $this->getData(['data_module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOn'])), 'UTF-8', true)
 								? date('H:i', $this->getData(['data_module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOn']))
-								: utf8_encode(date('H:i', $this->getData(['data_module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOn'])));
+								: helper::utf8Encode(date('H:i', $this->getData(['data_module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOn'])));
 					}
 					if ($this->getData(['data_module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOff'])) {
 						if( function_exists('datefmt_create') && function_exists('datefmt_create') && extension_loaded('intl') ){
@@ -292,11 +292,11 @@ class news extends common {
 						} else {
 							$dateOff = mb_detect_encoding(date('d/m/Y',  $this->getData(['data_module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOff'])), 'UTF-8', true)
 								? date('d/m/Y', $this->getData(['data_module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOff']))
-								: utf8_encode(date('d/m/Y', $this->getData(['data_module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOff'])));
+								: helper::utf8Encode(date('d/m/Y', $this->getData(['data_module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOff'])));
 							$dateOff .=	$text['news']['config'][3];
 							$dateOff .= mb_detect_encoding(date('H:i',  $this->getData(['data_module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOff'])), 'UTF-8', true)
 								? date('H:i', $this->getData(['data_module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOff']))
-								: utf8_encode(date('H:i', $this->getData(['data_module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOff'])));						
+								: helper::utf8Encode(date('H:i', $this->getData(['data_module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOff'])));						
 						}
 					} else {
 						$dateOff = $text['news']['config'][1];

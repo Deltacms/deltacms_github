@@ -100,8 +100,8 @@ if($this->isPost() && isset($_POST['commentPageFormSubmit']) ) {
 	if( $valueText !== '') $content .= '<strong>' . $this->getData(['locale', 'pageComment', 'commentName']) . ' :</strong> ' . $valueText . '<br>';
 	if( $valueTextarea !== '') $content .= '<strong>' . $this->getData(['locale', 'pageComment', 'comment']) . ' :</strong> ' . $valueTextarea . '<br>';
 	// Données
-	$data[$this->getData(['locale', 'pageComment', 'commentName'])] = $valueText;
-	$data[$this->getData(['locale', 'pageComment', 'comment'])] = $valueTextarea;
+	$data['Nom'] = $valueText;
+	$data['Commentaire'] = $valueTextarea;
 
 	// Bot présumé, la page sera actualisée avec l'affichage du captcha complet
 	if( $detectBot === 'bot') $notice = 'bot';
@@ -119,7 +119,7 @@ if($this->isPost() && isset($_POST['commentPageFormSubmit']) ) {
 			if( mb_detect_encoding(date('d/m/Y - H:i',  $id), 'UTF-8', true)){
 				$dateMessage = date('d/m/Y - H:i', $id);
 			} else {
-				$dateMessage = utf8_encode(date('d/m/Y - H:i', $id));
+				$dateMessage = helper::utf8Encode(date('d/m/Y - H:i', $id));
 			}
 		} 
 		$this->setData(['comment', $this->getUrl(0), 'data', $id , 'Date' , $dateMessage ]);

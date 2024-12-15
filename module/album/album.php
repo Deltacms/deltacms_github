@@ -3,10 +3,11 @@
  * @license GNU General Public License, version 3
  * @copyright 2008-2018 © Rémi Jean
  * @copyright 2019 © Lionel Croquefer
+ * @copyright 2024 © Sylvain Lelièvre
  */
 setlocale(LC_NUMERIC,'English','en_US','en_US.UTF-8');
 class album extends common {
-	const VERSION = '4.7';
+	const VERSION = '4.9';
 	const REALNAME = 'Album Photo';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -32,15 +33,15 @@ class album extends common {
 		'texts' => self::GROUP_EDITOR,
 		'index' => self::GROUP_VISITOR
 	];
-	
+
 	/**
 	 * Mise à jour du module
 	 * Appelée par les fonctions index et config
 	*/
-	private function update() {	
+	private function update() {
 		// Lexique
 		$param = '';
-		include('./module/album/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_album.php');	
+		include('./module/album/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_album.php');
 		// Versions < 4.4 : versionData absent ou données module absentes
 		if( null === $this->getData(['module', $this->getUrl(0), 'config', 'versionData']) ) {
 			$this->init();
@@ -48,20 +49,24 @@ class album extends common {
 			// Version 4.7
 			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '4.7', '<') ) {
 				$this->setData(['module', $this->getUrl(0), 'config', 'texts', 'backButton', $text['album']['init'][0]]);
-				$this->setData(['module', $this->getUrl(0), 'config', 'texts', 'geolocation', $text['album']['init'][1]]);	
-				$this->setData(['module', $this->getUrl(0), 'config', 'texts', 'noAlbum', $text['album']['init'][2]]);				
+				$this->setData(['module', $this->getUrl(0), 'config', 'texts', 'geolocation', $text['album']['init'][1]]);
+				$this->setData(['module', $this->getUrl(0), 'config', 'texts', 'noAlbum', $text['album']['init'][2]]);
 				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','4.7']);
+			}
+			// Version 4.9
+			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '4.9', '<') ) {
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','4.9']);
 			}
 		}
 	}
 
 	/**
-	 * Initialisation 
+	 * Initialisation
 	*/
 	private function init() {
 		// Lexique
 		$param = '';
-		include('./module/album/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_album.php');		
+		include('./module/album/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_album.php');
 		$this->setData(['module', $this->getUrl(0), 'config', 'versionData', self::VERSION]);
 		$this->setData(['module', $this->getUrl(0), 'config', 'texts', 'backButton', $text['album']['init'][0]]);
 		$this->setData(['module', $this->getUrl(0), 'config', 'texts', 'geolocation', $text['album']['init'][1]]);
@@ -120,29 +125,28 @@ class album extends common {
 			include('./module/album/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_album.php');
 
 			// Soumission du formulaire
-			if($this->isPost()) {	
+			if($this->isPost()) {
 				$this->setData(['module', $this->getUrl(0), 'config', 'texts',[
 					'backButton' => $this->getInput('albumTextsBackButton',helper::FILTER_STRING_SHORT),
 					'geolocation' => $this->getInput('albumTextsGeolocation',helper::FILTER_STRING_SHORT),
 					'noAlbum' => $this->getInput('albumTextsNoAlbum',helper::FILTER_STRING_SHORT)
 				]]);
-				
+
 				$this->setData(['module', $this->getUrl(0), 'config', 'versionData', self::VERSION]);
-			
+
 				$this->addOutput([
 					'redirect' => helper::baseUrl() . $this->getUrl(0) . '/config',
 					'notification' => $text['album']['texts'][0],
 					'state' => true
 				]);
 			}
-			
+
 			$this->addOutput([
 				'title' => $text['album']['texts'][1],
 				'view' => 'texts',
 			]);
-		}		
+		}
 	}
-
 
 	/**
 	 * Tri de la liste des images
@@ -178,7 +182,6 @@ class album extends common {
 			}
 		}
 	}
-
 
 	/**
 	 * Configuration
@@ -235,7 +238,7 @@ class album extends common {
 					])
 				];
 				// Tableau des id des galleries pour le drag and drop
-				self::$galleriesId[] = $galleryId;				
+				self::$galleriesId[] = $galleryId;
 				}
 			}
 			// Soumission du formulaire
@@ -331,7 +334,7 @@ class album extends common {
 			]);
 		} else {
 			// Valeurs en sortie
-			$filter = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+			$filter = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'avif'];
 			$this->addOutput([
 				'display' => self::DISPLAY_JSON,
 				'content' => helper::scanDir(self::FILE_DIR.'source', $filter)
@@ -408,7 +411,6 @@ class album extends common {
 						// pas d'ordre, on active le tri alpha
 						'sort' =>  $this->getInput('galleryEditSort'),
 						'position' => $this->getData(['module', $this->getUrl(0), $galleryId,'config','position'])
-
 					],
 					'legend' => $legends,
 					'order' => empty($oldorder) ? $this->getdata(['module', $this->getUrl(0), $galleryId, 'order']) : $oldorder
@@ -554,7 +556,6 @@ class album extends common {
 					]);
 				}
 			}
-
 		}
 		// Liste des galeries
 		else {
@@ -579,7 +580,7 @@ class album extends common {
 						albumHelper::controle($imgalerie);
 						self::$galleries[$galleryId] = $gallery;
 						self::$firstPictures[$galleryId] = $gallery['config']['directory'] . '/' . $fileInfos->getFilename();
-						continue(2);				
+						continue(2);
 						}
 					}
 				}
@@ -593,7 +594,6 @@ class album extends common {
 			]);
 		}
 	}
-
 }
 /* ********************** albumHelper ********************** */
 
@@ -763,61 +763,72 @@ class albumHelper extends helper {
 	// Thumbnailer
 	public static function makeThumbnail($foto) {
 		if ( is_file($foto) && substr(mime_content_type($foto), 0, 5) == 'image' ) {
-		// taille des miniatures
-		$tnlarge = 320;
-		$tnhaut = ($tnlarge/1.6);
+			// taille des miniatures
+			$tnlarge = 320;
+			$tnhaut = ($tnlarge/1.6);
 
-		$size_img = filesize($foto);
-		$dossiercache = 'site/file/cache';
-		self::makeDir($dossiercache);
-		$par = basename($foto);
-		$cache = substr(strrchr(dirname($foto), '/'), 1);
-		self::makeDir($dossiercache.'/'.$cache);
-		$extension = strrchr($par,'.');
-		$vignette = str_replace($extension,'',$par);
-		$miniature = $dossiercache.'/'.$cache.'/tn-'.$vignette.'-'.$size_img.'.webp';
+			$dossiercache = 'site/file/cache';
+			self::makeDir($dossiercache);
+			$cache = substr(strrchr(dirname($foto), '/'), 1);
+			self::makeDir($dossiercache.'/'.$cache);
 
-		if (!file_exists($miniature)) {
-		list($width, $height, $type, $attr) = getimagesize($foto);
+			$par = basename($foto);
+			$extension = strrchr($par,'.');
+			$vignette = str_replace($extension,'',$par);
+			$miniature = $dossiercache.'/'.$cache.'/tn-'.$vignette.'-'.filesize($foto).'.webp';
 
-		if ($height > $tnhaut) {
-		$convert = $tnhaut/$height;
-		$height = $tnhaut;
-		$width = ceil($width*$convert);
-		}
-		if ($width > $tnlarge) {
-		$convert = $tnlarge/$width;
-		$width = $tnlarge;
-		$height = ceil($height*$convert);
-		}
+			if (!file_exists($miniature)) {
+				list($width, $height, $type, $attr) = getimagesize($foto);
 
-		$largeur = $width;
-		$hauteur = $height;
+				if ($height > $tnhaut) {
+				$convert = $tnhaut/$height;
+				$height = $tnhaut;
+				$width = ceil($width*$convert);
+				}
+				if ($width > $tnlarge) {
+				$convert = $tnlarge/$width;
+				$width = $tnlarge;
+				$height = ceil($height*$convert);
+				}
 
-		if($type == 1) {
-			$img_in = imagecreatefromgif($foto);
-		}
-		elseif($type == 2) {
-			$img_in = imagecreatefromjpeg($foto);
-		}
-		elseif($type == 3) {
-			$img_in = imagecreatefrompng($foto);
-		}
-		elseif($type == 18) {
-			$img_in = imagecreatefromwebp($foto);
-		}
-		imageinterlace($img_in, true);
+				$largeur = $width;
+				$hauteur = $height;
 
-		$img_out = imagecreatetruecolor($largeur, $hauteur) or die ('Unable to create a GD image stream');
-		imagecopyresampled($img_out, $img_in, 0, 0, 0, 0, imagesx($img_out), imagesy($img_out), imagesx($img_in), imagesy($img_in));
+			switch ($type) {
+				case 1:
+				$img_in = imagecreatefromgif($foto);
+				break;
+				case 2:
+				$img_in = imagecreatefromjpeg($foto);
+				break;
+				case 3:
+				$img_in = imagecreatefrompng($foto);
+				break;
+				case 18:
+				$webpContents = file_get_contents($foto);
+				$anim = ( strpos($webpContents, 'ANIM') !== false || strpos($webpContents, 'ANMF') !== false );
+				if ($anim === false) {
+				$img_in = imagecreatefromwebp($foto);
+				}
+				else { $img_in = false; }
+				break;
+				case 19:
+				$img_in = function_exists('imagecreatefromavif') ? imagecreatefromavif($foto) : false;
+				break;
+			}
 
-			imagewebp($img_out, $miniature, 80);
-			imagedestroy($img_out);
+				if (false !== $img_in) {
+					imageinterlace($img_in, true);
+					$img_out = imagecreatetruecolor($largeur, $hauteur) or die ('Unable to create a GD image stream');
+					imagecopyresampled($img_out, $img_in, 0, 0, 0, 0, imagesx($img_out), imagesy($img_out), imagesx($img_in), imagesy($img_in));
+					imagewebp($img_out, $miniature, 80);
+					imagedestroy($img_out);
+				} else { $miniature = $foto; }
 			}
 			return $miniature;
 			clearstatcache();
 		}
-		else { die ('This is not an image'); }
+		else { return false; }
 	} // makeThumbnail
 
 } // albumHelper

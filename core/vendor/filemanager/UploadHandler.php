@@ -41,7 +41,8 @@ class UploadHandler
     const IMAGETYPE_GIF = 1;
     const IMAGETYPE_JPEG = 2;
     const IMAGETYPE_PNG = 3;
-	const IMAGETYPE_WEBP = 4;
+	const IMAGETYPE_WEBP = 18;
+	const IMAGETYPE_AVIF = 19;
 
     protected $image_objects = array();
 
@@ -93,7 +94,7 @@ class UploadHandler
             // is enabled, set to 0 to disable chunked reading of files:
             'readfile_chunk_size' => 10 * 1024 * 1024, // 10 MiB
             // Defines which files can be displayed inline when downloaded:
-            'inline_file_types' => '/\.(gif|jpe?g|png)$/i',
+            'inline_file_types' => '/\.(gif|jpe?g|png|webp|avif)$/i',
             // Defines which files (based on their names) are accepted for upload.
             // By default, only allows file uploads with image file extensions.
             // Only change this setting after making sure that any allowed file
@@ -101,7 +102,7 @@ class UploadHandler
             // e.g. PHP scripts, nor executed by the browser when downloaded,
             // e.g. HTML files with embedded JavaScript code.
             // Please also read the SECURITY.md document in this repository.
-            'accept_file_types' => '/\.(gif|jpe?g|png)$/i',
+            'accept_file_types' => '/\.(gif|jpe?g|png|webp|avif)$/i',
             // Replaces dots in filenames with the given string.
             // Can be disabled by setting it to false or an empty string.
             // Note that this is a security feature for servers that support
@@ -152,14 +153,14 @@ class UploadHandler
             'identify_bin' => 'identify',
             'image_versions' => array(
                 // The empty image version key defines options for the original image.
-                // Keep in mind: these image manipulations are inherited by all other image versions from this point onwards. 
+                // Keep in mind: these image manipulations are inherited by all other image versions from this point onwards.
                 // Also note that the property 'no_cache' is not inherited, since it's not a manipulation.
                 '' => array(
                     // Automatically rotate images based on EXIF meta data:
                     'auto_orient' => true
                 ),
                 // You can add arrays to generate different versions.
-                // The name of the key is the name of the version (example: 'medium'). 
+                // The name of the key is the name of the version (example: 'medium').
                 // the array contains the options to apply.
                 /*
                 'medium' => array(
@@ -509,7 +510,7 @@ class UploadHandler
             $index, $content_range) {
         // Add missing file extension for known image types:
         if (strpos($name, '.') === false &&
-            preg_match('/^image\/(gif|jpe?g|png|webp)/', $type, $matches)) {
+            preg_match('/^image\/(gif|jpe?g|png|webp|avif)/', $type, $matches)) {
             $name .= '.'.$matches[1];
         }
         if ($this->options['correct_image_extensions']) {
@@ -525,6 +526,9 @@ class UploadHandler
                     break;
                 case self::IMAGETYPE_WEBP:
                     $extensions = array('webp');
+                    break;
+                case self::IMAGETYPE_AVIF:
+                    $extensions = array('avif');
                     break;
             }
             // Adjust incorrect image file extensions:
@@ -744,6 +748,12 @@ class UploadHandler
                 $image_quality = isset($options['webp_quality']) ?
                     $options['webp_quality'] : 75;
                 break;
+             case 'avif':
+                $src_func = 'imagecreatefromavif';
+                $write_func = 'imageavif';
+                $image_quality = isset($options['avif_quality']) ?
+                    $options['avif_quality'] : 75;
+                break;
             default:
                 return false;
         }
@@ -906,32 +916,32 @@ class UploadHandler
         $image_oriented = false;
         if (!empty($options['auto_orient'])) {
             $image_oriented = $this->imagick_orient_image($image);
-        } 
-	    
-        $image_resize = false; 
+        }
+
+        $image_resize = false;
         $new_width = $max_width = $img_width = $image->getImageWidth();
-        $new_height = $max_height = $img_height = $image->getImageHeight(); 
-		  
+        $new_height = $max_height = $img_height = $image->getImageHeight();
+
         // use isset(). User might be setting max_width = 0 (auto in regular resizing). Value 0 would be considered empty when you use empty()
         if (isset($options['max_width'])) {
-            $image_resize = true; 
-            $new_width = $max_width = $options['max_width']; 
+            $image_resize = true;
+            $new_width = $max_width = $options['max_width'];
         }
         if (isset($options['max_height'])) {
             $image_resize = true;
             $new_height = $max_height = $options['max_height'];
         }
-        
+
         $image_strip = (isset($options['strip']) ? $options['strip'] : false);
- 
-        if ( !$image_oriented && ($max_width >= $img_width) && ($max_height >= $img_height) && !$image_strip && empty($options["jpeg_quality"]) ) {        
+
+        if ( !$image_oriented && ($max_width >= $img_width) && ($max_height >= $img_height) && !$image_strip && empty($options["jpeg_quality"]) ) {
             if ($file_path !== $new_file_path) {
                 return copy($file_path, $new_file_path);
             }
             return true;
         }
         $crop = (isset($options['crop']) ? $options['crop'] : false);
-        
+
         if ($crop) {
             $x = 0;
             $y = 0;
@@ -1078,29 +1088,26 @@ class UploadHandler
     }
 
     protected function imagetype($file_path) {
-        $fp = fopen($file_path, 'r');
-        $data = fread($fp, 4);
-        fclose($fp);
-        // GIF: 47 49 46 38
-        if ($data === 'GIF8') {
+		if (mime_content_type($file_path)=='image/gif') {
             return self::IMAGETYPE_GIF;
         }
-        // JPG: FF D8 FF
-        if (bin2hex(substr($data, 0, 3)) === 'ffd8ff') {
+		if (mime_content_type($file_path)=='image/jpeg') {
             return self::IMAGETYPE_JPEG;
         }
-        // PNG: 89 50 4E 47
-        if (bin2hex(@$data[0]).substr($data, 1, 4) === '89PNG') {
+		if (mime_content_type($file_path)=='image/png') {
             return self::IMAGETYPE_PNG;
         }
-        if ($data === 'RIFF') {
+		if (mime_content_type($file_path)=='image/webp') {
             return self::IMAGETYPE_WEBP;
+        }
+		if (mime_content_type($file_path)=='image/avif') {
+            return self::IMAGETYPE_AVIF;
         }
         return false;
     }
 
     protected function is_valid_image_file($file_path) {
-        if (!preg_match('/\.(gif|jpe?g|png)$/i', $file_path)) {
+        if (!preg_match('/\.(gif|jpe?g|png|webp|avif)$/i', $file_path)) {
             return false;
         }
         return !!$this->imagetype($file_path);

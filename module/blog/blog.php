@@ -21,7 +21,7 @@
 
 class blog extends common {
 
-	const VERSION = '7.2';
+	const VERSION = '7.3';
 	const REALNAME = 'Blog';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -35,6 +35,7 @@ class blog extends common {
 		'add' => self::GROUP_EDITOR,
 		'comment' => self::GROUP_EDITOR,
 		'commentApprove' => self::GROUP_MODERATOR,
+		'commentEdit' => self::GROUP_MODERATOR,
 		'commentDelete' => self::GROUP_MODERATOR,
 		'commentDeleteAll' => self::GROUP_MODERATOR,
 		'config' => self::GROUP_EDITOR,
@@ -141,6 +142,10 @@ class blog extends common {
 			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '7.2', '<') ) {
 				$this->setData(['module', $this->getUrl(0), 'texts', 'Comments', $text['blog']['index'][28] ]);
 				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','7.2']);
+			}
+			// Version 7.3
+			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '7.3', '<') ) {
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','7.3']);
 			}
 		}
 	}
@@ -403,10 +408,10 @@ class blog extends common {
 						'disabled' => $this->getUser('group') >= self::GROUP_MODERATOR ? false : true
 			]);
 			// Dates suivant la langue d'administration
-			setlocale(LC_TIME, 'fr_FR');
-			if( $this->getData(['config', 'i18n', 'langAdmin']) === 'en') setlocale(LC_TIME, 'en_GB');
 			// Ids des commentaires par ordre de création
 			$commentIds = array_keys(helper::arrayCollumn($comments, 'createdOn', 'SORT_DESC'));
+			// Mémorisation de la pagination
+			$_SESSION['pageBlogComment'] = null !== $this->getUrl(3) ? $this->getUrl(3) : '1';
 			// Pagination
 			$pagination = helper::pagination($commentIds, $this->getUrl(),$this->getData(['module', $this->getUrl(0), 'config', 'itemsperPage']) );
 			// Liste des pages
@@ -430,10 +435,15 @@ class blog extends common {
 				self::$comments[] = [
 					mb_detect_encoding(date('d\/m\/Y\ \-\ H\:i', $comment['createdOn']), 'UTF-8', true)
 					? date('d\/m\/Y\ \-\ H\:i', $comment['createdOn'])
-					: utf8_encode(date('d\/m\/Y\ \-\ H\:i', $comment['createdOn'])),
+					: helper::utf8Encode(date('d\/m\/Y\ \-\ H\:i', $comment['createdOn'])),
 					$comment['content'],
 					$comment['userId'] ? $this->getData(['user', $comment['userId'], 'firstname']) . ' ' . $this->getData(['user', $comment['userId'], 'lastname']) : $comment['author'],
 					$buttonApproval,
+					template::button('blogCommentEdit' . $commentIds[$i], [
+						'href' => helper::baseUrl() . $this->getUrl(0) . '/commentEdit/' . $this->getUrl(2) . '/' . $commentIds[$i] . '/' . $_SESSION['csrf'] ,
+						'value' => template::ico('pencil'),
+						'disabled' => $this->getUser('group') >= self::GROUP_MODERATOR ? false : true
+					]),
 					template::button('blogCommentDelete' . $commentIds[$i], [
 						'class' => 'blogCommentDelete buttonRed',
 						'href' => helper::baseUrl() . $this->getUrl(0) . '/commentDelete/' . $this->getUrl(2) . '/' . $commentIds[$i] . '/' . $_SESSION['csrf'] ,
@@ -447,6 +457,68 @@ class blog extends common {
 				'title' => $text['blog']['comment'][1]. $this->getData(['data_module', $this->getUrl(0),  'posts', $this->getUrl(2), 'title']),
 				'view' => 'comment'
 			]);
+		}
+	}
+
+	/**
+	 * Edition de commentaire
+	 */
+	public function commentEdit() {
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < blog::$actions['commentEdit'] ) {
+			// Valeurs en sortie
+			$this->addOutput([
+				'access' => false
+			]);	
+		} else {
+			// Lexique
+			$param = 'blog';
+			include('./module/blog/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_blog.php');
+
+			// Le commentaire n'existe pas
+			if($this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(2), 'comment', $this->getUrl(3)]) === null) {
+				// Valeurs en sortie
+				$this->addOutput([
+					'access' => false
+				]);
+			}
+			// Jeton incorrect
+			elseif ($this->getUrl(4) !== $_SESSION['csrf']) {
+				// Valeurs en sortie
+				$this->addOutput([
+					'redirect' => helper::baseUrl()  . $this->getUrl(0) . '/config',
+					'notification' => $text['blog']['commentEdit'][2]
+				]);
+			}
+			// Edition
+			else {
+				if($this->isPost()) {
+					// Lecture du commentaire
+					$content = empty($this->getInput('blogCommentEditContent', null)) ? '<p></p>' : str_replace('<p></p>', '<p>&nbsp;</p>', $this->getInput('blogCommentEditContent', null));
+					// Enregistrement
+					$this->setData(['data_module',$this->getUrl(0), 'posts', $this->getUrl(2), 'comment', $this->getUrl(3), 'content', $content ]);
+					// Valeurs en sortie
+					$this->addOutput([
+						'redirect' => helper::baseUrl()  . 'blog/comment/' . $this->getUrl(2).'/'.$_SESSION['pageBlogComment'],
+						'notification' => $text['blog']['commentEdit'][0],
+						'state' => true
+					]);
+				}
+				// Valeurs en sortie
+				$identity = $this->getData(['data_module',$this->getUrl(0), 'posts', $this->getUrl(2), 'comment', $this->getUrl(3), 'userId' ]) === '' ?
+					$this->getData(['data_module',$this->getUrl(0), 'posts', $this->getUrl(2), 'comment', $this->getUrl(3), 'author' ]) :
+					$this->getData(['data_module',$this->getUrl(0), 'posts', $this->getUrl(2), 'comment', $this->getUrl(3), 'userId' ]);
+				$this->addOutput([
+					'title' => $text['blog']['commentEdit'][1]. $this->getUrl(2). $text['blog']['commentEdit'][3] .$identity,
+					'vendor' => [
+						'flatpickr',
+						'tinymce'
+					],
+					'view' => 'commentedit'
+				]);
+			}
 		}
 	}
 
@@ -618,8 +690,6 @@ class blog extends common {
 				]);
 			} else {
 				// Dates suivant la langue d'administration
-				setlocale(LC_TIME, 'fr_FR');
-				if( $this->getData(['config', 'i18n', 'langAdmin']) === 'en') setlocale(LC_TIME, 'en_GB');
 				// Ids des articles par ordre de publication
 				$articleIds = array_keys(helper::arrayCollumn($this->getData(['data_module', $this->getUrl(0), 'posts']), 'publishedOn', 'SORT_DESC'));
 				// Gestion des droits d'accès
@@ -665,10 +735,10 @@ class blog extends common {
 					// Met en forme le tableau
 					$date = mb_detect_encoding(date('d\/m\/Y', $this->getData(['data_module', $this->getUrl(0),  'posts', $articleIds[$i], 'publishedOn'])), 'UTF-8', true)
 						? date('d\/m\/Y', $this->getData(['data_module', $this->getUrl(0), 'posts', $articleIds[$i], 'publishedOn']))
-						: utf8_encode(date('d\/m\/Y', $this->getData(['data_module', $this->getUrl(0), 'posts', $articleIds[$i], 'publishedOn'])));
+						: helper::utf8Encode(date('d\/m\/Y', $this->getData(['data_module', $this->getUrl(0), 'posts', $articleIds[$i], 'publishedOn'])));
 					$heure =   mb_detect_encoding(date('H\:i', $this->getData(['data_module', $this->getUrl(0), 'posts', $articleIds[$i], 'publishedOn'])), 'UTF-8', true)
 					? date('H\:i', $this->getData(['data_module', $this->getUrl(0), 'posts', $articleIds[$i], 'publishedOn']))
-					: utf8_encode(date('H\:i', $this->getData(['data_module', $this->getUrl(0), 'posts', $articleIds[$i], 'publishedOn'])));
+					: helper::utf8Encode(date('H\:i', $this->getData(['data_module', $this->getUrl(0), 'posts', $articleIds[$i], 'publishedOn'])));
 					self::$articles[] = [
 						'<a href="' . helper::baseurl() . $this->getUrl(0) . '/' . $articleIds[$i] . '" target="_blank" >' .
 						$this->getData(['data_module', $this->getUrl(0),  'posts', $articleIds[$i], 'title']) .

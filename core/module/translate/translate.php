@@ -292,6 +292,9 @@ class translate extends common {
 					'eu' 			 	=> $this->getInput('translateEU')
 
 				]]);
+				
+				// Mise à jour de la localisation
+				$this->localisation($this->getData(['config', 'i18n', 'langAdmin' ]));
 					
 				// Valeurs en sortie
 				$this->addOutput([

@@ -26,6 +26,7 @@ class page extends common {
 		'edit' => self::GROUP_EDITOR,
 		'duplicate' => self::GROUP_MODERATOR,
 		'comment' => self::GROUP_MODERATOR,
+		'commentEdit' => self::GROUP_MODERATOR,
 		'commentDelete' => self::GROUP_MODERATOR,
 		'commentAllDelete' => self::GROUP_MODERATOR,
 		'commentExport2csv' => self::GROUP_MODERATOR
@@ -349,6 +350,8 @@ class page extends common {
 				'access' => false
 			]);	
 		} else {
+			// Mémorisation de la pagination
+			$_SESSION['pagePageComment'] = null !== $this->getUrl(3) ? $this->getUrl(3) : '1';
 			// Préparation des commentaires avec pagination
 			$data = $this->getData(['comment', $this->getUrl(2), 'data']);
 			if($data) {
@@ -361,13 +364,23 @@ class page extends common {
 				$data = array_reverse($data);
 				// Données en fonction de la pagination
 				for($i = $pagination['first']; $i < $pagination['last']; $i++) {
-					$content = '';
+					$content = []; $j=0;
+					$nochange = false;
 					foreach($data[$i] as $input => $value) {
 						$value = str_replace('Д','',$value);
-						$content .= $input . ' : ' . $value . '<br>';
+						$content[$j] = $value;
+						if( $j===1 && $input !== 'Commentaire') $nochange = true;
+						$j++;
 					}
 					self::$data[] = [
-						$content,
+						$content[0],
+						$content[1],
+						$content[2],
+						template::button('pageCommentEdit' . $dataIds[$i], [
+							'href' => helper::baseUrl() . 'page/commentEdit/' . $this->getUrl(2) .'/'. $dataIds[$i]  . '/' . $_SESSION['csrf'],
+							'value' => template::ico('pencil'),
+							'disabled' => $nochange
+						]),
 						template::button('formDataDelete' . $dataIds[$i], [
 							'class' => 'formDataDelete buttonRed',
 							'href' => helper::baseUrl() . 'page/commentDelete/' . $this->getUrl(2) .'/'. $dataIds[$i]  . '/' . $_SESSION['csrf'],
@@ -382,6 +395,63 @@ class page extends common {
 			]);		
 		}
 		
+	}
+
+	/**
+	* commentEdit
+	*/
+	public function commentEdit() {
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < page::$actions['commentEdit'] ) {
+			// Valeurs en sortie
+			$this->addOutput([
+				'access' => false
+			]);	
+		} else {
+			// Lexique
+			include('./core/module/page/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_page.php');
+			// Jeton incorrect
+			if ($this->getUrl(4) !== $_SESSION['csrf']) {
+				// Valeurs en sortie
+				$this->addOutput([
+					'redirect' => helper::baseUrl() . 'page/edit/' . $this->getUrl(2),
+					'notification' => $text['core_page']['commentDelete'][2]
+				]);
+			} else {
+				// La donnée n'existe pas
+				if( $this->getData(['comment', $this->getUrl(2), 'data', $this->getUrl(3)]) === null) {
+					// Valeurs en sortie
+					$this->addOutput([
+						'access' => false,
+						'redirect' => helper::baseUrl() . 'page/comment/' . $this->getUrl(2)
+					]);
+				}
+				// Edition
+				else {
+					if($this->isPost()) {
+						// Enregistrement du commentaire
+						$this->setData(['comment', $this->getUrl(2), 'data', $this->getUrl(3) , 'Commentaire', $this->getInput('pageCommentEditContent',null)  ]);
+						// Valeurs en sortie
+						$this->addOutput([
+							'redirect' => helper::baseUrl() . 'page/comment/' . $this->getUrl(2).'/'.$_SESSION['pagePageComment'],
+							'notification' => $text['core_page']['commentEdit'][0],
+							'state' => true
+						]);
+					}
+					$this->addOutput([
+					'title' => 'titre',
+					'vendor' => [
+						'flatpickr',
+						'tinymce'
+					],
+					'view' => 'commentedit'
+				]);
+				}
+			}			
+			
+		}
 	}
 	
 	/**
@@ -509,9 +579,9 @@ class page extends common {
 						mkdir(self::FILE_DIR.'source/data', 0755);
 					}
 					$fp = fopen(self::FILE_DIR.'source/data/'.$csvfilename, 'w');
-					fputcsv($fp, array_keys($data[1]), ';','"');
+					//fputcsv($fp, array_keys($data), ';','"','');
 					foreach ($data as $fields) {
-						fputcsv($fp, $fields, ';','"');
+						fputcsv($fp, $fields, ';','"','');
 					}
 					fclose($fp);
 					// Valeurs en sortie

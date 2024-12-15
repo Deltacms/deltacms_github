@@ -109,10 +109,10 @@ $text['core_config_view']['locale'][60] = 'Acceptance of the conditions of use o
 $text['core_config_view']['locale'][61] = 'Text associated with the checkbox';
 $text['core_config_view']['locale'][62] = ' I accept the conditions of use of my personal data';
 $text['core_config_view']['locale'][63] = 'Texts to adapt to the language of your visitors ';
-$text['core_config_view']['locale'][64] = 'Required';
+$text['core_config_view']['locale'][64] = 'Mandatory entry';
 $text['core_config_view']['locale'][65] = 'The form cannot be submitted because it contains errors';
-$text['core_config view']['locale'][66] = 'Comment submitted';
-$text['core_config view']['locale'][67] = 'Comment submission failed';
+$text['core_config_view']['locale'][66] = 'Comment submitted';
+$text['core_config_view']['locale'][67] = 'Comment submission failed';
 $text['core_config_view']['network'][0] = 'Settings';
 $text['core_config_view']['network'][1] = 'Proxy type';
 $text['core_config_view']['network'][2] = 'Proxy address';
@@ -150,7 +150,7 @@ $text['core_config_view']['setup'][12] = 'First check that your server allows UR
 $text['core_config_view']['setup'][13] = 'Search for an online update';
 $text['core_config_view']['setup'][14] = 'Enabled option the check is daily. Option disabled you will have to do the updates by FTP. If after activation the box is unchecked it means that your server does not allow it.';
 $text['core_config_view']['setup'][15] = 'Preserve the root htaccess file';
-$text['core_config_view']['setup'][16] = 'On auto-update, keep the root htaccess file';		
+$text['core_config_view']['setup'][16] = 'On auto-update, keep the root htaccess file';
 $text['core_config_view']['setup'][17] = 'Reinstall';
 $text['core_config_view']['setup'][18] = 'Automatic daily site backup';
 $text['core_config_view']['setup'][19] = 'An archive containing the folder /site/data is copied to the folder \'site/backup\'. The backup is kept for 30 days.</p><p>Site files are not backed up automatically. Activation recommended.';
@@ -177,6 +177,9 @@ $text['core_config_view']['setup'][39] = "1 - Log in or register at ";
 $text['core_config_view']['setup'][40] = "2 - In Configuration or Modules create a new topic, explain your problem";
 $text['core_config_view']['setup'][41] = "3 - Copy and paste the information into your post";
 $text['core_config_view']['setup'][42] = "Do you confirm the upgrade of DeltaCMS to the version ";
+$text['core_config_view']['setup'][43] = "The gd extension (image processing) does not support the avif format";
+$text['core_config_view']['setup'][44] = "Current location: ";
+$text['core_config_view']['setup'][45] = "The gd extension (image processing) supports the avif format";
 $text['core_config_view']['social'][0] = 'Settings';
 $text['core_config_view']['social'][1] = 'Disable Open Graph capture mode';
 $text['core_config_view']['social'][2] = 'Enable Open Graph capture mode';
@@ -245,21 +248,21 @@ $text['core_config']['copyBackups'][1] = 'Copy completed';
 $SMTPauth = [
 	true => 'Yes',
 	false => 'No'
-];	
+];
 // Encryptation SMTP EN
 $SMTPEnc = [
 	'' => 'None',
 	'tls' => 'START TLS',
 	'ssl' => 'SSL/TLS'
 ];
-// Sécurité de la  connexion - tentative max avant blocage EN
+// SÃ©curitÃ© de la  connexion - tentative max avant blocage EN
 $connectAttempt = [
 	999 => 'Security disabled',
 	3 => '3 attempts',
 	5 => '5 attempts',
 	10 => '10 attempts'
-];	
-// Sécurité de la connexion - durée du blocage EN
+];
+// SÃ©curitÃ© de la connexion - durÃ©e du blocage EN
 $connectTimeout = [
 	0 => 'Safety off',
 	300 => '5 minutes',
@@ -272,7 +275,7 @@ $anonIP = [
 	3 => 'Level 1 (192.168.12.x)',
 	2 => 'Level 2 (192.168.x.x)',
 	1 => 'Level 3 (192.x.x.x)'
-];	
+];
 $captchaTypes = [
 	'num' => 'Numbers',
 	'alpha' => 'Letters'

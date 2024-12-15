@@ -19,3 +19,7 @@
     border: 2px solid red !important; 
     border-radius: 2px;
 }
+
+#modulesPhp2 {
+	min-height: 120px;
+}

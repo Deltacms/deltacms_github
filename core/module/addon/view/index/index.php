@@ -29,7 +29,7 @@ include('./core/module/addon/lang/'. $this->getData(['config', 'i18n', 'langAdmi
 </div>
 
 <?php if($module::$modInstal): ?>
-	<?php echo template::table([2, 2, 2, 2, 1, 1, 1], $module::$modInstal, [$text['core_addon_view']['index'][3], $text['core_addon_view']['index'][4], $text['core_addon_view']['index'][5], $text['core_addon_view']['index'][6], $text['core_addon_view']['index'][7], $text['core_addon_view']['index'][8], $text['core_addon_view']['index'][9]]); ?>
+	<?php echo template::table([2, 2, 1, 4, 1 ], $module::$modInstal, [$text['core_addon_view']['index'][3], $text['core_addon_view']['index'][4], $text['core_addon_view']['index'][5], $text['core_addon_view']['index'][6], $text['core_addon_view']['index'][7]] ); ?>
 <?php else: ?>
 	<?php echo template::speech($text['core_addon_view']['index'][10]); ?>
 <?php endif; ?>

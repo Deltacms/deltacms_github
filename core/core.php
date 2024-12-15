@@ -52,7 +52,7 @@ class common {
 
 	// Numéro de version
 	const DELTA_UPDATE_URL = 'https://update.deltacms.fr/master/';
-	const DELTA_VERSION = '5.1.02';
+	const DELTA_VERSION = '5.2.01';
 	const DELTA_UPDATE_CHANNEL = "v5";
 
 	public static $actions = [];
@@ -267,8 +267,6 @@ class common {
 		if (isset($this->input['_COOKIE']['DELTA_I18N_SITE'])
 		) {
 			self::$i18n = $this->input['_COOKIE']['DELTA_I18N_SITE'];
-			setlocale (LC_TIME, self::$i18n . '_' . strtoupper (self::$i18n) );
-
 		} else  {
 			self::$i18n = 'base';
 		}
@@ -326,7 +324,7 @@ class common {
 							AND ( $this->getUser('group') > 1 OR $this->getData(['page', $pageId, 'member']) === 'allMembers' OR $this->getData(['page', $pageId, 'member']) === $this->getUser('id') )
 						)
 					)
-				) { 
+				) {
 					if($pagePosition !== 0) {
 						$this->hierarchy['visible'][$pageId] = [];
 					}
@@ -403,6 +401,40 @@ class common {
 		}
 
 	}
+	
+	/**
+	 * Localisation en fonction des disponibiltés du serveur
+	 * @param string $langAdmin Langue d'administration
+	 */
+	public function localisation($langAdmin) {
+		$localeDef = null !== $this->getData(['core', 'localisation']) ? setlocale(LC_ALL, $this->getData(['core', 'localisation'])) : setlocale(LC_ALL, null);
+		$arrayFR =['fr_FR.utf8','fr_FR.UTF-8', 'fr_FR', 'French_France.utf8', 'French', 'fr-FR', 'FRA.utf8', 'FRA',
+				'fr_BE.utf8', 'fr_BE.UTF-8', 'fr_BE', 'French_Belgium.utf8', 'fr-BE',
+				'fr_CH.utf8', 'fr_CH.UTF-8', 'fr_CH', 'French_Switzerland.utf8', 'fr-CH',
+				'fr_CA.utf8', 'fr_CA.UTF-8', 'fr_CA', 'French_Canada.utf8', 'fr-CA' 
+		]; 
+		$arrayEN = ['en_GB.utf8', 'en_GB.UTF-8', 'en_GB', 'en_US.utf8', 'en_US.UTF-8', 'en_US', 'English_United Kingdom.utf8', 'en-GB', 'English_United States.utf8', 'en-US'];
+		$arrayES = ['es_ES.utf8', 'en_ES.UTF-8', 'es_ES', 'Spanish_Spain.utf8', 'es-ES', 'spanish'];
+		switch($langAdmin) {
+		  case 'fr':
+		  $locales = array_merge($arrayFR, $arrayEN, $arrayES);
+		  break;
+		  case 'en':
+		  $locales = array_merge($arrayEN, $arrayFR, $arrayES);
+		  break;
+		  case 'es':
+		  $locales = array_merge($arrayES, $arrayEN, $arrayFR);
+		  break;
+		  default:
+			$locales = array_merge($arrayFR, $arrayEN, $arrayES);				
+		}
+		$result = setlocale(LC_ALL, $locales);
+		if( $result === false ){
+		  setlocale( LC_ALL, $localeDef);
+		} else {
+		  $this->setData(['core', 'localisation', $result ]);
+		}			
+	}	
 
 	/**
 	 * Ajoute les valeurs en sortie
@@ -456,7 +488,7 @@ class common {
 				unset($keys[0]);
 				unset($keys[1]);
 				$keys = array_values($keys);
-				
+
 		}
 		// Descripteur
 		$db = $this->dataFiles[$keys[0]];
@@ -508,7 +540,7 @@ class common {
 					unset($keys[0]);
 					unset($keys[1]);
 					$keys = array_values($keys);
-					
+
 			}
 			// Descripteur
 			$db = $this->dataFiles[$keys[0]];
@@ -613,7 +645,7 @@ class common {
 				unset($keys[0]);
 				unset($keys[1]);
 				$keys = array_values($keys);
-				
+
 		}
 		// Descripteur
 		$db = $this->dataFiles[$keys[0]];
@@ -670,12 +702,12 @@ class common {
 		if (!is_dir(self::DATA_DIR . $lang . '/content')) {
 			mkdir(self::DATA_DIR . $lang . '/content', 0755);
 		}
-		
+
 		// Dossier des données de page
 		if (!is_dir(self::DATA_DIR . $lang . '/data_module')) {
 			mkdir(self::DATA_DIR . $lang . '/data_module', 0755);
 		}
-		
+
 		// Créer le jeu de pages du site de test
 		if ($module === 'page' ) {
 			// Site de test ou page simple
@@ -1022,7 +1054,6 @@ class common {
 
 	/*
 	* Création d'une miniature
-	* Fonction utilisée lors de la mise à jour d'une version 9 à une version 10
 	* @param string $src image source
 	* @param string $dest image destination
 	* @param integer $desired_width largeur demandée
@@ -1033,7 +1064,7 @@ class common {
 		if (!is_dir($fileInfo['dirname'])) {
 			mkdir($fileInfo['dirname'], 0755, true);
 		}
-		$source_image = '';
+		$source_image = false;
 		// Type d'image
 		switch(	$fileInfo['extension']) {
 			case 'jpeg':
@@ -1047,8 +1078,15 @@ class common {
 				$source_image = imagecreatefromgif($src);
 				break;
 			case 'webp':
+				$webpContents = file_get_contents($src);
+				$anim = ( strpos($webpContents, 'ANIM') !== false || strpos($webpContents, 'ANMF') !== false );
+				if ($anim === false) {
 				$source_image = imagecreatefromwebp($src);
+				}
+				else { $source_image = false; }			
 				break;
+			case 'avif':
+				$source_image = function_exists('imagecreatefromavif') ? @imagecreatefromavif($src) : false;
 		}
 		// Image valide
 		if ($source_image) {
@@ -1073,6 +1111,8 @@ class common {
 				case 'image/webp':
 					return (imagewebp($virtual_image, $dest));
 					break;
+				case 'image/avif':
+					return (imageavif($virtual_image, $dest));
 			}
 		} else {
 			return (false);
@@ -1309,13 +1349,13 @@ class common {
 		}
 		// Page pleine pour la configuration des modules et l'édition des pages sauf l'affichage d'un article de blog
 		$pattern = ['config','edit','add','comment','data'];
-		if ((sizeof($blocks) === 1 || in_array($this->getUrl(1),$pattern)  ) ) { 
+		if ((sizeof($blocks) === 1 || in_array($this->getUrl(1),$pattern)  ) ) {
 				// Pleine page en mode configuration
 				$this->showContent();
 				$strlenUrl1 = 0;
 				if( $this->getUrl(1) !== null) $strlenUrl1 = strlen($this->getUrl(1));
 				if( $this->getData(['page', $this->getUrl(0), 'commentEnable']) === true &&  $strlenUrl1 < 3  ) $this->showComment();
-				if( $this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD')  && $this->getData(['page', $this->getUrl(0), 'memberFile']) === true && $this->getData(['page', $this->getUrl(0), 'group']) === 1) $this->showMemberFile(); 
+				if( $this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD')  && $this->getData(['page', $this->getUrl(0), 'memberFile']) === true && $this->getData(['page', $this->getUrl(0), 'group']) === 1) $this->showMemberFile();
 				if (file_exists(self::DATA_DIR . 'body.inc.php')) {
 					include( self::DATA_DIR . 'body.inc.php');
 				}
@@ -1355,7 +1395,7 @@ class common {
 				if( $this->getUrl(1) !== null) $strlenUrl1 = strlen($this->getUrl(1));
 				if( $this->getData(['page', $this->getUrl(0), 'commentEnable']) === true &&  $strlenUrl1 < 3  ) $this->showComment();
 				// Ajouter et si option fichiers visibles est validée
-				if( $this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD') && $this->getData(['page', $this->getUrl(0), 'memberFile']) === true && $this->getData(['page', $this->getUrl(0), 'group']) === 1 ) $this->showMemberFile(); 
+				if( $this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD') && $this->getData(['page', $this->getUrl(0), 'memberFile']) === true && $this->getData(['page', $this->getUrl(0), 'group']) === 1 ) $this->showMemberFile();
 				if (file_exists(self::DATA_DIR . 'body.inc.php')) {
 						include(self::DATA_DIR . 'body.inc.php');
 				}
@@ -1408,12 +1448,12 @@ class common {
 
 		echo $this->output['content'];
 	}
-	
+
 	/**
 	 * Affiche les commentaires de page quand ils sont autorisés
-	 * 
+	 *
 	 */
-	public function showComment() {	
+	public function showComment() {
 		// Si la page est accessible
 		if(	$this->getData(['page', $this->getUrl(0), 'group']) === self::GROUP_VISITOR
 			OR (
@@ -1422,19 +1462,19 @@ class common {
 			)
 		) {
 			include('./core/include/comment.inc.php');
-		}	
-	}	
-	
+		}
+	}
+
 	/**
 	 * Affiche les fichiers destinés à un membre particulier
-	 * 
+	 *
 	 */
-	public function showMemberFile() {	
+	public function showMemberFile() {
 		// Si la page est accessible à ce membre
 	//	if(	( $this->getUser('group') > 1 && $this->getData(['page', $this->getUrl(0), 'member']) !== 'allMembers' ) || $this->getData(['page', $this->getUrl(0), 'member']) === $this->getUser('id') ) {
 		if( $this->getUser('group') === 1){
 			include('./core/include/member.inc.php');
-		}	
+		}
 	}
 
 	/**
@@ -2895,7 +2935,7 @@ class core extends common {
 			// Enregistre la personnalisation
 			$this->setData([ 'theme', 'update', false]);
 			file_put_contents(self::DATA_DIR.'theme.css', $css);
-			
+
 			// Thème avec couleurs inversées pour le site
 			$css_invert = "";
 			$textColorInvert = helper::invertColor( $this->getData(['theme', 'text', 'textColor']) );
@@ -2945,7 +2985,7 @@ class core extends common {
 
 			// Enregistre le fichier theme_invert.css
 			file_put_contents(self::DATA_DIR.'theme_invert.css', $css_invert);
-			
+
 			// Effacer le cache pour tenir compte de la couleur de fond TinyMCE
 			header("Expires: Tue, 01 Jan 2000 00:00:00 GMT");
 			header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
@@ -3060,12 +3100,18 @@ class core extends common {
 			header('Location:' . helper::baseUrl() . 'install');
 			exit();
 		}
+		// Localisation
+		if( null !== $this->getData(['core', 'localisation']) ){
+			setlocale(LC_ALL, $this->getData(['core', 'localisation' ]), 'fr_FR.utf8','fr_Fr', 'french');
+		} else {
+			setlocale(LC_ALL, null);
+		}
 		// Journalisation
 		if ($this->getData(['config','connect','log'])) {
 			$time = time();
 			$dataLog = mb_detect_encoding(date('d\/m\/y',$time), 'UTF-8', true)
 						? date('d\/m\/y',$time) . ';' . date('H\:i',$time) . ';'
-						: utf8_encode(date('d\/m\/y',$time)) . ';' . utf8_encode(date('H\:i',$time)) . ';' ;
+						: helper::utf8Encode(date('d\/m\/y',$time)) . ';' . helper::utf8Encode(date('H\:i',$time)) . ';' ;
 			$dataLog .= helper::getIp($this->getData(['config','connect','anonymousIp'])) . ';';
 			$dataLog .= $this->getUser('id') ? $this->getUser('id') . ';' : 'anonyme' . ';';
 			$dataLog .= $this->getUrl();
@@ -3171,13 +3217,11 @@ class core extends common {
 		// Breadcrumb
 		$title = $this->getData(['page', $this->getUrl(0), 'title']);
 		if (!empty($this->getData(['page', $this->getUrl(0), 'parentPageId'])) &&
-				$this->getData(['page', $this->getUrl(0), 'breadCrumb'])) {
-				$title = '<a href="' . helper::baseUrl() .
-						$this->getData(['page', $this->getUrl(0), 'parentPageId']) .
-						'">' .
-						ucfirst($this->getData(['page',$this->getData(['page', $this->getUrl(0), 'parentPageId']), 'title'])) .
-						'</a> &#8250; '.
-						$this->getData(['page', $this->getUrl(0), 'title']);
+			$this->getData(['page', $this->getUrl(0), 'breadCrumb'])) {				
+				$parent = '<a href="' . helper::baseUrl() . $this->getData(['page', $this->getUrl(0), 'parentPageId']) .'">' .
+						ucfirst($this->getData(['page',$this->getData(['page', $this->getUrl(0), 'parentPageId']), 'title'])) . '</a>';	
+				if( $this->getData(['page', $this->getData(['page', $this->getUrl(0), 'parentPageId']), 'disable' ]) === true) $parent = ucfirst($this->getData(['page',$this->getData(['page', $this->getUrl(0), 'parentPageId']), 'title']));		
+				$title = $parent.' &#8250; '.	$this->getData(['page', $this->getUrl(0), 'title']);
 		}
 		// Importe la page
 		if(

@@ -39,7 +39,7 @@ $get_location = albumHelper::gps_exif($picture);
 	else:
 	$separe = array('_','-','t960');
 	$picname = str_replace($separe, ' ', $photo);
-	$picname = preg_replace('/(\.jpe?g|\.png|\.gif|\.webp)$/i', '', $picname);
+	$picname = preg_replace('/(\.jpe?g|\.png|\.gif|\.webp|\.avif)$/i', '', $picname);
 	$shortenedPicname = helper::subword($picname, 0, 20);
 	if ( strlen($shortenedPicname) < strlen($picname) ) $picname = $shortenedPicname.'...';
 	echo $picname;

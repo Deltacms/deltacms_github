@@ -68,10 +68,10 @@ if( function_exists('datefmt_create') && function_exists('datefmt_format') && ex
 		} else{
 			$date = mb_detect_encoding( date('d/m/Y', $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn'])), 'UTF-8', true)
 					? date('d/m/Y', $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn']))
-					: utf8_encode(date('d/m/Y', $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn'])));
+					: helper::utf8Encode(date('d/m/Y', $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn'])));
 			$heure =  mb_detect_encoding(date('H:i', $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn'])), 'UTF-8', true)
 					? date('H:i', $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn']))
-					:  utf8_encode(date('H:i', $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn'])));
+					:  helper::utf8Encode(date('H:i', $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn'])));
 			echo $date . ' - ' . $heure;
 		} ?>
 
@@ -254,7 +254,7 @@ if( function_exists('datefmt_create') && function_exists('datefmt_format') && ex
 				<div class="blockTitle"><?php echo $module::$commentsSignature[$commentId]; ?>
 				<?php echo ' - ';  echo mb_detect_encoding(date('d\/m\/Y\ \-\ H\:i', $comment['createdOn']), 'UTF-8', true)
 										? date('d\/m\/Y\ \-\ H\:i', $comment['createdOn'])
-										: utf8_encode(date('d\/m\/Y\ \-\ H\:i', $comment['createdOn']));
+										: helper::utf8Encode(date('d\/m\/Y\ \-\ H\:i', $comment['createdOn']));
 				?>
 				</div>
 				<?php echo $comment['content']; ?>

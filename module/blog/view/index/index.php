@@ -41,7 +41,11 @@ if($module::$articles): ?>
 								}	
 							?>
 							<a href="<?php echo helper::baseUrl() . $this->getUrl(0) . '/' . $articleId; ?>" class="blogPicture">
+							<?php if ( file_exists( self::FILE_DIR . 'thumb/' . $thumb) ) { ?>
 								<img src="<?php echo helper::baseUrl(false) .  self::FILE_DIR . 'thumb/' . $thumb; ?>" alt="<?php echo $article['picture']; ?>">
+							<?php } else { 	// Image originale en remplacement	?>
+								<img src="<?php echo helper::baseUrl(false) .  self::FILE_DIR . 'source/' . $article['picture']; ?>" alt="<?php echo $article['picture']; ?>">
+							<?php } ?>
 							</a>
 						<?php endif;?>
 						</div>
@@ -67,7 +71,7 @@ if($module::$articles): ?>
 								echo datefmt_format($fmt, strtotime( date('Y/m/d H:i:s',$article['publishedOn']))); 
 							} else {
 								echo mb_detect_encoding(date('d/m/Y - H:i',  $article['publishedOn']), 'UTF-8', true)? 
-								date('d/m/Y', $article['publishedOn']): utf8_encode(date('d/m/Y', $article['publishedOn'])); 
+								date('d/m/Y', $article['publishedOn']): helper::utf8Encode(date('d/m/Y', $article['publishedOn'])); 
 							} ?>
 						</div>
 						<p class="blogContent">

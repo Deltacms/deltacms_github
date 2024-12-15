@@ -1,9 +1,5 @@
 <?php
 // Lexique du module du coeur Addon en français
-$text['core_addon_view']['import'][0] = 'Retour';
-$text['core_addon_view']['import'][1] = 'Appliquer';
-$text['core_addon_view']['import'][2] = 'Archive ZIP :';
-$text['core_addon_view']['import'][3] = 'Installer des données de module';
 $text['core_addon_view']['index'][0] = 'Retour';
 $text['core_addon_view']['index'][1] = 'Aide';
 $text['core_addon_view']['index'][2] = 'Installer un module';
@@ -12,8 +8,6 @@ $text['core_addon_view']['index'][4] = 'Alias';
 $text['core_addon_view']['index'][5] = 'Version';
 $text['core_addon_view']['index'][6] = 'Page(s)';
 $text['core_addon_view']['index'][7] = 'Supprimer';
-$text['core_addon_view']['index'][8] = 'Exporter';
-$text['core_addon_view']['index'][9] = 'Importer';
 $text['core_addon_view']['index'][10] = 'Aucun module installé.';
 $text['core_addon_view']['index'][11] = "Êtes-vous sûr de vouloir supprimer ce module ?";
 $text['core_addon_view']['upload'][0] = 'Retour';
@@ -39,13 +33,4 @@ $text['core_addon']['install'][8] = ' Mise à jour par ce procédé interdite, v
 $text['core_addon']['install'][9] = 'Impossible d\'ouvrir l\'archive';
 $text['core_addon']['upload'][0] = 'Installer un module';
 $text['core_addon']['index'][0] = 'Gestion des modules';
-$text['core_addon']['export'][0] = 'Action non autorisée';
-$text['core_addon']['export'][1] = 'Quelque chose s\'est mal passé';
-$text['core_addon']['import'][0] = 'Action non autorisée';
-$text['core_addon']['import'][1] = 'Import impossible la page suivante doit être renommée :';
-$text['core_addon']['import'][2] = 'Import impossible les pages suivantes doivent être renommées :';
-$text['core_addon']['import'][3] = 'Import réussi';
-$text['core_addon']['import'][4] = 'Importer des données de module';
-
-
 ?>

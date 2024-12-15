@@ -44,7 +44,7 @@ if(isset($du)){
 							if(QE($ob)=='utf-8'){
 								readfile($ob);
 							} else {
-								$te=file_get_contents($ob);print(utf8_encode($te));
+								$te=file_get_contents($ob);print(helper::utf8Encode($te));
 							}
 							echo'</pre><br>'.$dl.'<br>';
 						}

@@ -159,6 +159,9 @@ include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdm
 							<?php $textRewrite = $text['core_config_view']['setup'][30];
 							if( helper::checkRewrite() === true ) $textRewrite = $text['core_config_view']['setup'][29];
 							$listText = $text['core_config_view']['setup'][25]. common::DELTA_VERSION."\n".$text['core_config_view']['setup'][26]. phpversion()."\n".$text['core_config_view']['setup'][27]. $_SERVER['SERVER_SOFTWARE']."\n".$text['core_config_view']['setup'][28].$textRewrite;
+							if( null !== $this->getData(['core', 'localisation']) ){
+								$listText .= "\n". $text['core_config_view']['setup'][44] . $this->getData(['core', 'localisation']);
+							}
 							echo template::textarea('modulesPhp1',[
 								'value' => $listText
 							]); ?> 
@@ -185,6 +188,11 @@ include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdm
 							$listModText = substr( $listModText, 0, strlen($listModText) - 3);
 							} else{
 								$listModText .= "\n\n".$text['core_config_view']['setup'][33];
+							}
+							if( !function_exists('imageavif')) {
+								$listModText .= "\n\n". $text['core_config_view']['setup'][43];
+							} else {
+								$listModText .= "\n\n". $text['core_config_view']['setup'][45];
 							}
 							echo template::textarea('modulesPhp2',[
 								'value' => $listModText

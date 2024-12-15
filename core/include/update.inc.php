@@ -255,4 +255,14 @@ if ($this->getData(['core', 'dataVersion']) < 5102) {
 	}
 	$this->setData(['core', 'dataVersion', 5102]);
 }
+if ($this->getData(['core', 'dataVersion']) < 5201) {
+	// Localisation avec ordre de locales : langue Admin puis les 2 autres
+	$this->localisation($this->getData(['config', 'i18n', 'langAdmin' ]));
+	if( null !== $this->getData(['core', 'localisation']) ){
+		setlocale(LC_ALL, $this->getData(['core', 'localisation' ]), 'fr_FR.utf8','fr_Fr', 'french');
+	} else {
+		setlocale(LC_ALL, null);
+	}	
+	$this->setData(['core', 'dataVersion', 5201]);
+}
 ?>

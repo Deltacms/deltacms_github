@@ -576,7 +576,7 @@ class user extends common {
 		// Journalisation
 		$dataLog = mb_detect_encoding(date('d\/m\/y',time()), 'UTF-8', true)
 				? date('d\/m\/y',time()) . ';' . date('H\:i',time()) . ';'
-				: utf8_encode(date('d\/m\/y',time())) . ';' . utf8_encode(date('H\:i',time())) . ';' ;
+				: helper::utf8Encode(date('d\/m\/y',time())) . ';' . helper::utf8Encode(date('H\:i',time())) . ';' ;
 		$dataLog .= helper::getIp($this->getData(['config','connect','anonymousIp'])) . ';';
 		$dataLog .= $this->getInput('userLoginId', helper::FILTER_ID) . ';' ;
 		$dataLog .= $this->getUrl() .';' ;

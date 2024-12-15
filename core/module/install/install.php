@@ -65,6 +65,9 @@ class install extends common {
 				$langBase = $this->getInput('installLangBase');
 				$this->setData(['config', 'i18n', 'langAdmin', $langAdmin]);
 				$this->setData(['config', 'i18n', 'langBase', $langBase]);
+				
+				// Localisation avec ordre de locales : $langAdmin puis les 2 autres
+				$this->localisation($langAdmin);
 
 				// Création de l'utilisateur si les données sont complétées.
 				// success retour de l'enregistrement des données
@@ -88,107 +91,109 @@ class install extends common {
 				include('./core/module/install/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_install.php');			
 				// Compte créé, envoi du mail et création des données du site
 				if ($success) { // Formulaire complété envoi du mail
-				// Envoie le mail
-				// Sent contient true si réussite sinon code erreur d'envoi en clair
-				$sent = $this->sendMail(
-					$userMail,
-					$text['core_install']['index'][0],
-					$text['core_install']['index'][1] . ' <strong>' . $userFirstname . ' ' . $userLastname . '</strong>,<br><br>' .
-					$text['core_install']['index'][2].'<br><br>' .
-					'<strong>'.$text['core_install']['index'][3].' : </strong> <a href="' . helper::baseUrl(false) . '" target="_blank">' . helper::baseUrl(false) . '</a><br>' .
-					'<strong>'.$text['core_install']['index'][4].' : </strong> ' . $this->getInput('installId') . '<br>',
-					null
-				);
-				// Nettoyer les cookies de langue d'une précédente installation
-				helper::deleteCookie('DELTA_I18N_SITE');
-				helper::deleteCookie('DELTA_I18N_SCRIPT');
-				
-				// Installation du site de test en français, le site light est installé par défaut
-				if( $langAdmin === 'fr'){
-					if ($this->getInput('installDefaultData',helper::FILTER_BOOLEAN) === FALSE) {
-						//$this->initData('page','base',true);
-						//$this->initData('module','base',true);
-						$this->copyDir( './core/module/install/ressource/database_fr/base/', './site/data/base/');
-					} 
-				}
-				
-				// Installation du site de test dans une langue d'administration différente du français
-				if( $langAdmin !== 'fr'){
-					if ($this->getInput('installDefaultData',helper::FILTER_BOOLEAN) === FALSE) {
-						$this->copyDir( './core/module/install/ressource/database_'.$langAdmin.'/base/', './site/data/base/');
-						$this->copyDir( './core/module/install/ressource/database_'.$langAdmin.'/search/', './site/data/search/');
+					// Envoie le mail
+					// Sent contient true si réussite sinon code erreur d'envoi en clair
+					$sent = $this->sendMail(
+						$userMail,
+						$text['core_install']['index'][0],
+						$text['core_install']['index'][1] . ' <strong>' . $userFirstname . ' ' . $userLastname . '</strong>,<br><br>' .
+						$text['core_install']['index'][2].'<br><br>' .
+						'<strong>'.$text['core_install']['index'][3].' : </strong> <a href="' . helper::baseUrl(false) . '" target="_blank">' . helper::baseUrl(false) . '</a><br>' .
+						'<strong>'.$text['core_install']['index'][4].' : </strong> ' . $this->getInput('installId') . '<br>',
+						null
+					);
+					// Nettoyer les cookies de langue d'une précédente installation
+					helper::deleteCookie('DELTA_I18N_SITE');
+					helper::deleteCookie('DELTA_I18N_SCRIPT');
+					
+					// Installation du site de test en français, le site light est installé par défaut
+					if( $langAdmin === 'fr'){
+						if ($this->getInput('installDefaultData',helper::FILTER_BOOLEAN) === FALSE) {
+							//$this->initData('page','base',true);
+							//$this->initData('module','base',true);
+							$this->copyDir( './core/module/install/ressource/database_fr/base/', './site/data/base/');
+						} 
 					}
-					else{
-						$this->copyDir( './core/module/install/ressource/databaselight_'.$langAdmin.'/base/', './site/data/base/');
+					
+					// Installation du site de test dans une langue d'administration différente du français
+					if( $langAdmin !== 'fr'){
+						if ($this->getInput('installDefaultData',helper::FILTER_BOOLEAN) === FALSE) {
+							$this->copyDir( './core/module/install/ressource/database_'.$langAdmin.'/base/', './site/data/base/');
+							$this->copyDir( './core/module/install/ressource/database_'.$langAdmin.'/search/', './site/data/search/');
+						}
+						else{
+							$this->copyDir( './core/module/install/ressource/databaselight_'.$langAdmin.'/base/', './site/data/base/');
+						}
 					}
-				}
-				
-				// Personnalisation de la page d'accueil en fonction de la langue de rédaction choisie
-				if( $langBase !== $langAdmin && file_exists( './core/module/install/ressource/'. $langBase . '/accueil.html'  )){
-					$accueil = $text['core_install']['index'][6];
-					copy('./core/module/install/ressource/'. $langBase . '/accueil.html', './site/data/base/content/'. $accueil);
-				}
-				
-				
-				// Images exemples livrées dans tous les cas
-				try {
-					// Décompression dans le dossier de fichier temporaires
-					if (file_exists(self::TEMP_DIR . 'files.tar.gz')) {
-						unlink(self::TEMP_DIR . 'files.tar.gz');
+					
+					// Personnalisation de la page d'accueil en fonction de la langue de rédaction choisie
+					if( $langBase !== $langAdmin && file_exists( './core/module/install/ressource/'. $langBase . '/accueil.html'  )){
+						$accueil = $text['core_install']['index'][6];
+						copy('./core/module/install/ressource/'. $langBase . '/accueil.html', './site/data/base/content/'. $accueil);
 					}
-					if (file_exists(self::TEMP_DIR . 'files.tar')) {
-						unlink(self::TEMP_DIR . 'files.tar');
+					
+					
+					// Images exemples livrées dans tous les cas
+					try {
+						// Décompression dans le dossier de fichier temporaires
+						if (file_exists(self::TEMP_DIR . 'files.tar.gz')) {
+							unlink(self::TEMP_DIR . 'files.tar.gz');
+						}
+						if (file_exists(self::TEMP_DIR . 'files.tar')) {
+							unlink(self::TEMP_DIR . 'files.tar');
+						}
+						copy('core/module/install/ressource/files.tar.gz', self::TEMP_DIR . 'files.tar.gz');
+						$pharData = new PharData(self::TEMP_DIR . 'files.tar.gz');
+						$pharData->decompress();
+						// Installation
+						$pharData->extractTo(__DIR__ . '/../../../', null, true);
+					} catch (Exception $e) {
+						$success = $e->getMessage();
 					}
-					copy('core/module/install/ressource/files.tar.gz', self::TEMP_DIR . 'files.tar.gz');
-					$pharData = new PharData(self::TEMP_DIR . 'files.tar.gz');
-					$pharData->decompress();
-					// Installation
-					$pharData->extractTo(__DIR__ . '/../../../', null, true);
-				} catch (Exception $e) {
-					$success = $e->getMessage();
-				}
-				unlink(self::TEMP_DIR . 'files.tar.gz');
-				unlink(self::TEMP_DIR . 'files.tar');
-				// Stocker le dossier d'installation
-				$this->setData(['core', 'baseUrl', helper::baseUrl(false,false) ]);
-				// Créer sitemap
-				$this->createSitemap();
+					unlink(self::TEMP_DIR . 'files.tar.gz');
+					unlink(self::TEMP_DIR . 'files.tar');
+					// Stocker le dossier d'installation
+					$this->setData(['core', 'baseUrl', helper::baseUrl(false,false) ]);
+					// Créer sitemap
+					$this->createSitemap();
 
-				// Installation du thème sélectionné
-				$dataThemes = file_get_contents('core/module/install/ressource/themes/themes.json');
-				$dataThemes = json_decode($dataThemes, true);
-				$themeId = $dataThemes [$this->getInput('installTheme', helper::FILTER_STRING_SHORT)]['filename'];
-				if ($themeId !== 'default' ) {
-						$theme = new theme;
-						$theme->import('core/module/install/ressource/themes/' . $themeId);
-				}
+					// Installation du thème sélectionné
+					$dataThemes = file_get_contents('core/module/install/ressource/themes/themes.json');
+					$dataThemes = json_decode($dataThemes, true);
+					$themeId = $dataThemes [$this->getInput('installTheme', helper::FILTER_STRING_SHORT)]['filename'];
+					if ($themeId !== 'default' ) {
+							$theme = new theme;
+							$theme->import('core/module/install/ressource/themes/' . $themeId);
+					}
 
-				// Copie des thèmes dans les fichiers
-				if (!is_dir(self::FILE_DIR . 'source/theme' )) {
-					mkdir(self::FILE_DIR . 'source/theme');
-				}
-				$this->copyDir('core/module/install/ressource/themes', self::FILE_DIR . 'source/theme');
-				unlink(self::FILE_DIR . 'source/theme/themes.json');
-				
-				// Modification des textes 'Pied de page personnalisé', 'Bannière vide' et du lien vers la page d'accueil situé dans theme.json ( $this->setData pose problème)
-				if( $langAdmin !== 'fr'){
-					$theme = file_get_contents( self::DATA_DIR.'theme.json');
-					$theme = json_decode( $theme, true);
-					$theme['theme']['footer']['text'] = $text['core_install']['index'][7];
-					$theme['theme']['header']['featureContent'] = $text['core_install']['index'][8];
-					$theme['theme']['menu']['burgerIconLink1'] = $text['core_install']['index'][9];
-					$json = json_encode($theme);
-					file_put_contents(self::DATA_DIR.'theme.json',$json);
-				}
-				
-				// Valeurs en sortie
-				$this->addOutput([
-					'redirect' => helper::baseUrl(false),
-					'notification' => $sent === true ? $text['core_install']['index'][5] : $sent,
-					'state' => ($sent === true &&  $success === true) ? true : null
-				]);
+					// Copie des thèmes dans les fichiers
+					if (!is_dir(self::FILE_DIR . 'source/theme' )) {
+						mkdir(self::FILE_DIR . 'source/theme');
+					}
+					$this->copyDir('core/module/install/ressource/themes', self::FILE_DIR . 'source/theme');
+					unlink(self::FILE_DIR . 'source/theme/themes.json');
+					
+					// Modification des textes 'Pied de page personnalisé', 'Bannière vide' et du lien vers la page d'accueil situé dans theme.json ( $this->setData pose problème)
+					if( $langAdmin !== 'fr'){
+						$theme = file_get_contents( self::DATA_DIR.'theme.json');
+						$theme = json_decode( $theme, true);
+						$theme['theme']['footer']['text'] = $text['core_install']['index'][7];
+						$theme['theme']['header']['featureContent'] = $text['core_install']['index'][8];
+						$theme['theme']['menu']['burgerIconLink1'] = $text['core_install']['index'][9];
+						$json = json_encode($theme);
+						file_put_contents(self::DATA_DIR.'theme.json',$json);
+					}
+					
+					// Valeurs en sortie
+					$this->addOutput([
+						'redirect' => helper::baseUrl(false),
+						'notification' => $sent === true ? $text['core_install']['index'][5] : $sent,
+						'state' => ($sent === true &&  $success === true) ? true : null
+					]);
 				}
 			}
+			// Localisation avec ordre de locales : fr puis en puis es
+			$this->localisation('fr');
 			// Récupération de la liste des thèmes
 			$dataThemes = file_get_contents('core/module/install/ressource/themes/themes.json');
 			$dataThemes = json_decode($dataThemes, true);

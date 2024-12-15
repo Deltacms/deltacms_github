@@ -43,7 +43,7 @@ echo template::formOpen('userLoginForm');
 	<div class="row">
 		<div class="col4 offset4">
 			<?php echo template::button('userLoginBack', [
-				'href' => helper::baseUrl() . str_replace('_', '/', str_replace('__', '#', $this->getUrl(2))),
+				'href' => helper::baseUrl(),
 				'ico' => 'left',
 				'value' => $text['core_user_view']['login'][2]
 			]); ?>

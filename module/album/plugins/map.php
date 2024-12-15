@@ -1,7 +1,7 @@
 <?php
 /* @license GNU General Public License, version 3
  * création @Lionel Croquefer 2019
- * Version du 17 septembre 2023
+ * Version du 11 octobre 2024
  */
 $lat = $_GET['lat'];
 $lon = $_GET['lon'];
@@ -56,12 +56,8 @@ var baselayers = {
 			maxZoom: 19,
 			attribution: '&copy; <a href="//www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
 		}),
-"MapsRefugesInfo": L.tileLayer("https://maps.refuges.info/hiking/{z}/{x}/{y}.png", {
-			maxZoom: 19,
-			attribution: '&copy; <a href="//wiki.openstreetmap.org/wiki/Hiking/mri" target="_blank">sly</a> | <a href="//www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
-		}),
 "Satellite" : L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
-	maxZoom: 18,
+			maxZoom: 18,
 			attribution: '&copy; <a href="//www.esri.com/fr-fr/" target="_blank">Esri</a> ArcGIS'
 		})
 };

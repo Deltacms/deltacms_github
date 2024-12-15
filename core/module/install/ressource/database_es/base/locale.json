@@ -14,8 +14,8 @@
 		"editorLabel": "Editor",
 		"moderatorLabel": "Moderador",
 		"administratorLabel": "Administrador",
-        "metaDescription": "DeltaCMS es un CMS sin base de datos que le permite crear y administrar fácilmente un sitio web sin ningún conocimiento de programación.",
-        "title": "DeltaCMS",
+        "metaDescription": "Deltacms es un CMS sin base de datos que le permite crear y administrar fácilmente un sitio web sin ningún conocimiento de programación.",
+        "title": "Deltacms",
         "captchaSimpleText": "Soy un humano",
         "captchaSimpleHelp": "Marca esta casilla para demostrar que eres humano",
 		"questionnaireAccept": "Acepto las condiciones de uso de mis datos personales",
@@ -42,7 +42,7 @@
             "burgerLeftIconLink": "inicio",
             "burgerCenterIconLink": "investigacion"
         },
-		"mandatoryText": "Obligatorio",
+		"mandatoryText": "Entrada obligatoria",
 		"impossibleText": "El formulario no se puede enviar porque contiene errores"	
     }
 }

@@ -1,7 +1,7 @@
 <?php
 // Lexique du module du coeur Install en espagnol
-$text['core_install_view']['update'][0] = 'Actualización de Deltacms';
-$text['core_install_view']['update'][1] = 'to Deltacms';
+$text['core_install_view']['update'][0] = 'Actualización de Deltacms ';
+$text['core_install_view']['update'][1] = ' to Deltacms ';
 $text['core_install_view']['update'][2] = 'Para garantizar el correcto funcionamiento de Deltacms, no cierre esta página antes de que finalice la operación.';
 $text['core_install_view']['update'][3] = '1/4: Preparando...';
 $text['core_install_view']['update'][4] = '2/4: Descargando...';

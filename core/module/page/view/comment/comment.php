@@ -28,7 +28,7 @@ include('./core/module/page/lang/'. $this->getData(['config', 'i18n', 'langAdmin
 	</div>
 </div>
 <?php if($module::$data): ?>
-		<?php echo template::table([11,1], $module::$data,[ $text['core_page_view']['comment'][2], '']); ?>
+		<?php echo template::table([2,6,2,1,1], $module::$data,[$text['core_page_view']['comment'][8],$text['core_page_view']['comment'][9],$text['core_page_view']['comment'][10],'','']); ?>
 		<?php echo $module::$pages; ?>
 	<?php else: ?>
 		<?php echo template::speech($text['core_page_view']['comment'][5]); ?>

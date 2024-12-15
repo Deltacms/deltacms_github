@@ -19,7 +19,7 @@ include('./module/blog/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) .
 	</div>
 
 </div>
-	<?php echo template::table([3, 5, 2, 1, 1], $module::$comments, [$text['blog_view']['comment'][1], $text['blog_view']['comment'][2], $text['blog_view']['comment'][3], '', '']); ?>
+	<?php echo template::table([2, 5, 1, 1, 1, 1], $module::$comments, [$text['blog_view']['comment'][1], $text['blog_view']['comment'][2], $text['blog_view']['comment'][3], '', '', '']); ?>
 	<?php echo $module::$pages.'<br/>'; ?>
 <?php else: ?>
 </div>

@@ -192,11 +192,14 @@ class Response {
 	 */
 	public function setContent($content)
 	{
-		if ($content instanceof ArrayObject || is_array($content))
-		{
+		if ($content instanceof ArrayObject || is_array($content)) {
 			$this->headers['Content-Type'] = array('application/json');
-
-			$content = json_encode(utf8_encode($content));
+			$encodage = mb_detect_encoding($content, ['ISO-8859-15', 'ISO-8859-1', 'ISO-8859-5', 'ASCII', 'WINDOWS-1252', 'UTF-8'], true);
+			if ($encodage != 'UTF-8') {
+				$content = json_encode(mb_convert_encoding($content, 'UTF-8', $encodage));
+			} else {		
+				$content = json_encode($content);
+			}
 		}
 
 		$this->content = $content;

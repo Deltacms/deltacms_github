@@ -19,7 +19,7 @@
  */
 
  /**
- * Initialisation de Delta
+ * Initialisation de Deltacms
  */
 ini_set('session.use_trans_sid', FALSE);
 session_start();
@@ -31,17 +31,12 @@ if(version_compare(PHP_VERSION, '7.2.0', '<')) {
 	exit('PHP 7.2+ required.');
 }
 
-/*
- *Localisation
-
- * Locales :
- * french : free.fr
- * fr_FR : XAMPP Macos
- * fr_FR.utf8 : la majorité
-*/
-date_default_timezone_set('Europe/Paris');
-setlocale (LC_ALL,'french','fr_Fr','fr_FR.utf8');
-
+/**
+ * Encodage utf8
+ */
+ header('Content-Type: text/html; charset=utf-8');
+ mb_internal_encoding('UTF-8');
+ 
 /**
  * Chargement des classes
  */

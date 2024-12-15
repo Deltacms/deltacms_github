@@ -12,7 +12,7 @@ else { echo '<html lang="'.$lang.'">'; }
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta name="generator" content="DeltaCMS <?=common::DELTA_VERSION?>">
+		<meta name="generator" content="Deltacms <?=common::DELTA_VERSION?>">
         <?php
         $this->showMetaTitle();
         if( $this->getData(['config', 'social', 'headFacebook' ]) === true) $this->showMetaPropertyFacebook();

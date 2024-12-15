@@ -46,7 +46,7 @@ if($module::$news):
 						} else {
 							echo mb_detect_encoding(date('d/m/Y', $news['publishedOn']), 'UTF-8', true)? 
 								date('d/m/Y', $news['publishedOn'])
-								: utf8_encode(date('d/m/Y', $news['publishedOn']));
+								: helper::utf8Encode(date('d/m/Y', $news['publishedOn']));
 						}
 						?>
 								- <?php echo $news['userId']; ?>

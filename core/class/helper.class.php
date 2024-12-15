@@ -390,14 +390,12 @@ class helper {
 				$text = password_hash($text, PASSWORD_BCRYPT);
 				break;
 			case self::FILTER_STRING_LONG:
-				// $text = mb_substr(filter_var($text, FILTER_SANITIZE_STRING), 0, 500000);
 				$text = mb_substr( strip_tags($text) , 0, 500000);
 				break;
 			case self::FILTER_STRING_LONG_NOSTRIP:
 				$text = mb_substr( $text , 0, 500000);
 				break;
 			case self::FILTER_STRING_SHORT:
-				// $text = mb_substr(filter_var($text, FILTER_SANITIZE_STRING), 0, 500);
 				$text = mb_substr( strip_tags($text) , 0, 500);
 				break;
 			case self::FILTER_TIMESTAMP:
@@ -650,6 +648,38 @@ class helper {
 				closedir($dirImg);
 			}
 			return $dirContentFilter;
+		}
+	}
+
+	/**
+	* Remplacement de la fonction dépréciée utf8_encode
+	* @param string texte à encoder
+	*/
+	public static function utf8Encode($string) {
+		$encodage = mb_detect_encoding($string, ['ISO-8859-15', 'ISO-8859-1', 'ISO-8859-5', 'ASCII', 'WINDOWS-1252', 'UTF-8'], true);
+		if ($encodage != 'UTF-8') {
+			$string = mb_convert_encoding($string, 'UTF-8', $encodage);
+		}
+		return $string;
+	}
+	
+	/*
+	* Retourne le code iso de la langue de la page courante ou celui de la langue d'administration
+	* utilisée pour initialiser ou mettre à jour les modules de page avec un lexique fr, es ou en
+	* @param string $base langue originale de rédaction du site
+	* @param string $admin langue d'administration
+	*/
+	public static function lexLang($base, $admin) {
+		if( isset( $_SESSION['translationType']) && isset($_SESSION['langFrontEnd']) && $_SESSION['translationType']==='site' ){
+		  $lang = $_SESSION['langFrontEnd'];
+		} else {
+		  $lang = $base;
+		}
+		$listLang=['fr','es','en'];
+		if( in_array($lang, $listLang)){
+			return $lang;
+		} else {		
+			return $admin;	
 		}
 	}	
 
