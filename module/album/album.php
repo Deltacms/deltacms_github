@@ -7,7 +7,7 @@
  */
 setlocale(LC_NUMERIC,'English','en_US','en_US.UTF-8');
 class album extends common {
-	const VERSION = '4.9';
+	const VERSION = '5.0';
 	const REALNAME = 'Album Photo';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -53,9 +53,9 @@ class album extends common {
 				$this->setData(['module', $this->getUrl(0), 'config', 'texts', 'noAlbum', $text['album']['init'][2]]);
 				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','4.7']);
 			}
-			// Version 4.9
-			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '4.9', '<') ) {
-				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','4.9']);
+			// Version 5.0
+			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '5.0', '<') ) {
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','5.0']);
 			}
 		}
 	}
@@ -66,7 +66,7 @@ class album extends common {
 	private function init() {
 		// Lexique
 		$param = '';
-		include('./module/album/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_album.php');
+		include('./module/album/lang/'. helper::lexlang($this->getData(['config', 'i18n', 'langBase']) , $this->getData(['config', 'i18n', 'langAdmin'])) . '/lex_album.php');
 		$this->setData(['module', $this->getUrl(0), 'config', 'versionData', self::VERSION]);
 		$this->setData(['module', $this->getUrl(0), 'config', 'texts', 'backButton', $text['album']['init'][0]]);
 		$this->setData(['module', $this->getUrl(0), 'config', 'texts', 'geolocation', $text['album']['init'][1]]);

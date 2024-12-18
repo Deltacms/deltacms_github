@@ -102,6 +102,15 @@ class page extends common {
 				// Duplication des données de page
 				if( is_file(self::DATA_DIR . self::$i18n . '/data_module/' . $url[0] . '.json'))
 				copy( self::DATA_DIR . self::$i18n . '/data_module/' . $url[0] . '.json', self::DATA_DIR . self::$i18n . '/data_module/' . $pageId . '.json');
+			    // Cas particuliers du module agenda avec dossiers agenda/nom-page, agenda/nom-page_affiche, agenda/nom-page_sauve, agenda/nom-page_visible
+				$dirAgenda = array( '', '_affiche', '_sauve', '_visible');
+				foreach( $dirAgenda as $key => $suffix){
+					if( is_dir(self::DATA_DIR . self::$i18n . '/data_module/agenda/'. $url[0].$suffix))
+					$this->copyDir( self::DATA_DIR . self::$i18n . '/data_module/agenda/'. $url[0].$suffix, self::DATA_DIR . self::$i18n . '/data_module/agenda/'. $pageId.$suffix);
+				}
+				// Cas particuliers du module news avec un dossier news/nom_page
+				if( is_dir(self::DATA_DIR . self::$i18n . '/data_module/news/'. $url[0]))
+				$this->copyDir( self::DATA_DIR . self::$i18n . '/data_module/news/'. $url[0], self::DATA_DIR . self::$i18n . '/data_module/news/'. $pageId);
 				// Valeurs en sortie
 				$this->addOutput([
 					'redirect' => helper::baseUrl() . 'page/edit/' . $pageId,

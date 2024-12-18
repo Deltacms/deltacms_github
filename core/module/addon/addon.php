@@ -219,15 +219,13 @@ class addon extends common {
 			// Soumission du formulaire
 			if($this->isPost()) {
 				// Installation d'un module
+				$state = [
+					'success' => false,
+					'notification'=> ''
+				];
 				$checkValidMaj = $this->getInput('configModulesCheck', helper::FILTER_BOOLEAN);
 				$zipFilename =	$this->getInput('configModulesInstallation', helper::FILTER_STRING_SHORT);
-				if( $zipFilename !== ''){
-					$success = [
-						'success' => false,
-						'notification'=> ''
-					];
-					$state = $this->install(self::FILE_DIR.'source/'.$zipFilename, $checkValidMaj);
-				}
+				if( $zipFilename !== '') $state = $this->install(self::FILE_DIR.'source/'.$zipFilename, $checkValidMaj);
 				$this->addOutput([
 					'redirect' => helper::baseUrl() . $this->getUrl(),
 					'notification' => $state['notification'],

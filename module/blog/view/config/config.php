@@ -57,12 +57,12 @@ echo template::formOpen('blogConfig'); ?>
 			<div class="block">
 				<div class="blockTitle"><?php echo $text['blog_view']['config'][3]; ?></div>
 				<div class="row">
-					<div class="col6">
+					<div class="col4">
 						<?php echo template::checkbox('blogConfigShowFeeds', true, $text['blog_view']['config'][4], [
 							'checked' => $this->getData(['module', $this->getUrl(0), 'config', 'feeds']),
 						]); ?>
 					</div>
-					<div class="col6">
+					<div class="col8">
 						<?php echo template::text('blogConfigFeedslabel', [
 							'label' => $text['blog_view']['config'][5],
 							'value' => $this->getData(['module', $this->getUrl(0), 'config', 'feedsLabel'])
@@ -70,10 +70,16 @@ echo template::formOpen('blogConfig'); ?>
 					</div>
 				</div>
 				<div class="row">
-					<div class="col6 offset6">
+					<div class="col4">
 						<?php echo template::select('blogConfigItemsperPage', $ItemsList, [
 							'label' => $text['blog_view']['config'][6],
 							'selected' => $this->getData(['module', $this->getUrl(0),'config', 'itemsperPage'])
+						]); ?>
+					</div>
+					<div class="col4">
+						<?php echo template::select('blogConfigPreviewSize', [200=>'200',400=>'400',1000=>'1000',2000=>'2000',4000=>'4000'], [
+							'label' => $text['blog_view']['config'][17],
+							'selected' => $this->getData(['module', $this->getUrl(0),'config', 'previewSize'])
 						]); ?>
 					</div>
 				</div>

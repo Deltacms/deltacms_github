@@ -18,7 +18,7 @@
  
 class form extends common {
 
-	const VERSION = '6.2';
+	const VERSION = '6.3';
 	const REALNAME = 'Formulaire';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -115,6 +115,9 @@ class form extends common {
 				]);
 				$this->setData(['module', $this->getUrl(0), 'config', 'versionData', '6.2']);
 			}
+			if( version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '6.3', '<') ){
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData', '6.3']);
+			}
 		}
 	}
 	
@@ -123,7 +126,7 @@ class form extends common {
 	 */
 	private function init() {
 		$param='';
-		include('./module/form/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_form.php');
+		include('./module/form/lang/'. helper::lexlang($this->getData(['config', 'i18n', 'langBase']) , $this->getData(['config', 'i18n', 'langAdmin'])) . '/lex_form.php');
 		$this->setData([
 			'module',
 			$this->getUrl(0),

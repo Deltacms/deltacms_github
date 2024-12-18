@@ -81,7 +81,7 @@ class Response {
 	 *
 	 * @var array
 	 */
-	public static $statusTexts = array(
+	public static $statusTexts = [
 		100 => 'Continue',
 		101 => 'Switching Protocols',
 		102 => 'Processing',            // RFC2518
@@ -142,7 +142,7 @@ class Response {
 		508 => 'Loop Detected',                                               // RFC5842
 		510 => 'Not Extended',                                                // RFC2774
 		511 => 'Network Authentication Required',                             // RFC6585
-	);
+	];
 
 	/**
 	 * @var  string
@@ -176,7 +176,7 @@ class Response {
 	 * @param  int    $statusCode
 	 * @param  array  $headers
 	 */
-	public function __construct($content = '', $statusCode = 200, $headers = array())
+	public function __construct($content = '', $statusCode = 200, $headers = [])
 	{
 		$this->setContent($content);
 		$this->setStatusCode($statusCode);
@@ -193,7 +193,7 @@ class Response {
 	public function setContent($content)
 	{
 		if ($content instanceof ArrayObject || is_array($content)) {
-			$this->headers['Content-Type'] = array('application/json');
+			$this->headers['Content-Type'] = ['application/json'];
 			$encodage = mb_detect_encoding($content, ['ISO-8859-15', 'ISO-8859-1', 'ISO-8859-5', 'ASCII', 'WINDOWS-1252', 'UTF-8'], true);
 			if ($encodage != 'UTF-8') {
 				$content = json_encode(mb_convert_encoding($content, 'UTF-8', $encodage));
@@ -247,7 +247,7 @@ class Response {
 		}
 
 		if (null === $text) {
-			$this->statusText = isset(self::$statusTexts[$code]) ? self::$statusTexts[$code] : '';
+			$this->statusText = self::$statusTexts[$code] ?? '';
 
 			return $this;
 		}
@@ -288,11 +288,11 @@ class Response {
 	{
 		if (empty($this->headers[$key]))
 		{
-			$this->headers[$key] = array();
+			$this->headers[$key] = [];
 		}
 		if ($replace)
 		{
-			$this->headers[$key] = array($value);
+			$this->headers[$key] = [$value];
 		}
 		else
 		{

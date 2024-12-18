@@ -60,11 +60,12 @@ class helper {
 				$opts = array(
 				  'http'=>array(
 					'method'=>"GET",
-					'header'=>"Cache-Control: no-cache, must-revalidate\r\n"."Pragma: no-cache\r\n"."Expires: 0\r\n"
+					'header'=>"Cache-Control: no-cache, must-revalidate\r\n"."Pragma: no-cache\r\n"."Expires: 0\r\n",
+					'timeout'=>10
 				  )
 				);
 				$context = stream_context_create($opts);	
-				$url_get_contents_data = file_get_contents($url, false, $context);
+				$url_get_contents_data = @file_get_contents($url, false, $context);
 			}elseif(function_exists('curl_version')){
 				$ch = curl_init();
 				curl_setopt($ch, CURLOPT_HEADER, 0);

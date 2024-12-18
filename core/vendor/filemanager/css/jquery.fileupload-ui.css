@@ -14,7 +14,6 @@
 .fileupload-buttonbar .toggle {
   margin-bottom: 5px;
 }
-
 .fileupload-process {
   float: right;
   display: none;
@@ -36,18 +35,18 @@
   .fileupload-buttonbar .toggle,
   .files .toggle,
   .files .btn span {
-    display: none;
+	display: none;
   }
   .files .name {
-    width: 80px;
-    word-wrap: break-word;
+	width: 80px;
+	word-wrap: break-word;
   }
   .files audio,
   .files video {
-    max-width: 80px;
+	max-width: 80px;
   }
   .files img,
   .files canvas {
-    max-width: 100%;
+	max-width: 100%;
   }
 }

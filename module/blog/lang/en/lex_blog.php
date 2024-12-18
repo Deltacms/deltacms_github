@@ -49,6 +49,7 @@ $text['blog_view']['config'][13] = 'Texts';
 $text['blog_view']['config'][14] = "Are you sure you want to delete this article ?";
 $text['blog_view']['config'][15] = 'Help';
 $text['blog_view']['config'][16] = 'module/blog/view/config/config.help_en.html';
+$text['blog_view']['config'][17] = "Preview size in number of characters";
 $text['blog_view']['edit'][0] = 'Back';
 $text['blog_view']['edit'][1] = 'Save as draft';
 $text['blog_view']['edit'][2] = 'Publish';

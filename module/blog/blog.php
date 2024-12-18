@@ -21,7 +21,7 @@
 
 class blog extends common {
 
-	const VERSION = '7.3';
+	const VERSION = '7.4';
 	const REALNAME = 'Blog';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -143,9 +143,10 @@ class blog extends common {
 				$this->setData(['module', $this->getUrl(0), 'texts', 'Comments', $text['blog']['index'][28] ]);
 				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','7.2']);
 			}
-			// Version 7.3
-			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '7.3', '<') ) {
-				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','7.3']);
+			// Version 7.4
+			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '7.4', '<') ) {
+				$this->setData(['module', $this->getUrl(0), 'config', 'previewSize', 400]);
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','7.4']);
 			}
 		}
 	}
@@ -156,11 +157,12 @@ class blog extends common {
 	private function init(){
 		// Lexique
 		$param = 'blog';
-		include('./module/blog/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_blog.php');
+		include('./module/blog/lang/'. helper::lexlang($this->getData(['config', 'i18n', 'langBase']) , $this->getData(['config', 'i18n', 'langAdmin'])) . '/lex_blog.php');
 		$this->setData(['module', $this->getUrl(0), 'config',[
 			'feeds' 	 => false,
 			'feedsLabel' => '',
 			'itemsperPage' => 4,
+			'previewSize' => 400,
 			'versionData' => self::VERSION
 		]]);
 		$this->setData(['module', $this->getUrl(0), 'texts',[
@@ -680,8 +682,9 @@ class blog extends common {
 					'feeds' 	 => $this->getInput('blogConfigShowFeeds',helper::FILTER_BOOLEAN),
 					'feedsLabel' => $this->getInput('blogConfigFeedslabel',helper::FILTER_STRING_SHORT),
 					'itemsperPage' => $this->getInput('blogConfigItemsperPage', helper::FILTER_INT,true),
-					'versionData' => $this->getData(['module', $this->getUrl(0), 'config', 'versionData'])
-					]]);
+					'previewSize' => $this->getInput('blogConfigPreviewSize', helper::FILTER_INT,true),
+					'versionData' => self::VERSION
+				]]);
 				// Valeurs en sortie
 				$this->addOutput([
 					'redirect' => helper::baseUrl() . $this->getUrl(0) . '/config',

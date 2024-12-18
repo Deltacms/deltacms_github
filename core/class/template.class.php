@@ -365,10 +365,10 @@ class template {
     */
     public static function flag($langId, $size = 'auto') {
 		$lang = $langId;
-		if( ! file_exists( 'core/vendor/i18n/png/' . $lang . '.png')) $lang = 'blanc';
+		if( ! file_exists( 'core/module/translate/ressource/i18n/png/' . $lang . '.png')) $lang = 'blanc';
 		$text = $lang;
 		if ($text === 'blanc') $text = 'Your language';
-        return '<img class="flag" src="' . helper::baseUrl(false) . 'core/vendor/i18n/png/' . $lang . '.png"
+        return '<img class="flag" src="' . helper::baseUrl(false) . 'core/module/translate/ressource/i18n/png/' . $lang . '.png"
                 width="' . $size .'"
                 height="' . $size .'"
                 title="' . $text .'" />';

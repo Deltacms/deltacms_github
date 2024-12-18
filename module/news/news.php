@@ -18,7 +18,7 @@
 
 class news extends common {
 
-	const VERSION = '5.2';
+	const VERSION = '5.3';
 	const REALNAME = 'News';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -709,6 +709,10 @@ class news extends common {
 				// Mettre à jour la version
 				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '5.2' ]);	
 			}
+			// Mise à jour 5.3
+			if (version_compare($versionData, '5.3', '<') ) {
+				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '5.3' ]);	
+			}
 		}
 	}
 
@@ -718,7 +722,7 @@ class news extends common {
 	private function init() {
 		
 		// Lexique
-		include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_news.php');
+		include('./module/news/lang/'. helper::lexlang($this->getData(['config', 'i18n', 'langBase']) , $this->getData(['config', 'i18n', 'langAdmin'])) . '/lex_news.php');
 		
 		$dircss = self::DATA_DIR . self::$i18n . '/data_module/news/' . $this->getUrl(0);
 		// Création du dossier pour le thème associé à tinymce

@@ -4,7 +4,7 @@ class init extends common {
 		'config' => [
 			'analyticsId' => '',
 			'autoBackup' => true,
-			'autoUpdate' => true,
+			'autoUpdate' => false,
 			'autoUpdateHtaccess' => false,
 			'favicon' => 'favicon.ico',
 			'faviconDark' => 'faviconDark.ico',
@@ -76,7 +76,7 @@ class init extends common {
 			]
 		],
 		'core' => [
-			'dataVersion' => 5201,
+			'dataVersion' => 5202,
 			'lastBackup' => 0,
 			'lastClearTmp' => 0,
 			'lastAutoUpdate' => 0,
@@ -311,6 +311,7 @@ class init extends common {
 			]
 		],
 		'user' => [],
+		'session' => [],
 		'theme' =>  [
 			'body' => [
 				'backgroundColor' => 'rgba(103, 127, 163, 1)',

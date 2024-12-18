@@ -144,4 +144,6 @@ return array(
     'GB' => "Go",
     'TB' => "To",
     'total size' => "Taille totale",
+	'too_heavy' => "Image acceptable mais son temps de chargement peut être important",
+	'very_heavy' => "Image beaucoup trop lourde (Plus de 1200 Kio)"
 );

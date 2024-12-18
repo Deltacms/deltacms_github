@@ -24,6 +24,7 @@ class user extends common {
 		'add' => self::GROUP_ADMIN,
 		'delete' => self::GROUP_ADMIN,
 		'import' => self::GROUP_ADMIN,
+		'export' => self::GROUP_ADMIN,
 		'index' => self::GROUP_ADMIN,
 		'edit' => self::GROUP_MEMBER,
 		'logout' => self::GROUP_MEMBER,
@@ -459,7 +460,7 @@ class user extends common {
 			if(	$this->getData(['config','connect','captcha']) ){
 				$code ='';
 				if( isset( $_REQUEST['codeCaptcha'])) $code = strtoupper($_REQUEST['codeCaptcha']);
-				if( md5($code) !== $_SESSION['captcha'] ) {
+				if( !isset($_SESSION['captcha']) || md5($code) !== $_SESSION['captcha'] ) {
 					$captcha = false;
 				} else {
 					$captcha = true;
@@ -719,89 +720,100 @@ class user extends common {
 					$header = array_shift($rows);
 					$csv    = array();
 					foreach($rows as $row) {
-						$csv[] = array_combine($header, $row);
+						if(count($header) === count($row)) $csv[] = array_combine($header, $row);
 					}
 					// Traitement des données
 					foreach($csv as $item ) {
 						// Données valides
 						if( array_key_exists('id', $item)
-						AND array_key_exists('prenom',$item)
-						AND array_key_exists('nom',$item)
-						AND array_key_exists('groupe',$item)
-						AND array_key_exists('email',$item)
-						AND $item['nom']
-						AND $item['prenom']
+						AND array_key_exists('firstname',$item)
+						AND array_key_exists('lastname',$item)
+						AND array_key_exists('pseudo',$item)
+						AND array_key_exists('group',$item)
+						AND array_key_exists('mail',$item)
+						AND array_key_exists('password',$item)
+						AND $item['lastname']
+						AND $item['firstname']
+						AND $item['pseudo']
 						AND $item['id']
-						AND $item['email']
-						AND $item['groupe']
+						AND $item['mail']
+						AND $item['group']
+						AND $item['password']
 						) {
 							// Validation du groupe
-							$item['groupe'] = (int) $item['groupe'];
-							$item['groupe'] =   ( $item['groupe'] >= self::GROUP_BANNED AND $item['groupe'] <= self::GROUP_ADMIN )
-												  ? $item['groupe'] : 1;
-							// L'utilisateur existe
+							$item['group'] = (int) $item['group'];
+							$item['group'] =   ( $item['group'] >= self::GROUP_BANNED AND $item['group'] <= self::GROUP_ADMIN )
+												  ? $item['group'] : 1;
+							// L'utilisateur de même id existe
 							if ( $this->getData(['user',helper::filter($item['id'] , helper::FILTER_ID)]))
 							{
 								// Notification du doublon
-								$item['notification'] = template::ico('cancel');
+								$item['notification'] = $text['core_user']['import'][10];
 								// Création du tableau de confirmation
 								self::$users[] = [
 									helper::filter($item['id'] , helper::FILTER_ID),
-									$item['nom'],
-									$item['prenom'],
-									$groups[$item['groupe']],
-									$item['prenom'],
-									helper::filter($item['email'] , helper::FILTER_MAIL),
+									$item['lastname'],
+									$item['firstname'],
+									$item['pseudo'],
+									$groups[$item['group']],
+									helper::filter($item['mail'] , helper::FILTER_MAIL),
 									$item['notification']
 								];
 								// L'utilisateur n'existe pas
 							} else {
 								// Nettoyage de l'identifiant
 								$userId = helper::filter($item['id'] , helper::FILTER_ID);
+								// Si le password n'est pas hashé on fixe un password provisoire
+								$temporaryPassword = false;
+								if( strlen($item['password']) < 60 && substr($item['password'],0,4)!=='$2y$'){
+									$temporaryPassword = true;
+									$userPwd =  $this->generatePassword();
+									$item['password'] = password_hash($userPwd, PASSWORD_BCRYPT);;
+								}
 								// Enregistre le user
 								$create = $this->setData([
 									'user',
 									$userId, [
-										'firstname' => $item['prenom'],
+										'firstname' => $item['firstname'],
 										'forgot' => 0,
-										'group' => $item['groupe'] ,
-										'lastname' => $item['nom'],
-										'mail' => $item['email'],
-										'pseudo' => $item['prenom'],
+										'group' => $item['group'] ,
+										'lastname' => $item['lastname'],
+										'mail' => $item['mail'],
+										'pseudo' => $item['pseudo'],
 										'signature' => 1, // Pseudo
-										'password' => uniqid(), // A modifier à la première connexion
+										'password' => $item['password'],
 										"connectFail" => null,
 										"connectTimeout" => null,
 										"accessUrl" => null,
 										"accessTimer" => null,
 										"accessCsrf" => null
 								]]);
-								// Icône de notification
-								$item['notification'] = $create  ? template::ico('check') : template::ico('cancel');
+								// Notification
+								$messageCreating = $temporaryPassword === true ? $text['core_user']['import'][16] : $text['core_user']['import'][15];
+								$item['notification'] = $create  ? $messageCreating : $text['core_user']['import'][14];
 								// Envoi du mail
-								if ($create
-									AND $this->getInput('userImportNotification',helper::FILTER_BOOLEAN) === true) {
+								if ($create  && ($temporaryPassword === true || $this->getInput('userImportNotification',helper::FILTER_BOOLEAN) === true )) {
+									$messagePwd = $temporaryPassword === true ? $text['core_user']['import'][12].$userPwd : $text['core_user']['import'][13];
 									$sent = $this->sendMail(
-										$item['email'],
+										$item['mail'],
 										$text['core_user']['import'][0] . $this->getData(['locale', 'title']),
-										$text['core_user']['import'][0].' <strong>' . $item['prenom'] . ' ' . $item['nom'] . '</strong>,<br><br>' .
+										$text['core_user']['import'][1].' <strong>' . $item['firstname'] . ' ' . $item['lastname'] . '</strong>,<br><br>' .
 										$text['core_user']['import'][2]. $this->getData(['locale', 'title']) . $text['core_user']['import'][3].'<br><br>' .
-										'<strong>'.$text['core_user']['import'][4].'</strong> ' . $userId . '<br>' .
-										'<small>'.$text['core_user']['import'][5].'</small>'
+										'<strong>'.$text['core_user']['import'][4].'</strong> ' . $userId . '<br>' . $messagePwd
 									);
 									if ($sent === true) {
-										// Mail envoyé changement de l'icône
-										$item['notification'] = template::ico('mail') ;
+										// Mail envoyé ajout de l'information
+										$item['notification'] .= $text['core_user']['import'][11];
 									}
 								}
 								// Création du tableau de confirmation
 								self::$users[] = [
 									$userId,
-									$item['nom'],
-									$item['prenom'],
-									$groups[$item['groupe']],
-									$item['prenom'],
-									$item['email'],
+									$item['lastname'],
+									$item['firstname'],
+									$item['pseudo'],
+									$groups[$item['group']],
+									$item['mail'],
 									$item['notification']
 								];
 							}
@@ -827,6 +839,65 @@ class user extends common {
 				'state' => $success
 			]);
 		}
+	}
+	
+	/**
+	 * Exportation CSV d'utilisateurs
+	 */
+	public function export() {
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < user::$actions['export'] ) {
+			// Valeurs en sortie
+			$this->addOutput([
+				'access' => false
+			]);	
+		} else {	
+			// Lexique
+			include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
+			$notification = $text['core_user']['export'][0].time().'_listusers.csv';
+			$success = true;
+			$csv ='';
+			$sep = ';';
+			$list = json_decode(file_get_contents(self::DATA_DIR.'user.json'), true);
+			$listUsers = $list['user'];
+			//id;nom;prénom;pseudo;email;groupe;mot de passe
+			$csv = 'id'.$sep.'lastname'.$sep.'firstname'.$sep.'pseudo'.$sep.'mail'.$sep.'group'.$sep.'password'.PHP_EOL;
+			foreach($listUsers as $key=>$value){
+				$csv .= $key.$sep.$value['lastname'].$sep.$value['firstname'].$sep.$value['pseudo'].$sep.$value['mail'].$sep.$value['group'].$sep.$value['password'].PHP_EOL;
+			}
+			// Sauvegarde dans le fichier source/dateunix_listusers.csv
+			$result = file_put_contents(self::FILE_DIR.'source/'.time().'_listusers.csv',$csv);
+			if($result === false){
+				$success = false;
+				$notification = $text['core_user']['export'][1];
+			}
+			// Valeurs en sortie
+			$this->addOutput([
+				'redirect' => helper::baseUrl() . 'user',
+				'notification' => $notification,
+				'state' => $success
+			]);
+		}
+	}
+	
+	/*
+	* Génère un mot de passe aléatoire
+	* @param $length nombre de caractères du mot de passe
+	* return le mot de passe
+	*/
+	Private function generatePassword($length = 12) {
+		// Jeu de caractères utilisé pour le mot de passe
+		$cara = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()';
+		$sizeCara = strlen($cara);
+		if ($length <= 0) $length = 12;
+		$password = '';
+		for ($i = 0; $i < $length; $i++) {
+			$indexRandom = random_int(0, $sizeCara - 1);
+			$password .= $cara[$indexRandom];
+		}
+		return $password ;
 	}
 
 }

@@ -66,13 +66,7 @@ include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdm
 						</a>
 					</span>
 				</div>
-				<?php 
-				if( $this->getData(['config', 'autoUpdate']) === true){
-					$updateVersion = helper::urlGetContents(common::DELTA_UPDATE_URL . common::DELTA_UPDATE_CHANNEL . '/version');
-					if( $updateVersion === false) $this->setData(['config', 'autoUpdate', false]);
-				} else {
-					$updateVersion = false;
-				}?>
+				<?php $autoUpdate = $this->getData(['config', 'autoUpdate']); ?>
 				<div class="row">
 					<div class="col4">
 						<?php echo template::checkbox('configAutoUpdate', true, $text['core_config_view']['setup'][13], [
@@ -84,16 +78,16 @@ include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdm
 						<?php echo template::checkbox('configAutoUpdateHtaccess', true, $text['core_config_view']['setup'][15], [
 								'checked' => $this->getData(['config', 'autoUpdateHtaccess']),
 								'help' => $text['core_config_view']['setup'][16],
-								'disabled' => !$updateVersion
+								'disabled' => !$autoUpdate
 							]); ?>
 					</div>
 					<div class="col2 offset1">
 						<?php echo template::button('configUpdateForced', [
 							'ico' => 'download-cloud',
-							'href' => $updateVersion === false ? 'javascript:void(0);' : helper::baseUrl() . 'install/update',
+							'href' => $autoUpdate === false ? 'javascript:void(0);' : helper::baseUrl() . 'install/update',
 							'value' => $text['core_config_view']['setup'][17],
-							'class' => $updateVersion === false ? 'buttonRed' : 'configUpdate buttonRed',
-							'disabled' => !$updateVersion
+							'class' => $autoUpdate === false ? 'buttonRed' : 'configUpdate buttonRed',
+							'disabled' => !$autoUpdate
 						]); ?>
 					</div>
 				</div>
@@ -264,6 +258,10 @@ include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdm
 		</div>
 	</div>
 </div>
+<?php
+$versionNumber = '';
+if( isset($_SESSION['versionNumberRead'])) $versionNumber = $_SESSION['versionNumberRead'];
+?>
 <script>
-	var textConfirm = <?php echo '"'.$text['core_config_view']['setup'][42].$updateVersion.' ?"'; ?>;
+	var textConfirm = <?php echo '"'.$text['core_config_view']['setup'][42].$versionNumber.' ?"'; ?>;
 </script>

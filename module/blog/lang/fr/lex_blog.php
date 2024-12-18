@@ -49,6 +49,7 @@ $text['blog_view']['config'][13] = 'Textes';
 $text['blog_view']['config'][14] = "Êtes-vous sûr de vouloir supprimer cet article ?";
 $text['blog_view']['config'][15] = 'Aide';
 $text['blog_view']['config'][16] = 'module/blog/view/config/config.help.html';
+$text['blog_view']['config'][17] = "Taille de l'aperçu en nombre de caractères";
 $text['blog_view']['edit'][0] = 'Retour';
 $text['blog_view']['edit'][1] = 'Enregistrer en brouillon';
 $text['blog_view']['edit'][2] = 'Publier';

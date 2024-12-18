@@ -479,6 +479,17 @@ class config extends common {
 						'impossibleText' => $this->getInput('localeImpossibleText', helper::FILTER_STRING_SHORT)
 					]
 				]);
+				
+				// Vérification que la lecture des fichiers d'update est possible
+				$autoUpdate = $this->getInput('configAutoUpdate', helper::FILTER_BOOLEAN);
+				$errorAutoUpdate = false;
+				if($autoUpdate === true){
+					if( !isset ($_SESSION['versionNumberRead'])) $_SESSION['versionNumberRead'] = helper::getOnlineVersion();
+					if( $_SESSION['versionNumberRead'] === false){
+						$autoUpdate = false;
+						$errorAutoUpdate = true;
+					}
+				}
 
 				// Sauvegarder la configuration
 				$this->setData([
@@ -487,7 +498,7 @@ class config extends common {
 						'favicon' => $this->getInput('configFavicon'),
 						'faviconDark' => $this->getInput('configFaviconDark'),
 						'timezone' => $this->getInput('configTimezone', helper::FILTER_STRING_SHORT, true),
-						'autoUpdate' => $this->getInput('configAutoUpdate', helper::FILTER_BOOLEAN),
+						'autoUpdate' => $autoUpdate,
 						'autoUpdateHtaccess' => $this->getInput('configAutoUpdateHtaccess', helper::FILTER_BOOLEAN),
 						'autoBackup' => $this->getInput('configAutoBackup', helper::FILTER_BOOLEAN),
 						'maintenance' => $this->getInput('configMaintenance', helper::FILTER_BOOLEAN),
@@ -623,11 +634,13 @@ class config extends common {
 				// Générer robots.txt et sitemap
 				// $this->generateFiles();
 				// Valeurs en sortie
+				$success = true;
+				if($errorAutoUpdate === true) $success = false;
 				$this->addOutput([
 					'title' => $text['core_config']['index'][0],
 					'redirect' => helper::baseUrl() . 'config',
-					'notification' => $text['core_config']['index'][1] ,
-					'state' => true
+					'notification' => $success ? $text['core_config']['index'][1] : $text['core_config']['index'][2],
+					'state' => $success
 				]);			
 			}
 			// Générer la liste des pages disponibles

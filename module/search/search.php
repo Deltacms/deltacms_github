@@ -18,7 +18,7 @@
 
 class search extends common {
 
-	const VERSION = '3.7';
+	const VERSION = '3.8';
 	const REALNAME = 'Recherche';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -93,6 +93,10 @@ class search extends common {
 				$this->setData(['module', $this->getUrl(0), 'config', 'commentMatches', $text['search']['init'][10] ]);
 				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '3.7' ]);
 			}
+			// Mise à jour 3.8
+			if (version_compare($versionData, '3.8', '<') ) {
+				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '3.8' ]);
+			}
 		}
 	}
 
@@ -100,7 +104,7 @@ class search extends common {
 	 * Initialisation du module
 	 */
 	private function init(){
-		include('./module/search/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_search.php');
+		include('./module/search/lang/'. helper::lexlang($this->getData(['config', 'i18n', 'langBase']) , $this->getData(['config', 'i18n', 'langAdmin'])) . '/lex_search.php');
 
 		$fileCSS = self::DATADIRECTORY . $this->getUrl(0) . '/theme.css' ;
 		$fileCSSInvert = self::DATADIRECTORY . $this->getUrl(0) . '/theme_invert.css' ;

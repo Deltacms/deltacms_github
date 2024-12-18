@@ -511,14 +511,17 @@ core.start = function() {
 				} else{
 					page = allPage;
 				}
+				var decalage = 0;
+				if(terminalType === 'mobile') decalage = 30;
 				$.each(page, function(index, value) {
 					$('nav li .' + value).css('min-width', '<?php echo $this->getData(['theme', 'menu', 'minWidthTab']); ?>');
-					$('nav li ul li a.'+value).css('width', $('nav li a.'+value).css('width'));
-					$('nav li.' + value).css('text-align', 'left');
+					$('nav li ul li a.' + value).css('width', parseInt($('nav li a.'+value).css('width')) + decalage + 'px');
+					$('nav li .' + value).css('text-align', 'left');
 				});
 			}
 		}
 	}).trigger("resize");
+	
 };
 
 
@@ -552,21 +555,62 @@ core.relativeLuminanceW3C = function(rgba) {
 	var B = (BsRGBA <= .03928) ? BsRGBA / 12.92 : Math.pow((BsRGBA + .055) / 1.055, 2.4);
 	return .2126 * R + .7152 * G + .0722 * B;
 };
-	 $(document).ready(function(){
+
+/* Page chargée */
+$(document).ready(function(){
 	/**
 	 * Affiche le sous-menu quand il est sticky
 	 */
-		$("nav:not(.navsub)").mouseenter(function(){
-			$("#navfixedlogout .navSub").css({ 'pointer-events' : 'auto' });
-			$("#navfixedconnected .navSub").css({ 'pointer-events' : 'auto' });
-		});
-		$("nav, .navSub").mouseleave(function(){
-			if($(window).width() > 799 ) {
-				$("#navfixedlogout .navSub").css({ 'pointer-events' : 'none' });
-				$("#navfixedconnected .navSub").css({ 'pointer-events' : 'none' });
+	$("nav:not(.navsub)").mouseenter(function(){
+		$("#navfixedlogout .navSub").css({ 'pointer-events' : 'auto' });
+		$("#navfixedconnected .navSub").css({ 'pointer-events' : 'auto' });
+	});
+	$("nav, .navSub").mouseleave(function(){
+		if($(window).width() > 799 ) {
+			$("#navfixedlogout .navSub").css({ 'pointer-events' : 'none' });
+			$("#navfixedconnected .navSub").css({ 'pointer-events' : 'none' });
+		}
+	});
+	
+	/**
+	* Sous-menu en grand écran et terminal mobile
+	*/
+	$("nav .ico_mobile").click(function() {
+		if($(window).width() > 799 ) {
+			if( $("nav li:hover ul").css("z-index") !== "8"){
+			$("nav li:hover ul").css( {
+				"z-index": "8",
+				"opacity": "1"
+			});
+			} else {
+			$("nav li:hover ul").css( {
+				"z-index": "-1",
+				"opacity": "0"
+				});			
 			}
-		});
+		}
+	});
 
+	/**
+	* Sous-menu en grand écran et terminal desktop
+	*/
+	$("nav li").mouseenter(function() {
+		if(terminalType === 'desktop' && $(window).width() > 799){
+			$("nav li:hover ul").css({
+				"z-index": "8",
+				"opacity": "1"
+			});				
+		}
+	});
+	$("nav li").mouseleave(function() {
+		if(terminalType === 'desktop' && $(window).width() > 799){
+			$("nav li ul").css({
+				"z-index": "-1",
+				"opacity": "0"
+			});				
+		}
+	});
+	
 	/**
 	 * Chargement paresseux des images et des iframes sauf tinymce
 	 */
@@ -669,7 +713,6 @@ core.relativeLuminanceW3C = function(rgba) {
 	$('#screenshot').click(function() {
 		html2canvas(document.querySelector("#main_screenshot")).then(canvas => {
 			dataURL = canvas.toDataURL('image/jpeg', 0.1);
-			console.log( dataURL);
 			$.ajax({
 				type: "POST",
 				contentType:"application/x-www-form-urlencoded",
@@ -691,7 +734,6 @@ core.relativeLuminanceW3C = function(rgba) {
 	  $('.clicked_link_count').on('click', function(event) {
 		// Récupérer le chemin vers le fichier
 		var filePath = $(this).attr('href');
-		console.log(filePath);
 		// Envoyer une requête AJAX pour enregistrer le téléchargement
 		$.ajax({
 		  type: 'POST',

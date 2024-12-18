@@ -51,8 +51,8 @@ class common {
 	const ACCESS_TIMER = 1800;
 
 	// Numéro de version
-	const DELTA_UPDATE_URL = 'https://update.deltacms.fr/master/';
-	const DELTA_VERSION = '5.2.01';
+	const DELTA_UPDATE_URL = 'https://github.com/Deltacms/deltacms_update/raw/refs/heads/main/master/';
+	const DELTA_VERSION = '5.2.02';
 	const DELTA_UPDATE_CHANNEL = "v5";
 
 	public static $actions = [];
@@ -401,7 +401,7 @@ class common {
 		}
 
 	}
-	
+
 	/**
 	 * Localisation en fonction des disponibiltés du serveur
 	 * @param string $langAdmin Langue d'administration
@@ -411,8 +411,8 @@ class common {
 		$arrayFR =['fr_FR.utf8','fr_FR.UTF-8', 'fr_FR', 'French_France.utf8', 'French', 'fr-FR', 'FRA.utf8', 'FRA',
 				'fr_BE.utf8', 'fr_BE.UTF-8', 'fr_BE', 'French_Belgium.utf8', 'fr-BE',
 				'fr_CH.utf8', 'fr_CH.UTF-8', 'fr_CH', 'French_Switzerland.utf8', 'fr-CH',
-				'fr_CA.utf8', 'fr_CA.UTF-8', 'fr_CA', 'French_Canada.utf8', 'fr-CA' 
-		]; 
+				'fr_CA.utf8', 'fr_CA.UTF-8', 'fr_CA', 'French_Canada.utf8', 'fr-CA'
+		];
 		$arrayEN = ['en_GB.utf8', 'en_GB.UTF-8', 'en_GB', 'en_US.utf8', 'en_US.UTF-8', 'en_US', 'English_United Kingdom.utf8', 'en-GB', 'English_United States.utf8', 'en-US'];
 		$arrayES = ['es_ES.utf8', 'en_ES.UTF-8', 'es_ES', 'Spanish_Spain.utf8', 'es-ES', 'spanish'];
 		switch($langAdmin) {
@@ -426,15 +426,15 @@ class common {
 		  $locales = array_merge($arrayES, $arrayEN, $arrayFR);
 		  break;
 		  default:
-			$locales = array_merge($arrayFR, $arrayEN, $arrayES);				
+			$locales = array_merge($arrayFR, $arrayEN, $arrayES);
 		}
 		$result = setlocale(LC_ALL, $locales);
 		if( $result === false ){
 		  setlocale( LC_ALL, $localeDef);
 		} else {
 		  $this->setData(['core', 'localisation', $result ]);
-		}			
-	}	
+		}
+	}
 
 	/**
 	 * Ajoute les valeurs en sortie
@@ -1083,7 +1083,7 @@ class common {
 				if ($anim === false) {
 				$source_image = imagecreatefromwebp($src);
 				}
-				else { $source_image = false; }			
+				else { $source_image = false; }
 				break;
 			case 'avif':
 				$source_image = function_exists('imagecreatefromavif') ? @imagecreatefromavif($src) : false;
@@ -1622,21 +1622,34 @@ class common {
 		if( $this->getData(['theme', 'footer', 'displayWhois']) === true ){
 			if( ! file_exists(self::DATA_DIR . 'session.json'))	file_put_contents(self::DATA_DIR . 'session.json', '{}');
 			$user_type = $this->getUser('id') ? $this->getData(['user', $this->getUser('id'), 'group']) : 0 ;
-			$this->setData(['session', session_id(), 'user_type', $user_type ]);
-			$this->setData(['session', session_id(), 'time', time() ]);
+			// id de session par cookie et cookies désactivés
+			if( null===session_id() || session_id() === ''){
+				$characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,-';
+				$charactersLength = strlen($characters);
+				$sessionId = '';
+				for ($i = 0; $i < 26; $i++) {
+					$sessionId .= $characters[random_int(0, $charactersLength - 1)];
+				} 
+			} else {
+				$sessionId = session_id();
+			}	
+			$this->setData(['session', $sessionId, 'user_type', $user_type ]);
+			$this->setData(['session', $sessionId, 'time', time() ]);
 			// Tableau $groupWhoIs
 			$groupWhoIs = [ 0 => $this->getData(['locale', 'visitorLabel']), 1 => $this->getData(['locale', 'memberLabel']),
 			2 => $this->getData(['locale', 'editorLabel']), 3 => $this->getData(['locale', 'moderatorLabel']), 4 => $this->getData(['locale', 'administratorLabel'])];
 			$file = file_get_contents('site/data/session.json');
 			$session_tab = json_decode( $file, true);
 			$whoIs = [0 => 0,1 => 0,2 => 0, 3 => 0,4=> 0];
-			foreach( $session_tab as $key1=>$session_id){
-				foreach($session_id as $key2=>$value){
-					// Temps d'inactivité réglé à 60 secondes
-					if( time() >  $value["time"] + 60){
-						$session_tab[$key1]=[];
-					} else {
-						$whoIs[$value['user_type']]++;
+			if( is_array($session_tab) && !empty($session_tab)){
+				foreach( $session_tab as $key1=>$session_id){
+					foreach($session_id as $key2=>$value){
+						// Temps d'inactivité réglé à 60 secondes
+						if( time() >  $value["time"] + 60){
+							$session_tab[$key1]=[];
+						} else {
+							$whoIs[$value['user_type']]++;
+						}
 					}
 				}
 			}
@@ -1892,7 +1905,9 @@ class common {
 			$iconSubExistLargeScreen='';
 			$iconSubExistSmallScreen='';
 			if($childrenPageIds && ( $disableChild !== $totalChild || $groupUser >= 2 ) && $this->getdata(['page',$parentPageId,'hideMenuChildren']) === false) {
-				$iconSubExistLargeScreen= '<span class="delta-ico-down iconSubExistLargeScreen" style="font-size:1em"><!----></span>';
+				$classMobile ='';
+				if($_SESSION['terminal'] === 'mobile') $classMobile = ' ico_mobile';
+				$iconSubExistLargeScreen= '<span class="delta-ico-down' .$classMobile. ' iconSubExistLargeScreen" style="font-size:1em"><!----></span>';
 				$iconSubExistSmallScreen= '<span class="delta-ico-plus iconSubExistSmallScreen" style="font-size:1em"><!----></span>';
 
 			}
@@ -1903,13 +1918,15 @@ class common {
 				// Mise en page de l'item
 				$itemsLeft .= '<li>';
 				$pageDesactived = false;
+				$classMobile ='';
+				if($_SESSION['terminal'] === 'mobile' && $iconSubExistLargeScreen !=='') $classMobile = 'div_mobile';
 				if (  $this->getData(['page',$parentPageId,'disable']) === true && $groupUser < 2 ){
 					$pageUrl = ($this->getData(['locale', 'homePageId']) === $this->getUrl(0)) ? helper::baseUrl(false)  :  helper::baseUrl() . $this->getUrl(0);
-					$itemsLeft .= '<div id="'.$parentPageId.'" class="box" style="display:flex; justify-content:space-between;"><div><a class="A ' . $active . $parentPageId . ' disabled-link">';
+					$itemsLeft .= '<div id="'.$parentPageId.'" class="box" style="display:flex; justify-content:space-between;"><div class="'.$classMobile.'"><a class="A ' . $active . $parentPageId . ' disabled-link">';
 					$pageDesactived = true;
 				} else {
 					$pageUrl = ($this->getData(['locale', 'homePageId']) === $parentPageId) ? helper::baseUrl(false)  :  helper::baseUrl() . $parentPageId;
-					$itemsLeft .= '<div id="'.$parentPageId.'" class="box '.$active.'" style="display:flex; justify-content:space-between;"><div><a class="B ' . $active . $parentPageId . '" href="' . $pageUrl . '"' . $targetBlank . '>';
+					$itemsLeft .= '<div id="'.$parentPageId.'" class="box '.$active.'" style="display:flex; justify-content:space-between;"><div class="'.$classMobile.'"><a class="B ' . $active . $parentPageId . '" href="' . $pageUrl . '"' . $targetBlank . '>';
 				}
 				$fileLogo = './site/file/source/'. $this->getData(['page', $parentPageId, 'iconUrl']);
 				switch ($this->getData(['page', $parentPageId, 'typeMenu'])) {
@@ -1921,7 +1938,7 @@ class common {
 						break;
 					case 'icon' :
 						if ($this->getData(['page', $parentPageId, 'iconUrl']) != "") {
-							$itemsLeft .= '<img alt="'.$this->getData(['page', $parentPageId, 'shortTitle']).'" src="'. $fileLogo.'" style="height:'.$heightLogo.'px; width:auto;">';
+							$itemsLeft .= '<div style="display: inline"><img alt="'.$this->getData(['page', $parentPageId, 'shortTitle']).'" src="'. $fileLogo.'" style="height:'.$heightLogo.'px; width:auto;"></div>';
 						} else {
 						$itemsLeft .= $this->getData(['page', $parentPageId, 'shortTitle']);
 						}
@@ -1935,8 +1952,9 @@ class common {
 						}
 						break;
 				}
-				$itemsLeft .= $iconSubExistLargeScreen;
+				if($_SESSION['terminal'] === 'desktop') $itemsLeft .= $iconSubExistLargeScreen;
 				$itemsLeft .= '</a>';
+				if($_SESSION['terminal'] === 'mobile') $itemsLeft .= $iconSubExistLargeScreen;
 				$itemsLeft .= '</div>';
 				$itemsLeft .= $iconSubExistSmallScreen;
 				$itemsLeft .= '</div>';
@@ -2458,7 +2476,8 @@ class common {
 	public function showStyle() {
 		if($this->output['style']) {
 			if (strpos($this->output['style'], 'admin.css') >= 1 ) {
-				echo '<link rel="stylesheet" href="' . self::DATA_DIR . 'admin.css' . '">'.PHP_EOL;
+				$suffix = $this->getUrl(0) === 'theme' ? '?v='. time() : '';
+				echo '<link rel="stylesheet" href="' . self::DATA_DIR . 'admin.css' . $suffix . '">'.PHP_EOL;
 			}
 			echo '<style>' . helper::minifyCss($this->output['style']) . '</style>';
 		}
@@ -2556,7 +2575,7 @@ class common {
 				   }
 
 					echo '<li class="smallScreenInline">';
-					echo '<a href="' . helper::baseUrl() . 'translate/i18n/' . $key . '/' . $this->getData(['config', 'i18n',$key]) . '/' . $this->getUrl(0) . '"><img ' . $select . ' alt="' .  $value . '" src="' . helper::baseUrl(false) . 'core/vendor/i18n/png/' . $key . '.png"></a>';
+					echo '<a href="' . helper::baseUrl() . 'translate/i18n/' . $key . '/' . $this->getData(['config', 'i18n',$key]) . '/' . $this->getUrl(0) . '"><img ' . $select . ' alt="' .  $value . '" src="' . helper::baseUrl(false) . 'core/module/translate/ressource/i18n/png/' . $key . '.png"></a>';
 					echo '</li>';
 			}
 		}
@@ -2573,6 +2592,34 @@ class core extends common {
 		// Token CSRF
 		if(empty($_SESSION['csrf'])) {
 			$_SESSION['csrf'] = bin2hex(openssl_random_pseudo_bytes(32));
+		}
+
+		// Détection d'un terminal mobile
+		if(!isset($_SESSION['terminal'])){
+			$_SESSION['terminal'] = 'desktop';
+			if(isset($_SERVER['HTTP_USER_AGENT'])){
+				$userAgent = $_SERVER['HTTP_USER_AGENT'];
+				// Liste des indicateurs courants pour les appareils mobiles
+				$mobileKeywords = [
+					'Mobi',         // Indicateur général pour mobile
+					'Android',      // Android devices
+					'iPhone',       // iPhones
+					'iPad',         // iPads
+					'iPod',         // iPods
+					'Windows Phone', // Windows Phone
+					'BlackBerry',   // BlackBerry devices
+					'BB10',         // BlackBerry 10
+					'Opera Mini',   // Opera Mini
+					'Mobile Safari' // Safari mobile
+				];
+				// Vérification si l'un des mots-clés est présent dans le User-Agent
+				foreach ($mobileKeywords as $keyword) {
+					if (stripos($userAgent, $keyword) !== false) {
+						$_SESSION['terminal'] = 'mobile';
+						break;
+					}
+				}
+			}
 		}
 
 		// Fuseau horaire
@@ -3217,10 +3264,10 @@ class core extends common {
 		// Breadcrumb
 		$title = $this->getData(['page', $this->getUrl(0), 'title']);
 		if (!empty($this->getData(['page', $this->getUrl(0), 'parentPageId'])) &&
-			$this->getData(['page', $this->getUrl(0), 'breadCrumb'])) {				
+			$this->getData(['page', $this->getUrl(0), 'breadCrumb'])) {
 				$parent = '<a href="' . helper::baseUrl() . $this->getData(['page', $this->getUrl(0), 'parentPageId']) .'">' .
-						ucfirst($this->getData(['page',$this->getData(['page', $this->getUrl(0), 'parentPageId']), 'title'])) . '</a>';	
-				if( $this->getData(['page', $this->getData(['page', $this->getUrl(0), 'parentPageId']), 'disable' ]) === true) $parent = ucfirst($this->getData(['page',$this->getData(['page', $this->getUrl(0), 'parentPageId']), 'title']));		
+						ucfirst($this->getData(['page',$this->getData(['page', $this->getUrl(0), 'parentPageId']), 'title'])) . '</a>';
+				if( $this->getData(['page', $this->getData(['page', $this->getUrl(0), 'parentPageId']), 'disable' ]) === true) $parent = ucfirst($this->getData(['page',$this->getData(['page', $this->getUrl(0), 'parentPageId']), 'title']));
 				$title = $parent.' &#8250; '.	$this->getData(['page', $this->getUrl(0), 'title']);
 		}
 		// Importe la page

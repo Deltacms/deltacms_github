@@ -142,4 +142,6 @@ return array(
 	'GB' => "GB",
 	'TB' => "TB",
 	'total size' => "Tamaño total",
+	'too_heavy' => "Imagen aceptable pero su tiempo de carga puede ser largo",
+	'very_heavy' => "Imagen demasiado pesada (Más de 1200 Kio)"
 );

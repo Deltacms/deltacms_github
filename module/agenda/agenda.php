@@ -1217,7 +1217,6 @@ class agenda extends common {
 	}
 	
 	/* Function is to get all the contents from ics and explode all the datas according to the events and its sections */
-	/* de https://www.apptha.com/blog/import-google-calendar-events-in-php/ */
     function getIcsEventsAsArray($file) {
         $icalString = file_get_contents ( $file );
         $icsDates = array ();
@@ -1238,7 +1237,6 @@ class agenda extends common {
     }
 	
     /* funcion is to avaid the elements wich is not having the proper start, end  and summary informations */
-	/* de https://www.apptha.com/blog/import-google-calendar-events-in-php/ */	
     function getICSDates($key, $subKey, $subValue, $icsDates) {
         if ($key != 0 && $subKey == 0) {
             $icsDates [$key] ["BEGIN"] = $subValue;

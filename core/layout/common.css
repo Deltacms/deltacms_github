@@ -291,7 +291,7 @@ nav {
  padding: 0;
 }
 /* Items du menu */
-nav a > img {
+nav a img {
 	margin: -4px 0;
 	vertical-align: middle;
 }

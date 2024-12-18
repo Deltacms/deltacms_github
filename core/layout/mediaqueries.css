@@ -24,10 +24,12 @@
 	nav #menu {
 	   display: block;
 	}
-	nav li:hover ul {
+/* Déplacé dans core.js.php */
+/*	nav li:hover ul {
 		z-index: 8;
 		opacity: 1;
 	}
+*/
 /* correction du padding pour les sous-menu */
 	#menu .navSub a{
 		padding-bottom: 5px;
@@ -53,6 +55,16 @@
 	}
 	nav .iconSubExistSmallScreen{
 		display:none;
+	}
+/* ajout pour terminale mobile avec écran large */
+	nav .div_mobile{
+		display: flex;
+		align-items: center;
+	}
+	nav .ico_mobile{
+		cursor: pointer;
+		margin-left: 10px;
+		margin-right: 15px
 	}
 /* Corps */
 	section {

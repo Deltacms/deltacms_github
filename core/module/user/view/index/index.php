@@ -20,7 +20,14 @@ include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin
 			'class' => 'buttonHelp'
 		]); ?>
 	</div>
-	<div class="col2 offset4">
+	<div class="col2 offset2">
+		<?php echo template::button('userExport', [
+			'href' => helper::baseUrl() . 'user/export',
+			'ico' => 'download',
+			'value' => $text['core_user_view']['index'][8]
+		]); ?>
+	</div>
+	<div class="col2">
 		<?php echo template::button('userImport', [
 			'href' => helper::baseUrl() . 'user/import',
 			'ico' => 'plus',

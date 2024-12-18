@@ -1,5 +1,19 @@
 # Changelog
 
+## Version 5.2.02 de Deltacms
+- Modifications :
+	- Thème / Gestion : Amélioration de l'application du nouveau thème,
+	- Modules / Initialisation : les textes frontaux sont dans la langue de rédaction ou dans la langue de traduction si elle est française, anglaise ou espagnole, sinon dans la langue d'administration,
+	- Blog 7.4 : la taille de l'aperçu en nombre de caractères est paramétrable,
+	- Filemanager : l'aperçu des fichiers utilise des viewers ©Deltacms, les vignettes respectent le ratio des images, un code tricolor: vert, orange, rouge, renseigne l'utilisateur sur le poids des images, celles en rouge n'étant pas compatibles avec un site Internet
+	- Configuration / mise à jour ou réinitialisation : amélioration de la procédure avec timeout et message d'erreur.
+- Corrections :
+	- Page / Duplication : corrigée pour les pages contenant un module news ou agenda,
+	- Membre / affichage des documents personnels : le format avif est pris en compte,
+	- Terminaux mobiles à écran large : sélection d'une page d'un sous-menu.
+- Sur le site :
+	- Template Switch 1.1 : nouveau module en téléchargement, il permet de disposer sur une page d'un sélecteur de thème frontal, vos visiteurs apprécieront.
+
 ## Version 5.2.01 de Deltacms
 - Modifications :
 	- Suppression de fonctions dépréciées par php 8.1, 8.2 et 8.3. Deltacms est compatible avec php 8.3,
@@ -13,7 +27,7 @@
 	- Site en maintenance / login : l'appui sur le bouton "Annuler" provoquait un warning,
 	- Commentaires de page : l'export csv est fonctionnel.
 - Sur le site :
-	- Geophoto en version 2.6 :
+	- Geophoto en version 2.7 :
 		- diminution d'1 point des zooms de la carte CyclOSM
 		- édition du texte descriptif avec tinymce, dans toutes les langues
 		- ajout des surcouches ombrage et pente IGN fr
@@ -21,7 +35,7 @@
 		- centrage du sélecteur dans la page et amélioration de son style
 		- ajout du contrôle de l'échelle des cartes
 		- le bouton "afficher ou cacher la galerie" est plus grand, évitant l'affichage sur 2 lignes du texte par défaut
-	- Vidéo : Nouveau module de type galerie, recherche des vidéos mp4 et webm dans un dossier défini, les affiche en vignette, avec ou sans image poster, et les lit dans la lightbox du CMS.
+	- Vidéo : Nouveau module de type galerie, recherche des vidéos mp4, m4v et webm dans un dossier défini, les affiche en vignette, avec ou sans image poster, et les lit dans la lightbox du CMS.
 
 ## Version 5.1.02 de Deltacms
 - Modifications :

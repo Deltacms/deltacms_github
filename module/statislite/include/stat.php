@@ -60,18 +60,19 @@ if( file_exists($fichiers_json.'filtre_primaire.json')){
 	if(!isset($_SESSION['filtrage']) ){
 
 		// Filtrage par HTTP_USER_AGENT à partir de liste_bot.txt mis à jour avec le module et 'listeBot' customisable dans configuration avancée
-		$user_agent = strtolower($_SERVER['HTTP_USER_AGENT']);
+		$user_agent = '';
+		if(isset($_SERVER['HTTP_USER_AGENT'])) $user_agent = strtolower($_SERVER['HTTP_USER_AGENT']);
 		$UAbot = 0;
 		if(is_file($filtres_primaires.'liste_bot.txt')){
 			   $regex = file_get_contents($filtres_primaires.'liste_bot.txt');
 			   $UAbot=preg_match( $regex, $user_agent );
 		}
-		if( $UAbot == 0 && ! empty( $fp['listeBot'] )){
+		if( $UAbot === 0 && ! empty( $fp['listeBot'] )){
 			$regex = '/'.implode('|', $fp['listeBot']).'/';
 			$UAbot = preg_match( $regex, $user_agent );
 		}
 		//UA vide c'est considéré comme un robot
-		if ($user_agent == ""){
+		if ($user_agent === ""){
 			$UAbot=1;
 		}
 		
@@ -97,7 +98,11 @@ if( file_exists($fichiers_json.'filtre_primaire.json')){
 					$json = '{}';
 				}
 				$robots = json_decode($json, true);
-				$robots[date('Y/m/d H:i:s')] = $_SERVER['HTTP_USER_AGENT'];
+				if(isset($_SERVER['HTTP_USER_AGENT'])){
+					$robots[date('Y/m/d H:i:s')] = $_SERVER['HTTP_USER_AGENT'];
+				} else {
+					$robots[date('Y/m/d H:i:s')] = "HTTP_USER_AGENT non communiqué";
+				}
 				// Limitation aux 200 derniers robots
 				if( count($robots) > 200){
 					foreach($robots as $key=>$value){
@@ -150,8 +155,10 @@ if( file_exists($fichiers_json.'filtre_primaire.json')){
 		//Initialisation si c'est un nouvel indice
 		if(!isset($log[$indice])){
 			$referer = '';
+			$acceptLanguage = '';
 			if( isset( $_SERVER['HTTP_REFERER'] )) $referer = $_SERVER['HTTP_REFERER'];
-			$log[$indice] = array('ip' => $ip, 'user_id'=> $delta_user_id, 'userAgent' => $_SERVER['HTTP_USER_AGENT'], 'langage' => $_SERVER['HTTP_ACCEPT_LANGUAGE'], 'referer' => $referer, 'vues' => array(), 'client' => array() );
+			if( isset( $_SERVER['HTTP_ACCEPT_LANGUAGE'])) $acceptLanguage = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+			$log[$indice] = array('ip' => $ip, 'user_id'=> $delta_user_id, 'userAgent' => $_SERVER['HTTP_USER_AGENT'], 'langage' => $acceptLanguage, 'referer' => $referer, 'vues' => array(), 'client' => array() );
 		}
 		// Ajout de la vue sous la forme date et page vue
 		$indice2 = count($log[$indice]['vues']);

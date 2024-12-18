@@ -27,28 +27,28 @@ if ($this->getData(['core', 'dataVersion']) < 4001) {
 }
 if ($this->getData(['core', 'dataVersion']) < 4002) {
 	// Validation des statistiques
-	$this->setData(['config', 'statistlite', 'enable', false]);	
+	$this->setData(['config', 'statistlite', 'enable', false]);
 	// Mise à jour
 	$this->setData(['core', 'dataVersion', 4002]);
 }
 
 if ($this->getData(['core', 'dataVersion']) < 4101) {
-	$this->setData(['config', 'i18n', 'da', 'none']);	
-	$this->setData(['config', 'i18n', 'el', 'none']);	
+	$this->setData(['config', 'i18n', 'da', 'none']);
+	$this->setData(['config', 'i18n', 'el', 'none']);
 	$this->setData(['config', 'i18n', 'fi', 'none']);
 	$this->setData(['config', 'i18n', 'ga', 'none']);
-	$this->setData(['config', 'i18n', 'sv', 'none']);	
-	$this->setData(['config', 'i18n', 'otherLangBase', '']);	
+	$this->setData(['config', 'i18n', 'sv', 'none']);
+	$this->setData(['config', 'i18n', 'otherLangBase', '']);
 	// Mise à jour
 	$this->setData(['core', 'dataVersion', 4101]);
 }
 
 if ($this->getData(['core', 'dataVersion']) < 4104) {
-	$this->setData(['config', 'i18n', 'br', 'none']);	
-	$this->setData(['config', 'i18n', 'ca', 'none']);	
+	$this->setData(['config', 'i18n', 'br', 'none']);
+	$this->setData(['config', 'i18n', 'ca', 'none']);
 	$this->setData(['config', 'i18n', 'co', 'none']);
 	$this->setData(['config', 'i18n', 'eu', 'none']);
-	
+
 	// Mise à jour
 	$this->setData(['core', 'dataVersion', 4104]);
 }
@@ -124,7 +124,7 @@ if ($this->getData(['core', 'dataVersion']) < 4407) {
 	// Mise à jour
 	$this->setData(['core', 'dataVersion', 4407]);
 }
-if ($this->getData(['core', 'dataVersion']) < 4501) {	
+if ($this->getData(['core', 'dataVersion']) < 4501) {
 	// Mise à jour
 	if( $this->getData(['theme', 'menu', 'burgerContent' ]) === 'logo') $this->setData(['theme', 'menu', 'burgerContent', 'oneIcon' ]);
 	$this->setData(['theme', 'menu', 'burgerFixed', $this->getData(['theme', 'menu', 'fixed' ]) ]);
@@ -213,7 +213,7 @@ if ($this->getData(['core', 'dataVersion']) < 5002) {
 	$this->setData(['core', 'dataVersion', 5002]);
 }
 if ($this->getData(['core', 'dataVersion']) < 5003) {
-	// Label initial de la checkbox rgpdCheck 
+	// Label initial de la checkbox rgpdCheck
 	include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
 	$this->setData(['locale', 'questionnaireAccept', $text['core_config_view']['locale'][62]]);
 	$this->setData(['core', 'dataVersion', 5003]);
@@ -262,7 +262,14 @@ if ($this->getData(['core', 'dataVersion']) < 5201) {
 		setlocale(LC_ALL, $this->getData(['core', 'localisation' ]), 'fr_FR.utf8','fr_Fr', 'french');
 	} else {
 		setlocale(LC_ALL, null);
-	}	
+	}
 	$this->setData(['core', 'dataVersion', 5201]);
+}
+if ($this->getData(['core', 'dataVersion']) < 5202) {
+	// Déplacement du dossier core/vendor/i18n/png
+	if(is_dir('./core/vendor/i18n')) $this->copyDir('./core/vendor/i18n', './core/module/translate/ressource/i18n');
+	// Suppression du dossier thumb < 5202
+	if( is_dir('./site/file/thumb/') ) $this->removeDir('./site/file/thumb/');
+	$this->setData(['core', 'dataVersion', 5202]);
 }
 ?>

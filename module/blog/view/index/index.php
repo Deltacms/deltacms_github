@@ -79,7 +79,7 @@ if($module::$articles): ?>
 							$sea = ['<br />', '<br>'];
 							$rep = ' ';
 							$article['content'] = str_replace($sea, $rep, $article['content']);							
-							echo helper::subword(strip_tags($article['content']), 0, 400); ?>...
+							echo helper::subword(strip_tags($article['content']), 0, $this->getData(['module', $this->getUrl(0),'config', 'previewSize'])); ?>...
 							<a href="<?php echo helper::baseUrl() . $this->getUrl(0) . '/' . $articleId;?>"><?php echo $this->getData(['module', $this->getUrl(0), 'texts', 'ReadMore']); ?></a>
 						</p>
 					</div>

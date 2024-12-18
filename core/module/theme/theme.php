@@ -534,7 +534,8 @@ class theme extends common {
 				$this->setData([ 'theme', 'update', true]);
 				// Modification des URL des images dans la bannière perso
 				$featureContent = $this->getInput('themeHeaderText', null);
-				// Bannière animée avec swiper		
+				// Bannière animée avec swiper	
+				$swiperContent = '';
 				if( $this->getInput('themeHeaderFeature') === 'swiper' ){
 					$swiperContent = $this->swiperContent('header');
 					$headerHeight = 'unset';

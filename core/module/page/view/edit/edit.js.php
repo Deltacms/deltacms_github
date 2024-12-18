@@ -618,7 +618,12 @@ $("#pageEditParentPageId").on("change", function() {
 */
 $("#pageEditCommentConfig").on("click", function() {
 	document.cookie = "configLayout" + "=" + ("social" || "")  + "" + "; path=/; samesite=lax";
-	console.log( 'cookie écrit');
+});
+
+// Submit auto si la case 'Autoriser les commentaires' est modifiée plus masquage de la popup navigateur
+document.getElementById('pageEditCommentEnable').addEventListener('change', function () {
+	$(window).off("beforeunload");
+	document.getElementById('pageEditForm').submit();
 });
 
 /*

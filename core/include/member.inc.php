@@ -36,7 +36,7 @@ if(isset($du)){
 						} elseif($ex=='.mp3'){
 							echo'<audio src="'.$ob.'" type="audio/mp3" preload="auto" controls></audio><br>'.$dl.'<br>';
 						}
-						elseif (in_array ($ex, array ('.gif','.jpg','.jpeg','.png','.webp'))){
+						elseif (in_array ($ex, array ('.gif','.jpg','.jpeg','.png','.webp','.avif'))){
 							echo'<a href="'.$ob.'" title="'.$text['core']['showMemberFile'][4].'" data-lity><img src="'.$ob.'" alt="image" style="max-width: 25%; height: auto;"></a><br><br>';
 						}
 						elseif($ex=='.txt'){
