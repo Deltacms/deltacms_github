@@ -151,7 +151,9 @@ echo template::formOpen('statisliteConfigForm'); ?>
 
 			<div class="block">
 				<div class="blockTitle"><?php echo $text['statislite_view']['config'][29]; ?></div>
-				<?php if(is_file( $module::$fichiers_json.'robots.json')){
+				<?php if( !is_dir( $module::$tmp ))mkdir( $module::$tmp, 0755);
+				copy('./module/statislite/ressource/tmp/.htaccess', $module::$tmp.'.htaccess');
+				if(is_file( $module::$fichiers_json.'robots.json')){
 					copy( $module::$fichiers_json.'robots.json', $module::$tmp.'robots.json');
 					echo $text['statislite_view']['config'][30];
 					echo '<p><a href="'. helper::baseUrl(false).$module::$tmp.'robots.json" target="_blank">Fichier robots.json</a></p>';

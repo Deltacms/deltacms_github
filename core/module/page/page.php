@@ -306,13 +306,14 @@ class page extends common {
 			}
 			// Suppression
 			else {
-
 				// Effacer le dossier du module 
-				// Attention ces données spécifiques à une page $url[0] devrait être dans un dossier data_module 
-				// Si dans 2 langues on utilise un même nom de page, ces données seront perdues pour les 2 langues.
+				// Attention ces données spécifiques à une page $url[0] devraient être dans un dossier data_module 
+				// Si dans 2 langues on utilise un même nom de page, ces données seront perdues pour les 2 langues
 				$moduleId = $this->getData(['page',$url[0],'moduleId']);
-				$modulesData = helper::getModules();
-				if (is_dir($modulesData[$moduleId]['dataDirectory']. $url[0]))	$this->removeDir( $modulesData[$moduleId]['dataDirectory']. $url[0]);
+				if( $moduleId !== null && $moduleId !==''){
+					$modulesData = helper::getModules();
+					if (is_dir($modulesData[$moduleId]['dataDirectory']. $url[0]))	$this->removeDir( $modulesData[$moduleId]['dataDirectory']. $url[0]);
+				}
 				// Effacer les données de la page dans data_module
 				$dirdata = self::DATA_DIR.self::$i18n.'/data_module/'.$moduleId.'/'. $url[0];
 				if (is_dir($dirdata)) $this->removeDir( $dirdata );
@@ -793,7 +794,7 @@ class page extends common {
 						if (!is_dir(self::DATA_DIR . self::$i18n . '/content')) {
 							mkdir(self::DATA_DIR . self::$i18n . '/content', 0755);
 						}
-						$content = empty($this->getInput('pageEditContent', null)) ? '<p></p>' : str_replace('<p></p>', '<p>&nbsp;</p>', $this->getInput('pageEditContent', null));
+						$content = empty($this->getInput('pageEditContent', null)) ? '<p></p>' : preg_replace('/<p>(\s*?)<\/p>/', '<p>&nbsp;</p>', $this->getInput('pageEditContent', null));
 						//file_put_contents( self::DATA_DIR . self::$i18n . '/content/' . $pageId . '.html' , $content );
 						$this->setPage($pageId , $content, self::$i18n);
 						// Barre renommée : changement le nom de la barre dans les pages mères

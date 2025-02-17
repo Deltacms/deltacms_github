@@ -24,26 +24,12 @@
 #
 #        - See end of doc for more examples -
 #
-#  Supported file types include: jpg, png, gif, bmp, psd (read)
+#  Supported file types include: jpg, png, gif
 #
-#
-#
-#  The following functions are taken from phpThumb() [available from
-#    http://phpthumb.sourceforge.net], and are used with written permission
-#  from James Heinrich.
-#    - GD2BMPstring
-#      - GetPixelColor
-#      - LittleEndian2String
 #
 #  The following functions are from Marc Hibbins and are used with written
 #  permission (are also under the Attribution-ShareAlike
 #  [http://creativecommons.org/licenses/by-sa/3.0/] license.
-#    -
-#
-#  PhpPsdReader is used with written permission from Tim de Koning.
-#  [http://www.kingsquare.nl/phppsdreader]
-#
-#
 #
 #  Modificatoin history
 #  Date      Initials  Ver Description
@@ -90,10 +76,6 @@
 #  when we're finished with it as you can both save the image and display
 #  it directly to the screen (imagedestroy($this->imageResized))
 #
-#  Opening BMP files is slow. A test with 884 bmp files processed in a loop
-#  takes forever - over 5 min. This test inlcuded opening the file, then
-#  getting and displaying its width and height.
-#
 #  $forceStretch:
 # -------------------------------
 #  On by default.
@@ -112,10 +94,8 @@
 #
 #  FEATURES:
 #    * EASY TO USE
-#    * BMP SUPPORT (read & write)
-#    * PSD (photoshop) support (read)
 #    * RESIZE IMAGES
-#      - Preserve transparency (png, gif)
+#      - Preserve transparency (png, gif)// gif n'était pas transparent
 #      - Apply sharpening (jpg) (requires PHP >= 5.1.0)
 #      - Set image quality (jpg, png)
 #      - Resize modes:
@@ -178,13 +158,12 @@ class imageLib {
 	private $forceStretch        = true;
 	private $aggresiveSharpening = false;
 
-	private $transparentArray = ['.png', '.gif'];
+	private $transparentArray = ['.png', '.gif', '.webp', '.avif'];
 	private $keepTransparency = true;
 	private $fillColorArray   = ['r' => 255, 'g' => 255, 'b' => 255];
 
 	private $sharpenArray = ['jpg'];
 
-	private $psdReaderPath;
 	private $filterOverlayPath;
 
 	private $isInterlace;
@@ -264,8 +243,6 @@ class imageLib {
 
 	private function initialise()
 	{
-
-		$this->psdReaderPath = dirname(__FILE__) . '/classPhpPsdReader.php';
 		$this->filterOverlayPath = dirname(__FILE__) . '/filters';
 
 		// *** Set if image should be interlaced or not.
@@ -460,12 +437,12 @@ class imageLib {
 		# Notes:
 		#
 	{
-		// *** If PNG, perform some transparency retention actions (gif untested)
+		// *** If PNG, perform some transparency retention actions
 		if (in_array($this->fileExtension, $this->transparentArray) && $this->keepTransparency)
 		{
+			$transparent = imagecolortransparent($im, imagecolorallocatealpha($im, 0, 0, 0, 127));
 			imagealphablending($im, false);
 			imagesavealpha($im, true);
-			$transparent = imagecolorallocatealpha($im, 255, 255, 255, 127);
 			imagefilledrectangle($im, 0, 0, $width, $height, $transparent);
 		}
 		else
@@ -2762,15 +2739,6 @@ class imageLib {
 			case 'png':
 				$img = imagecreatefrompng($file);
 				break;
-			case 'bmp':
-			case 'x-ms-bmp':
-				$img = @$this->imagecreatefrombmp($file);
-				break;
-			case 'psd':
-			case 'vnd.adobe.photoshop':
-				$img = @$this->imagecreatefrompsd($file);
-				break;
-
 
 			// ... etc
 
@@ -2811,9 +2779,6 @@ class imageLib {
 		#       * jpg has a quality setting 0-100 (100 being the best)
 		#       * webp has a quality setting 0-100 (100 being the best)
 		#       * png has a quality setting 0-9 (0 being the best)
-		#
-		#             * bmp files have no native support for bmp files. We use a
-		#       third party class to save as bmp.
 	{
 
 		// *** Perform a check or two.
@@ -2915,11 +2880,6 @@ class imageLib {
 				}
 				break;
 
-			case '.bmp':
-				file_put_contents($savePath, $this->GD2BMPstring($this->imageResized));
-				break;
-
-
 			// ... etc
 
 			default:
@@ -2992,10 +2952,6 @@ class imageLib {
 
 				imagepng($this->imageResized, '', $invertScaleQuality);
 				break;
-			case 'bmp':
-				echo 'bmp file format is not supported.';
-				break;
-
 			// ... etc
 
 			default:
@@ -3450,330 +3406,11 @@ class imageLib {
 		return $src;
 	}
 
-	## --------------------------------------------------------
-
 	function checkStringStartsWith($needle, $haystack)
 		# Check if a string starts with a specific pattern
 	{
 		return (substr($haystack, 0, strlen($needle)) == $needle);
 	}
-
-
-	/*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**-*-*-*-*-*-*-*-*-*-*-*-*-*-
-  BMP SUPPORT (SAVING) - James Heinrich
-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**-*-*-*-*-*-*-*-*-*-*-*-*-*/
-
-	private function GD2BMPstring(&$gd_image)
-		# Author:     James Heinrich
-		# Purpose:    Save file as type bmp
-		# Param in:   The image canvas (passed as ref)
-		# Param out:
-		# Reference:
-		# Notes:    This code was stripped out of two external files
-		#       (phpthumb.bmp.php,phpthumb.functions.php) and added below to
-		#       avoid dependancies.
-		#
-	{
-		$imageX = ImageSX($gd_image);
-		$imageY = ImageSY($gd_image);
-
-		$BMP = '';
-		for ($y = ($imageY - 1); $y >= 0; $y--)
-		{
-			$thisline = '';
-			for ($x = 0; $x < $imageX; $x++)
-			{
-				$argb = $this->GetPixelColor($gd_image, $x, $y);
-				$thisline .= chr($argb['blue']) . chr($argb['green']) . chr($argb['red']);
-			}
-			while (strlen($thisline) % 4)
-			{
-				$thisline .= "\x00";
-			}
-			$BMP .= $thisline;
-		}
-
-		$bmpSize = strlen($BMP) + 14 + 40;
-		// BITMAPFILEHEADER [14 bytes] - http://msdn.microsoft.com/library/en-us/gdi/bitmaps_62uq.asp
-		$BITMAPFILEHEADER = 'BM';                                    // WORD    bfType;
-		$BITMAPFILEHEADER .= $this->LittleEndian2String($bmpSize, 4); // DWORD   bfSize;
-		$BITMAPFILEHEADER .= $this->LittleEndian2String(0, 2); // WORD    bfReserved1;
-		$BITMAPFILEHEADER .= $this->LittleEndian2String(0, 2); // WORD    bfReserved2;
-		$BITMAPFILEHEADER .= $this->LittleEndian2String(54, 4); // DWORD   bfOffBits;
-
-		// BITMAPINFOHEADER - [40 bytes] http://msdn.microsoft.com/library/en-us/gdi/bitmaps_1rw2.asp
-		$BITMAPINFOHEADER = $this->LittleEndian2String(40, 4); // DWORD  biSize;
-		$BITMAPINFOHEADER .= $this->LittleEndian2String($imageX, 4); // LONG   biWidth;
-		$BITMAPINFOHEADER .= $this->LittleEndian2String($imageY, 4); // LONG   biHeight;
-		$BITMAPINFOHEADER .= $this->LittleEndian2String(1, 2); // WORD   biPlanes;
-		$BITMAPINFOHEADER .= $this->LittleEndian2String(24, 2); // WORD   biBitCount;
-		$BITMAPINFOHEADER .= $this->LittleEndian2String(0, 4); // DWORD  biCompression;
-		$BITMAPINFOHEADER .= $this->LittleEndian2String(0, 4); // DWORD  biSizeImage;
-		$BITMAPINFOHEADER .= $this->LittleEndian2String(2835, 4); // LONG   biXPelsPerMeter;
-		$BITMAPINFOHEADER .= $this->LittleEndian2String(2835, 4); // LONG   biYPelsPerMeter;
-		$BITMAPINFOHEADER .= $this->LittleEndian2String(0, 4); // DWORD  biClrUsed;
-		$BITMAPINFOHEADER .= $this->LittleEndian2String(0, 4); // DWORD  biClrImportant;
-
-		return $BITMAPFILEHEADER . $BITMAPINFOHEADER . $BMP;
-	}
-
-## --------------------------------------------------------
-
-	private function GetPixelColor(&$img, $x, $y)
-		# Author:     James Heinrich
-		# Purpose:
-		# Param in:
-		# Param out:
-		# Reference:
-		# Notes:
-		#
-	{
-		if (! is_resource($img) && ! $img instanceof \GdImage)
-		{
-			return false;
-		}
-
-		return @ImageColorsForIndex($img, @ImageColorAt($img, $x, $y));
-	}
-
-## --------------------------------------------------------
-
-	private function LittleEndian2String($number, $minbytes = 1)
-		# Author:     James Heinrich
-		# Purpose:    BMP SUPPORT (SAVING)
-		# Param in:
-		# Param out:
-		# Reference:
-		# Notes:
-		#
-	{
-		$intstring = '';
-		while ($number > 0)
-		{
-			$intstring = $intstring . chr($number & 255);
-			$number >>= 8;
-		}
-
-		return str_pad($intstring, $minbytes, "\x00", STR_PAD_RIGHT);
-	}
-
-
-	/*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**-*-*-*-*-*-*-*-*-*-*-*-*-*-
-  BMP SUPPORT (READING)
-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**-*-*-*-*-*-*-*-*-*-*-*-*-*/
-
-	private function ImageCreateFromBMP($filename)
-		# Author:     DHKold
-		# Date:     The 15th of June 2005
-		# Version:    2.0B
-		# Purpose:    To create an image from a BMP file.
-		# Param in:   BMP file to open.
-		# Param out:  Return a resource like the other ImageCreateFrom functions
-		# Reference:  http://us3.php.net/manual/en/function.imagecreate.php#53879
-		# Bug fix:    Author:   domelca at terra dot es
-		#       Date:   06 March 2008
-		#       Fix:    Correct 16bit BMP support
-		# Notes:
-		#
-	{
-
-		//Ouverture du fichier en mode binaire
-		if ( ! $f1 = fopen($filename, "rb"))
-		{
-			return false;
-		}
-
-		//1 : Chargement des ent�tes FICHIER
-		$FILE = unpack("vfile_type/Vfile_size/Vreserved/Vbitmap_offset", fread($f1, 14));
-		if ($FILE['file_type'] != 19778)
-		{
-			return false;
-		}
-
-		//2 : Chargement des ent�tes BMP
-		$BMP = unpack('Vheader_size/Vwidth/Vheight/vplanes/vbits_per_pixel' .
-					  '/Vcompression/Vsize_bitmap/Vhoriz_resolution' .
-					  '/Vvert_resolution/Vcolors_used/Vcolors_important', fread($f1, 40));
-		$BMP['colors'] = pow(2, $BMP['bits_per_pixel']);
-
-		if ($BMP['size_bitmap'] == 0)
-		{
-			$BMP['size_bitmap'] = $FILE['file_size'] - $FILE['bitmap_offset'];
-		}
-
-		$BMP['bytes_per_pixel'] = $BMP['bits_per_pixel'] / 8;
-		$BMP['bytes_per_pixel2'] = ceil($BMP['bytes_per_pixel']);
-		$BMP['decal'] = ($BMP['width'] * $BMP['bytes_per_pixel'] / 4);
-		$BMP['decal'] -= floor($BMP['width'] * $BMP['bytes_per_pixel'] / 4);
-		$BMP['decal'] = 4 - (4 * $BMP['decal']);
-
-		if ($BMP['decal'] == 4)
-		{
-			$BMP['decal'] = 0;
-		}
-
-		//3 : Chargement des couleurs de la palette
-		$PALETTE = [];
-		if ($BMP['colors'] < 16777216)
-		{
-			$PALETTE = unpack('V' . $BMP['colors'], fread($f1, $BMP['colors'] * 4));
-		}
-
-		//4 : Cr�ation de l'image
-		$IMG = fread($f1, $BMP['size_bitmap']);
-		$VIDE = chr(0);
-
-		$res = imagecreatetruecolor($BMP['width'], $BMP['height']);
-		$P = 0;
-		$Y = $BMP['height'] - 1;
-		while ($Y >= 0)
-		{
-			$X = 0;
-			while ($X < $BMP['width'])
-			{
-				if ($BMP['bits_per_pixel'] == 24)
-				{
-					$COLOR = unpack("V", substr($IMG, $P, 3) . $VIDE);
-				}
-				elseif ($BMP['bits_per_pixel'] == 16)
-				{
-
-					/*
-		   * BMP 16bit fix
-		   * =================
-		   *
-		   * Ref: http://us3.php.net/manual/en/function.imagecreate.php#81604
-		   *
-		   * Notes:
-		   * "don't work with bmp 16 bits_per_pixel. change pixel
-		   * generator for this."
-		   *
-		   */
-
-					// *** Original code (don't work)
-					//$COLOR = unpack("n",substr($IMG,$P,2));
-					//$COLOR[1] = $PALETTE[$COLOR[1]+1];
-
-					$COLOR = unpack("v", substr($IMG, $P, 2));
-					$blue = ($COLOR[1] & 0x001f) << 3;
-					$green = ($COLOR[1] & 0x07e0) >> 3;
-					$red = ($COLOR[1] & 0xf800) >> 8;
-					$COLOR[1] = $red * 65536 + $green * 256 + $blue;
-
-				}
-				elseif ($BMP['bits_per_pixel'] == 8)
-				{
-					$COLOR = unpack("n", $VIDE . substr($IMG, $P, 1));
-					$COLOR[1] = $PALETTE[ $COLOR[1] + 1 ];
-				}
-				elseif ($BMP['bits_per_pixel'] == 4)
-				{
-					$COLOR = unpack("n", $VIDE . substr($IMG, floor($P), 1));
-					if (($P * 2) % 2 == 0)
-					{
-						$COLOR[1] = ($COLOR[1] >> 4);
-					}
-					else
-					{
-						$COLOR[1] = ($COLOR[1] & 0x0F);
-					}
-					$COLOR[1] = $PALETTE[ $COLOR[1] + 1 ];
-				}
-				elseif ($BMP['bits_per_pixel'] == 1)
-				{
-					$COLOR = unpack("n", $VIDE . substr($IMG, floor($P), 1));
-					if (($P * 8) % 8 == 0)
-					{
-						$COLOR[1] = $COLOR[1] >> 7;
-					}
-					elseif (($P * 8) % 8 == 1)
-					{
-						$COLOR[1] = ($COLOR[1] & 0x40) >> 6;
-					}
-					elseif (($P * 8) % 8 == 2)
-					{
-						$COLOR[1] = ($COLOR[1] & 0x20) >> 5;
-					}
-					elseif (($P * 8) % 8 == 3)
-					{
-						$COLOR[1] = ($COLOR[1] & 0x10) >> 4;
-					}
-					elseif (($P * 8) % 8 == 4)
-					{
-						$COLOR[1] = ($COLOR[1] & 0x8) >> 3;
-					}
-					elseif (($P * 8) % 8 == 5)
-					{
-						$COLOR[1] = ($COLOR[1] & 0x4) >> 2;
-					}
-					elseif (($P * 8) % 8 == 6)
-					{
-						$COLOR[1] = ($COLOR[1] & 0x2) >> 1;
-					}
-					elseif (($P * 8) % 8 == 7)
-					{
-						$COLOR[1] = ($COLOR[1] & 0x1);
-					}
-					$COLOR[1] = $PALETTE[ $COLOR[1] + 1 ];
-				}
-				else
-				{
-					return false;
-				}
-
-				imagesetpixel($res, $X, $Y, $COLOR[1]);
-				$X++;
-				$P += $BMP['bytes_per_pixel'];
-			}
-
-			$Y--;
-			$P += $BMP['decal'];
-		}
-		//Fermeture du fichier
-		fclose($f1);
-
-		return $res;
-	}
-
-
-	/*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**-*-*-*-*-*-*-*-*-*-*-*-*-*-
-  PSD SUPPORT (READING)
-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**-*-*-*-*-*-*-*-*-*-*-*-*-*/
-
-	private function imagecreatefrompsd($fileName)
-		# Author:     Tim de Koning
-		# Version:    1.3
-		# Purpose:    To create an image from a PSD file.
-		# Param in:   PSD file to open.
-		# Param out:  Return a resource like the other ImageCreateFrom functions
-		# Reference:  http://www.kingsquare.nl/phppsdreader
-		# Notes:
-		#
-	{
-		if (file_exists($this->psdReaderPath))
-		{
-
-
-			include_once($this->psdReaderPath);
-
-			$psdReader = new PhpPsdReader($fileName);
-
-			if (isset($psdReader->infoArray['error']))
-			{
-				return '';
-			}
-			else
-			{
-				return $psdReader->getImage();
-			}
-		}
-		else
-		{
-			return false;
-		}
-	}
-
-## --------------------------------------------------------
 
 	public function __destruct()
 	{
@@ -3782,8 +3419,6 @@ class imageLib {
 			imagedestroy($this->imageResized);
 		}
 	}
-
-## --------------------------------------------------------
 
 }
 

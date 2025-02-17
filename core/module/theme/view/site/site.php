@@ -193,7 +193,8 @@ echo template::formOpen('themeSiteForm'); ?>
 				<div class="blockTitle"><?php echo $text['core_theme_view']['site'][25]; ?></div>
 				<div class="row">
 					<div class="col6">
-						<?php echo template::select('themeTextFont', $module::$fonts, [
+						<?php asort($module::$fonts);
+						echo template::select('themeTextFont', $module::$fonts, [
 							'label' => $text['core_theme_view']['site'][26],
 							'selected' => $this->getData(['theme', 'text', 'font']),
 							'fonts' => true

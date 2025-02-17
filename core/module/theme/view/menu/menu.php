@@ -112,11 +112,9 @@ echo template::formOpen('themeMenuForm'); ?>
 								'checked' => $this->getData(['theme', 'menu', 'margin'])
 							]); ?>
 					</div>
-					<div id="themeMenuPositionFixed" class="displayNone">
 						<?php echo template::checkbox('themeMenuFixed', true, $text['core_theme_view']['menu'][11], [
 								'checked' => $this->getData(['theme', 'menu', 'fixed'])
 							]); ?>
-					</div>
 				</div>
                <div class="col4">
                     <?php echo template::select('themeMenuMinWidthTab', $minWidthTab, [
@@ -399,7 +397,8 @@ echo template::formOpen('themeMenuForm'); ?>
             <div class="blockTitle"><?php echo $text['core_theme_view']['menu'][30]; ?></div>
             <div class="row">
                 <div class="col6">
-                    <?php echo template::select('themeMenuFont', $module::$fonts, [
+                    <?php asort($module::$fonts);
+					echo template::select('themeMenuFont', $module::$fonts, [
 								'label' => $text['core_theme_view']['menu'][31],
 								'selected' => $this->getData(['theme', 'menu', 'font']),
                                 'fonts' => true

@@ -15,7 +15,7 @@ echo template::formOpen('pageEditForm'); ?>
 	<div class="row">
 		<div class="col2">
 			<?php $href = helper::baseUrl() . $this->getUrl(2); ?>
-			<?php if ($this->getData(['page', $this->getUrl(2), 'moduleId']) === 'redirection' || 'code')$href = helper::baseUrl(); ?>
+			<?php if ($this->getData(['page', $this->getUrl(2), 'moduleId']) === 'redirection' || $this->getData(['page', $this->getUrl(2), 'moduleId']) === 'code')$href = helper::baseUrl(); ?>
 			<?php echo template::button('pageEditBack', [
 				'class' => 'buttonGrey',
 				'href' => $href,

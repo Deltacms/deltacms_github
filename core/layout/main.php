@@ -6,17 +6,15 @@ if( !isset( $_COOKIE['DELTA_COOKIE_FONTSIZE'] )) setcookie( 'DELTA_COOKIE_FONTSI
 <?php
 $lang = $this->getData(['config', 'i18n', 'langBase']);
 if( $this->getInput('DELTA_I18N_SITE') !== '' && $this->getInput('DELTA_I18N_SITE') !== null && $this->getInput('DELTA_I18N_SITE') !== 'base') $lang = $this->getInput('DELTA_I18N_SITE');
-if( $this->getData(['config', 'social', 'headFacebook' ]) === true) { echo '<html prefix="og: http://ogp.me/ns#" lang="'.$lang.'">'; }
-else { echo '<html lang="'.$lang.'">'; }
+if( $this->getData(['config', 'social', 'headFacebook' ]) === true) { echo '<html prefix="og: http://ogp.me/ns#" lang="'.$lang.'">'.PHP_EOL; }
+else { echo '<html lang="'.$lang.'">'.PHP_EOL; }
 $suffix = $this->getData(['page', $this->getUrl(0), 'moduleId']) === 'templateswitch' || $this->getUrl(0) === 'theme' ? '?v='. time() : '';
 ?>
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta name="generator" content="Deltacms <?=common::DELTA_VERSION?>">
-        <?php $this->showMetaTitle();
-        if( $this->getData(['config', 'social', 'headFacebook' ]) === true) $this->showMetaPropertyFacebook(); ?>
-		<script> var terminalType = "<?php echo $_SESSION['terminal']; ?>" </script>
+		<?php $this->showMetaTitle();
+		if( $this->getData(['config', 'social', 'headFacebook' ]) === true) $this->showMetaPropertyFacebook(); ?>
 		<base href="<?=helper::baseUrl(true)?>">
 		<link rel="stylesheet" href="core/vendor/normalize/normalize.min.css">
 		<link rel="stylesheet" href="core/layout/common.css">
@@ -45,9 +43,11 @@ $suffix = $this->getData(['page', $this->getUrl(0), 'moduleId']) === 'templatesw
 		if ( ( $this->getData(['page', $this->getUrl(0), 'moduleId']) === 'blog'
 			OR $this->getData(['page', $this->getUrl(0), 'moduleId']) === 'news' )
 			AND $this->getData(['module', $this->getUrl(0), 'config', 'feeds']) === TRUE ): ?>
-		<link rel="alternate" type="application/rss+xml" href="'<?php echo helper::baseUrl(). $this->getUrl(0) . '/rss';?>" title="fLUX rss">
+		<link rel="alternate" type="application/rss+xml" href="'<?=helper::baseUrl(). $this->getUrl(0) . '/rss'?>" title="fLUX rss">
 		<?php endif;
-		if (file_exists(self::DATA_DIR .'head.inc.php')) include(self::DATA_DIR .'head.inc.php'); ?>
+		if (file_exists(self::DATA_DIR .'head.inc.php')) include(self::DATA_DIR .'head.inc.php');
+		if (isset($head_include)) include ($head_include);
+		?>
 	</head>
 	<body>
 		<?php //Barre d'administration

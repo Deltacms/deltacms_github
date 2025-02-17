@@ -13,7 +13,8 @@ function add(inputUid, input) {
 		var _this = $(this);
 		_this.attr({
 			id: _this.attr("id").replace("[]", "[" + inputUid + "]"),
-			name: _this.attr("name").replace("[]", "[" + inputUid + "]")
+			// name obsolète remplacé par id
+			name: _this.attr("id").replace("[]", "[" + inputUid + "]")
 		});
 	});
 	newInput.find("label").each(function() {

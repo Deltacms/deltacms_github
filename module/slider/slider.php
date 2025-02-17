@@ -26,7 +26,7 @@ class slider extends common {
 		'index' => self::GROUP_VISITOR
 	];
 	
-	const VERSION = '6.4';	
+	const VERSION = '6.5';	
 	const REALNAME = 'Slider';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -112,9 +112,9 @@ class slider extends common {
 				$this->init();
 			}
 		} else {
-			// Version 6.4
-			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '6.4', '<') ) {
-				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','6.4']);
+			// Version 6.5
+			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '6.5', '<') ) {
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','6.5']);
 			}
 		}		
 	}	
@@ -158,6 +158,7 @@ class slider extends common {
 				foreach ($parentValue as $childKey) {
 					self::$pageList [$childKey] = $childKey;
 				}
+				asort(self::$pageList);
 			}
 			// Valeurs par défaut si le slider n'existe pas encore
 			if( null === $this->getData(['module', $this->getUrl(0), 'config', 'directory'])){

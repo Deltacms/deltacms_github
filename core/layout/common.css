@@ -1108,3 +1108,6 @@ body.editorWysiwyg > .blockFullWidth {
 .colorbox-0 h2, .colorbox-0 h3{
 	color: #F4CFDF;
 }
+.imageFullWidth img {
+	width: 100%;
+}

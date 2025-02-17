@@ -455,18 +455,20 @@ core.start = function() {
 				}
 			}
 			// Affichage du sous-menu si une sous-page est active
-			$.each(parentPage, function(index, value) {
-				var select = "ul#_"+value+".navSub";
-				var select2 = 'nav #menu ul li #'+value+' span.iconSubExistSmallScreen';
-				var select3 = "ul#_"+value+".navSub > li > a";
-				if( $(select3).hasClass("active") ){
-						$(select).css("z-index","1");
-						$(select).css("opacity","1");
-						$(select).css("padding-left","20px");
-						$(select).css("position","static");
-						$(select2).removeClass('delta-ico-plus').addClass('delta-ico-minus');
-				}
-			});
+			if( typeof parentPage !== "undefined" ){
+				$.each(parentPage, function(index, value) {
+					var select = "ul#_"+value+".navSub";
+					var select2 = 'nav #menu ul li #'+value+' span.iconSubExistSmallScreen';
+					var select3 = "ul#_"+value+".navSub > li > a";
+					if( $(select3).hasClass("active") ){
+							$(select).css("z-index","1");
+							$(select).css("opacity","1");
+							$(select).css("padding-left","20px");
+							$(select).css("position","static");
+							$(select2).removeClass('delta-ico-plus').addClass('delta-ico-minus');
+					}
+				});
+			}
 			$("nav #menu ul li span").click(function() {
 				// id de la page parent
 				var parentId = $(this).parents().attr("id");
@@ -810,4 +812,14 @@ $(document).ready(function(){
 		  }
 		});
 	});
+	
+	/*
+	* Effacement du bouton d'aide avec ? cerclé sur les terminaux mobiles
+	*/
+	$(window).on("resize", function() {
+		if( terminalType === 'mobile'){
+			$("span .delta-ico-help").css("display","none");
+		}
+	}).trigger("resize");
+	
 });

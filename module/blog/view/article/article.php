@@ -107,7 +107,7 @@ if( function_exists('datefmt_create') && function_exists('datefmt_format') && ex
 		<?php if ($this->getData(['module',$this->getUrl(0), 'config', 'feeds'])): ?>
 			<div id="rssFeed">
 				<a type="application/rss+xml" href="<?php echo helper::baseUrl() . $this->getUrl(0) . '/rss'; ?>" target="_blank">
-					<img  src='module/news/ressource/feed-icon-16.gif' />
+					<img  src='module/news/ressource/feed-icon-16.gif' alt=''>
 					<?php
 						echo '<p>' . $this->getData(['module',$this->getUrl(0), 'config', 'feedsLabel']) . '</p>' ;
 					?>
@@ -196,10 +196,6 @@ if( function_exists('datefmt_create') && function_exists('datefmt_format') && ex
 					'class' => 'editorWysiwygComment',
 					'noDirty' => true,
 					'maxlength' => $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'commentMaxlength']),
-					'TinymceMaxi' => $this->getData(['module', $this->getUrl(0), 'texts', 'TinymceMaxi']),
-					'TinymceCara' => $this->getData(['module', $this->getUrl(0), 'texts', 'TinymceCara']),
-					'TinymceExceed' => $this->getData(['module', $this->getUrl(0), 'texts', 'TinymceExceed']),
-					'caracteres'	=> $this->getData(['module', $this->getUrl(0), 'texts', 'Cara']),
 					'value' => isset( $_SESSION['commentContent'] ) ? $_SESSION['commentContent'] : ''
 			]); ?>
 			</div>
@@ -263,3 +259,9 @@ if( function_exists('datefmt_create') && function_exists('datefmt_format') && ex
 	</div>
 </div>
 <?php echo $module::$pages; ?>
+<script>
+	tinymcemaxi = "<?= $this->getData(['module', $this->getUrl(0), 'texts', 'TinymceMaxi']); ?>";
+	tinymcecara = "<?= $this->getData(['module', $this->getUrl(0), 'texts', 'TinymceCara']); ?>";
+	tinymceexceed = "<?= $this->getData(['module', $this->getUrl(0), 'texts', 'TinymceExceed']); ?>";
+	caracteres = "<?= $this->getData(['module', $this->getUrl(0), 'texts', 'Cara']); ?>";
+</script>

@@ -6522,10 +6522,6 @@ background: #d10698;
 .list-view2.grid .img-precontainer-mini .filetype.ai {
 background: #d6772f;
 }
-.list-view1.grid .img-precontainer-mini .filetype.psd,
-.list-view2.grid .img-precontainer-mini .filetype.psd {
-background: #0960a4;
-}
 .list-view1.grid .img-precontainer-mini .filetype.html,
 .list-view1.grid .img-precontainer-mini .filetype.xhtml,
 .list-view2.grid .img-precontainer-mini .filetype.html,
@@ -6622,22 +6618,16 @@ background: #9f008b;
 .list-view2.grid .img-precontainer-mini .filetype.ott {
 background: #367bbe;
 }
-.list-view1.grid .img-precontainer-mini .filetype.bmp,
 .list-view1.grid .img-precontainer-mini .filetype.gif,
 .list-view1.grid .img-precontainer-mini .filetype.jpeg,
 .list-view1.grid .img-precontainer-mini .filetype.jpg,
 .list-view1.grid .img-precontainer-mini .filetype.png,
 .list-view1.grid .img-precontainer-mini .filetype.svg,
-.list-view1.grid .img-precontainer-mini .filetype.tiff,
-.list-view2.grid .img-precontainer-mini .filetype.bmp,
 .list-view2.grid .img-precontainer-mini .filetype.gif,
 .list-view2.grid .img-precontainer-mini .filetype.jpeg,
 .list-view2.grid .img-precontainer-mini .filetype.jpg,
 .list-view2.grid .img-precontainer-mini .filetype.png,
 .list-view2.grid .img-precontainer-mini .filetype.svg,
-.list-view2.grid .img-precontainer-mini .filetype.tiff {
-background: #cfa554;
-}
 .list-view1.grid .img-precontainer-mini .filetype.dmg,
 .list-view1.grid .img-precontainer-mini .filetype.iso,
 .list-view1.grid .img-precontainer-mini .filetype.log,

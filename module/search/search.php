@@ -233,8 +233,12 @@ class search extends common {
 			foreach($arraymotclef as $key=>$value){
 				if( strlen($value)>2 && $value!=='les' && $value!=='des' && $value!=='une' && $value!=='aux') $motclef.=$value.' ';
 			}
-			// Suppression du dernier ' '
-			if($motclef !== '') $motclef = substr($motclef,0, strlen($motclef)-1);
+			// Suppression du dernier ' ' et de certains caractères
+			$replace = ['(',')','/','\\','['];
+			if($motclef !== ''){
+				$motclef = substr($motclef,0, strlen($motclef)-1);
+				$motclef = str_replace($replace,'',$motclef);
+			}
 
 			// Récupération de l'état de l'option mot entier passé par le même formulaire
 			self::$motentier=$this->getInput('searchMotentier', helper::FILTER_BOOLEAN);

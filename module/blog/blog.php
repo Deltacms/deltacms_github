@@ -21,7 +21,7 @@
 
 class blog extends common {
 
-	const VERSION = '7.4';
+	const VERSION = '7.5';
 	const REALNAME = 'Blog';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -147,6 +147,10 @@ class blog extends common {
 			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '7.4', '<') ) {
 				$this->setData(['module', $this->getUrl(0), 'config', 'previewSize', 400]);
 				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','7.4']);
+			}
+			// Version 7.5
+			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '7.5', '<') ) {
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','7.5']);
 			}
 		}
 	}

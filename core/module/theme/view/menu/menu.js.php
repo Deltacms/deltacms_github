@@ -3,16 +3,6 @@
  */
 
 $(document).ready(function(){
-	// Menu fixe à afficher
-	if($("#themeMenuPosition").val() === 'top') {
-		$("#themeMenuPositionFixed").slideDown();
-	}
-	else {
-		$("#themeMenuPositionFixed").slideUp(function() {
-			$("#themeMenuFixed").prop("checked", false).trigger("change");
-		});
-	}
-
 	// Option de menu à afficher
 	if($("#themeMenuPosition").val() === 'site-first' || $(this).val() === 'site-second') {
 		$("#themeMenuPositionOptions").slideDown();
@@ -23,7 +13,6 @@ $(document).ready(function(){
 		});
 	}
 });
-
 
 /**
  * Aperçu en direct
@@ -208,18 +197,6 @@ $("#themeMenuPosition").on("change", function() {
 	else {
 		$("#themeMenuPositionOptions").slideUp(function() {
 			$("#themeMenuMargin").prop("checked", false).trigger("change");
-		});
-	}
-}).trigger("change");
-
-// Affiche / Cache les options du menu fixe
-$("#themeMenuPosition").on("change", function() {
-	if($(this).val() === 'top') {
-		$("#themeMenuPositionFixed").slideDown();
-	}
-	else {
-		$("#themeMenuPositionFixed").slideUp(function() {
-			$("#themeMenuFixed").prop("checked", false).trigger("change");
 		});
 	}
 }).trigger("change");

@@ -52,7 +52,8 @@ $lang_flatpickr = $text['news_view']['add'][13];
 				<div class="blockTitle"><?php echo $text['news_view']['add'][6]; ?></div>
 				<div class="row">
 					<div class="col4 <?php if($this->getUser('group') < self::GROUP_MODERATOR) echo 'displayNone'; ?> ">
-						<?php echo template::select('newsAddUserId', $module::$users, [
+						<?php asort($module::$users);
+						echo template::select('newsAddUserId', $module::$users, [
 							'label' => $text['news_view']['add'][4],
 							'selected' => $this->getUser('id')
 						]); ?>

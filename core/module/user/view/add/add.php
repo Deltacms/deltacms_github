@@ -112,7 +112,9 @@ include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin
 			</div>
 			<div class="block">
 				<div class="blockTitle"><?php echo $text['core_user_view']['add'][26]; ?></div>
-				<?php echo template::select('userRedirectPageId', helper::arrayCollumn($module::$pagesList, 'title'), [
+				<?php $list = helper::arrayCollumn($module::$pagesList, 'title');
+				ksort($list);
+				echo template::select('userRedirectPageId', $list, [
 						'label' => $text['core_user_view']['add'][27],
 						'selected' =>$this->getData(['user', $this->getUrl(2),'redirectPageId']),
 						'help' => $text['core_user_view']['add'][28]

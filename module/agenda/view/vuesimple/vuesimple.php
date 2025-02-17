@@ -37,8 +37,7 @@ if( function_exists('datefmt_create') && function_exists('datefmt_format') && ex
 			echo  $datedeb.'<br>';
 			echo $this->getData(['module', $this->getUrl(0), 'texts', 'configTextDateEnd']).' ';
 			echo  $datefin;?> </div>
-			<p><?php echo $module::$evenement['texte'];?></p>
-
+			<?php echo $module::$evenement['texte'];?>
 		</div>
 	</div>
 </div>

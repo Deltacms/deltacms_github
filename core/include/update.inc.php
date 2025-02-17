@@ -272,4 +272,7 @@ if ($this->getData(['core', 'dataVersion']) < 5202) {
 	if( is_dir('./site/file/thumb/') ) $this->removeDir('./site/file/thumb/');
 	$this->setData(['core', 'dataVersion', 5202]);
 }
+if ($this->getData(['core', 'dataVersion']) < 5301) {
+	$this->setData(['core', 'dataVersion', 5301]);
+}
 ?>

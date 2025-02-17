@@ -52,7 +52,7 @@ if ( typeof(bodyIframe) == 'undefined') {
 // Adaptations pour la saisie des news
 if ( typeof(newsAddEdit) == 'undefined') {
 	var newsAddEdit = false;
-}; 
+};
 if(newsAddEdit){
 	var content_css = [ baseUrl + "core/layout/common.css",baseUrl + "core/layout/mediaqueries.css",baseUrl + "core/vendor/tinymce/content.css",baseUrl + "site/data/theme.css",baseUrl + "site/data/news/themeNews.css",baseUrl + "site/data/custom.css"];
 } else {
@@ -93,10 +93,10 @@ switch (lang_admin) {
 		var widthtitle = ", same height, with inline title.";
 		var widthtitleassym = ", same height, asymmetric, with inline title.";
 		var accordion = "Accordion effect : ";
-		var accordionblock = "Text block with accordion effect with "; 
+		var accordionblock = "Text block with accordion effect with ";
 		var paragraph = " paragraphs.";
-		var symgrid = "Symmetrical grid : "; 
-		var asymgrid = "Asymmetric grid : "; 
+		var symgrid = "Symmetrical grid : ";
+		var asymgrid = "Asymmetric grid : ";
 		var desgrid = "Adaptive grid on 12 columns, on mobile they pass one below the other.";
 		var colorbox = "Colored box";
 		var colorboxwide = "Full width colored box";
@@ -116,8 +116,8 @@ switch (lang_admin) {
 		var accordion = "Efecto acordeón : ";
 		var accordionblock = "Bloque de texto con efecto acordeón de ";
 		var paragraph = " párrafos.";
-		var symgrid = "Cuadrícula simétrica : "; 
-		var asymgrid = "Cuadrícula asimétrica : "; 
+		var symgrid = "Cuadrícula simétrica : ";
+		var asymgrid = "Cuadrícula asimétrica : ";
 		var desgrid = "Cuadrícula adaptativa de 12 columnas, en dispositivos móviles pasan una debajo de la otra.";
 		var colorbox = "Cuadro de color";
 		var colorboxwide = "Cuadro coloreado de ancho completo";
@@ -126,7 +126,7 @@ switch (lang_admin) {
 		var descolorboxwide = "Cuadro coloreado sin bordes sea cual sea la pantalla.";
 		var desimagewide = "Imagen sin bordes en cualquier pantalla.";
     break;
-}	
+}
 var templatesList = [
 		{
 			title: blocktext,
@@ -227,21 +227,36 @@ var templatesList = [
 
 var offsetToolbar = 45;
 if( document.documentElement.clientWidth < 800 ) offsetToolbar = 80;
-	
+
 tinymce.init({
 	// Classe où appliquer l'éditeur
 	selector: ".editorWysiwyg",
+	setup:function(ed) {
 		// Aperçu dans le pied de page
-		setup:function(ed) {
-			ed.on('change', function(e) {
-				if (ed.id === 'themeFooterText') {
-					$("#footerText").html(tinyMCE.get('themeFooterText').getContent());
-				}
-				if (ed.id === 'themeHeaderText') {
-					$("#featureContent").html(tinyMCE.get('themeHeaderText').getContent());
-				}
-			});
-		},
+		ed.on('change', function(e) {
+			if (ed.id === 'themeFooterText') {
+				$("#footerText").html(tinyMCE.get('themeFooterText').getContent());
+			}
+			if (ed.id === 'themeHeaderText') {
+				$("#featureContent").html(tinyMCE.get('themeHeaderText').getContent());
+			}
+		});
+		// Suppression des normes de balisage xhtml
+		ed.on('GetContent', function (e) {
+			e.content = e.content.replace(/ \/>/g, '>');
+			e.content = e.content.replace(/(height|width)="(\d+)px"/g, '$1="$2"');
+			e.content = e.content.replace(/(controls)(="controls")/g, '$1');
+		});
+		// Ajout d'un espace insécable à la suite d'une image à sa création
+		ed.on('NodeChange', function (e) {
+		  if (e.element.nodeName === 'IMG') {
+			const parentElement = e.element.parentNode;
+			if (parentElement && parentElement.nodeName === 'P' && parentElement.textContent === '') {
+				parentElement.innerHTML += '\u00A0';
+			}
+		  }
+		});
+	},
 	// Mode d'affichage de la barre d'outils
 	toolbar_mode: 'wrap',
 	toolbar_sticky: okSticky,
@@ -268,7 +283,7 @@ tinymce.init({
 	//Autoresize
     autoresize_overflow_padding: 0,
     autoresize_bottom_margin: 0,
-	// Hauteur minimale en pixels de la zone d'édition	
+	// Hauteur minimale en pixels de la zone d'édition
 	min_height: tinyMiniHeight,
 	// CodeMirror
 	codemirror: {
@@ -368,59 +383,60 @@ tinymce.init({
 tinymce.init({
 	// Classe où appliquer l'éditeur
 	selector: ".editorWysiwygComment",
-		setup:function(ed) {
-			// Aperçu dans le pied de page
-			ed.on('change', function(e) {
-				if (ed.id === 'themeFooterText') {
-					$("#footerText").html(tinyMCE.get('themeFooterText').getContent());
+	setup:function(ed) {
+		// Aperçu dans le pied de page
+		ed.on('change', function(e) {
+			if (ed.id === 'themeFooterText') {
+				$("#footerText").html(tinyMCE.get('themeFooterText').getContent());
+			}
+		});
+		// Limitation du nombre de caractères des commentaires à maxlength
+		var alarmCaraMin = 200; // alarme sur le nombre de caractères restants à partir de...
+		var maxlength = parseInt($("#" + (ed.id)).attr("maxlength"));
+		var id_alarm = "#blogArticleContentAlarm";
+		var contentLength = 0;
+		ed.on("keydown", function(e) {
+			contentLength = ed.getContent({format : 'text'}).length;
+			if (contentLength > maxlength) {
+				$(id_alarm).html( tinymcemaxi + " "  + maxlength + " " + caracteres );
+				if(e.keyCode != 8 && e.keyCode != 46){
+					e.preventDefault();
+					e.stopPropagation();
+					return false;
 				}
-			});
-			// Limitation du nombre de caractères des commentaires à maxlength
-			var alarmCaraMin = 200; // alarme sur le nombre de caractères restants à partir de...
-			var maxlength = parseInt($("#" + (ed.id)).attr("maxlength"));
-			var caracteres = $("#" + (ed.id)).attr("caracteres");
-			var tinymcemaxi = $("#" + (ed.id)).attr("TinymceMaxi");
-			var tinymcecara = $("#" + (ed.id)).attr("TinymceCara");
-			var tinymceexceed = $("#" + (ed.id)).attr("TinymceExceed");
-			var id_alarm = "#blogArticleContentAlarm"
-			var contentLength = 0;
-			ed.on("keydown", function(e) {
-				contentLength = ed.getContent({format : 'text'}).length;
-				if (contentLength > maxlength) {
-					$(id_alarm).html( tinymcemaxi + " "  + maxlength + " " + caracteres );
-					if(e.keyCode != 8 && e.keyCode != 46){
-						e.preventDefault();
-						e.stopPropagation();
-						return false;
-					}
+			}
+			else{
+				if(maxlength - contentLength < alarmCaraMin){
+					$(id_alarm).html((maxlength - contentLength) + " " + tinymcecara);
 				}
 				else{
-					if(maxlength - contentLength < alarmCaraMin){
-						$(id_alarm).html((maxlength - contentLength) + " " + tinymcecara);
-					}
-					else{
-						$(id_alarm).html(" ");
-					}
+					$(id_alarm).html(" ");
 				}
-			});
-			// Limitation y compris lors d'un copier/coller
-			ed.on("paste", function(e){
-				contentLeng = ed.getContent({format : 'text'}).length - 16;
-				var data = e.clipboardData.getData('Text');
-				if (data.length > (maxlength - contentLeng)) {
-					$(id_alarm).html( tinymceexceed + " "  + maxlength + " " + caracteres + " ! ");
-					return false;
-				} else {
-					if(maxlength - contentLeng < alarmCaraMin){
-						$(id_alarm).html((maxlength - contentLeng - data.length) + " " + tinymcecara);
-					}
-					else{
-						$(id_alarm).html(" ");
-					}
-					return true;
+			}
+		});
+		// Limitation y compris lors d'un copier/coller
+		ed.on("paste", function(e){
+			contentLeng = ed.getContent({format : 'text'}).length - 16;
+			var data = e.clipboardData.getData('Text');
+			if (data.length > (maxlength - contentLeng)) {
+				$(id_alarm).html( tinymceexceed + " "  + maxlength + " " + caracteres + " ! ");
+				return false;
+			} else {
+				if(maxlength - contentLeng < alarmCaraMin){
+					$(id_alarm).html((maxlength - contentLeng - data.length) + " " + tinymcecara);
 				}
-			});
-		},
+				else{
+					$(id_alarm).html(" ");
+				}
+				return true;
+			}
+		});
+		// Supprime les barres obliques /> et retire les unités px des attributs height et width
+		ed.on('GetContent', function (e) {
+			e.content = e.content.replace(/ \/>/g, '>');
+			e.content = e.content.replace(/(height|width)="(\d+)px"/g, '$1="$2"');
+		});
+	},
 	// Langue
 	language: lang_admin,
 	// Plugins
@@ -430,7 +446,7 @@ tinymce.init({
 	// Hauteur en pixels de la zone d'édition
 	//Autoresize
     autoresize_overflow_padding: 0,
-    autoresize_bottom_margin: 0,	
+    autoresize_bottom_margin: 0,
 	min_height: 200,
 	// Mode d'affichage de la barre d'outils
 	toolbar_mode: 'wrap',

@@ -417,7 +417,7 @@ $config = [
 
 	//Allowed extensions (lowercase insert)
 	'ext_img'                                 => ['jpg', 'jpeg', 'png', 'gif', 'svg', 'ico', 'webp', 'avif'], //Images
-	'ext_file'                                => ['doc', 'docx', 'rtf', 'pdf', 'xls', 'xlsx', 'txt', 'csv', 'html', 'xhtml', 'psd', 'sql', 'log', 'fla', 'xml', 'ade', 'adp', 'ppt', 'pptx', 'odt', 'ots', 'ott', 'odb', 'odg', 'otp', 'otg', 'odf', 'ods', 'odp', 'css', 'ai', 'kmz', 'spl', 'step', 'stp', 'iges', 'igs', 'sat', 'ics', 'gpx', 'kml', 'ttf', 'otf', 'woff', 'woff2'], //Files
+	'ext_file'                                => ['doc', 'docx', 'rtf', 'pdf', 'xls', 'xlsx', 'txt', 'csv', 'html', 'xhtml', 'sql', 'log', 'fla', 'xml', 'ade', 'adp', 'ppt', 'pptx', 'odt', 'ots', 'ott', 'odb', 'odg', 'otp', 'otg', 'odf', 'ods', 'odp', 'css', 'ai', 'kmz', 'spl', 'step', 'stp', 'iges', 'igs', 'sat', 'ics', 'gpx', 'kml', 'ttf', 'otf', 'woff', 'woff2'], //Files
 	'ext_video'                               => ['mov', 'm4v', 'mp4', 'webm', 'ogv'], //Video
 	'ext_music'                               => ['mp3', 'm4a', 'mid', 'ogg', 'oga', 'wav'], //Audio
 	'ext_misc'                                => ['7z', 'zip', 'rar', 'gz', 'tar'], //Archives

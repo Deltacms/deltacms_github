@@ -134,7 +134,8 @@ include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmi
                         ]); ?>
                 </div>
                 <div class="col4">
-                    <?php echo template::select('themeHeaderFont', $module::$fonts, [
+                    <?php asort($module::$fonts);
+					echo template::select('themeHeaderFont', $module::$fonts, [
 							'label' => $text['core_theme_view']['header'][17],
 							'selected' => $this->getData(['theme', 'header', 'font']),
 							'fonts' => true

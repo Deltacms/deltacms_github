@@ -7,7 +7,7 @@
  */
 setlocale(LC_NUMERIC,'English','en_US','en_US.UTF-8');
 class album extends common {
-	const VERSION = '5.0';
+	const VERSION = '5.1';
 	const REALNAME = 'Album Photo';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -53,9 +53,9 @@ class album extends common {
 				$this->setData(['module', $this->getUrl(0), 'config', 'texts', 'noAlbum', $text['album']['init'][2]]);
 				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','4.7']);
 			}
-			// Version 5.0
-			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '5.0', '<') ) {
-				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','5.0']);
+			// Mise à jour de la version du module
+			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), self::VERSION, '<') ) {
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData', self::VERSION]);
 			}
 		}
 	}
@@ -820,6 +820,11 @@ class albumHelper extends helper {
 				if (false !== $img_in) {
 					imageinterlace($img_in, true);
 					$img_out = imagecreatetruecolor($largeur, $hauteur) or die ('Unable to create a GD image stream');
+				if ($type !== 2) {
+					imagecolortransparent($img_out, imagecolorallocatealpha($img_out, 0, 0, 0, 127));
+					imagealphablending($img_out, false);
+					imagesavealpha($img_out, true);
+				}
 					imagecopyresampled($img_out, $img_in, 0, 0, 0, 0, imagesx($img_out), imagesy($img_out), imagesx($img_in), imagesy($img_in));
 					imagewebp($img_out, $miniature, 80);
 					imagedestroy($img_out);

@@ -738,7 +738,6 @@ class user extends common {
 						AND $item['id']
 						AND $item['mail']
 						AND $item['group']
-						AND $item['password']
 						) {
 							// Validation du groupe
 							$item['group'] = (int) $item['group'];

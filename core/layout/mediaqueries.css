@@ -386,7 +386,11 @@
 	.socialIconSvg {
 		margin: 0 5px;
 		max-width: none;
-	}  	
+	} 
+/* bouton d'aide par ? cerclé */
+	span .delta-ico-help {
+		display: none;	
+	}	
 }
 
 /*					Autres tailles d'écrans					*/

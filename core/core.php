@@ -52,8 +52,9 @@ class common {
 
 	// Numéro de version
 	const DELTA_UPDATE_URL = 'https://github.com/Deltacms/deltacms_update/raw/refs/heads/main/master/';
-	const DELTA_VERSION = '5.2.02';
+	const DELTA_VERSION = '5.3.01';
 	const DELTA_UPDATE_CHANNEL = "v5";
+	const DELTA_BRAND = "RGVsdGFjbXM=";
 
 	public static $actions = [];
 	public static $coreModuleIds = [
@@ -202,11 +203,11 @@ class common {
 		'el' 	=> 'Ελληνική (el)',
 		'en'	=> 'English (en)',
 		'es'	=> 'Español (es)',
+		'fi'	=> 'Suomalainen (fi)',
 		'ga'	=> 'Gaeilge (ga)',
 		'it'	=> 'Italiano (it)',
 		'nl' 	=> 'Nederlands (nl)',
 		'pt'	=> 'Português (pt)',
-		'fi'	=> 'Suomalainen (fi)',
 		'sv'	=> 'Svenska (sv)',
 		'br'	=> 'Brezhoneg (br)',
 		'ca'	=> 'Català (ca)',
@@ -1066,7 +1067,7 @@ class common {
 		}
 		$source_image = false;
 		// Type d'image
-		switch(	$fileInfo['extension']) {
+		switch ($fileInfo['extension']) {
 			case 'jpeg':
 			case 'jpg':
 				$source_image = imagecreatefromjpeg($src);
@@ -1096,6 +1097,12 @@ class common {
 			$desired_height = floor($height * ($desired_width / $width));
 			/* create a new, "virtual" image */
 			$virtual_image = imagecreatetruecolor($desired_width, $desired_height);
+			// preserve transparency
+			if ($fileInfo['extension'] !== 'jpg' || $fileInfo['extension'] !== 'jpeg') {
+				imagecolortransparent($virtual_image, imagecolorallocatealpha($virtual_image, 0, 0, 0, 127));
+				imagealphablending($virtual_image, false);
+				imagesavealpha($virtual_image, true);
+				}
 			/* copy source image at a resized size */
 			imagecopyresampled($virtual_image, $source_image, 0, 0, 0, 0, $desired_width, $desired_height, $width, $height);
 			switch(mime_content_type($src) ) {
@@ -1629,10 +1636,10 @@ class common {
 				$sessionId = '';
 				for ($i = 0; $i < 26; $i++) {
 					$sessionId .= $characters[random_int(0, $charactersLength - 1)];
-				} 
+				}
 			} else {
 				$sessionId = session_id();
-			}	
+			}
 			$this->setData(['session', $sessionId, 'user_type', $user_type ]);
 			$this->setData(['session', $sessionId, 'time', time() ]);
 			// Tableau $groupWhoIs
@@ -1723,9 +1730,9 @@ class common {
 					$icon = 'fontello';
 					break;
 				case 'twitterId':
-					$socialUrl = 'https://twitter.com/';
-					$title = 'Twitter';
-					$icon =' src="./site/file/source/icones/twitter.svg" width="33px" height="33px" ';
+					$socialUrl = 'https://x.com/';
+					$title = 'X';
+					$icon =' src="./site/file/source/icones/twitter.svg" width="33" height="33" ';
 					break;
 				case 'youtubeId':
 					$socialUrl = 'https://www.youtube.com/channel/';
@@ -1740,7 +1747,7 @@ class common {
 				case 'mastodonId':
 					$socialUrl = '';
 					$title = 'Mastodon';
-					$icon =' src="./site/file/source/icones/mastodon.svg" width="33px" height="33px" ';
+					$icon =' src="./site/file/source/icones/mastodon.svg" width="33" height="33" ';
 					break;
 				default:
 					$socialUrl = '';
@@ -1807,39 +1814,40 @@ class common {
 				$burgerclassshort = 'navburgerconnected';
 			}
 		}
+		// Ajoute un id si le menu est toujours visible
+		if ( $this->getData(['theme', 'menu', 'fixed']) === true ){
+			if( $groupUser >= 2 && $this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD')) {
+				$fixed  = 'id="navfixedconnected" ';
+			} else {
+				$fixed  = 'id="navfixedlogout" ';
+			}
+		} else {
+			$fixed='';
+		}
 		switch ($position) {
 			case 'top':
-				// Détermine si le menu est fixe en haut de page lorsque l'utilisateur n'est pas connecté
-				if ( $this->getData(['theme', 'menu', 'position']) === 'top' AND $this->getData(['theme', 'menu', 'fixed']) === true ){
-					if( $groupUser >= 2 && $this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD')) {
-						echo '<nav id="navfixedconnected" '.$burgerclass.'>';
-					} else {
-						echo '<nav id="navfixedlogout" '.$burgerclass.'>';
-					}
-				} else {
-					echo '<nav '.$burgerclass.'>';
-				}
+				echo '<nav '.$fixed.$burgerclass.'>';
 				$menuClass = $this->getData(['theme', 'menu', 'wide']) === 'none' ? 'class="container-large"'  : 'class="container"';
 			break;
 			case 'body-first' :
 				// Limitation de la largeur du bandeau menu pour une bannière body et container
 				$navStyle = $this->getData(['theme', 'header', 'wide'])==='container'?  $navStyle = 'class="container '.$burgerclassshort.'"' : '';
-				echo '<nav '.$navStyle.'>';
+				echo '<nav '.$fixed.$navStyle.'>';
 				$menuClass = $this->getData(['theme', 'menu', 'wide']) === 'none' ? 'class="container-large"'  : 'class="container"';
 			break;
 			case 'body-second' :
 				$navStyle = $this->getData(['theme', 'header', 'wide'])==='container'?  $navStyle = 'class="container '.$burgerclassshort.'"' : '';
-				echo '<nav '.$navStyle.'>';
+				echo '<nav '.$fixed.$navStyle.'>';
 				$menuClass = $this->getData(['theme', 'menu', 'wide']) === 'none' ? 'class="container-large"'  : 'class="container"';
 			break;
 			case 'site-first' :
-				echo '<nav '.$burgerclass.'>';
+				echo '<nav '.$fixed.$burgerclass.'>';
 			break;
 			case 'site-second' :
-				echo '<nav '.$burgerclass.'>';
+				echo '<nav '.$fixed.$burgerclass.'>';
 			break;
 			case 'site' :
-				echo '<nav '.$burgerclass.'>';
+				echo '<nav '.$fixed.$burgerclass.'>';
 			break;
 			case 'hide' :
 				?> <nav <?php if($this->getData(['theme', 'menu', 'position']) === 'hide'): ?> class="displayNone" <?php endif; ?> > <?php
@@ -2180,19 +2188,20 @@ class common {
     * Affiche les balises title et meta name
     */
     public function showMetaTitle() {
-        echo '<title>' . $this->output['metaTitle'] . '</title>' . PHP_EOL;
-        echo '<meta name="description" content="' . $this->output['metaDescription'] . '">' . PHP_EOL;
-        echo '<link rel="canonical" href="'. helper::baseUrl(true).$this->getUrl() .'">' . PHP_EOL;
+	echo '<title>' . $this->output['metaTitle'] . '</title>'.'
+		<meta name="description" content="' . $this->output['metaDescription'] . '">'.'
+		<meta name="generator" content="'. base64_decode(common::DELTA_BRAND) .' '. common::DELTA_VERSION .'">'.'
+		<link rel="canonical" href="'. helper::baseUrl(true).$this->getUrl() .'">'.PHP_EOL;
     }
 
     /**
     * Affiche les balises meta property propres à Facebook
     */
     public function showMetaPropertyFacebook() {
-        echo '<meta property="og:title" content="' . $this->output['metaTitle'] . '">' . PHP_EOL;
-        echo '<meta property="og:description" content="' . $this->output['metaDescription'] . '">' . PHP_EOL;
-        echo '<meta property="og:type" content="website">' . PHP_EOL;
-        echo '<meta property="og:image" content="' . helper::baseUrl() .self::FILE_DIR.'source/screenshot.jpg">' . PHP_EOL;
+	echo '<meta property="og:title" content="' . $this->output['metaTitle'] . '">'.'
+		<meta property="og:description" content="' . $this->output['metaDescription'] . '">'.'
+		<meta property="og:type" content="website">'.'
+		<meta property="og:image" content="' . helper::baseUrl() .self::FILE_DIR.'source/screenshot.jpg">'.PHP_EOL;
     }
 
 	/**
@@ -2525,7 +2534,7 @@ class common {
 			if( !isset(  $_COOKIE["DELTA_COOKIE_INNERWIDTH"]) && !isset( $_SESSION["innerWidth"] ) ){
 				$protocol = helper::isHttps() === true ? 'https://' : 'http://';
 				$url = $protocol . $_SERVER[ 'HTTP_HOST' ];
-				?>	<script>window.location.replace(" <?php echo $url  ?>");</script> <?php
+				?>	<script>window.location.replace(" <?=$url?>");</script> <?php
 				$_SESSION["innerWidth"] = 'done';
 			}
 		}
@@ -2533,6 +2542,9 @@ class common {
 		if( $type === 'jshead' && isset($_SESSION['screenshot'] ) && $_SESSION['screenshot'] === 'on' ){
 			?> <script src="core/vendor/screenshot/html2canvas.min.js"></script> <?php
 		}
+		// Adaptation du menu aux terminaux mobiles
+		if( $type === 'jshead' ) { echo '<script> var terminalType = "'. $_SESSION['terminal'] .'" </script>'; }
+
 		switch ($type) {
 			case 'css' :
 				$vendorPath = self::$cssVendorPath;
@@ -3333,9 +3345,10 @@ class core extends common {
 				$moduleId = $this->getUrl(0);
 				$pageContent = '';
 			}
-			// Check l'existence du module
-			if(class_exists($moduleId)) {
-				/** @var common $module */
+			// Check l'existence du module de coeur ou de page
+			$listModules = array_keys(helper::getModules());
+			$listAllModules = array_merge($listModules, self::$coreModuleIds);
+			if( in_array( $moduleId, $listAllModules)) {
 				$module = new $moduleId;
 
 				// Check l'existence de l'action
@@ -3426,6 +3439,15 @@ class core extends common {
 									'style' => file_get_contents($stylePath)
 								]);
 							}
+							// CSS.PHP
+							$stylePath = $modulePath . 'module/' . $moduleId . '/view/' . $output['view'] . '/' . $output['view'] . '.css.php';
+							if(file_exists($stylePath)) {
+								ob_start();
+								include $stylePath;
+								$this->addOutput([
+									'style' => ob_get_clean()
+								]);
+							}
 							if ($output['style'] && is_file($output['style'])) {
 								$this->addOutput([
 									'style' => $this->output['style'] . file_get_contents($output['style'])
@@ -3493,6 +3515,8 @@ class core extends common {
 						$access = false;
 					}
 				}
+			} else {
+				$access = false;
 			}
 		}
 

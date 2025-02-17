@@ -145,7 +145,9 @@ echo template::formOpen('themeFooterForm');
 					<?php // drapeau pour la langue d'origine ou la langue en traduction rédigée
 					$flag = 'site';
 					if( $this->getInput('DELTA_I18N_SITE') === 'base') $flag = $this->getData(['config', 'i18n', 'langBase']); ?>
-                    <?php echo template::select('configLegalPageId', array_merge(['none' => $text['core_theme_view']['footer'][24]] , helper::arrayCollumn($module::$pagesList, 'title', 'SORT_ASC') ) , [
+                    <?php $list = helper::arrayCollumn($module::$pagesList, 'title');
+					ksort($list);
+					echo template::select('configLegalPageId', array_merge(['none' => $text['core_theme_view']['footer'][24]] , $list ) , [
                         'label' => $text['core_theme_view']['footer'][25] . template::flag($flag, '20px'),
                         'selected' => $this->getData(['locale', 'legalPageId'])
                     ]); ?>
@@ -159,7 +161,7 @@ echo template::formOpen('themeFooterForm');
                         ]); ?>
                 </div>
                 <div class="col3">
-                    <?php echo template::select('configSearchPageId', array_merge(['none' => $text['core_theme_view']['footer'][24]] , helper::arrayCollumn($module::$pagesList, 'title', 'SORT_ASC') ) , [
+                    <?php echo template::select('configSearchPageId', array_merge(['none' => $text['core_theme_view']['footer'][24]] , $list ) , [
                         'label' => $text['core_theme_view']['footer'][28] . template::flag($flag, '20px'),
                         'selected' => $this->getData(['locale', 'searchPageId']),
                         'help' => $text['core_theme_view']['footer'][29]
@@ -184,7 +186,8 @@ echo template::formOpen('themeFooterForm');
             <div class="blockTitle"><?php echo $text['core_theme_view']['footer'][30]; ?></div>
             <div class="row">
                 <div class="col3">
-                    <?php echo template::select('themeFooterFont', $module::$fonts, [
+                    <?php asort($module::$fonts);
+					echo template::select('themeFooterFont', $module::$fonts, [
 							'label' => $text['core_theme_view']['footer'][31],
 							'selected' => $this->getData(['theme', 'footer', 'font']),
 							'fonts' => true

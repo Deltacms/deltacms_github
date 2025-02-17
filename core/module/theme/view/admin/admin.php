@@ -135,7 +135,8 @@ echo template::formOpen('configAdminForm'); ?>
 					<div class="blockTitle"><?php echo $text['core_theme_view']['admin'][18]; ?></div>
 					<div class="row">
 						<div class="col4">
-							<?php echo template::select('adminFontText', $module::$fonts, [
+							<?php asort($module::$fonts); 
+							echo template::select('adminFontText', $module::$fonts, [
 								'label' => $text['core_theme_view']['admin'][19],
 								'selected' => $this->getData(['admin', 'fontText']),
 								'fonts' => true

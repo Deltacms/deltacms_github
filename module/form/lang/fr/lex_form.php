@@ -112,7 +112,7 @@ if( $param === 'form_view'){
 		$module::TYPE_SELECT => 'Sélection',
 		$module::TYPE_CHECKBOX => 'Case à cocher',
 		$module::TYPE_DATETIME => 'Date',
-		$module::TYPE_FILE => 'fichier'
+		$module::TYPE_FILE => 'Fichier'
 	];
 }
 ?>

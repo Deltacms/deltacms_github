@@ -1238,7 +1238,7 @@ class theme extends common {
 				$swiperContent .= '<div id="headerSwiper"><div class="swiper mySwiper"><div class="swiper-wrapper">';
 		}
 		foreach($imageFile as $value ) {
-			$swiperContent .= '<div class="swiper-slide"><img src="'.$value.'" ></div>';
+			$swiperContent .= '<div class="swiper-slide"><img src="'.$value.'" alt="" ></div>';
 		}
 		$swiperContent .= '</div></div></div>';
 		$swiperContent .= '<script> var swiperBanner = new Swiper(".mySwiper", { ';

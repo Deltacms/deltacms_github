@@ -111,7 +111,7 @@ if( $param === 'form_view'){
 		$module::TYPE_SELECT => 'Selección',
 		$module::TYPE_CHECKBOX => 'Casilla',
 		$module::TYPE_DATETIME => 'Fecha',
-		$module::TYPE_FILE => 'archivo'
+		$module::TYPE_FILE => 'Archivo'
 	];
 }
 ?>

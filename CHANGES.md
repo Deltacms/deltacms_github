@@ -1,5 +1,23 @@
 # Changelog
 
+## Version 5.3.01 de Deltacms
+- Modifications :
+	- Thème / Menu : l'option 'Menu toujours visible' (anciennement 'Menu fixe') est généralisée à l'ensemble des configurations,
+	- Modules Agenda 7.4, Blog 7.5, Form 6.4, Statislite 5.3, Slider 6.5 : conformité W3C,
+	- Edition / Tinymce : conformité W3C pour les balises autofermantes, video,
+	- Edition / Tinymce : un espace insécable est ajouté lors de l'insertion d'une image pour faciliter les saisies suivantes,
+	- Module User / Importation : dans le fichier csv 'password' peut maintenant être une chaîne vide,
+	- Module User / Login : amélioration du démasquage du mot de passe sur les appareils tactiles,
+	- Aide : le bouton d'aide constiuté d'un ? cerclé n'apparaît plus sur les terminaux mobiles.
+- Corrections :
+	- Module Search 3.8 : certains caractères dans le mot de recherche provoquaient un warning,
+	- Module Page : l'effacement d'une page sans module associé provoquait un warning,
+	- Module Album 5.1, Blog 7.5 : respect de la transparence des images.
+- Sur le site :
+	- Bonus / Modules / Geophoto 3.0 : respect de la transparence des images et conformité W3C,
+	- Bonus / Modules / Sondage 2.4, Guestbook 2.4, Snipcart 3.4 : conformité W3C,
+	- Bonus / Scripts : un diaporama Swiper avec texte et image éditables dans Tinymce.
+
 ## Version 5.2.02 de Deltacms
 - Modifications :
 	- Thème / Gestion : Amélioration de l'application du nouveau thème,
@@ -7,6 +25,7 @@
 	- Blog 7.4 : la taille de l'aperçu en nombre de caractères est paramétrable,
 	- Filemanager : l'aperçu des fichiers utilise des viewers ©Deltacms, les vignettes respectent le ratio des images, un code tricolor: vert, orange, rouge, renseigne l'utilisateur sur le poids des images, celles en rouge n'étant pas compatibles avec un site Internet
 	- Configuration / mise à jour ou réinitialisation : amélioration de la procédure avec timeout et message d'erreur.
+	- Configuration des utilisateurs : modification du format du fichier CSV pour l'import d'utilisateurs et nouvelle fonction 'Export CSV'.
 - Corrections :
 	- Page / Duplication : corrigée pour les pages contenant un module news ou agenda,
 	- Membre / affichage des documents personnels : le format avif est pris en compte,

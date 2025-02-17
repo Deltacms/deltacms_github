@@ -32,7 +32,7 @@ class statislite extends common {
 		'conversionTime' => self::GROUP_VISITOR
 	];
 	
-	const VERSION = '5.2';	
+	const VERSION = '5.3';	
 	const REALNAME = 'Statislite';
 	const DELETE = true;
 	const UPDATE = '2.6';
@@ -122,6 +122,10 @@ class statislite extends common {
 		if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '5.2', '<') ) {	
 			copy('./module/statislite/ressource/tmp/.htaccess', self::DATA_DIR.self::$i18n.'/data_module/statislite/tmp/.htaccess');
 			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','5.2']);
+		}
+		// Version 5.3
+		if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '5.3', '<') ) {	
+			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','5.3']);
 		}
 	}
 	

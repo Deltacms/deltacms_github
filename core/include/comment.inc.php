@@ -6,9 +6,10 @@ if( isset( $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] ) && $_COOKIE['DELTA_COOKIE_INVE
 } else {
 	$borderColor = $this->getData(['theme', 'block', 'borderColor']);
 } ?>
-<style>.msgs .block .dataNameDate {  --dataNameDate_font : <?=$this->getData(['theme', 'text', 'font'])?>; }
-#commentPageFormForm .formOuter{ --borderColor : <?=$borderColor?>;}</style>
-
+<script>
+$(':root').css('--borderColor', '<?= $borderColor; ?>');
+$(':root').css('--dataNameDate_font', '<?= $this->getData(['theme', 'text', 'font']); ?>');
+</script>
 <?php
 // Lexique
 include('./core/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_core.php');
@@ -259,11 +260,11 @@ echo '<script> var lang_admin = "'.$lang_page.'"; </script>';
 		]); ?>
 	</div>
 </div>
-<div id="formCommentVisible" style="display: none;">
 <?php // Formulaire
 $action =  helper::baseUrl().$this->getUrl().'#commentAnchor';
 echo template::formOpenFile('commentPageFormForm', $action);
 ?>
+<div id="formCommentVisible" style="display: none;">
 	<div class="humanBot">
 		<?php 
 		$valueName = "";
@@ -344,7 +345,7 @@ if($pagesComment && $nbPage > 1){ ?>
 		<div class="textAlignCenter" style="margin-top: 20px;">
 			<?php echo template::submit('commentPageFormPrev', [
 				'class' => 'commentPageButtonPrevNext',
-				'value' => '<',
+				'value' => '&lt;',
 				'disabled' => $disabledPrev,
 				'ico' =>''
 			]); ?>

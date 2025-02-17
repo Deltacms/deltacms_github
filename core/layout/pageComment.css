@@ -2,6 +2,10 @@
  * This file is part of DeltaCMS.
  */
 
+:root {
+	--borderColor: yellow;
+	--dataNameDate_font: red;
+}
 
 #formFileReset {
 	background-color: red;

@@ -32,10 +32,10 @@ if($module::$galleries){
 				$endLink = '</a>';
 			}
 			if ($legend != ''){
-				echo  '<li>'.$link.'<img src="'.helper::baseUrl(false) . $picture.'" alt=""><span>'.$legend.'</span></li>'.$endLink;
+				echo  '<li>'.$link.'<img src="'.helper::baseUrl(false) . $picture.'" alt=""><span>'.$legend.'</span>'.$endLink.'</li>';
 			}
 			else{
-				echo  '<li>'.$link.'<img src="'.helper::baseUrl(false) . $picture.'" alt=""></li>'.$endLink;
+				echo  '<li>'.$link.'<img src="'.helper::baseUrl(false) . $picture.'" alt="">'.$endLink.'</li>';
 			}
 		endforeach;
 		echo '</ul></div><p>&nbsp;</p></div>';	

@@ -1,4 +1,3 @@
-<link rel="stylesheet" href="./module/statislite/view/index/index.css">
 <?php
 // Lexique
 include('./module/statislite/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_statislite.php');
@@ -62,7 +61,7 @@ if( function_exists('datefmt_create') && function_exists('datefmt_format') && ex
 		<div class="col4"><h3>
 			<?php echo $text['statislite_view']['index'][3].$module::$dureevisitemoyenne;?></h3>
 		</div>
-	</div><br/><br/>
+	</div><br><br>
 	<?php
 	if($nbaffipagesvues != 0){
 		// Affichage des pages vues et de leur nombre de clics en prenant en compte cumul.json et sessionLog.json
@@ -78,7 +77,7 @@ if( function_exists('datefmt_create') && function_exists('datefmt_format') && ex
 				?>
 				</ul>
 			</div>
-		</div><br/><br/>
+		</div><br><br>
 	<?php }
 
 	// Affichage des langages préférés en prenant en compte cumul.json et sessionLog.json
@@ -95,7 +94,7 @@ if( function_exists('datefmt_create') && function_exists('datefmt_format') && ex
 				?>
 				</ul>
 			</div>
-		</div><br/><br/>
+		</div><br><br>
 	<?php }
 
 	// Affichage des navigateurs en prenant en compte cumul.json et sessionLog.json
@@ -112,7 +111,7 @@ if( function_exists('datefmt_create') && function_exists('datefmt_format') && ex
 				?>
 				</ul>
 			</div>
-		</div><br/><br/>
+		</div><br><br>
 	<?php }
 
 	// Affichage des systèmes d'exploitation en prenant en compte cumul.json et sessionLog.json
@@ -129,13 +128,13 @@ if( function_exists('datefmt_create') && function_exists('datefmt_format') && ex
 				?>
 				</ul>
 			</div>
-		</div><br/><br/>
+		</div><br><br>
 	<?php }
 
 	// Affichage des robots et des sessions invalides
 	$json = file_get_contents($module::$fichiers_json.'cumul.json');
 	$cumul = json_decode($json, true);?>
-	<br/>
+	<br>
 	<div class="row">
 		<div class="col4">
 			<h3><?php echo $text['statislite_view']['index'][8].$cumul['robots']['ua']; ?></h3>
@@ -254,38 +253,38 @@ if( isset($tableau[0]['vues'][0])){
 			}
 			$pagesvues .= substr($tableau[$num]['vues'][$nbpageparsession - 1], 22 , strlen($tableau[$num]['vues'][$nbpageparsession - 1]));
 			// Affichages
-			echo '<strong>'.$text['statislite_view']['index'][16].substr($tableau[$num]['vues'][0], 0 , 19).'</strong><br/>';
+			echo '<strong>'.$text['statislite_view']['index'][16].substr($tableau[$num]['vues'][0], 0 , 19).'</strong><br>';
 			if($geolocalisation){
-				echo ' >><em>'.$text['statislite_view']['index'][17].$tableau[$num]['geolocalisation'].'</em><br/>';
+				echo ' >><em>'.$text['statislite_view']['index'][17].$tableau[$num]['geolocalisation'].'</em><br>';
 			}
-			echo ' - User Agent : '.$tableau[$num]['userAgent'].'<br/>';
-			echo ' >><em>'.$text['statislite_view']['index'][18].$tableau[$num]['client'][2].'</em><br/>';
-			echo ' >><em>'.$text['statislite_view']['index'][19].$tableau[$num]['client'][1].'</em><br/>';
-			echo ' - Accept Language : '.$tableau[$num]['langage'].'<br/>';
-			echo ' >><em>'.$text['statislite_view']['index'][20].$tableau[$num]['client'][0].'</em><br/>';
-			echo ' - Referer : '.$tableau[$num]['referer'].'<br/>';
-			echo '<em>'.$text['statislite_view']['index'][21].$nbpageparsession.'</em><br/>';
+			echo ' - User Agent : '.$tableau[$num]['userAgent'].'<br>';
+			echo ' >><em>'.$text['statislite_view']['index'][18].$tableau[$num]['client'][2].'</em><br>';
+			echo ' >><em>'.$text['statislite_view']['index'][19].$tableau[$num]['client'][1].'</em><br>';
+			echo ' - Accept Language : '.$tableau[$num]['langage'].'<br>';
+			echo ' >><em>'.$text['statislite_view']['index'][20].$tableau[$num]['client'][0].'</em><br>';
+			echo ' - Referer : '.$tableau[$num]['referer'].'<br>';
+			echo '<em>'.$text['statislite_view']['index'][21].$nbpageparsession.'</em><br>';
 			if($nbpageparsession >= 1){
-				echo $text['statislite_view']['index'][22].$pagesvues.'<br/>';
+				echo $text['statislite_view']['index'][22].$pagesvues.'<br>';
 			}
 			else{
-				echo $text['statislite_view']['index'][23].$pagesvues.'<br/>';
+				echo $text['statislite_view']['index'][23].$pagesvues.'<br>';
 			}
 			$dureevisite = $module::conversionTime($dureevisite);
 			if($dureevisite != '0 s'){
-				echo '<em>'.$text['statislite_view']['index'][24]. $dureevisite.'</em><br/>'.'<br/>';
+				echo '<em>'.$text['statislite_view']['index'][24]. $dureevisite.'</em><br>'.'<br>';
 			}
 			else{
-				echo $text['statislite_view']['index'][25].'<br/>'.'<br/>';
+				echo $text['statislite_view']['index'][25].'<br>'.'<br>';
 			}
 			$comptevisites++;
 			$comptepages = $comptepages + $nbpageparsession;
 		}
 
 		// Affichage du bilan pour la période en cours
-		echo '<strong>'.$text['statislite_view']['index'][26].$datedebut.'</strong><br/>'.'<br/>';
-		echo $text['statislite_view']['index'][27].$comptepages.'<br/>';
-		echo $text['statislite_view']['index'][28].$comptevisites.'<br/>'.'<br/>';
+		echo '<strong>'.$text['statislite_view']['index'][26].$datedebut.'</strong><br>'.'<br>';
+		echo $text['statislite_view']['index'][27].$comptepages.'<br>';
+		echo $text['statislite_view']['index'][28].$comptevisites.'<br>'.'<br>';
 	}
 ?>
 </div>

@@ -6,7 +6,7 @@
                 "feedsLabel": "Syndication RSS",
                 "itemsperPage": 6,
 				"previewSize" : 400,
-                "versionData": "7.4"
+                "versionData": "7.5"
             },
             "texts": {
                 "NoComment": "No comment yet",
@@ -48,7 +48,7 @@
                 "logoUrl": "",
                 "logoWidth": "40",
                 "maxSizeUpload": "500000",
-                "versionData": "6.3",
+                "versionData": "6.4",
                 "uploadJpg": true,
                 "uploadPng": true,
                 "uploadPdf": false,
@@ -91,7 +91,7 @@
                     "values": ""
                 },
                 {
-                    "name": "Attached file (file jpg, png < 500Ko)",
+                    "name": "Attached file (jpg, png max 500Ko)",
                     "position": 4,
                     "required": false,
                     "type": "file",
@@ -170,7 +170,7 @@
                 "order": []
             },
 			"config": {
-				"versionData": "5.0",
+				"versionData": "5.1",
 				"texts": {
 					"backButton": "Return",
 					"geolocation": "Geolocalisation",

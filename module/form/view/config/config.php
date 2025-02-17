@@ -28,7 +28,8 @@ else{
 				]); ?>
 			</div>
 			<div class="col4">
-				<?php echo template::select('formConfigType[]', $types, [
+				<?php asort($types);
+				echo template::select('formConfigType[]', $types, [
 					'class' => 'formConfigType'
 				]); ?>
 			</div>

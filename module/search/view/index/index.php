@@ -22,8 +22,9 @@ include('./module/search/lang/'. $this->getData(['config', 'i18n', 'langAdmin'])
             <div class="row">
                 <div class="col12">
                     <?php echo template::checkbox('searchMotentier', true, $this->getData(['module', $this->getUrl(0), 'config', 'nearWordText']), [
-                        'checked' => $module::$motentier,
-                    ]); ?>
+                        'checked' => $module::$motentier
+                    ]); 
+					?>
                 </div>
             </div>
 		</div>

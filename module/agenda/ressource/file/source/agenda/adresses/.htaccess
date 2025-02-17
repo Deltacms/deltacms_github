@@ -1,7 +1,4 @@
 # Bloque l'accès aux données
-<Files "*.txt">
-	Require all denied
-</Files>
-<Files "*.csv">
+<Files ~ "\.(txt|csv)$">
 	Require all denied
 </Files>

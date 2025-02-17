@@ -18,7 +18,7 @@
 
 class news extends common {
 
-	const VERSION = '5.3';
+	const VERSION = '5.4';
 	const REALNAME = 'News';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -709,9 +709,9 @@ class news extends common {
 				// Mettre à jour la version
 				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '5.2' ]);	
 			}
-			// Mise à jour 5.3
-			if (version_compare($versionData, '5.3', '<') ) {
-				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '5.3' ]);	
+			// Mise à jour 5.4
+			if (version_compare($versionData, '5.4', '<') ) {
+				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '5.4' ]);	
 			}
 		}
 	}

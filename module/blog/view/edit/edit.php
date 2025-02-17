@@ -92,7 +92,8 @@ $lang_flatpickr = $text['blog_view']['edit'][25];
 				<div class="blockTitle"><?php echo $text['blog_view']['edit'][11]; ?></div>
 				<div class="row">
 					<div class="col4 <?php if($this->getUser('group') < self::GROUP_MODERATOR) echo 'displayNone'; ?> ">
-						<?php echo template::select('blogEditUserId', $module::$users, [
+						<?php asort($module::$users);
+						echo template::select('blogEditUserId', $module::$users, [
 							'label' => $text['blog_view']['edit'][12],
 							'selected' => $this->getUser('id')
 						]); ?>

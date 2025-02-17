@@ -111,7 +111,7 @@ if( $param === 'form_view'){
 		$module::TYPE_SELECT => 'Selection',
 		$module::TYPE_CHECKBOX => 'Check box',
 		$module::TYPE_DATETIME => 'Date',
-		$module::TYPE_FILE => 'file'
+		$module::TYPE_FILE => 'File'
 	];
 }
 ?>

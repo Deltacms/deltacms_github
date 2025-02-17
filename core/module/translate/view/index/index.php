@@ -50,7 +50,8 @@ include('./core/module/translate/lang/'. $this->getData(['config', 'i18n', 'lang
 							$select = $this->getData(['config', 'i18n' , 'langBase']);
 							if( !isset ($i18nList[$select]) ) $select = 'none';
 						?>
-						<?php echo template::select('translateLangBase', $i18nList, [
+						<?php asort(self::$i18nList);
+						echo template::select('translateLangBase', self::$i18nList, [
 							'label' => $text['core_translate_view']['index'][5],
 							'selected' => $select
 						]); ?>

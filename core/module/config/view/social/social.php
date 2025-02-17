@@ -178,7 +178,7 @@ include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdm
 					<div class="col3">
 							<?php echo template::text('socialTwitterId', [
 								'help' => $text['core_config_view']['social'][12],
-								'label' => 'Twitter',
+								'label' => 'X',
 							'value' => $this->getData(['config', 'social', 'twitterId'])
 						]); ?>
 					</div>
