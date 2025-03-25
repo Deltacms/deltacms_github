@@ -32,7 +32,7 @@ echo template::formOpen('themeBodyForm'); ?>
 		<div class="block">
 			<div class="blockTitle"><?php echo $text['core_theme_view']['body'][3]; ?></div>
 			<div class="row">
-				<div class="col6">
+				<div class="col6 offset3">
 					<?php echo template::text('themeBodyBackgroundColor', [
 						'class' => 'colorPicker',
 						'help' => $text['core_theme_view']['body'][4],
@@ -41,24 +41,7 @@ echo template::formOpen('themeBodyForm'); ?>
 					]); ?>
 				</div>
 			</div>
-			<div class="row">
-				<div class="col6">
-					<?php echo template::text('themeBodyToTopBackground', [
-						'class' => 'colorPicker',
-						'help' => $text['core_theme_view']['body'][6],
-						'label' => $text['core_theme_view']['body'][7],
-						'value' => $this->getData(['theme', 'body', 'toTopbackgroundColor'])
-					]); ?>
-				</div>
-				<div class="col6">
-					<?php echo template::text('themeBodyToTopColor', [
-						'class' => 'colorPicker',
-						'help' => $text['core_theme_view']['body'][6],
-						'label' => $text['core_theme_view']['body'][8],
-						'value' => $this->getData(['theme', 'body', 'toTopColor'])
-					]); ?>
-				</div>
-			</div>
+<!-- déplacement scroll -->
 		</div>
 	</div>
 </div>
@@ -67,7 +50,7 @@ echo template::formOpen('themeBodyForm'); ?>
 		<div class="block">
 			<div class="blockTitle"><?php echo $text['core_theme_view']['body'][9]; ?></div>
 			<div class="row">
-				<div class="col12">
+				<div class="col6 offset3">
 					<?php
 					$imageFile = file_exists(self::FILE_DIR.'source/'.$this->getData(['theme', 'body', 'image'])) ? $this->getData(['theme', 'body', 'image']) : "";
 					echo template::file('themeBodyImage', [

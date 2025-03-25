@@ -455,6 +455,7 @@ class config extends common {
 						'captchaSimpleText' => $this->getInput('localeCaptchaSimpleText', helper::FILTER_STRING_LONG),
 						'captchaSimpleHelp' => $this->getInput('localeCaptchaSimpleHelp', helper::FILTER_STRING_LONG),
 						'questionnaireAccept' => $this->getInput('localeQuestionnaireAccept', helper::FILTER_STRING_LONG),
+						'captchaAddition' => $this->getInput('localeCaptchaAddition', helper::FILTER_STRING_LONG),
 						'cookies' => [
 							// Les champs sont obligatoires si l'option consentement des cookies est active
 							'cookiesDeltaText'	=> $this->getInput('localeCookiesDeltaText', helper::FILTER_STRING_LONG, $this->getData(['config', 'cookieConsent'])),
@@ -546,7 +547,8 @@ class config extends common {
 							'captcha' => $this->getInput('connectCaptcha',helper::FILTER_BOOLEAN),
 							'captchaBot' => $this->getInput('connectCaptchaBot',helper::FILTER_BOOLEAN),
 							'autoDisconnect' => $this->getInput('connectAutoDisconnect',helper::FILTER_BOOLEAN),
-							'passwordVisibility' => $this->getInput('connectPasswordVisibility',helper::FILTER_BOOLEAN)
+							'passwordVisibility' => $this->getInput('connectPasswordVisibility',helper::FILTER_BOOLEAN),
+							'trust' => $this->getInput('connectTrust',helper::FILTER_BOOLEAN),
 						],
 						'i18n' => [
 							'enable' 			=> $this->getInput('localei18n',helper::FILTER_BOOLEAN),

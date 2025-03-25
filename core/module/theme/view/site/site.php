@@ -33,23 +33,30 @@ echo template::formOpen('themeSiteForm'); ?>
 			<div class="block">
 				<div class="blockTitle"><?php echo $text['core_theme_view']['site'][3]; ?></div>
 				<div class="row">
-					<div class="col4">
+					<div class="col3">
 						<?php echo template::select('themeSiteWidth', $siteWidths, [
 							'label' => $text['core_theme_view']['site'][4],
 							'help' => $text['core_theme_view']['site'][32],
 							'selected' => $this->getData(['theme', 'site', 'width'])
 						]); ?>
 					</div>
-					<div class="col4">
+					<div class="col3">
 						<?php echo template::select('themeSiteRadius', $radius, [
 							'label' => $text['core_theme_view']['site'][5],
 							'selected' => $this->getData(['theme', 'site', 'radius'])
 						]); ?>
 					</div>
-					<div class="col4">
+					<div class="col3">
 						<?php echo template::select('themeSiteShadow', $shadows, [
 							'label' => $text['core_theme_view']['site'][6],
 							'selected' => $this->getData(['theme', 'site', 'shadow'])
+						]); ?>
+					</div>
+					<div class="col3">
+						<?php echo template::select('themeSiteScrollSpeed', $scrollspeeds, [
+							'label' => $text['core_theme_view']['site'][33],
+							'help' => $text['core_theme_view']['site'][34],
+							'selected' => $this->getData(['theme', 'site', 'scrollspeed'])
 						]); ?>
 					</div>
 				</div>
@@ -175,7 +182,7 @@ echo template::formOpen('themeSiteForm'); ?>
                             <div class="row">
                                 <div class="col12">
                                     <div class="block preview">
-                                        <div class="blockTitle preview"><?php echo $text['core_theme_view']['site'][24]; ?></div>										
+                                        <div class="blockTitle preview"><?php echo $text['core_theme_view']['site'][24]; ?></div>
 										<p class="textPreview">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
 										<p><a href="#" class="urlPreview">Lorem ipsum dolor sit amet.</a></p>
 									</div>
@@ -187,6 +194,33 @@ echo template::formOpen('themeSiteForm'); ?>
 			</div>
 		</div>
 	</div>
+<!-- déplacement scroll -->
+	<div class="row">
+		<div class="col12">
+			<div class="block">
+				<div class="blockTitle"><?php echo $text['core_theme_view']['body'][3]; ?></div>
+				<div class="row">
+					<div class="col6">
+						<?php echo template::text('themeSiteScrollUaDBackground', [
+							'class' => 'colorPicker',
+							'help' => $text['core_theme_view']['body'][6],
+							'label' => $text['core_theme_view']['body'][7],
+							'value' => $this->getData(['theme', 'site', 'ScrollUaDbackgroundColor'])
+						]); ?>
+					</div>
+					<div class="col6">
+						<?php echo template::text('themeSiteScrollUaDColor', [
+							'class' => 'colorPicker',
+							'help' => $text['core_theme_view']['body'][6],
+							'label' => $text['core_theme_view']['body'][8],
+							'value' => $this->getData(['theme', 'site', 'scrollUaDColor'])
+						]); ?>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<!-- /déplacement scroll -->
 	<div class="row">
 		<div class="col6">
 			<div class="block">

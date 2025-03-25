@@ -106,23 +106,24 @@ class install extends common {
 					helper::deleteCookie('DELTA_I18N_SITE');
 					helper::deleteCookie('DELTA_I18N_SCRIPT');
 					
-					// Installation du site de test en français, le site light est installé par défaut
+					// Installation du site de test en français, le site light est installé par défaut pour la langue de rédaction fr
+					$langSource = ( $langBase === 'en' || $langBase === 'es' || $langBase === 'fr') ? $langBase : $langAdmin;
 					if( $langAdmin === 'fr'){
 						if ($this->getInput('installDefaultData',helper::FILTER_BOOLEAN) === FALSE) {
-							//$this->initData('page','base',true);
-							//$this->initData('module','base',true);
-							$this->copyDir( './core/module/install/ressource/database_fr/base/', './site/data/base/');
-						} 
+								$this->copyDir( './core/module/install/ressource/database_'.$langSource.'/base/', './site/data/base/');
+						} else {
+							if( $langBase === 'en' || $langBase === 'es') $this->copyDir( './core/module/install/ressource/databaselight_'.$langBase.'/base/', './site/data/base/');
+						}
 					}
 					
 					// Installation du site de test dans une langue d'administration différente du français
 					if( $langAdmin !== 'fr'){
 						if ($this->getInput('installDefaultData',helper::FILTER_BOOLEAN) === FALSE) {
-							$this->copyDir( './core/module/install/ressource/database_'.$langAdmin.'/base/', './site/data/base/');
-							$this->copyDir( './core/module/install/ressource/database_'.$langAdmin.'/search/', './site/data/search/');
+							$this->copyDir( './core/module/install/ressource/database_'.$langSource.'/base/', './site/data/base/');
+							if($langBase !== 'fr') $this->copyDir( './core/module/install/ressource/database_'.$langSource.'/search/', './site/data/search/');
 						}
 						else{
-							$this->copyDir( './core/module/install/ressource/databaselight_'.$langAdmin.'/base/', './site/data/base/');
+							if($langBase !== 'fr') $this->copyDir( './core/module/install/ressource/databaselight_'.$langSource.'/base/', './site/data/base/');							
 						}
 					}
 					
@@ -174,12 +175,33 @@ class install extends common {
 					unlink(self::FILE_DIR . 'source/theme/themes.json');
 					
 					// Modification des textes 'Pied de page personnalisé', 'Bannière vide' et du lien vers la page d'accueil situé dans theme.json ( $this->setData pose problème)
-					if( $langAdmin !== 'fr'){
+					if($langAdmin !== 'fr' || $langBase === 'en' || $langBase === 'es' || $langBase === 'fr'){
+						switch ($langBase){
+							case 'en':
+								$texte1 = 'Custom footer';
+								$texte2 = 'Banner empty';
+								$texte3 = 'home';
+								break;
+							case 'es':
+								$texte1 = 'Pie de página personalizado';
+								$texte2 = 'Banner vacío';
+								$texte3 = 'inicio';
+								break;
+							case 'fr':
+								$texte1 = 'Pied de page personnalisé';
+								$texte2 = 'Bannière vide';
+								$texte3 = 'accueil';
+								break;
+							default:
+								$texte1 = $text['core_install']['index'][7];
+								$texte2 = $text['core_install']['index'][8];
+								$texte3 = $text['core_install']['index'][9];
+						}
 						$theme = file_get_contents( self::DATA_DIR.'theme.json');
 						$theme = json_decode( $theme, true);
-						$theme['theme']['footer']['text'] = $text['core_install']['index'][7];
-						$theme['theme']['header']['featureContent'] = $text['core_install']['index'][8];
-						$theme['theme']['menu']['burgerIconLink1'] = $text['core_install']['index'][9];
+						$theme['theme']['footer']['text'] = $texte1;
+						$theme['theme']['header']['featureContent'] = $texte2;
+						$theme['theme']['menu']['burgerIconLink1'] = $texte3;
 						$json = json_encode($theme);
 						file_put_contents(self::DATA_DIR.'theme.json',$json);
 					}

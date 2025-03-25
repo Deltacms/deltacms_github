@@ -50,6 +50,8 @@ $text['blog_view']['config'][14] = "Êtes-vous sûr de vouloir supprimer cet art
 $text['blog_view']['config'][15] = 'Aide';
 $text['blog_view']['config'][16] = 'module/blog/view/config/config.help.html';
 $text['blog_view']['config'][17] = "Taille de l'aperçu en nombre de caractères";
+$text['blog_view']['config'][18] = 'Bordure et ombre des blocs';
+$text['blog_view']['config'][19] = 'Applique sur les images de couverture la bordure et l\'ombre réglées pour les blocs du site';
 $text['blog_view']['edit'][0] = 'Retour';
 $text['blog_view']['edit'][1] = 'Enregistrer en brouillon';
 $text['blog_view']['edit'][2] = 'Publier';
@@ -197,7 +199,7 @@ $groupNews = [
 	self::GROUP_EDITOR => 'Éditeur',
 	self::GROUP_MODERATOR => 'Modérateur',
 	self::GROUP_ADMIN => 'Administrateur'
-];		
+];
 if( $param === 'blog_view' ) {
 	$articleConsent = [
 		$module::EDIT_ALL 		   => 'Tous les groupes',

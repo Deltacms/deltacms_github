@@ -3,20 +3,13 @@
  */
 
 /**
- * Affichage de l'icone de remontée et permettre l'aperçu.
- */
-$(document).ready(function(){
-	$("#backToTop").css("display","show");
-});
-
-/**
  * Aperçu en direct
  */
 $("input, select").on("change", function() {
 
 	// Option fixe pour contain et cover
 	var themeBodyImageSize = $("#themeBodyImageSize").val();
-	
+
 	if(themeBodyImageSize === "cover" ||
 	   themeBodyImageSize === "contain" ) {
 		$("#themeBodyImageAttachment").val("fixed");
@@ -33,7 +26,6 @@ $("input, select").on("change", function() {
 	else {
 		css += "html{background-image:none}";
 	}
-	css += '#backToTop {background-color:'  + $("#themeBodyToTopBackground").val() + ';color:' + $("#themeBodyToTopColor").val() + ';}';	
 
 	// Ajout du css au DOM
 	$("#themePreview").remove();
@@ -52,7 +44,6 @@ $("#themeBodyImage").on("change", function() {
 		$("#themeBodyImageOptions").slideUp();
 	}
 }).trigger("change");
-
 
 /* Décalage de la bannière ou de la section particulier à cette page
 * petit écran et menu burger fixe et non caché
@@ -79,6 +70,6 @@ if($(window).width() < 800) {
 	}
 	if( positionNav !=='hide' && burgerFixed === true && ( burgerOverlay === true && tinyHidden === true || positionHeader === 'hide' )){
 		// Bannière masquée ou cachée décaler la section
-		$("section").css("padding-top",bannerMenuHeightSection); 
+		$("section").css("padding-top",bannerMenuHeightSection);
 	}
 }

@@ -42,6 +42,8 @@ $text['form_view']['config'][40] = 'module/form/view/config/config.help_en.html'
 $text['form_view']['config'][41] = 'Marque la casilla de aceptación de las condiciones de uso de datos personales';
 $text['form_view']['config'][42] = 'Si su cuestionario se refiere a datos personales, el RGPD en ciertos países requiere la aceptación de sus condiciones de uso por parte del participante. También debe explicar por qué está utilizando estos datos. El texto asociado debe actualizarse en la configuración de ubicación.';
 $text['form_view']['config'][43] = 'Textos';
+$text['form_view']['config'][44] = 'Índice de confianza mínimo';
+$text['form_view']['config'][45] = 'Índice de confianza mínimo para enviar el formulario. Para que esta limitación esté activa debes validar la opción Configurar el Sitio / Conexión Seguridad';
 $text['form_view']['data'][0] = 'Atrás';
 $text['form_view']['data'][1] = 'Borrar todo';
 $text['form_view']['data'][2] = 'Exportar CSV';
@@ -87,6 +89,7 @@ $text['form']['init'][8] = 'Error al cargar el archivo';
 $text['form']['init'][10] = 'El adjunto no es un documento pdf';
 $text['form']['init'][11] = 'El archivo adjunto no es un documento zip';
 $text['form']['init'][12] = ' Complete el Captcha ';
+$text['form']['init'][13] = 'No estás autorizado para enviar un correo electrónico';
 // Initialisation de flatpickr
 $lang_flatpickr = 'es';
 // Langue d'administration pour tinymce
@@ -112,6 +115,15 @@ if( $param === 'form_view'){
 		$module::TYPE_CHECKBOX => 'Casilla',
 		$module::TYPE_DATETIME => 'Fecha',
 		$module::TYPE_FILE => 'Archivo'
+	];
+	$trust_limit = [
+		0 => 'Sin mínimo',
+		20 => '20',
+		40 => '40',
+		60 => '60',
+		80 => '80',
+		90 => '90',
+		100 => '100'
 	];
 }
 ?>

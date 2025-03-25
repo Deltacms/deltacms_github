@@ -32,7 +32,7 @@ class statislite extends common {
 		'conversionTime' => self::GROUP_VISITOR
 	];
 	
-	const VERSION = '5.3';	
+	const VERSION = '5.4';	
 	const REALNAME = 'Statislite';
 	const DELETE = true;
 	const UPDATE = '2.6';
@@ -60,10 +60,10 @@ class statislite extends common {
 	public static $scoremaxse = 0;
 	public static $chronoaffi = [];
 	public static $affidetaille = [];
-	// Initialisation des 3 dossiers json déclarés dans index.php car incluant self::$i18n
-	public static $fichiers_json = '';
-	public static $json_sauve = '';
-	public static $tmp = '';
+	// Initialisation des 3 dossiers json
+	public static $fichiers_json = self::DATA_DIR.'base/data_module/statislite/json/';
+	public static $json_sauve = self::DATA_DIR.'base/data_module/statislite/json_sauve/';
+	public static $tmp = self::DATA_DIR.'base/data_module/statislite/tmp/';
 	public static $base = self::DATAMODULE.'/';
 	public static $downloadLink = self::DATAMODULE.'/download_counter/';
 	public static $filtres_primaires = self::DATAMODULE.'/filtres_primaires/';
@@ -120,12 +120,12 @@ class statislite extends common {
 		}
 		// Version 5.2
 		if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '5.2', '<') ) {	
-			copy('./module/statislite/ressource/tmp/.htaccess', self::DATA_DIR.self::$i18n.'/data_module/statislite/tmp/.htaccess');
+			copy('./module/statislite/ressource/tmp/.htaccess', self::DATA_DIR.'base/data_module/statislite/tmp/.htaccess');
 			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','5.2']);
 		}
-		// Version 5.3
-		if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '5.3', '<') ) {	
-			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','5.3']);
+		// Version 5.4
+		if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '5.4', '<') ) {	
+			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','5.4']);
 		}
 	}
 	
@@ -143,11 +143,7 @@ class statislite extends common {
 			]);	
 		} else {
 			// Lexique
-			include('./module/statislite/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_statislite.php');
-			// Initialisations des dossiers des json
-			self::$fichiers_json = self::DATA_DIR.self::$i18n.'/data_module/statislite/json/';
-			self::$tmp = self::DATA_DIR.self::$i18n.'/data_module/statislite/tmp/';
-			self::$json_sauve = self::DATA_DIR.self::$i18n.'/data_module/statislite/json_sauve/';	
+			include('./module/statislite/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_statislite.php');	
 			// Détection d'un changement de nom de la page statistique pour mettre à jour listeQS
 			if( is_file( self::$fichiers_json.'filtre_primaire.json')){
 				$json = file_get_contents(self::$fichiers_json.'filtre_primaire.json');
@@ -286,10 +282,6 @@ class statislite extends common {
 		} else {
 			// Lexique
 			include('./module/statislite/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_statislite.php');
-			// Initialisations des dossiers des json
-			self::$fichiers_json = self::DATA_DIR.self::$i18n.'/data_module/statislite/json/';
-			self::$tmp = self::DATA_DIR.self::$i18n.'/data_module/statislite/tmp/';
-			self::$json_sauve = self::DATA_DIR.self::$i18n.'/data_module/statislite/json_sauve/';
 			// Liste des pages du site
 			$i=0;
 			foreach($this->getData(['page']) as $key=>$page){
@@ -457,10 +449,6 @@ class statislite extends common {
 		} else {
 			// Lexique
 			include('./module/statislite/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_statislite.php');
-			// Initialisations des dossiers des json
-			self::$fichiers_json = self::DATA_DIR.self::$i18n.'/data_module/statislite/json/';
-			self::$tmp = self::DATA_DIR.self::$i18n.'/data_module/statislite/tmp/';
-			self::$json_sauve = self::DATA_DIR.self::$i18n.'/data_module/statislite/json_sauve/';
 			// Jeton incorrect
 			if ($this->getUrl(2) !== $_SESSION['csrf']) {
 				// Valeurs en sortie
@@ -505,10 +493,6 @@ class statislite extends common {
 		} else {
 			// Lexique
 			include('./module/statislite/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_statislite.php');
-			// Initialisations des dossiers des json
-			self::$fichiers_json = self::DATA_DIR.self::$i18n.'/data_module/statislite/json/';
-			self::$tmp = self::DATA_DIR.self::$i18n.'/data_module/statislite/tmp/';
-			self::$json_sauve = self::DATA_DIR.self::$i18n.'/data_module/statislite/json_sauve/';
 			// Sauvegarde des fichiers json
 			$this->sauvegardeJson();
 			// Valeurs en sortie
@@ -562,16 +546,12 @@ class statislite extends common {
 	public function index() {
 		// Lexique
 		include('./module/statislite/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_statislite.php');
-		// Initialisations des dossiers des json
-		self::$fichiers_json = self::DATA_DIR.self::$i18n.'/data_module/statislite/json/';
-		self::$tmp = self::DATA_DIR.self::$i18n.'/data_module/statislite/tmp/';
-		self::$json_sauve = self::DATA_DIR.self::$i18n.'/data_module/statislite/json_sauve/';
 		// Si le module n'existe pas, copie des ressources, on le crée avec des valeurs par défaut et on demande une validation de la configuration
 		if( $this->getData(['module', $this->getUrl(0), 'config', 'config']) !== true){
 			// Copie des fichiers de module/statislite/ressource/ vers self::DATAMODULE
 			if( !is_dir( self::DATAMODULE)) mkdir( self::DATAMODULE, 0755, true);
 			$this->custom_copy('./module/statislite/ressource', self::DATAMODULE);
-			if( !is_dir(self::DATA_DIR.self::$i18n.'/data_module/statislite')) mkdir( self::DATA_DIR.self::$i18n.'/data_module/statislite' , 0755);
+			if( !is_dir(self::DATA_DIR.'base/data_module/statislite')) mkdir( self::DATA_DIR.'base/data_module/statislite' , 0755);
 			if( !is_dir( self::$fichiers_json )) mkdir( self::$fichiers_json, 0755);
 			if( !is_dir( self::$tmp ))mkdir( self::$tmp, 0755);
 			if( !is_dir( self::$json_sauve ))mkdir( self::$json_sauve, 0755);
@@ -685,13 +665,9 @@ class statislite extends common {
 				break;
 			}
 			
-			// Remplacement du nom de vue 'Page d'accueil' par le nom de la page d'accueil et nom raccourci pour la page employant agenda
+			// Nom raccourci pour la page employant agenda
 			foreach($log as $numSession=>$values){
 				foreach($values['vues'] as $key=>$value){
-					if( substr($value, 22 , strlen($value)) == 'Page d\'accueil'){
-						$log[$numSession]['vues'][$key] = substr($value, 0 , 19).' * '.$this->getData(['locale','homePageId']);
-					}
-					// agenda
 					if( strpos( $value, 'vue:dayGrid')){
 						$posSlash = strpos( $value, '/', 22);
 						$log[$numSession]['vues'][$key] = substr($value, 0 , 19).' * '.substr( $value,22, $posSlash - 22).'/date';
@@ -711,15 +687,40 @@ class statislite extends common {
 			
 			foreach($log as $numSession=>$values){
 				$nbpageparsession = count($log[$numSession]['vues']);
-				// Eliminer les vues dont le nom ne commence pas par un nom de page existante
+				// Liste des pages
 				$pages = $this->getData(['page']);
+				// Ajouter les pages dans les différentes traductions rédigées
+				// Liste des traductions rédigées
+				$langTrans=[];
+				foreach (self::$i18nList as $key => $value) {
+				  if( $this->getData(['config', 'i18n', $key]) === 'site') $langTrans[] = $key;		
+				}
+				// Liste des pages en traduction rédigée
+				$pagesTrans=[];$pagesTranslate=[];
+				foreach( $langTrans as $key1=>$value1){
+				  $json='{}';
+				  if(is_file('site/data/'.$value1.'/page.json')) $json = file_get_contents('site/data/'.$value1.'/page.json');
+				  $trans = json_decode($json, true);
+				  if(isset($trans['page']))$pagesTrans[]=$trans['page'];
+				}
+				foreach($pagesTrans as $key=>$value){
+				  $pagesTranslate = array_merge($pagesTranslate, $value);
+				}
+				// Suppression des barres et des pages invalidées pour les pages en traduction rédigée
+				foreach($pagesTranslate as $key=>$value){
+				  if( $value['block'] === 'bar' || $value['disable'] === true) unset( $pagesTranslate[$key]);
+				}
+				// Suppression des barres et des pages invalidées pour les pages de base
 				foreach($pages as $page => $pageId) {
 					if ($this->getData(['page',$page,'block']) === 'bar' ||
 					$this->getData(['page',$page,'disable']) === true) {
 						unset($pages[$page]);
 					}
 				}
+				// Associer toutes les pages
+				$pages = array_merge($pages, $pagesTranslate);
 				$renum = false;
+				// Eliminer les vues dont le nom ne commence pas par un nom de page existante ou erreur 403
 				foreach($log[$numSession]['vues'] as $key => $nom_vue){
 					$nom = substr($nom_vue, 22);
 					if(strpos($nom,'/') === false){
@@ -730,7 +731,7 @@ class statislite extends common {
 					}
 					$occurence = false;
 					foreach($pages as $page => $pageId){
-						if($debut_nom == $page){
+						if($debut_nom === $page){
 							$occurence = true;
 						}
 					}

@@ -137,7 +137,7 @@ class sitemap extends common
 
         // Valeurs en sortie
         $this->addOutput([
-            'title' => $text['core_sitemap']['index'][0],
+            'title' => $this->getData(['locale', 'sitemapPageLabel']),
             'view' => 'index'
         ]);
     }

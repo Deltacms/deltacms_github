@@ -42,6 +42,8 @@ $text['form_view']['config'][40] = 'module/form/view/config/config.help_en.html'
 $text['form_view']['config'][41] = 'Check box for acceptance of the conditions of use of personal data';
 $text['form_view']['config'][42] = 'If your questionnaire concerns personal data, the GDPR in certain countries requires acceptance of their conditions of use by the participant. You must also explain why you are using this data. The associated text must be updated in location configuration.';
 $text['form_view']['config'][43] = 'Texts';
+$text['form_view']['config'][44] = 'Minimum trust index';
+$text['form_view']['config'][45] = 'Minimum trust index to submit the form. For this limitation to be active you must validate the option in Configuring the site / Connection Security';
 $text['form_view']['data'][0] = 'Back';
 $text['form_view']['data'][1] = 'Delete all';
 $text['form_view']['data'][2] = 'CSV export';
@@ -87,6 +89,7 @@ $text['form']['init'][8] = 'Error while uploading file' ;
 $text['form']['init'][10] = 'The attachment is not a pdf document';
 $text['form']['init'][11] = 'The attachment is not a zip document';
 $text['form']['init'][12] = ' Fill in the Captcha ';
+$text['form']['init'][13] = 'You are not authorized to send an email';
 // Initialisation de flatpickr
 $lang_flatpickr = 'default';
 // Langue d'administration pour tinymce
@@ -112,6 +115,15 @@ if( $param === 'form_view'){
 		$module::TYPE_CHECKBOX => 'Check box',
 		$module::TYPE_DATETIME => 'Date',
 		$module::TYPE_FILE => 'File'
+	];
+	$trust_limit = [
+		0 => 'No minimum',
+		20 => '20',
+		40 => '40',
+		60 => '60',
+		80 => '80',
+		90 => '90',
+		100 => '100'
 	];
 }
 ?>

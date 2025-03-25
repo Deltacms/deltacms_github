@@ -42,6 +42,8 @@ $text['form_view']['config'][40] = 'module/form/view/config/config.help.html';
 $text['form_view']['config'][41] = 'Case à cocher d\'acceptation des conditions d\utilisation des données personnelles (RGPD)';
 $text['form_view']['config'][42] = 'Si votre questionnaire concerne des données personnelles la RGPD de certains pays requiert l\'acceptation de leur condition d\'utilisation par le participant. Vous devez également expliquer pour quelle raison vous utilisez ces données. Le texte associé est à mettre à jour dans configuration localisation.';
 $text['form_view']['config'][43] = 'Textes ';
+$text['form_view']['config'][44] = 'Indice de confiance minimum';
+$text['form_view']['config'][45] = 'Indice de confiance minimum pour soumettre le formulaire. Pour que cette limitation soit active vous devez valider l\'option dans Configurer le site / Connexion Sécurité';
 $text['form_view']['data'][0] = 'Retour';
 $text['form_view']['data'][1] = 'Tout effacer';
 $text['form_view']['data'][2] = 'Export CSV';
@@ -88,6 +90,7 @@ $text['form']['init'][8] = 'Erreur pendant le téléversement du fichier';
 $text['form']['init'][10] = 'La pièce jointe n\'est pas un document pdf';
 $text['form']['init'][11] = 'La pièce jointe n\'est pas un document zip';
 $text['form']['init'][12] = ' Renseignez le Captcha ';
+$text['form']['init'][13] = 'Vous n\'êtes pas autorisé à émettre un courriel';
 // Initialisation de flatpickr 
 $lang_flatpickr = 'fr';
 // Langue d'administration pour tinymce
@@ -113,6 +116,15 @@ if( $param === 'form_view'){
 		$module::TYPE_CHECKBOX => 'Case à cocher',
 		$module::TYPE_DATETIME => 'Date',
 		$module::TYPE_FILE => 'Fichier'
+	];
+	$trust_limit = [
+		0 => 'Pas de minimum',
+		20 => '20',
+		40 => '40',
+		60 => '60',
+		80 => '80',
+		90 => '90',
+		100 => '100'
 	];
 }
 ?>

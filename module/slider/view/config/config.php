@@ -123,6 +123,12 @@ echo template::formOpen('galleryEditForm'); ?>
 							'selected' => $this->getData(['module', $this->getUrl(0), 'config', 'tri'])
 						]); ?>
 					</div>
+					<div class="col4">
+					<?php echo template::checkbox('sliderBorder', true, $text['slider_view']['edit'][28], [
+						'checked' => $this->getData(['module', $this->getUrl(0), 'config', 'sliderBorder']),
+						'help' => $text['slider_view']['edit'][29]
+					]); ?>
+					</div>
 				</div>
 			</div>
 		</div>

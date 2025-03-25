@@ -43,6 +43,7 @@
             "burgerCenterIconLink": "recherche"
         },
 		"mandatoryText": "Saisie obligatoire",
-		"impossibleText": "Impossible de soumettre le formulaire, car il contient des erreurs"
+		"impossibleText": "Impossible de soumettre le formulaire, car il contient des erreurs",
+		"captchaAddition": "Additionner les chiffres"
     }
 }

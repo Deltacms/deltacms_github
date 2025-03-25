@@ -2,7 +2,12 @@
  * This file is part of DeltaCMS.
  */
 
-
+/**
+ * Affichage des icônes du scroll auto et permettre l'aperçu.
+ */
+$(document).ready(function(){
+	$("#scrollUaD").css("display","show");
+});
 
 /**
  * Aperçu en direct
@@ -46,6 +51,8 @@ $("input, select").on("change",function() {
 	// Taille du texte
 	// Couleur du texte
 	css += "p.preview{color:" + $("#themeTextTextColor").val() + "}";
+	// ScrollUaD
+	css += '#scrollUaD {background-color:'  + $("#themeSiteScrollUaDBackground").val() + ';color:' + $("#themeSiteScrollUaDColor").val() + ';}';
 
 	/**
 	 * Aperçu réel
@@ -81,8 +88,7 @@ $("input, select").on("change",function() {
 	else {
 		css += "div.bodybackground{background-image:none}";
 	}
-	// css += '#backToTop {background-color:'  + backgroundcolor + ';color:' + $("#themeBodyToTopColor").val() + ';}';
-	css += '#backToTop {color:' + $("#themeBodyToTopColor").val() + ';}';
+	css += '#scrollUaD {color:' + $("#themeSiteScrollUaDColor").val() + ';}';
 	css += "div.bgPreview{padding: 5px;background-color:" + $("#themeSiteBackgroundColor").val() + ";}";
 
 	// Les blocs
@@ -130,6 +136,6 @@ if($(window).width() < 800) {
 	}
 	if( positionNav !=='hide' && burgerFixed === true && ( burgerOverlay === true && tinyHidden === true || positionHeader === 'hide' )){
 		// Bannière masquée ou cachée décaler la section
-		$("section").css("padding-top",bannerMenuHeightSection); 
+		$("section").css("padding-top",bannerMenuHeightSection);
 	}
 }

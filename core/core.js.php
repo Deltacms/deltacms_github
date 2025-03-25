@@ -195,22 +195,35 @@ core.start = function() {
 		}
 	}).trigger("resize");
 
-	/**
-	 * Remonter en haut au clic sur le bouton
-	 */
-	var backToTopDOM = $("#backToTop");
-	backToTopDOM.on("click", function() {
-		$("body, html").animate({scrollTop: 0}, "400");
+  // scroll up and down
+  <?php $scrollspeed = $this->getData(['theme', 'site', 'scrollspeed']) ?? 0; ?>
+  let toTop = $("#top");
+  toTop.on("click", function() {
+    $("html, body").animate({scrollTop:0}, <?=$scrollspeed?>, "linear");
+  });
+  // scroll to bottom
+  let toBottom = $("#bottom");
+  toBottom.on("click", function() {
+    $("html, body").animate({scrollTop:$(document).height()}, <?=$scrollspeed?>, "linear");
+  });
+  // stop scroll
+	$("html, body").bind("scroll mousedown DOMMouseScroll mousewheel keyup", function(){
+	$("html, body").stop();
 	});
+
 	/**
-	 * Affiche / Cache le bouton pour remonter en haut
+	 * Affiche / Cache les boutons pour scroller
 	 */
 	$(window).on("scroll", function() {
-		if($(this).scrollTop() > 200) {
-			backToTopDOM.fadeIn();
+		if($(this).scrollTop() > 100) {
+			toTop.fadeIn();
+			toBottom.fadeIn();
+			$("#scrollUaD").fadeIn();
 		}
 		else {
-			backToTopDOM.fadeOut();
+			toTop.fadeOut();
+			toBottom.fadeOut();
+			$("#scrollUaD").fadeOut();
 		}
 	});
 	/**
@@ -287,7 +300,7 @@ core.start = function() {
 	 $("#footerLinkCookie").on("click", function() {
 		$("#cookieConsent").removeClass("displayNone");
 	});
-	
+
 	/**
 	 * Animation du panneau des cookies
 	 */
@@ -389,7 +402,7 @@ core.start = function() {
 			.data("maxwidth", _this.width())
 			.removeAttr("width height");
 	});
-	
+
 	// Prend la largeur du parent et détermine la hauteur à l'aide du ratio lors du resize de la fenêtre
 	$(window).on("resize", function() {
 		elementDOM.each(function() {
@@ -481,7 +494,7 @@ core.start = function() {
 			});
 		}
 	});
-	
+
 	/*
 	* Retour en grand écran : annulation du padding-left, de la position static et adaptation du décalage si connecté
 	*/
@@ -523,7 +536,7 @@ core.start = function() {
 			}
 		}
 	}).trigger("resize");
-	
+
 };
 
 
@@ -573,7 +586,7 @@ $(document).ready(function(){
 			$("#navfixedconnected .navSub").css({ 'pointer-events' : 'none' });
 		}
 	});
-	
+
 	/**
 	* Sous-menu en grand écran et terminal mobile
 	*/
@@ -588,7 +601,7 @@ $(document).ready(function(){
 			$("nav li:hover ul").css( {
 				"z-index": "-1",
 				"opacity": "0"
-				});			
+				});
 			}
 		}
 	});
@@ -601,7 +614,7 @@ $(document).ready(function(){
 			$("nav li:hover ul").css({
 				"z-index": "8",
 				"opacity": "1"
-			});				
+			});
 		}
 	});
 	$("nav li").mouseleave(function() {
@@ -609,15 +622,15 @@ $(document).ready(function(){
 			$("nav li ul").css({
 				"z-index": "-1",
 				"opacity": "0"
-			});				
+			});
 		}
 	});
-	
+
 	/**
 	 * Chargement paresseux des images et des iframes sauf tinymce
 	 */
 	$("img,picture,iframe:not([id*='_ifr'])").attr("loading","lazy");
-	
+
 	/**
 	 * Effet accordéon
 	 */
@@ -744,7 +757,7 @@ $(document).ready(function(){
 		});
 	  });
 	<?php } ?>
-	
+
 	/*
 	* Commentaire de page : affichage du formulaire
 	*/
@@ -785,7 +798,7 @@ $(document).ready(function(){
 		time = d.getTime();
 		document.cookie = "evtV = " +  time  + ";path=/" + ";SameSite=Strict";
 	});
-	
+
 	/* Inversion des couleurs du site par chargement dans main.php de theme_invert.css */
 	$('.invertColorButton').on('click', function() {
 		var cook =  document.cookie.split('; ');
@@ -798,7 +811,7 @@ $(document).ready(function(){
 		  }
 		});
 	});
-	
+
 	/* Modification de la taille des caractères */
 	$('.increaseFontBtn').on('click', function() {
 		var cook =  document.cookie.split('; ');
@@ -812,7 +825,7 @@ $(document).ready(function(){
 		  }
 		});
 	});
-	
+
 	/*
 	* Effacement du bouton d'aide avec ? cerclé sur les terminaux mobiles
 	*/
@@ -821,5 +834,55 @@ $(document).ready(function(){
 			$("span .delta-ico-help").css("display","none");
 		}
 	}).trigger("resize");
-	
+
+	/*
+	* Trust : activités, temps depuis l'ouverture et passés sur une page
+	*/
+	<?php
+	$listMod = ['form'];//Liste des modules supportant la fonction
+	if( $this->getData(['config', 'connect', 'trust']) === true && in_array($this->getData(['page', $this->getUrl(0), 'moduleId']),$listMod)) { ?>
+		let startTime = Date.now();
+		let clicks = 0;
+		let mouseMoves = 0;
+		let tapCount = 0;
+		let touchMoves = 0;
+		let scrollActivity = 0;
+		let lastScrollTop = 0;
+
+		// Terminal fixe
+			document.addEventListener("click", () => clicks++);
+			document.addEventListener("mousemove", () => mouseMoves++);
+		// Terminal tactile
+			document.addEventListener("touchstart", function () { tapCount++; });
+			document.addEventListener("touchmove", function () { touchMoves++; });
+			window.addEventListener("scroll", function () {
+				let scrollTop = window.scrollY || document.documentElement.scrollTop;
+				if (Math.abs(scrollTop - lastScrollTop) > 5) {
+					scrollActivity++;
+				}
+				lastScrollTop = scrollTop;
+			});
+
+		function updateTrustScore() {
+			let timeSpent = (Date.now() - startTime) / 1000;
+			fetch("core/vendor/trust/trust.php", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					time_open: Math.round(startTime/1000),
+					time_spent: timeSpent,
+					nbClicks: clicks,
+					mouseMoves: mouseMoves,
+					taps: tapCount,
+					touch_moves: touchMoves,
+					scrolls: scrollActivity
+				}),
+			});
+		}
+
+		// Mettre à jour toutes les 3 secondes
+		setInterval(updateTrustScore, 3000);
+		updateTrustScore();
+	<?php } ?>
+
 });

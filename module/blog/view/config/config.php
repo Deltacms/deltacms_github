@@ -82,6 +82,12 @@ echo template::formOpen('blogConfig'); ?>
 							'selected' => $this->getData(['module', $this->getUrl(0),'config', 'previewSize'])
 						]); ?>
 					</div>
+					<div class="col4">
+					<?php echo template::checkbox('blogBorder', true, $text['blog_view']['config'][18], [
+						'checked' => $this->getData(['module', $this->getUrl(0), 'config', 'blogBorder']),
+						'help' => $text['blog_view']['config'][19]
+					]); ?>
+					</div>
 				</div>
 			</div>
 		</div>

@@ -8,7 +8,7 @@ $text['core_theme_view']['addFonts'][4] = 'Nombre';
 $text['core_theme_view']['addFonts'][5] = 'Nombre de fuente, mayúsculas y espacios permitidos';
 $text['core_theme_view']['addFonts'][6] = 'Enlace al archivo de fuente';
 $text['core_theme_view']['addFonts'][7] = 'El archivo de fuente se carga o no desde un repositorio local';
-$text['core_theme_view']['addFonts'][8] = 'Primero debe cargar el archivo de fuente, ttf, woff, otf, eot o woff2 en la carpeta de fuentes con el administrador de archivos.';
+$text['core_theme_view']['addFonts'][8] = 'Primero debe cargar el archivo de fuente woff o woff2 en la carpeta de fuentes con el administrador de archivos.';
 $text['core_theme_view']['addFonts'][9] = 'Selección de fuente';
 $text['core_theme_view']['addFonts'][10] = 'Licencia';
 $text['core_theme_view']['addFonts'][11] = 'Tipo de licencia de fuente';
@@ -48,8 +48,8 @@ $text['core_theme_view']['body'][3] = 'Colores';
 $text['core_theme_view']['body'][4] = 'Color visible en ausencia de una imagen.<br />El control deslizante horizontal ajusta el nivel de transparencia.';
 $text['core_theme_view']['body'][5] = 'Fondo';
 $text['core_theme_view']['body'][6] = 'El control deslizante horizontal ajusta el nivel de transparencia.';
-$text['core_theme_view']['body'][7] = 'Fondo del icono superior';
-$text['core_theme_view']['body'][8] = 'Icono superior';
+$text['core_theme_view']['body'][7] = 'Fondo del iconos superior y inferior';
+$text['core_theme_view']['body'][8] = 'Iconos superior y inferior';
 $text['core_theme_view']['body'][9] = 'Imagen';
 $text['core_theme_view']['body'][10] = 'Seleccionar imagen';
 $text['core_theme_view']['body'][11] = 'Fondo';
@@ -302,6 +302,8 @@ $text['core_theme_view']['site'][29] = 'Tamaño';
 $text['core_theme_view']['site'][30] = 'Tamaño de referencia para el sitio. Los tamaños de fuente del banner, menú y pie de página son proporcionales a este tamaño.';
 $text['core_theme_view']['site'][31] = 'Formato del título';
 $text['core_theme_view']['site'][32] = 'El ancho 75vw, 85vw o 95vw se aplica en un tamaño de pantalla >= 800px';
+$text['core_theme_view']['site'][33] = 'Velocidad de desplazamiento automático';
+$text['core_theme_view']['site'][34] = 'Los valores lentos permiten detener el desplazamiento mediante una acción del usuario (hacer clic en la página, pulsar una tecla, etc.)';
 $text['core_theme']['admin'][0] = 'Cambios guardados';
 $text['core_theme']['admin'][1] = 'Administrador';
 $text['core_theme']['advanced'][0] = 'Cambios guardados';
@@ -585,5 +587,13 @@ $minWidthTab = [
 	'120px' => '120px',
 	'150px' => '150px',
 	'200px' => '200px'
+];
+$scrollspeeds = [
+	'0' => 'Inmediata',
+	'400' => 'Muy rápida',
+	'800' => 'Rápida',
+	'1600' => 'Media',
+	'3200' => 'Lenta',
+	'6400' => 'Muy lenta'
 ];
 ?>

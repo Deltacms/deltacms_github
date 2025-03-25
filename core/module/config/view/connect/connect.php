@@ -117,4 +117,30 @@ include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdm
 			</div>
 		</div>
 	</div>
+	<div class="row">
+		<div class="col12">
+			<div class="block">
+				<div class="blockTitle"><?php echo $text['core_config_view']['connect'][22];?>
+					<span id="specialeHelpButton" class="helpDisplayButton">
+						<a href="https://doc.deltacms.fr/connexion#confiance" target="_blank">
+							<?php echo template::ico('help', 'left');?>
+						</a>
+					</span>
+				</div>
+				<div class="row">
+					<div class="col3">
+						<?php echo template::checkbox('connectTrust', true, $text['core_config_view']['connect'][24], [
+							'checked' => $this->getData(['config', 'connect', 'trust']),
+							'help' => $text['core_config_view']['connect'][23]
+						]); ?>
+					</div>
+					<div class="col3">
+						<?php if(is_file('core/vendor/trust/log/log.json')){ ?>
+						<p style="text-align: center;"><a href="<?php echo helper::baseUrl(false);?>core/vendor/trust/log/log.json" target="_blank"><?php echo $text['core_config_view']['connect'][25] ?></a></p>
+						<?php } ?>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>

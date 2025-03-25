@@ -97,7 +97,13 @@ else{
 							'label' => $text['form']['init'][12],
 							'value' => $this->getData(['module', $this->getUrl(0), 'texts', 'fillCaptcha'])
 						]); ?>
-					</div>				
+					</div>	
+					<div class="col4">
+						<?php echo template::text('formTextsNoTrust', [
+							'label' => $text['form']['init'][13],
+							'value' => $this->getData(['module', $this->getUrl(0), 'texts', 'noTrust'])
+						]); ?>
+					</div>					
 				</div>
 			</div>
 		</div>

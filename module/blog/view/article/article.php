@@ -46,15 +46,17 @@ if( function_exists('datefmt_create') && function_exists('datefmt_format') && ex
 	);
 }
 ?>
-
+<?php
+$borderBlog = $this->getData(['module', $this->getUrl(0), 'config', 'blogBorder']) === true ? 'block' : '';
+$pictureBlog = $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'picture']) ?? '';
+?>
 <div class="row">
 	<div class="col12">
 		<?php $pictureSize =  $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'pictureSize']) === null ? '100' : $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'pictureSize']); ?>
-		<?php if ( $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'hidePicture']) === false
-					&& $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'picture']) !=='' ) {
-			echo '<img class="blogArticlePicture blogArticlePicture' . $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'picturePosition']) .
-			' pict' . $pictureSize . '" src="' . helper::baseUrl(false) . self::FILE_DIR.'source/' . $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'picture']) .
-			'" alt="' . $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'picture']) . '">';
+		<?php if ( $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'hidePicture']) === false && $pictureBlog !== '' ) {
+			echo '<img class="'. $borderBlog .' blogArticlePicture blogArticlePicture'. $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'picturePosition']) .
+			' pict' . $pictureSize . '" src="' . helper::baseUrl(false) . self::FILE_DIR.'source/' . $pictureBlog .
+			'" alt="'.basename($pictureBlog,strrchr($pictureBlog,'.')).'">';
 		} ?>
 		<?php echo $this->getData(['data_module', $this->getUrl(0),'posts', $this->getUrl(1), 'content']); ?>
 	</div>
@@ -115,8 +117,8 @@ if( function_exists('datefmt_create') && function_exists('datefmt_format') && ex
 			</div>
 		<?php endif; ?>
 	</div>
-	
-	<div class="col4">	
+
+	<div class="col4">
 		<?php
 		// Bouton suivant
 		if( $module::$urlPreviousArticle !== ''){
@@ -145,8 +147,8 @@ if( function_exists('datefmt_create') && function_exists('datefmt_format') && ex
 			]);
 		} ?>
 	</div>
-	
-	
+
+
 </div>
 <?php if($this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'commentClose'])): ?>
 	<p><?php echo $this->getData(['module', $this->getUrl(0), 'texts', 'ArticleNoComment']); ?></p>

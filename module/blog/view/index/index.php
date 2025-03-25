@@ -23,8 +23,9 @@ if($module::$articles): ?>
 	<div class="row">
 		<div class="col12">
 			<?php // Mémorisation da la page active
-			$_SESSION['pageActive'] = $this->getUrl(); ?>
-	
+			$_SESSION['pageActive'] = $this->getUrl();
+			$borderBlog = $this->getData(['module', $this->getUrl(0), 'config', 'blogBorder']) === true ? 'block':'';?>
+
 			<?php foreach($module::$articles as $articleId => $article): ?>
 				<div class="row rowArticle">
 					<?php if(  $this->getData(['data_module', $this->getUrl(0), 'posts', $articleId, 'picture']) !=='' ){ ?>
@@ -38,13 +39,13 @@ if($module::$articles): ?>
 									$this->makeThumb(  self::FILE_DIR . 'source/' . $article['picture'],
 													self::FILE_DIR . 'thumb/' . $thumb,
 													self::THUMBS_WIDTH);
-								}	
+								}
 							?>
 							<a href="<?php echo helper::baseUrl() . $this->getUrl(0) . '/' . $articleId; ?>" class="blogPicture">
 							<?php if ( file_exists( self::FILE_DIR . 'thumb/' . $thumb) ) { ?>
-								<img src="<?php echo helper::baseUrl(false) .  self::FILE_DIR . 'thumb/' . $thumb; ?>" alt="<?php echo $article['picture']; ?>">
+								<img src="<?php echo helper::baseUrl(false) .  self::FILE_DIR . 'thumb/' . $thumb; ?>" alt="<?=basename($article['picture'],strrchr($article['picture'],'.'))?>" class="<?=$borderBlog?>">
 							<?php } else { 	// Image originale en remplacement	?>
-								<img src="<?php echo helper::baseUrl(false) .  self::FILE_DIR . 'source/' . $article['picture']; ?>" alt="<?php echo $article['picture']; ?>">
+								<img src="<?php echo helper::baseUrl(false) .  self::FILE_DIR . 'source/' . $article['picture']; ?>" alt="<?=basename($article['picture'],strrchr($article['picture'],'.'))?>" class="<?=$borderBlog?>">
 							<?php } ?>
 							</a>
 						<?php endif;?>
@@ -68,17 +69,17 @@ if($module::$articles): ?>
 						</div>
 						<div class="blogDate">
 							<?php if( function_exists('datefmt_create') && function_exists('datefmt_format') && extension_loaded('intl') ){
-								echo datefmt_format($fmt, strtotime( date('Y/m/d H:i:s',$article['publishedOn']))); 
+								echo datefmt_format($fmt, strtotime( date('Y/m/d H:i:s',$article['publishedOn'])));
 							} else {
-								echo mb_detect_encoding(date('d/m/Y - H:i',  $article['publishedOn']), 'UTF-8', true)? 
-								date('d/m/Y', $article['publishedOn']): helper::utf8Encode(date('d/m/Y', $article['publishedOn'])); 
+								echo mb_detect_encoding(date('d/m/Y - H:i',  $article['publishedOn']), 'UTF-8', true)?
+								date('d/m/Y', $article['publishedOn']): helper::utf8Encode(date('d/m/Y', $article['publishedOn']));
 							} ?>
 						</div>
 						<p class="blogContent">
-							<?php 
+							<?php
 							$sea = ['<br />', '<br>'];
 							$rep = ' ';
-							$article['content'] = str_replace($sea, $rep, $article['content']);							
+							$article['content'] = str_replace($sea, $rep, $article['content']);
 							echo helper::subword(strip_tags($article['content']), 0, $this->getData(['module', $this->getUrl(0),'config', 'previewSize'])); ?>...
 							<a href="<?php echo helper::baseUrl() . $this->getUrl(0) . '/' . $articleId;?>"><?php echo $this->getData(['module', $this->getUrl(0), 'texts', 'ReadMore']); ?></a>
 						</p>

@@ -104,9 +104,11 @@ $suffix = $this->getData(['page', $this->getUrl(0), 'moduleId']) === 'templatesw
 		if( isset($_SESSION['screenshot'] ) && $_SESSION['screenshot'] === 'on' ){ 	?>	</div><div><button id="screenshot" class="buttonScreenshot" type="button" >
 		<img src="<?php echo helper::baseUrl(false); ?>core/vendor/screenshot/appareil_photo.png" width="100px"></button></div> <?php }
 
-		// Lien remonter en haut ?>
-		<div id="backToTop"><?php echo template::ico('up'); ?></div>
-
+		// Scroll Up and Down ?>
+		<div id="scrollUaD">
+			<div id="top"><?=template::ico('up-big')?></div>
+			<div id="bottom"><?=template::ico('down-big')?></div>
+		</div>
 		<?php // Affichage du consentement aux cookies
 		$this->showCookies();
 

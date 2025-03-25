@@ -23,10 +23,10 @@ class theme extends common {
 	public static $actions = [
 		'advanced' => self::GROUP_ADMIN,
 		'body' => self::GROUP_ADMIN,
-		'fonts' => self::GROUP_ADMIN, 
-		'editFonts' => self::GROUP_ADMIN, 
-		'deleteFonts' => self::GROUP_ADMIN, 
-		'addFonts' => self::GROUP_ADMIN, 
+		'fonts' => self::GROUP_ADMIN,
+		'editFonts' => self::GROUP_ADMIN,
+		'deleteFonts' => self::GROUP_ADMIN,
+		'addFonts' => self::GROUP_ADMIN,
 		'footer' => self::GROUP_ADMIN,
 		'header' => self::GROUP_ADMIN,
 		'index' => self::GROUP_ADMIN,
@@ -56,26 +56,26 @@ class theme extends common {
 
 	// Variable pour construire la liste des pages du site
 	public static $pagesList = [];
-	
+
 	//Liste des dossiers avec images
 	public static $listDirs =[];
-	
+
 	//Liste des pages
 	public static $pageList = [];
-	
-	
+
+
 	/**
 	 * Thème des écrans d'administration
 	 */
 	public function admin() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < theme::$actions['admin'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
@@ -105,7 +105,7 @@ class theme extends common {
 					'state' => true
 				]);
 			}
-			self::$fonts = $this->extract('./site/data/fonts.json');		
+			self::$fonts = $this->extract('./site/data/fonts.json');
 			// Valeurs en sortie
 			$this->addOutput([
 				'title' => $text['core_theme']['admin'][1],
@@ -121,14 +121,14 @@ class theme extends common {
 	 * Mode avancé
 	 */
 	public function advanced() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < theme::$actions['advanced'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
@@ -154,19 +154,19 @@ class theme extends common {
 			]);
 		}
 	}
-	
+
 	/**
 	 * Gestion des polices / affichage principal
 	 */
 	public function fonts() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < theme::$actions['fonts'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
@@ -174,7 +174,7 @@ class theme extends common {
 			$fontsName = helper::arrayCollumn($this->getData(['fonts']), 'name');
 			ksort($fontsName);
 			foreach($fontsName as $fontsId => $value) {
-				
+
 				self::$fonts[] = [
 					'<span style="font-family:'.$this->getData(['fonts', $fontsId, 'name']).'">'.$fontsId.'</span>',
 					'<span style="font-family:'.$this->getData(['fonts', $fontsId, 'name']).'">'.$this->getData(['fonts', $fontsId, 'name']).'</span>',
@@ -190,9 +190,9 @@ class theme extends common {
 						'value' => template::ico('cancel')
 					])
 				];
-				
+
 			}
-		
+
 			// Valeurs en sortie
 			$this->addOutput([
 				'title' => $text['core_theme']['fonts'][0],
@@ -200,19 +200,19 @@ class theme extends common {
 			]);
 		}
 	}
-	
+
 	/**
 	 * Gestion des polices / édition
 	 */
 	public function editfonts() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < theme::$actions['editfonts'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
@@ -224,7 +224,7 @@ class theme extends common {
 						'notification' => $text['core_theme']['editFonts'][1],
 						'redirect' => helper::baseUrl() . 'theme/fonts',
 						'state' => false
-					]);	
+					]);
 				}
 				else{
 					$file = $this->getInput('typeEditFont') === 'none' ? '' : $this->getInput('fileEditFont');
@@ -243,10 +243,10 @@ class theme extends common {
 						'notification' => $text['core_theme']['editFonts'][2],
 						'redirect' => helper::baseUrl() . 'theme/fonts',
 						'state' => true
-					]);	
+					]);
 				}
 			}
-		
+
 			// Fichiers site/file/fonts/
 			if(is_dir(self::FILE_DIR.'source/fonts')) {
 				$dir=self::FILE_DIR.'source/fonts';
@@ -264,7 +264,7 @@ class theme extends common {
 			else {
 				self::$fontFiles = array(0 => $text['core_theme']['editFonts'][4].self::FILE_DIR.'source/fonts '.$text['core_theme']['editFonts'][5]);
 			}
-		
+
 			// Valeurs en sortie
 			$this->addOutput([
 				'title' => $text['core_theme']['editFonts'][6],
@@ -272,19 +272,19 @@ class theme extends common {
 			]);
 		}
 	}
-	
+
 	/**
 	 * Gestion des polices / suppression
 	 */
 	public function deleteFonts() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < theme::$actions['deleteFonts'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
@@ -300,19 +300,19 @@ class theme extends common {
 			]);
 		}
 	}
-	
+
 	/**
 	 * Gestion des polices / ajout
 	 */
 	public function addFonts() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < theme::$actions['addFonts'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
@@ -324,7 +324,7 @@ class theme extends common {
 						'notification' => $text['core_theme']['addFonts'][1],
 						'redirect' => helper::baseUrl() . 'theme/addFonts',
 						'state' => false
-					]);	
+					]);
 				}
 				else{
 					$file = $this->getInput('typeAddFont') === 'none' ? '' : $this->getInput('fileAddFont');
@@ -343,7 +343,7 @@ class theme extends common {
 						'notification' => $text['core_theme']['addFonts'][2],
 						'redirect' => helper::baseUrl() . 'theme/fonts',
 						'state' => true
-					]);		
+					]);
 				}
 			}
 			// Fichiers site/file/fonts/
@@ -370,21 +370,21 @@ class theme extends common {
 				'view' => 'addFonts'
 			]);
 		}
-	}	
-	
-	
+	}
+
+
 	/**
 	 * Options de l'arrière plan
 	 */
 	public function body() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < theme::$actions['body'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
@@ -397,9 +397,7 @@ class theme extends common {
 					'imageAttachment' => $this->getInput('themeBodyImageAttachment'),
 					'imagePosition' => $this->getInput('themeBodyImagePosition'),
 					'imageRepeat' => $this->getInput('themeBodyImageRepeat'),
-					'imageSize' => $this->getInput('themeBodyImageSize'),
-					'toTopbackgroundColor' => $this->getInput('themeBodyToTopBackground'),
-					'toTopColor' => $this->getInput('themeBodyToTopColor')
+					'imageSize' => $this->getInput('themeBodyImageSize')
 				]]);
 				// Valeurs en sortie
 				$this->addOutput([
@@ -423,14 +421,14 @@ class theme extends common {
 	 * Options du pied de page
 	 */
 	public function footer() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < theme::$actions['footer'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
@@ -480,7 +478,7 @@ class theme extends common {
 					// Sauvegarder la configuration localisée
 					$this->setData(['locale','legalPageId', $this->getInput('configLegalPageId')]);
 					$this->setData(['locale','searchPageId', $this->getInput('configSearchPageId')]);
-					
+
 					// Valeurs en sortie
 					$this->addOutput([
 						'notification' => $text['core_theme']['footer'][1],
@@ -514,14 +512,14 @@ class theme extends common {
 	 * Options de la bannière
 	 */
 	public function header() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < theme::$actions['header'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
@@ -534,7 +532,7 @@ class theme extends common {
 				$this->setData([ 'theme', 'update', true]);
 				// Modification des URL des images dans la bannière perso
 				$featureContent = $this->getInput('themeHeaderText', null);
-				// Bannière animée avec swiper	
+				// Bannière animée avec swiper
 				$swiperContent = '';
 				if( $this->getInput('themeHeaderFeature') === 'swiper' ){
 					$swiperContent = $this->swiperContent('header');
@@ -632,14 +630,14 @@ class theme extends common {
 	 * Accueil de la personnalisation
 	 */
 	public function index() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < theme::$actions['index'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
@@ -655,14 +653,14 @@ class theme extends common {
 	 * Options du menu
 	 */
 	public function menu() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < theme::$actions['menu'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
@@ -715,7 +713,7 @@ class theme extends common {
 					'burgerLeftIconLink' => $this->getInput('themeMenuBurgerLeftIconLink'),
 					'burgerCenterIconLink' => $this->getInput('themeMenuBurgerCenterIconLink')
 				]]);
-				
+
 				// Valeurs en sortie
 				if (isset($_POST['themeMenuSubmit'])){
 					$this->addOutput([
@@ -741,8 +739,8 @@ class theme extends common {
 					self::$pageList [$childKey] = $childKey;
 				}
 			}
-			
-			
+
+
 			self::$fonts = $this->extract('./site/data/fonts.json');
 			// Valeurs en sortie
 			$this->addOutput([
@@ -759,14 +757,14 @@ class theme extends common {
 	 * Réinitialisation de la personnalisation avancée
 	 */
 	public function reset() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < theme::$actions['reset'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
@@ -785,7 +783,7 @@ class theme extends common {
 						break;
 					case 'manage':
 						$this->initData('theme');
-						$redirect = helper::baseUrl() . 'theme/manage'; 
+						$redirect = helper::baseUrl() . 'theme/manage';
 						break;
 					case 'custom':
 						unlink(self::DATA_DIR.'custom.css');
@@ -815,14 +813,14 @@ class theme extends common {
 	 * Options du site
 	 */
 	public function site() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < theme::$actions['site'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
@@ -845,8 +843,11 @@ class theme extends common {
 					'backgroundColor' => $this->getInput('themeSiteBackgroundColor'),
 					'radius' => $this->getInput('themeSiteRadius'),
 					'shadow' => $this->getInput('themeSiteShadow'),
+					'scrollspeed' => $this->getInput('themeSiteScrollSpeed'),
 					'width' => $this->getInput('themeSiteWidth'),
-					'margin' => $this->getInput('themeSiteMargin',helper::FILTER_BOOLEAN)
+					'margin' => $this->getInput('themeSiteMargin',helper::FILTER_BOOLEAN),
+					'ScrollUaDbackgroundColor' => $this->getInput('themeSiteScrollUaDBackground'),
+					'scrollUaDColor' => $this->getInput('themeSiteScrollUaDColor')
 				]]);
 				$this->setData(['theme', 'button', [
 					'backgroundColor' => $this->getInput('themeButtonBackgroundColor')
@@ -883,14 +884,14 @@ class theme extends common {
 	 * Import du thème
 	 */
 	public function manage() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < theme::$actions['manage'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
@@ -905,7 +906,7 @@ class theme extends common {
 				} elseif( isset( $_POST['themeExportAdmin'])){
 					$this->export('admin',$this->getInput('themeExportName'));
 				}else {
-					$zipFilename =	$this->getInput('themeManageImport', helper::FILTER_STRING_SHORT, true);		
+					$zipFilename =	$this->getInput('themeManageImport', helper::FILTER_STRING_SHORT, true);
 					$data = $this->import(self::FILE_DIR.'source/' . $zipFilename);
 					if ($data['success']) {
 						// Refresh: 0 bien contenu dans la réponse envoyée au navigateur mais sans l'effet attendu
@@ -1014,14 +1015,14 @@ class theme extends common {
 	 * Export du thème
 	 */
 	public function export($modele, $name) {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < theme::$actions['export'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Make zip
 			$zipFilename = $this->zipTheme($modele, $name);
@@ -1042,14 +1043,14 @@ class theme extends common {
 	 * Export du thème
 	 */
 	public function save($modele, $name) {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < theme::$actions['save'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
@@ -1070,7 +1071,7 @@ class theme extends common {
 			]);
 		}
 	}
-	
+
 	/**
 	* Sauvegarde du thème du site ou de l'administration avant application d'un nouveau thème
 	*/
@@ -1093,11 +1094,11 @@ class theme extends common {
 	 */
 	private function zipTheme($modele, $name) {
 		// Creation du dossier
-		if( $name === '' || $name === null){ 
+		if( $name === '' || $name === null){
 			$name = $modele . date('Y-m-d-H-i-s', time()) ;
 		} else {
 			$name = str_replace('.','',$name);
-		}		
+		}
 		$zipFilename  = $name . '.zip';
 		$zip = new ZipArchive();
 		if ($zip->open(self::TEMP_DIR . $zipFilename, ZipArchive::CREATE | ZipArchive::OVERWRITE ) === TRUE) {
@@ -1154,7 +1155,7 @@ class theme extends common {
 		}
 		return ($zipFilename);
 	}
-	
+
 	/*
 	* Extraction des noms des polices de fonts.json vers self::$fonts
 	*/
@@ -1170,7 +1171,7 @@ class theme extends common {
 			return $fonts;
 		}
 	}
-	
+
 	/*
 	* Calcul de swiperContent utilisé par site() ou par header()
 	*/
@@ -1187,7 +1188,7 @@ class theme extends common {
 			$effect = $this->getInput('themeHeaderSwiperEffects');
 			$direction = $this->getInput('themeHeaderSwiperDirection');
 			$time = $this->getInput('themeHeaderSwiperTime');
-			$transition = $this->getInput('themeHeaderSwiperTransition');	
+			$transition = $this->getInput('themeHeaderSwiperTransition');
 		}
 		// Extraction des images du dossier choisi
 		$iterator = new DirectoryIterator('./'.$dir);
@@ -1203,7 +1204,7 @@ class theme extends common {
 		// Adaptation du css au client pour l'option de défilement vertical
 		if(  $effect === 'vertical'){
 			$size = getimagesize($imageFile[0]);
-			$heightMod = 0;	
+			$heightMod = 0;
 			if( isset( $_COOKIE["DELTA_COOKIE_INNERWIDTH"] ) ){
 				$wclient = $_COOKIE["DELTA_COOKIE_INNERWIDTH"];
 			} else {
@@ -1228,8 +1229,8 @@ class theme extends common {
 				}
 				$heightMod = $size[1] * ( $widthMod / $size[0]);
 				if( $widthMod < 10 || $heightMod <10 ){ $widthMod=10; $heightMod=10;}
-				$swiperContent .= '<div id="headerSwiper"><div class="swiper mySwiper" style="width: '. (int)$widthMod . 'px; height:'.(int)$heightMod.'px"><div class="swiper-wrapper">';			
-			} else {		
+				$swiperContent .= '<div id="headerSwiper"><div class="swiper mySwiper" style="width: '. (int)$widthMod . 'px; height:'.(int)$heightMod.'px"><div class="swiper-wrapper">';
+			} else {
 				$heightMod = $size[1] * ( $wclient / $size[0]);
 				if( $heightMod <10 ){ $heightMod=10;}
 				$swiperContent .= '<div id="headerSwiper"><div class="swiper mySwiper" style="width: 100%; height:'.(int)$heightMod.'px"><div class="swiper-wrapper">';
@@ -1242,7 +1243,7 @@ class theme extends common {
 		}
 		$swiperContent .= '</div></div></div>';
 		$swiperContent .= '<script> var swiperBanner = new Swiper(".mySwiper", { ';
-		// Effets retenus fade, cube, sans effet avec défilement H ou V 
+		// Effets retenus fade, cube, sans effet avec défilement H ou V
 		$reverse ='false';
 		switch ($effect) {
 			case 'fade':
@@ -1256,9 +1257,9 @@ class theme extends common {
 			break;
 			case 'none':
 			break;
-		}	
+		}
 		$reverse ='false';
-		if( $direction === '1') $reverse = 'true';				
+		if( $direction === '1') $reverse = 'true';
 		$swiperContent .= 'loop: true,';
 		$swiperContent .= 'autoplay: {delay: '. $time .', reverseDirection: '.$reverse.', },';
 		$swiperContent .= 'speed: '. $transition .', });';

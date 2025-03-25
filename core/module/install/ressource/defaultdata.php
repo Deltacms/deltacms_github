@@ -23,7 +23,7 @@ class init extends common {
 					'user' => '',
 					'subject' => '',
 					'captcha' => true,
-					'nbItemPage' => '3'					
+					'nbItemPage' => '3'
 				]
 			],
 			'timezone' => 'Europe/Paris',
@@ -46,7 +46,8 @@ class init extends common {
 				'anonymousIp' => 2,
 				'captcha' => true,
 				'captchaBot' => true,
-				'passwordVisibility' => false
+				'passwordVisibility' => false,
+				'trust' => false
 			],
 			'i18n' => [
 				'enable'=> true,
@@ -76,7 +77,7 @@ class init extends common {
 			]
 		],
 		'core' => [
-			'dataVersion' => 5301,
+			'dataVersion' => 5401,
 			'lastBackup' => 0,
 			'lastClearTmp' => 0,
 			'lastAutoUpdate' => 0,
@@ -127,7 +128,8 @@ class init extends common {
             'burgerCenterIconLink' => 'recherche'
 			],
 			'mandatoryText' => 'Saisie obligatoire',
-			'impossibleText' => 'Impossible de soumettre le formulaire, car il contient des erreurs'
+			'impossibleText' => 'Impossible de soumettre le formulaire, car il contient des erreurs',
+			'captchaAddition' => 'Additionner les chiffres'
 		],
 		'page' => [
 			'accueil' => [
@@ -319,9 +321,7 @@ class init extends common {
 				'imageAttachment' => 'scroll',
 				'imageRepeat' => 'no-repeat',
 				'imagePosition' => 'top center',
-				'imageSize' => 'auto',
-				'toTopbackgroundColor' => 'rgba(33, 34, 35, .8)',
-				'toTopColor' => 'rgba(255, 255, 255, 1)'
+				'imageSize' => 'auto'
 			],
 			'footer' => [
 				'backgroundColor' => 'rgba(255, 255, 255, 1)',
@@ -372,7 +372,7 @@ class init extends common {
 				'feature' => 'wallpaper',
 				'featureContent' => '<p>Bannière vide</p>',
 				'width' => 'container',
-				'homePageOnly' => false,	
+				'homePageOnly' => false,
 				'swiperImagesDir' => '',
 				'swiperContent' => '',
 				'swiperEffects' => 'fade',
@@ -428,7 +428,9 @@ class init extends common {
 				'backgroundColor' => 'rgba(255, 255, 255, 1)',
 				'radius' => '0px',
 				'shadow' => '0px 0px 0px',
-				'width' => '100%'
+				'width' => '100%',
+				'ScrollUaDbackgroundColor' => 'rgba(33, 34, 35, .8)',
+				'scrollUaDColor' => 'rgba(255, 255, 255, 1)'
 			],
 			'block' => [
 				'backgroundTitleColor' => 'rgba(230, 230, 230, 1)',

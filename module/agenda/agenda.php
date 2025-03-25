@@ -36,7 +36,7 @@ class agenda extends common {
 		'index' => self::GROUP_VISITOR
 	];
 
-	const VERSION = '7.4';	
+	const VERSION = '7.5';	
 	const REALNAME = 'Agenda';
 	const DELETE = true;
 	const UPDATE = '4.1';
@@ -153,9 +153,9 @@ class agenda extends common {
 				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','7.1']);
 			}
 			// Mise à jour vers la version 7.4
-			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '7.4', '<') ) {	
+			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '7.5', '<') ) {	
 				if(is_file('./module/agenda/view/index/index.css')) unlink('./module/agenda/view/index/index.css');
-				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','7.4']);
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','7.5']);
 			}
 		}
 	}

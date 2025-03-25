@@ -27,10 +27,14 @@ if($langAdmin === 'fr'){
 }
 
 // Lecture du groupe de l'utilisateur connecté pour attribuer les droits et les dossiers
-$userId = $_COOKIE['DELTA_USER_ID'];
-$json = file_get_contents('../../../site/data/user.json');
-$tab = json_decode($json, true);
-$group = $tab['user'][$userId]['group'];
+if(isset($_SESSION['DELTA_USER_ID'])){
+	$userId = $_SESSION['DELTA_USER_ID'];
+	$json = file_get_contents('../../../site/data/user.json');
+	$tab = json_decode($json, true);
+	$group = $tab['user'][$userId]['group'];
+}else{
+	$group = 1;
+}
 $uploadDir = '/site/file/source/';
 $currentPath = '../../../site/file/source/';
 switch ($group) {
@@ -310,7 +314,7 @@ $config = [
 	//convert all spaces on files name and folders name this value
 	'replace_with'							=> "_",
 	//convert to lowercase the files and folders name
-	'lower_case'							=> true,
+	'lower_case'							=> false,
 	//Add ?484899493349 (time value) to returned images to prevent cache
 	'add_time_to_img'                       => false,
 

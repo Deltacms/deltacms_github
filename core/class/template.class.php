@@ -1,5 +1,4 @@
 <?php
-
 class template {
 
     /**
@@ -38,10 +37,10 @@ class template {
     * @return string
     */
     public static function captcha($nameId, $classWrapper) {
-
+		$textInput = $_SESSION['captchaAddition'] ?? 'addition';
 		$html = '<div id="' . $nameId . 'Wrapper" class="captcha inputWrapper ' . $classWrapper. '">';
 		$html .= '<img src="core/vendor/captcha/captcha.php" alt="Captcha" id="captcha">';
-		$html .= '<input name="codeCaptcha" type="text" size="9" style="position:relative;top:-40px;left:-10px;">';
+		$html .= '<input name="codeCaptcha" type="text" size="9" style="position:relative;top:-40px;left:-10px;" data-tippy-content="'.$textInput.'">';
 		$html .= '<img src="core/vendor/captcha/reload.png" alt="" style="cursor:pointer;position:relative;top:-30px;left:10px;width:24px;height:auto;"';
 		$html .= ' onclick="document.images.captcha.src=\'core/vendor/captcha/captcha.php?id=\'+Math.round(Math.random(0)*1000)">';
 		$html .= '</div>';
@@ -295,7 +294,7 @@ class template {
     * @return string
     */
     public static function formOpenFile($id, $action = '') {
-        // Ouverture formulaire   
+        // Ouverture formulaire
 		if($action === ''){
 			$html = '<form id="' . $id . '" enctype="multipart/form-data" method="post">';
 		} else {
@@ -543,7 +542,7 @@ class template {
 		// Suppression de selected="..." dans <select ....>
 		$selected = $attributes['selected'];
 		$attributes['selected'] ='';
-		
+
         // Début du wrapper
         $html = '<div id="' . $attributes['id'] . 'Wrapper" class="inputWrapper ' . $attributes['classWrapper'] . '">';
         // Label

@@ -1,5 +1,23 @@
 # Changelog
 
+## Version 5.4.01 de Deltacms
+- Modifications :
+	- Sécurité du site renforcée par un nouveau captcha et un système d'analyse comportementale,
+	- Configuration du site / Connexion Sécurité : mesure de l'indice de confiance du visiteur, cette option permet aux formulaires de conditionner la soumission,
+	- Module Form : la soumission peut être conditionnée à un indice de confiance dont le seuil est réglable en configuration du module,
+	- Module Slider : nouvelle option 'Bordure et ombre des blocs',
+	- Module Blog : la bordure de l'image de couverture est paramétrable, la transparence des images est respectée,
+	- Paramétrage du bouton de scroll mis en place dans les paramètres du site,
+	- Modification du bouton de scroll permettant désormais de faire défiler la page vers le haut et vers le bas,
+	- Installation ou création d'une traduction rédigée : la langue de rédaction, si elle est 'fr', 'en' ou 'es', est prioritaire sur la langue d'administration pour l'initialisation des textes.
+- Corrections :
+	- Module Statislite 5.4 : prise en compte des pages en traduction rédigée,
+	- Correction de la réponse aux erreurs 404,
+	- Page / Permission : correction d'un problème d'accès quand une page était réservée à un membre particulier.
+- Sur le site :
+	- Bonus / Thèmes : un nouveau thème est disponible au téléchargement, vous pouvez le tester sur https://template.deltacms.fr
+	- Bonus -> modules : Vidéo en version 1.6, en configuration l'espacement et l'ordre des vidéos sont paramétrables, l'ajout des vignettes facilite le tri et la rédaction des légendes	
+
 ## Version 5.3.01 de Deltacms
 - Modifications :
 	- Thème / Menu : l'option 'Menu toujours visible' (anciennement 'Menu fixe') est généralisée à l'ensemble des configurations,
@@ -8,7 +26,7 @@
 	- Edition / Tinymce : un espace insécable est ajouté lors de l'insertion d'une image pour faciliter les saisies suivantes,
 	- Module User / Importation : dans le fichier csv 'password' peut maintenant être une chaîne vide,
 	- Module User / Login : amélioration du démasquage du mot de passe sur les appareils tactiles,
-	- Aide : le bouton d'aide constiuté d'un ? cerclé n'apparaît plus sur les terminaux mobiles.
+	- Aide : le bouton d'aide constitué d'un ? cerclé n'apparaît plus sur les terminaux mobiles.
 - Corrections :
 	- Module Search 3.8 : certains caractères dans le mot de recherche provoquaient un warning,
 	- Module Page : l'effacement d'une page sans module associé provoquait un warning,

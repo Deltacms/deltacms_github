@@ -21,7 +21,7 @@
 
 class blog extends common {
 
-	const VERSION = '7.5';
+	const VERSION = '7.6';
 	const REALNAME = 'Blog';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -687,7 +687,8 @@ class blog extends common {
 					'feedsLabel' => $this->getInput('blogConfigFeedslabel',helper::FILTER_STRING_SHORT),
 					'itemsperPage' => $this->getInput('blogConfigItemsperPage', helper::FILTER_INT,true),
 					'previewSize' => $this->getInput('blogConfigPreviewSize', helper::FILTER_INT,true),
-					'versionData' => self::VERSION
+					'versionData' => self::VERSION,
+					'blogBorder' => $this->getInput('blogBorder', helper::FILTER_BOOLEAN)
 				]]);
 				// Valeurs en sortie
 				$this->addOutput([

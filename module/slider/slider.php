@@ -26,7 +26,7 @@ class slider extends common {
 		'index' => self::GROUP_VISITOR
 	];
 	
-	const VERSION = '6.5';	
+	const VERSION = '6.6';	
 	const REALNAME = 'Slider';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -112,9 +112,11 @@ class slider extends common {
 				$this->init();
 			}
 		} else {
-			// Version 6.5
-			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '6.5', '<') ) {
-				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','6.5']);
+			// Version 6.6
+			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '6.6', '<') ) {
+				// Nouvelle option bordure et ombre des blocs
+				$this->setData(['module', $this->getUrl(0), 'config', 'sliderBorder', false]);
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','6.6']);
 			}
 		}		
 	}	
@@ -175,7 +177,8 @@ class slider extends common {
 						'tempsApparition' => 'opacity 2s ease-in',
 						'typeBouton' => 'cer_blanc',
 						'tri' => 'SORT_ASC',
-						'versionData' => self::VERSION
+						'versionData' => self::VERSION,
+						'sliderBorder' => false
 					],
 					'legend' => [],
 					'href' => []
@@ -215,7 +218,8 @@ class slider extends common {
 						'tempsApparition' => $this->getInput('sliderTempsApparition', helper::FILTER_STRING_SHORT, true),
 						'typeBouton' => $this->getInput('sliderTypeBouton', helper::FILTER_STRING_SHORT, true),
 						'tri' => $this->getInput('sliderTri', helper::FILTER_STRING_SHORT, true),
-						'versionData' => self::VERSION
+						'versionData' => self::VERSION,
+						'sliderBorder' => $this->getInput('sliderBorder', helper::FILTER_BOOLEAN)
 					],
 					'legend' => $legends,
 					'href' => $hrefs

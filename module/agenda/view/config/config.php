@@ -174,11 +174,18 @@ else {
 	</div>
 </div>
 
-<!-- Textes pour la vue des évènements par un visiteur -->
+
 <?php
-if( null === $this->getData(['module', $this->getUrl(0), 'texts', 'configTextButtonBack'])) $this->setData(['module', $this->getUrl(0), 'texts', 'configTextButtonBack', $text['agenda_view']['config'][0]]);
-if( null === $this->getData(['module', $this->getUrl(0), 'texts', 'configTextDateStart'])) $this->setData(['module', $this->getUrl(0), 'texts', 'configTextDateStart', $text['agenda_view']['config'][33]]);
-if( null === $this->getData(['module', $this->getUrl(0), 'texts', 'configTextDateEnd'])) $this->setData(['module', $this->getUrl(0), 'texts', 'configTextDateEnd', $text['agenda_view']['config'][34]]);
+// Initialisation des textes pour la vue des évènements par un visiteur
+if( null === $this->getData(['module', $this->getUrl(0), 'texts', 'configTextButtonBack']) 
+	|| null === $this->getData(['module', $this->getUrl(0), 'texts', 'configTextDateStart'])
+	|| null === $this->getData(['module', $this->getUrl(0), 'texts', 'configTextDateEnd']) ){
+	include('./module/agenda/lang/'. helper::lexlang($this->getData(['config', 'i18n', 'langBase']) , $this->getData(['config', 'i18n', 'langAdmin'])) . '/lex_agenda.php');
+	$this->setData(['module', $this->getUrl(0), 'texts', 'configTextButtonBack', $text['agenda_view']['config'][0]]);
+	$this->setData(['module', $this->getUrl(0), 'texts', 'configTextDateStart', $text['agenda_view']['config'][33]]);
+	$this->setData(['module', $this->getUrl(0), 'texts', 'configTextDateEnd', $text['agenda_view']['config'][34]]);
+	include('./module/agenda/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_agenda.php');
+}
 ?>
 <div class="block">
 	<div class="blockTitle"><?php echo $text['agenda_view']['config'][26].' '.template::flag($flag, '20px'); ?></div>

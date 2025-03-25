@@ -517,23 +517,28 @@ footer #footerSocials .delta-ico-github:hover {
 	bottom: -30px;
 	border: solid 20px;
 }
-/* Remonter en haut */
-#backToTop {
+/* Remonter en haut et descendre en bas */
+#scrollUaD {
 	position: fixed;
 	z-index: 50;
-	right: 30px;
 	bottom: 100px;
-	padding: 13px 16px 16px;
+	right: 20px;
 	cursor: pointer;
-	display: none;
-	border-radius: 50%;
+	border-radius: 10%;
 	transition: background 0.3s ease-out;
-}
-#backToTop:hover {
+ }
+#scrollUaD:hover {
 	background: rgb(33, 34, 35, 0.9);
 }
-#backToTop:active {
+#scrollUaD:active {
 	background: rgb(33, 34, 35, 1);
+}
+#top, #bottom {
+	display: block;
+	padding: 5px 10px;
+}
+#scrollUaD, #top, #bottom {
+	display: none;
 }
 /* Message sur les cookies */
 #cookieConsent {
@@ -1095,12 +1100,12 @@ figure.image figcaption {
 }
 /* Template bloc coloré pleine largeur dans tinymce et l'aperçu des templates */
 body.editorWysiwyg > .blockFullWidth {
-	padding: 10px 30px; 
+	padding: 10px 30px;
 }
 /* Valeurs par défaut du gabarit Color box */
 .colorbox-0 {
 	color: #F7F6CF;
-	background-color: #5784BA; 
+	background-color: #5784BA;
 }
 .colorbox-0 a {
 	color: #FFBF66;

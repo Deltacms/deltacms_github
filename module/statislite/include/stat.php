@@ -4,7 +4,7 @@
 */
 
 // Paramètres
-$fichiers_json = './site/data/'.self::$i18n.'/data_module/statislite/json/';
+$fichiers_json = './site/data/base/data_module/statislite/json/';
 $filtres_primaires = './site/data/statislite/module/filtres_primaires/';
 
 // Ne peut s'exécuter que si filtre_primaire.json existe
@@ -166,7 +166,7 @@ if( file_exists($fichiers_json.'filtre_primaire.json')){
 			$log[$indice]['vues'][$indice2] = date('Y/m/d H:i:s').' * '.$_SERVER['QUERY_STRING'];
 		}
 		else{
-			$log[$indice]['vues'][$indice2] = date('Y/m/d H:i:s').' * Page d\'accueil';
+			$log[$indice]['vues'][$indice2] = date('Y/m/d H:i:s').' * '.$this->getData(['locale','homePageId']);
 		}
 
 		// Encodage et sauvegarde

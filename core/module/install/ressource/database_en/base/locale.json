@@ -43,6 +43,7 @@
             "burgerCenterIconLink": "recherche"
         },
 		"mandatoryText": "Mandatory entry",
-		"impossibleText": "The form cannot be submitted because it contains errors"
+		"impossibleText": "The form cannot be submitted because it contains errors",
+		"captchaAddition": "Add the numbers"
     }
 }

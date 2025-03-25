@@ -319,6 +319,28 @@ else{
 	<div class="row">
 		<div class="col12">
 			<div class="block">
+				<div class="blockTitle"><?php echo $text['core_config_view']['locale'][68]; echo template::flag($flag, '20px');?>
+					<span id="labelHelpButton" class="helpDisplayButton">
+						<a href="https://doc.deltacms.fr/localisation#captcha_addition" target="_blank">
+							<?php echo template::ico('help', 'left');?>
+						</a>
+					</span>
+				</div>
+				<div class="row">
+					<div class="col6">
+						<?php echo template::text('localeCaptchaAddition', [
+							'label' => $text['core_config_view']['locale'][69],
+							'placeholder' => $text['core_config_view']['locale'][70],
+							'value' => $this->getData(['locale', 'captchaAddition'])
+						]); ?>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col12">
+			<div class="block">
 				<div class="blockTitle"><?php echo $text['core_config_view']['locale'][60]; echo template::flag($flag, '20px');?>
 					<span id="labelHelpButton" class="helpDisplayButton">
 						<a href="https://doc.deltacms.fr/localisation#questionnaire" target="_blank">

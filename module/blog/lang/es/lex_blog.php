@@ -50,6 +50,8 @@ $text['blog_view']['config'][14] = "¿Está seguro de que desea eliminar esta pu
 $text['blog_view']['config'][15] = 'Ayuda';
 $text['blog_view']['config'][16] = 'module/blog/view/config/config.help_en.html';
 $text['blog_view']['config'][17] = "Tamaño de vista previa en número de caracteres";
+$text['blog_view']['config'][18] = 'Bloquear borde y sombra';
+$text['blog_view']['config'][19] = 'Aplicar el borde y la sombra establecidos para los bloques del sitio a las imágenes de portada';
 $text['blog_view']['edit'][0] = 'Volver';
 $text['blog_view']['edit'][1] = 'Guardar como borrador';
 $text['blog_view']['edit'][2] = 'Publicar';
@@ -198,7 +200,7 @@ $groupNews = [
 	self::GROUP_EDITOR => 'Editor',
 	self::GROUP_MODERATOR => 'Moderador',
 	self::GROUP_ADMIN => 'Administrador'
-];		
+];
 if( $param === 'blog_view' ) {
 	$articleConsent = [
 		$module::EDIT_ALL 		   => 'Todos los grupos',

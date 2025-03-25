@@ -21,7 +21,7 @@ $(document).ready(function(){
 		textColor = "<?php echo $this->getData(['theme', 'text', 'textColor']);?>";
 		linkColor = "<?php echo $this->getData(['theme', 'text', 'linkColor']);?>";
 	<?php }	?>
-	borderRadius = "<?=$this->getdata(['theme', 'block', 'blockBorderRadius'])?>";
+	borderRadius = "<?=$this->getData(['theme', 'block', 'blockBorderRadius'])?>";
 	$(".galleryGalleryPicture").css("border","solid 1px");
 	$(".galleryGalleryPicture").css("border-color", borderColor);
 	$(".galleryGalleryPicture").css("border-radius", borderRadius);

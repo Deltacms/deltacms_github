@@ -201,7 +201,15 @@ else{
 							'checked' => $this->getData(['module', $this->getUrl(0), 'config', 'captcha'])
 						]); ?>
 					</div>
-					<div class="col6">
+					<div class="col4">
+						<?php echo template::select('formConfigTrustLimit', $trust_limit, [
+							'label' => $text['form_view']['config'][44],
+							'help' => $text['form_view']['config'][45],
+							'selected' => $this->getData(['module', $this->getUrl(0), 'config', 'trustLimit']),
+							'disabled' => $this->getData(['config','connect','trust'])===true ? false:true
+						]); ?>
+					</div>
+					<div class="col4">
 						<?php echo template::checkbox('formConfigRgpdCheck', true, $text['form_view']['config'][41], [
 							'checked' => $this->getData(['module', $this->getUrl(0), 'config', 'rgpdCheck']),
 							'help' => $text['form_view']['config'][42]

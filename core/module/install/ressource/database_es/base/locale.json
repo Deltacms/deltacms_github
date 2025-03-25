@@ -43,6 +43,7 @@
             "burgerCenterIconLink": "investigacion"
         },
 		"mandatoryText": "Entrada obligatoria",
-		"impossibleText": "El formulario no se puede enviar porque contiene errores"	
+		"impossibleText": "El formulario no se puede enviar porque contiene errores",
+		"captchaAddition": "Suma los números"
     }
 }

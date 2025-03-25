@@ -91,7 +91,11 @@ class translate extends common {
 					}
 					if( $this->getInput('translateCopyAllPages') === '1'){
 						// Copie de toutes les pages / Copier les données par défaut avec gestion des erreurs
-						$success  = (copy (self::DATA_DIR . $copyFrom . '/locale.json', self::DATA_DIR . $toCreate . '/locale.json') === true && $success  === true) ? true : false;
+						if(array_key_exists($toCreate, self::$i18nList_admin)){
+							$success  = (copy ('core/module/install/ressource/database_'.$toCreate.'/base/locale.json', self::DATA_DIR . $toCreate . '/locale.json') === true && $success  === true) ? true : false;
+						} else {
+							$success  = (copy (self::DATA_DIR . $copyFrom . '/locale.json', self::DATA_DIR . $toCreate . '/locale.json') === true && $success  === true) ? true : false;
+						}
 						$success  = (copy (self::DATA_DIR . $copyFrom . '/module.json', self::DATA_DIR . $toCreate . '/module.json') === true && $success  === true) ? true : false;
 						$success  = (copy (self::DATA_DIR . $copyFrom . '/page.json', self::DATA_DIR . $toCreate . '/page.json') === true && $success  === true) ? true : false;
 						$success  = ($this->copyDir (self::DATA_DIR . $copyFrom . '/content', self::DATA_DIR . $toCreate . '/content') === true && $success  === true) ? true : false;
@@ -111,7 +115,11 @@ class translate extends common {
 						$copyBarAuto = $this->getInput('translateCopyBarAuto');
 						// Si le dossier langue (es, en, de...) ne contient pas le fichier page.json l'initialiser avec module vide,  page vide, locale de la langue d'origine
 						if( !file_exists( self::DATA_DIR . $toCreate . '/page.json')){
-							$success  = (copy (self::DATA_DIR . $copyFrom . '/locale.json', self::DATA_DIR . $toCreate . '/locale.json') === true && $success  === true) ? true : false;
+							if(array_key_exists($toCreate, self::$i18nList_admin)){
+								$success  = (copy ('core/module/install/ressource/database_'.$toCreate.'/base/locale.json', self::DATA_DIR . $toCreate . '/locale.json') === true && $success  === true) ? true : false;
+							} else {
+								$success  = (copy (self::DATA_DIR . $copyFrom . '/locale.json', self::DATA_DIR . $toCreate . '/locale.json') === true && $success  === true) ? true : false;
+							}							
 							$success  = (copy ('core/module/translate/ressource/module.json', self::DATA_DIR . $toCreate . '/module.json') === true && $success  === true) ? true : false;
 							$success  = (copy ('core/module/translate/ressource/page.json', self::DATA_DIR . $toCreate . '/page.json') === true && $success  === true) ? true : false;
 							$success  = (copy ('core/module/translate/ressource/comment.json', self::DATA_DIR . $toCreate . '/comment.json') === true && $success  === true) ? true : false;							

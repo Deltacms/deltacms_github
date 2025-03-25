@@ -7,7 +7,7 @@
  */
 setlocale(LC_NUMERIC,'English','en_US','en_US.UTF-8');
 class album extends common {
-	const VERSION = '5.1';
+	const VERSION = '5.2';
 	const REALNAME = 'Album Photo';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -413,7 +413,7 @@ class album extends common {
 						'position' => $this->getData(['module', $this->getUrl(0), $galleryId,'config','position'])
 					],
 					'legend' => $legends,
-					'order' => empty($oldorder) ? $this->getdata(['module', $this->getUrl(0), $galleryId, 'order']) : $oldorder
+					'order' => empty($oldorder) ? $this->getData(['module', $this->getUrl(0), $galleryId, 'order']) : $oldorder
 				]]);
 				}
 				// Valeurs en sortie
@@ -447,7 +447,7 @@ class album extends common {
 				// Tri des images
 				switch ($this->getData(['module', $this->getUrl(0), $this->getUrl(2), 'config', 'sort'])) {
 					case self::SORT_HAND:
-						$order = $this->getdata(['module',$this->getUrl(0), $this->getUrl(2),'order']);
+						$order = $this->getData(['module',$this->getUrl(0), $this->getUrl(2),'order']);
 						if ($order) {
 							foreach ($order as $key => $value) {
 								if (array_key_exists($key,self::$pictures)) {
@@ -544,7 +544,6 @@ class album extends common {
 					$this->addOutput([
 						'showBarEditButton' => true,
 						'title' => $this->getData(['module', $this->getUrl(0), $this->getUrl(1), 'config', 'name']),
-						'vendor' => ['js'],
 						'view' => 'gallery'
 					]);
 				}
@@ -589,7 +588,6 @@ class album extends common {
 			$this->addOutput([
 				'showBarEditButton' => true,
 				'showPageContent' => true,
-				'vendor' => ['js'],
 				'view' => 'index'
 			]);
 		}

@@ -69,8 +69,8 @@ if ($this->getData(['core', 'dataVersion']) < 4307) {
 
 if ($this->getData(['core', 'dataVersion']) < 4308) {
 	$this->setData(['config', 'connect', 'captchaBot', true]);
-	$this->setData(['locale', 'captchaSimpleText', 'Je ne suis pas un robot' ]);
-	$this->setData(['locale', 'captchaSimpleHelp', 'Cochez cette case pour prouver que vous n\'êtes pas un robot' ]);
+	$this->setDataAllLocale(['locale', 'captchaSimpleText', 'Je ne suis pas un robot' ]);
+	$this->setDataAllLocale(['locale', 'captchaSimpleHelp', 'Cochez cette case pour prouver que vous n\'êtes pas un robot' ]);
 	$this->deleteData([ 'config', 'connect', 'captchaStrong' ]);
 	$this->deleteData([ 'config', 'connect', 'captchaType' ]);
 	// Mise à jour
@@ -160,18 +160,18 @@ if ($this->getData(['core', 'dataVersion']) < 4501) {
 			$groupWhoIs = [ 0=>'Visitante', 1=>'Miembro', 2=>'Editor', 3=>'Moderador', 4=>'Administrador' ];
 		break;
 	}
-	$this->setData(['locale', 'visitorLabel', $groupWhoIs[0] ]);
-	$this->setData(['locale', 'memberLabel', $groupWhoIs[1] ]);
-	$this->setData(['locale', 'editorLabel', $groupWhoIs[2] ]);
-	$this->setData(['locale', 'moderatorLabel', $groupWhoIs[3] ]);
-	$this->setData(['locale', 'administratorLabel', $groupWhoIs[4] ]);
+	$this->setDataAllLocale(['locale', 'visitorLabel', $groupWhoIs[0] ]);
+	$this->setDataAllLocale(['locale', 'memberLabel', $groupWhoIs[1] ]);
+	$this->setDataAllLocale(['locale', 'editorLabel', $groupWhoIs[2] ]);
+	$this->setDataAllLocale(['locale', 'moderatorLabel', $groupWhoIs[3] ]);
+	$this->setDataAllLocale(['locale', 'administratorLabel', $groupWhoIs[4] ]);
 	if( is_file('./site/data/body.inc.html')) rename('./site/data/body.inc.html', './site/data/body.inc.php' );
 	if( is_file('./site/data/head.inc.html')) rename('./site/data/head.inc.html', './site/data/head.inc.php' );
 	$this->setData(['core', 'dataVersion', 4501]);
 }
 if ($this->getData(['core', 'dataVersion']) < 4502) {
 	// Déplacement et renommage des variables Burger Icon Link
-	$this->setData(['locale', 'menuBurger', [
+	$this->setDataAllLocale(['locale', 'menuBurger', [
 		'burgerLeftIconLink' => $this->getData(['theme', 'menu','burgerIconLink1']) ,
 		'burgerCenterIconLink' => $this->getData(['theme', 'menu','burgerIconLink2'])
 	]]);
@@ -186,12 +186,12 @@ if ($this->getData(['core', 'dataVersion']) < 5001) {
 	$this->setData([ 'config', 'social', 'comment',	'captcha', true]);
 	$this->setData([ 'config', 'social', 'comment',	'nbItemPage', '3']);
 	copy ('core/module/install/ressource/database_fr/base/comment.json', self::DATA_DIR . 'base' . '/comment.json');
-	$this->setData(['locale', 'pageComment', 'writeComment', 'Ecrire un commentaire']);
-	$this->setData(['locale', 'pageComment', 'commentName', 'Nom ou pseudo']);
-	$this->setData(['locale', 'pageComment', 'comment', 'Commentaire']);
-	$this->setData(['locale', 'pageComment', 'submit', 'Envoyer']);
-	$this->setData(['locale', 'pageComment', 'link', ', le']);
-	$this->setData(['locale', 'pageComment', 'page', 'Page']);
+	$this->setDataAllLocale(['locale', 'pageComment', 'writeComment', 'Ecrire un commentaire']);
+	$this->setDataAllLocale(['locale', 'pageComment', 'commentName', 'Nom ou pseudo']);
+	$this->setDataAllLocale(['locale', 'pageComment', 'comment', 'Commentaire']);
+	$this->setDataAllLocale(['locale', 'pageComment', 'submit', 'Envoyer']);
+	$this->setDataAllLocale(['locale', 'pageComment', 'link', ', le']);
+	$this->setDataAllLocale(['locale', 'pageComment', 'page', 'Page']);
 	foreach( $this->getData(['config', 'i18n']) as $key => $value){
 		if( $value === 'site') copy ('core/module/install/ressource/database_fr/base/comment.json', self::DATA_DIR . $key . '/comment.json');
 	}
@@ -214,8 +214,9 @@ if ($this->getData(['core', 'dataVersion']) < 5002) {
 }
 if ($this->getData(['core', 'dataVersion']) < 5003) {
 	// Label initial de la checkbox rgpdCheck
+	$param='';
 	include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
-	$this->setData(['locale', 'questionnaireAccept', $text['core_config_view']['locale'][62]]);
+	$this->setDataAllLocale(['locale', 'questionnaireAccept', $text['core_config_view']['locale'][62]]);
 	$this->setData(['core', 'dataVersion', 5003]);
 }
 if ($this->getData(['core', 'dataVersion']) < 5101) {
@@ -227,32 +228,16 @@ if ($this->getData(['core', 'dataVersion']) < 5101) {
 if ($this->getData(['core', 'dataVersion']) < 5102) {
 	// Nouveaux paramètres dans les pages
 	foreach($this->getData(['page']) as $id => $values ) {
-		$this->setData(['page', $id, 'member', 'allMembers' ]);
-		$this->setData(['page', $id, 'memberFile', false ]);
+		$this->setDataAllPage(['page', $id, 'member', 'allMembers' ]);
+		$this->setDataAllPage(['page', $id, 'memberFile', false ]);
 	}
 	// Ajout de variables locales pour toutes les langues
 	$param='';
 	include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
-	$tabLanguages = [];
-	foreach (self::$i18nList as $key => $value) {
-		if ($this->getData(['config','i18n', $key]) === 'site' && $key !== $this->getData(['config','i18n', 'langBase'])) {
-			$tabLanguages[$key] = $value;
-		}
-	}
-	$tabLanguages = array_merge( $tabLanguages, array('base'=>'base'));
-	foreach($tabLanguages as $key=>$value ){
-		if( is_file('./site/data/'.$key.'/module.json' ) ){
-			$this->dataFiles['locale'] = new \Prowebcraft\JsonDb([
-				'name' => 'locale.json',
-				'dir' => self::DATA_DIR . $key . '/',
-				'backup' => file_exists('site/data/.backup')
-			]);
-			$this->setData(['locale', 'mandatoryText', $text['core_config_view']['locale'][64] ]);
-			$this->setData(['locale', 'impossibleText', $text['core_config_view']['locale'][65] ]);
-			$this->setData(['locale', 'pageComment', 'submitted', $text['core_config_view']['locale'][66] ]);
-			$this->setData(['locale', 'pageComment', 'failed', $text['core_config_view']['locale'][67] ]);
-		}
-	}
+	$this->setDataAllLocale(['locale', 'mandatoryText', $text['core_config_view']['locale'][64] ]);
+	$this->setDataAllLocale(['locale', 'impossibleText', $text['core_config_view']['locale'][65] ]);
+	$this->setDataAllLocale(['locale', 'pageComment', 'submitted', $text['core_config_view']['locale'][66] ]);
+	$this->setDataAllLocale(['locale', 'pageComment', 'failed', $text['core_config_view']['locale'][67] ]);
 	$this->setData(['core', 'dataVersion', 5102]);
 }
 if ($this->getData(['core', 'dataVersion']) < 5201) {
@@ -274,5 +259,21 @@ if ($this->getData(['core', 'dataVersion']) < 5202) {
 }
 if ($this->getData(['core', 'dataVersion']) < 5301) {
 	$this->setData(['core', 'dataVersion', 5301]);
+}
+if ($this->getData(['core', 'dataVersion']) < 5401) {
+	// Déplacement du paramétrage du scroll auto
+	$this->setData(['theme', 'site', 'ScrollUaDbackgroundColor', $this->getData(['theme', 'body', 'toTopbackgroundColor'])]);
+	$this->setData(['theme', 'site', 'scrollUaDColor', $this->getData(['theme', 'body', 'toTopColor'])]);
+	$this->deleteData(['theme', 'body', 'toTopbackgroundColor']);
+	$this->deleteData(['theme', 'body', 'toTopColor']);
+	// Forçage de la mise à jour de theme.css
+	if (file_exists(self::DATA_DIR . '/theme.css')) unlink (self::DATA_DIR . '/theme.css');
+	// Nouveau paramètre dans config : mesure de confiance
+	$this->setData(['config', 'connect', 'trust', false]);
+	// Texte initial de l'aide pour le captcha additions
+	$param='';
+	include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
+	$this->setDataAllLocale(['locale', 'captchaAddition', $text['core_config_view']['locale'][70]]);
+	$this->setData(['core', 'dataVersion', 5401]);
 }
 ?>

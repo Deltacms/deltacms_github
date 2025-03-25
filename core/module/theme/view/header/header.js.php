@@ -94,7 +94,7 @@ $("input, select").on("change", function() {
 	var positionHeader = $("#themeHeaderPosition").val();
 	switch(positionHeader) {
 		case 'hide':
-			$("nav").show().prependTo("#site");
+			//$("nav").show().prependTo("#site");
 			$("header").hide();
 			break;
 		case 'site':

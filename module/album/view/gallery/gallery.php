@@ -24,8 +24,8 @@ $get_location = albumHelper::gps_exif($picture);
 	<div class="row">
 <?php endif; ?>
 	<div class="col2 gallery">
-		<a href="<?php echo $picture; ?>" class="galleryGalleryPicture" data-caption="<?php echo $legend; ?>">
-		<figure class="album"><img src="<?php echo albumHelper::makeThumbnail($picture); ?>" alt="<?php echo $legend; ?>">
+		<a href="<?=$picture?>" class="galleryGalleryPicture" data-caption="<?=$legend?>">
+		<figure class="album"><img src="<?=albumHelper::makeThumbnail($picture)?>" alt="<?=$legend?>">
 		<?php if ( ($photo_960 !== false) && (file_exists($urloriginal)) ): ?>
 	<figcaption><div class="galleryGalleryName picResized" onclick="window.open('<?=$urlback?>');" data-tippy-content="image originale">
 	<?php else: ?>

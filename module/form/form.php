@@ -18,7 +18,7 @@
  
 class form extends common {
 
-	const VERSION = '6.4';
+	const VERSION = '6.5';
 	const REALNAME = 'Formulaire';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -115,8 +115,12 @@ class form extends common {
 				]);
 				$this->setData(['module', $this->getUrl(0), 'config', 'versionData', '6.2']);
 			}
-			if( version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '6.4', '<') ){
-				$this->setData(['module', $this->getUrl(0), 'config', 'versionData', '6.4']);
+			if( version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '6.5', '<') ){
+				$param='';
+				include('./module/form/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_form.php');
+				$this->setData(['module', $this->getUrl(0), 'texts', 'noTrust', $text['form']['init'][13] ]);
+				$this->setData(['module', $this->getUrl(0), 'config', 'trustLimit', "80"]);
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData', '6.5']);
 			}
 		}
 	}
@@ -150,6 +154,7 @@ class form extends common {
 				'uploadZip' => false,
 				'uploadTxt' => false,
 				'rgpdCheck' => false,
+				'trustLimit' => "80"
 			],
 		]);
 		$this->setData([
@@ -166,7 +171,8 @@ class form extends common {
 				'errorUploading' => $text['form']['init'][8],
 				'notPdf' => $text['form']['init'][10],
 				'notZip' => $text['form']['init'][11],
-				'fillCaptcha' => $text['form']['init'][12]				
+				'fillCaptcha' => $text['form']['init'][12],
+				'noTrust' => $text['form']['init'][13]
 			]
 		]);
 	}
@@ -218,7 +224,8 @@ class form extends common {
 						'uploadPdf' => $this->getInput('formConfigUploadPdf', helper::FILTER_BOOLEAN),
 						'uploadZip' => $this->getInput('formConfigUploadZip', helper::FILTER_BOOLEAN),
 						'uploadTxt' => $this->getInput('formConfigUploadTxt', helper::FILTER_BOOLEAN),
-						'rgpdCheck' => $this->getInput('formConfigRgpdCheck', helper::FILTER_BOOLEAN)
+						'rgpdCheck' => $this->getInput('formConfigRgpdCheck', helper::FILTER_BOOLEAN),
+						'trustLimit' => $this->getInput('formConfigTrustLimit')
 					]
 				]);
 				// Génération des données vides
@@ -291,7 +298,8 @@ class form extends common {
 					'errorUploading' => $this->getInput('formTextsErrorUploading',helper::FILTER_STRING_SHORT),
 					'notPdf' => $this->getInput('formTextsNotPdf',helper::FILTER_STRING_SHORT),
 					'notZip' => $this->getInput('formTextsNotZip',helper::FILTER_STRING_SHORT),
-					'fillCaptcha' => $this->getInput('formTextsFillCaptcha',helper::FILTER_STRING_SHORT)
+					'fillCaptcha' => $this->getInput('formTextsFillCaptcha',helper::FILTER_STRING_SHORT),
+					'noTrust' => $this->getInput('formTextsNoTrust',helper::FILTER_STRING_SHORT)
 				]]);
 			
 				$this->addOutput([
@@ -713,53 +721,61 @@ class form extends common {
 				} else {
 					$this->setData(['data_module', $this->getUrl(0), 'data', 1, $data]);
 				}
-				// Emission du mail
-				// Rechercher l'adresse en fonction du mail
-				$singleuser = $this->getData(['user',
-											  $this->getData(['module', $this->getUrl(0), 'config', 'user']),
-											  'mail']);
-				$singlemail = $this->getData(['module', $this->getUrl(0), 'config', 'mail']);
-				$group = $this->getData(['module', $this->getUrl(0), 'config', 'group']);
-				// Verification si le mail peut être envoyé
-				if(
-					self::$inputNotices === [] && (
-						$group > 0 ||
-						$singleuser !== '' ||
-						$singlemail !== '' )
-				) {
-					// Utilisateurs dans le groupe
-					$to = [];
-					if ($group > 0){
-						foreach($this->getData(['user']) as $userId => $user) {
-							if($user['group'] >= $group) {
-								$to[] = $user['mail'];
+				// Emission du mail si l'indice de confiance est suffisant
+				$trust_score = 100;
+				$limit = $this->getData(['module',$this->getUrl(0),'config','trustLimit']);
+				if($this->getData(['config','connect','trust'])===true && $limit > 0) $trust_score = $this->trustscore();
+				if($trust_score >= $limit){
+					// Rechercher l'adresse en fonction du mail
+					$singleuser = $this->getData(['user',
+												  $this->getData(['module', $this->getUrl(0), 'config', 'user']),
+												  'mail']);
+					$singlemail = $this->getData(['module', $this->getUrl(0), 'config', 'mail']);
+					$group = $this->getData(['module', $this->getUrl(0), 'config', 'group']);
+					// Verification si le mail peut être envoyé
+					if(
+						self::$inputNotices === [] && (
+							$group > 0 ||
+							$singleuser !== '' ||
+							$singlemail !== '' )
+					) {
+						// Utilisateurs dans le groupe
+						$to = [];
+						if ($group > 0){
+							foreach($this->getData(['user']) as $userId => $user) {
+								if($user['group'] >= $group) {
+									$to[] = $user['mail'];
+								}
 							}
 						}
-					}
-					// Utilisateur désigné
-					if (!empty($singleuser)) {
-						$to[] = $singleuser;
-					}
-					// Mail désigné
-					if (!empty($singlemail)) {
-						$to[] = $singlemail;
-					}
-					if($to) {
-						// Sujet du mail
-						$subject = $this->getData(['module', $this->getUrl(0), 'config', 'subject']);
-						if($subject === '') {
-							$subject = $text['form']['index'][1];
+						// Utilisateur désigné
+						if (!empty($singleuser)) {
+							$to[] = $singleuser;
 						}
-						// Envoi le mail
-						$sent = $this->sendMail(
-							$to,
-							$subject,
-							$text['form']['index'][2] . $this->getData(['page', $this->getUrl(0), 'title']) . '" :<br><br>' .
-							$content,
-							$replyTo,
-							$file_name
-						);
+						// Mail désigné
+						if (!empty($singlemail)) {
+							$to[] = $singlemail;
+						}
+						if($to) {
+							// Sujet du mail
+							$subject = $this->getData(['module', $this->getUrl(0), 'config', 'subject']);
+							if($subject === '') {
+								$subject = $text['form']['index'][1];
+							}
+							// Envoi le mail
+							$sent = $this->sendMail(
+								$to,
+								$subject,
+								$text['form']['index'][2] . $this->getData(['page', $this->getUrl(0), 'title']) . '" :<br><br>' .
+								$content,
+								$replyTo,
+								$file_name
+							);
+						}
 					}
+				} else {
+					$sent = false;
+					$notice = $text['form']['init'][13];
 				}
 				// Nettoyage du dossier self::FILE_DIR.uploads
 				$FilesUpload = glob( self::FILE_DIR.'uploads/*'); 

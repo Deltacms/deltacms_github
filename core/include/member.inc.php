@@ -13,7 +13,7 @@ if(isset($du)){
 	$files = scandir($dir);
 	if(count($files) > 2) {
 		echo'<h3>'.$text['core']['showMemberFile'][0].ucfirst($du).'</h3>';
-		function QE($fn){
+		function detect_encoding($fn){
 			$in=finfo_open(FILEINFO_MIME_ENCODING);
 			$ty=finfo_buffer($in,file_get_contents($fn));
 			finfo_close($in);
@@ -41,10 +41,10 @@ if(isset($du)){
 						}
 						elseif($ex=='.txt'){
 							echo '<pre>';
-							if(QE($ob)=='utf-8'){
+							if(detect_encoding($ob)=='utf-8'){
 								readfile($ob);
 							} else {
-								$te=file_get_contents($ob);print(helper::utf8Encode($te));
+								print(helper::utf8Encode(file_get_contents($ob)));
 							}
 							echo'</pre><br>'.$dl.'<br>';
 						}
