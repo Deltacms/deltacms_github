@@ -33,6 +33,7 @@ class init extends common {
 			'smtp' => [
 				'enable' => false,
 			],
+			'mailDomainName' => '',
 			'statislite' => [
 				'enable' => false,
 			],
@@ -77,7 +78,7 @@ class init extends common {
 			]
 		],
 		'core' => [
-			'dataVersion' => 5401,
+			'dataVersion' => 5402,
 			'lastBackup' => 0,
 			'lastClearTmp' => 0,
 			'lastAutoUpdate' => 0,

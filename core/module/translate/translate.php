@@ -55,7 +55,8 @@ class translate extends common {
 			// Tableau des pages, sous-pages et barres
 			$pagesList = $this->getData(['page']);
 			foreach($pagesList as $page => $pageId) {
-				if ( $this->getData(['page',$page,'title']) === null ) unset($pagesList[$page]);	
+				if ( $this->getData(['page',$page,'title']) === null ) unset($pagesList[$page]);
+				if ( $this->getData(['page',$page,'moduleId']) === 'statislite' ) unset($pagesList[$page]);
 			}
 			// Soumission du formulaire
 			if ($this->isPost()) {

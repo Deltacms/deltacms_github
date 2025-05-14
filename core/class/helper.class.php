@@ -95,7 +95,7 @@ class helper {
 		$newArray = [];
 		if(empty($array) === false) {
 			$newArray = array_map(function($element) use($column) {
-				return $element[$column];
+				if(isset($element[$column])) return $element[$column];
 			}, $array);
 			switch($sort) {
 				case 'SORT_ASC':

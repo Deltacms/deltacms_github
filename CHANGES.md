@@ -1,5 +1,22 @@
 # Changelog
 
+## Version 5.4.02 de Deltacms
+- Modifications :
+	- Configuration / Réseau : nouvelle variable pour déclarer explicitement le nom de domaine, utile pour les émissions de courriel depuis un sous-domaine,
+	- Emission de courriel : la mise en forme du courriel est actualisée et améliorée vis à vis des détecteurs de spam,
+	- Thème / Footer : le menu fixe ne concerne plus que les ordinateurs de bureau,
+	- Mise à jour du vendor Simplelightbox utilisé pour l'affichage des photos,
+	- Mise à jour de PHPmailer utilisé pour l'émission des courriels,
+- Corrections :
+	- Module Statislite 5.5 : effacer une page en traduction rédigée bloquait les statistiques, les administrateurs étaient toujours exclus,
+	- Module News 5.5 : les options medias cachés et medias sans marge ne fonctionnaient plus avec des images depuis la mise en conformité W3C,
+	- Module Agenda 7.6 : prise en compte de la nouvelle variable nom de domaine optionnelle dans Configuration / Réseau,
+	- Module Form 6.6 : un message d'aide conseille sur le choix de la signature du courriel,
+- Sur le site :
+	- Bonus -> Module Simple galerie photo,
+	- Bonus -> Module Simple géolocalisation de photos,
+	- Bonus -> Module Simple pétition.
+
 ## Version 5.4.01 de Deltacms
 - Modifications :
 	- Sécurité du site renforcée par un nouveau captcha et un système d'analyse comportementale,

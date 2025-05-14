@@ -168,7 +168,7 @@ $config = [
 	| without final / (DON'T TOUCH)
 	|
 	*/
-	'base_url' => ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] && ! in_array(strtolower($_SERVER['HTTPS']), array( 'off', 'no' ))) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . rtrim(str_replace('/core/vendor/filemanager', '', pathinfo($_SERVER['PHP_SELF'])['dirname']), ' /'),
+	'base_url' => ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] && ! in_array(strtolower($_SERVER['HTTPS']), ['off', 'no'])) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . rtrim(str_replace('/core/vendor/filemanager', '', pathinfo($_SERVER['PHP_SELF'])['dirname']), ' /'),
 	/*
 	| path from base_url to base of upload folder
 	|

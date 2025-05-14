@@ -52,7 +52,7 @@ class common {
 
 	// Numéro de version
 	const DELTA_UPDATE_URL = 'https://github.com/Deltacms/deltacms_update/raw/refs/heads/main/master/';
-	const DELTA_VERSION = '5.4.01';
+	const DELTA_VERSION = '5.4.02';
 	const DELTA_UPDATE_CHANNEL = "v5";
 	const DELTA_BRAND = "RGVsdGFjbXM=";
 
@@ -685,7 +685,7 @@ class common {
 	public function setDataAllLocale($data){
 		$listLang=[];
 		foreach (self::$i18nList as $key => $value) {
-			if( $this->getData(['config', 'i18n', $key]) === 'site') $listLang[] = $key;		
+			if( $this->getData(['config', 'i18n', $key]) === 'site') $listLang[] = $key;
 		}
 		$listLang[]="base";
 		foreach($listLang as $key=>$value ){
@@ -699,7 +699,7 @@ class common {
 			}
 		}
 	}
-	
+
 	/*
 	* Ajout de données dans les fichiers page.json de toutes les langues et de toutes les pages
 	* @param array $data format identique à setData(), le nom de la page peut-être remplacé par une chaîne quelconque comme 'allpage'
@@ -708,7 +708,7 @@ class common {
 	public function setDataAllPage($data){
 		$listLang=[];
 		foreach (self::$i18nList as $key => $value) {
-			if( $this->getData(['config', 'i18n', $key]) === 'site') $listLang[] = $key;		
+			if( $this->getData(['config', 'i18n', $key]) === 'site') $listLang[] = $key;
 		}
 		$listLang[]="base";
 		foreach($listLang as $key=>$value ){
@@ -920,6 +920,8 @@ class common {
 	 *
 	*/
     public function pages2Json() {
+	// Lexique
+	include('./core/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_core.php');
     // Sauve la liste des pages pour TinyMCE
 		$parents = [];
         $rewrite = (helper::checkRewrite()) ? '' : '?';
@@ -930,38 +932,42 @@ class common {
 			if ($this->getData(['page', $parentId, 'block']) !== 'bar' ) {
 				// Boucler sur les enfants et récupérer le tableau children avec la liste des enfants
 				foreach($childIds as $childId) {
-					$children [] = [ 'title' => ' » '. html_entity_decode($this->getData(['page', $childId, 'shortTitle']), ENT_QUOTES) ,
-								'value'=> $rewrite.$childId
-					];
+					if(null !== $this->getData(['page', $childId, 'shortTitle'])){
+						$children [] = [ 'title' => ' » '. html_entity_decode($this->getData(['page', $childId, 'shortTitle']), ENT_QUOTES) ,
+									'value'=> $rewrite.$childId
+						];
+					}
 				}
 				// Traitement
-				if (empty($childIds)) {
-					// Pas d'enfant, uniquement l'entrée du parent
-					$parents [] = ['title' =>   html_entity_decode($this->getData(['page', $parentId, 'shortTitle']), ENT_QUOTES) ,
-									'value'=> $rewrite.$parentId
-					];
-				} else {
-					// Des enfants, on ajoute la page parent en premier
-					array_unshift ($children ,  ['title' => html_entity_decode($this->getData(['page', $parentId, 'shortTitle']), ENT_QUOTES) ,
-									'value'=> $rewrite.$parentId
-					]);
-					// puis on ajoute les enfants au parent
-					$parents [] = ['title' => html_entity_decode($this->getData(['page', $parentId, 'shortTitle']), ENT_QUOTES) ,
-									'value'=> $rewrite.$parentId ,
-									'menu' => $children
-					];
+				if(null !== $this->getData(['page', $parentId, 'shortTitle'])){
+					if (empty($childIds)) {
+						// Pas d'enfant, uniquement l'entrée du parent
+						$parents [] = ['title' =>   html_entity_decode($this->getData(['page', $parentId, 'shortTitle']), ENT_QUOTES) ,
+										'value'=> $rewrite.$parentId
+						];
+					} else {
+						// Des enfants, on ajoute la page parent en premier
+						array_unshift ($children ,  ['title' => html_entity_decode($this->getData(['page', $parentId, 'shortTitle']), ENT_QUOTES) ,
+										'value'=> $rewrite.$parentId
+						]);
+						// puis on ajoute les enfants au parent
+						$parents [] = ['title' => html_entity_decode($this->getData(['page', $parentId, 'shortTitle']), ENT_QUOTES) ,
+										'value'=> $rewrite.$parentId ,
+										'menu' => $children
+						];
+					}
 				}
 			}
 		}
         // Sitemap et Search
         $children = [];
-        $children [] = ['title'=>'Rechercher dans le site',
-           'value'=>$rewrite.'search'
+        $children [] = ['title'=>$text['core']['pages2Json'][0],
+           'value'=> $rewrite.$this->getData(['locale','searchPageId']).'/'
           ];
-        $children [] = ['title'=>'Plan du site',
+        $children [] = ['title'=>$text['core']['pages2Json'][1],
            'value'=>$rewrite.'sitemap'
           ];
-        $parents [] = ['title' => 'Pages spéciales',
+        $parents [] = ['title' => $text['core']['pages2Json'][2],
                       'value' => '#',
                       'menu' => $children
                       ];
@@ -1217,7 +1223,11 @@ class common {
 				}
 			// Fin SMTP
 			} else {
-				$host = str_replace('www.', '', $_SERVER['HTTP_HOST']);
+				if(null !== $this->getData(['config', 'mailDomainName']) &&  $this->getData(['config', 'mailDomainName']) !==''){
+					$host = $this->getData(['config', 'mailDomainName']);
+				} else {
+					$host = str_replace('www.', '', $_SERVER['HTTP_HOST']);
+				}
 				$mail->setFrom('no-reply@' . $host, $this->getData(['locale', 'title']));
 				if (is_null($replyTo)) {
 					$mail->addReplyTo('no-reply@' . $host, $this->getData(['locale', 'title']));
@@ -1235,6 +1245,8 @@ class common {
 			}
 			$mail->isHTML(true);
 			$mail->Subject = $subject;
+			$mail->addCustomHeader('List-Unsubscribe', '<mailto:no-reply@'.$host.'>');
+			//$mail->addCustomHeader('X-Mailer', 'PHPmailer');
 			$mail->Body = $layout;
 			$mail->AltBody = strip_tags($content);
 			if($file_name !== '') $mail->addAttachment( self::FILE_DIR.'uploads/'.$file_name);
@@ -1523,29 +1535,24 @@ class common {
 		}
 	}
 
-	 
+
 	/**
 	 * Affiche le pied de page
 	 */
-	public function showFooter () {
+	public function showFooter() {
 		// Déterminer la position
 		$positionFixed = '';
-		if (
-			$this->getData(['theme', 'footer', 'position']) === 'site'
+		if ( $this->getData(['theme', 'footer', 'position']) === 'site'
 			// Affiche toujours le pied de page pour l'édition du thème
-			OR (
-				$this->getData(['theme', 'footer', 'position']) === 'hide'
-				AND $this->getUrl(0) === 'theme'
-			)
-			) {
-				$position = 'site';
-			} else {
-					$position = 'body';
-					if ( $this->getData(['theme', 'footer', 'fixed']) === true) {
-						$positionFixed = ' footerbodyFixed';
-					}
-					// Sortir de la division précédente
-					echo '</div>';
+			OR ( $this->getData(['theme', 'footer', 'position']) === 'hide'	AND $this->getUrl(0) === 'theme')) {
+			$position = 'site';
+		} else {
+			$position = 'body';
+			if ( $this->getData(['theme', 'footer', 'fixed']) === true && $_SESSION['terminal'] === 'desktop' ) {
+				$positionFixed = ' footerbodyFixed';
+			}
+			// Sortir de la division précédente
+			echo '</div>';
 		}
 
 		echo $this->getData(['theme', 'footer', 'position']) === 'hide' ? '<footer class="displayNone">' : '<footer>';
@@ -1706,7 +1713,7 @@ class common {
 			$textWhoIs ='';
 			foreach( $whoIs as $key=>$value ){
 				if( $value !== 0){
-					$textWhoIs .= ' '.$groupWhoIs[$key].'=>'.$value.' ';
+					$textWhoIs .= ' '.$groupWhoIs[$key].'&rarr;'.$value.' ';
 				}
 			}
 			$items .= ' | '.$textWhoIs;
@@ -1796,7 +1803,7 @@ class common {
 				if( $icon === 'fontello'){
 					$socials .= '<a href="' . $socialUrl . $socialId . '" onclick="window.open(this.href);return false" data-tippy-content="' . $title . '">' . template::ico(substr(str_replace('User','',$socialName), 0, -2)) . '</a>';
 				} else {
-					$socials .= '<a href="' . $socialUrl . $socialId . '" onclick="window.open(this.href);return false" data-tippy-content="' . $title . '">' . '<img class="socialIconSvg" alt='. $title . $icon . '></a>';
+					$socials .= '<a href="' . $socialUrl . $socialId . '" onclick="window.open(this.href);return false" data-tippy-content="' . $title . '">' . '<img class="socialIconSvg" alt="'. $title .'"' . $icon . '></a>';
 				}
 			}
 		}
@@ -1964,17 +1971,18 @@ class common {
 				continue;
 			} else {
 				// Mise en page de l'item
+				$uniqParentPageId = 'pp_id_'.$parentPageId;
 				$itemsLeft .= '<li>';
 				$pageDesactived = false;
 				$classMobile ='';
 				if($_SESSION['terminal'] === 'mobile' && $iconSubExistLargeScreen !=='') $classMobile = 'div_mobile';
 				if (  $this->getData(['page',$parentPageId,'disable']) === true && $groupUser < 2 ){
 					$pageUrl = ($this->getData(['locale', 'homePageId']) === $this->getUrl(0)) ? helper::baseUrl(false)  :  helper::baseUrl() . $this->getUrl(0);
-					$itemsLeft .= '<div id="'.$parentPageId.'" class="box" style="display:flex; justify-content:space-between;"><div class="'.$classMobile.'"><a class="A ' . $active . $parentPageId . ' disabled-link">';
+					$itemsLeft .= '<div id="'.$uniqParentPageId.'" class="box"><div class="'.$classMobile.'"><a class="A ' . $active . $parentPageId . ' disabled-link">';
 					$pageDesactived = true;
 				} else {
 					$pageUrl = ($this->getData(['locale', 'homePageId']) === $parentPageId) ? helper::baseUrl(false)  :  helper::baseUrl() . $parentPageId;
-					$itemsLeft .= '<div id="'.$parentPageId.'" class="box '.$active.'" style="display:flex; justify-content:space-between;"><div class="'.$classMobile.'"><a class="B ' . $active . $parentPageId . '" href="' . $pageUrl . '"' . $targetBlank . '>';
+					$itemsLeft .= '<div id="'.$uniqParentPageId.'" class="box '.$active.'"><div class="'.$classMobile.'"><a class="B ' . $active . $parentPageId . '" href="' . $pageUrl . '"' . $targetBlank . '>';
 				}
 				$fileLogo = './site/file/source/'. $this->getData(['page', $parentPageId, 'iconUrl']);
 				switch ($this->getData(['page', $parentPageId, 'typeMenu'])) {
@@ -2010,7 +2018,7 @@ class common {
 					empty($childrenPageIds)) {
 					continue;
 				}
-				$itemsLeft .= '<ul id="_'.$parentPageId.'" class="navSub">';
+				$itemsLeft .= '<ul id="_'.$uniqParentPageId.'" class="navSub">';
 				foreach($childrenPageIds as $childKey) {
 					// Propriétés de l'item
 					$active = ($childKey === $currentPageId) ? 'active ' : '';

@@ -38,22 +38,24 @@
         "contact": {
             "config": {
                 "captcha": true,
-                "group": 3,
+                "group": 4,
                 "user": "",
                 "mail": "",
                 "pageId": "",
                 "subject": "",
                 "replyto": false,
-                "signature": "logo",
+                "signature": "text",
                 "logoUrl": "",
                 "logoWidth": "40",
                 "maxSizeUpload": "1000000",
-                "versionData": "6.5",
+                "versionData": "6.6",
                 "uploadJpg": true,
                 "uploadPng": true,
                 "uploadPdf": false,
                 "uploadZip": false,
-                "uploadTxt": false
+                "uploadTxt": false,
+				"rgpdCheck": false,
+				"trustLimit": "80"
 			},
 			"texts": {
 				"button": "Envoyer",
@@ -65,7 +67,8 @@
 				"errorUploading": "Erreur pendant le téléversement du fichier",
 				"notPdf": "La pièce jointe n'est pas un document pdf",
 				"notZip": "La pièce jointe n'est pas un document zip",
-				"fillCaptcha": " Renseignez le Captcha "				
+				"fillCaptcha": " Renseignez le Captcha ",
+				"noTrust": "Vous n'êtes pas autorisé à émettre un courriel"
             },
             "data": [],
             "input": [

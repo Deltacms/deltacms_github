@@ -32,7 +32,7 @@ class statislite extends common {
 		'conversionTime' => self::GROUP_VISITOR
 	];
 	
-	const VERSION = '5.4';	
+	const VERSION = '5.5';	
 	const REALNAME = 'Statislite';
 	const DELETE = true;
 	const UPDATE = '2.6';
@@ -123,9 +123,9 @@ class statislite extends common {
 			copy('./module/statislite/ressource/tmp/.htaccess', self::DATA_DIR.'base/data_module/statislite/tmp/.htaccess');
 			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','5.2']);
 		}
-		// Version 5.4
-		if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '5.4', '<') ) {	
-			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','5.4']);
+		// Version 5.5
+		if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '5.5', '<') ) {	
+			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','5.5']);
 		}
 	}
 	
@@ -546,663 +546,239 @@ class statislite extends common {
 	public function index() {
 		// Lexique
 		include('./module/statislite/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_statislite.php');
-		// Si le module n'existe pas, copie des ressources, on le crée avec des valeurs par défaut et on demande une validation de la configuration
-		if( $this->getData(['module', $this->getUrl(0), 'config', 'config']) !== true){
-			// Copie des fichiers de module/statislite/ressource/ vers self::DATAMODULE
-			if( !is_dir( self::DATAMODULE)) mkdir( self::DATAMODULE, 0755, true);
-			$this->custom_copy('./module/statislite/ressource', self::DATAMODULE);
-			if( !is_dir(self::DATA_DIR.'base/data_module/statislite')) mkdir( self::DATA_DIR.'base/data_module/statislite' , 0755);
-			if( !is_dir( self::$fichiers_json )) mkdir( self::$fichiers_json, 0755);
-			if( !is_dir( self::$tmp ))mkdir( self::$tmp, 0755);
-			if( !is_dir( self::$json_sauve ))mkdir( self::$json_sauve, 0755);
-			copy('./module/statislite/ressource/tmp/.htaccess', self::$tmp.'.htaccess');
-			
-			$this->setData(['module', $this->getUrl(0), 'config',[
-				'timeVisiteMini' => '30',
-				'timePageMini' => '5',
-				'nbPageMini' => '2',
-				'usersExclus' => '4',
-				'nbEnregSession' => '5',
-				'geolocalisation' => false,
-				'nbaffipagesvues' => '10',
-				'nbaffilangues' => '5',
-				'nbaffinavigateurs' => '5',
-				'nbaffise' => '5',
-				'nbaffipays' => '5',
-				'nbaffidates' => '5',
-				'config' => false,
-				'versionData' => self::VERSION
-			]]);
-			// Initialisation de filtre_primaire.json qui contient les paramètres de la configuration avancée
-			$this->init_fp();
-			// Valeurs en sortie
-			$this->addOutput([
-				'redirect' => helper::baseUrl().$this->getUrl(0).'/config',
-				'notification' => $text['statislite']['index'][0],
-				'state' => true
-			]);
-		}
-		else{
-			// Mise à jour des données de module si nécessaire
-			if ( null===$this->getData(['module', $this->getUrl(0), 'config', 'versionData']) || version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), self::VERSION, '<') ) $this->update();
-			
-			/* 
-			 * Paramètres réglés en configuration du module
-			*/
-			// Temps minimum à passer sur le site en secondes pour valider une visite
-			$timeVisiteMini = $this->getData(['module', $this->getUrl(0), 'config', 'timeVisiteMini' ]);
-			// Temps minimum à passer sur une page pour la considérer comme vue
-			$timePageMini = $this->getData(['module', $this->getUrl(0), 'config', 'timePageMini' ]);
-			// Nombre de pages vues dans le site minimum
-			$nbpagemini = $this->getData(['module', $this->getUrl(0), 'config', 'nbPageMini' ]);
-			// Utilisateurs connectés à exclure des statistiques
-			$usersExclus = $this->getData(['module', $this->getUrl(0), 'config', 'usersExclus' ]);
-			// Affichage graphique : nombre de pages vues à afficher en commençant par la plus fréquente de 0 à toutes
-			$nbaffipagesvues = $this->getData(['module', $this->getUrl(0), 'config', 'nbaffipagesvues']);
-			// Affichage graphique : nombre de langues à afficher en commençant par la plus fréquente de 0 à toutes
-			$nbaffilangues = $this->getData(['module', $this->getUrl(0), 'config', 'nbaffilangues']);
-			// Affichage graphique : nombre de navigateurs à afficher en commençant par le plus fréquent de 0 à toutes
-			$nbaffinavigateurs = $this->getData(['module', $this->getUrl(0), 'config', 'nbaffinavigateurs']);
-			// Affichage graphique : nombre de systèmes d'exploitation à afficher en commençant par le plus fréquent de 0 à toutes
-			$nbaffise = $this->getData(['module', $this->getUrl(0), 'config', 'nbaffise']);
-			// Affichage graphique : nombre de pays à afficher en commençant par le plus fréquent de 0 à toutes
-			$nbaffipays = $this->getData(['module', $this->getUrl(0), 'config', 'nbaffipays']);
-			// Nombre de sessions affichées dans l'affichage détaillé
-			$nbEnregSession = $this->getData(['module', $this->getUrl(0), 'config', 'nbEnregSession' ]);
-			// Nombre de dates affichées dans l'affichage chronologique
-			$nbAffiDates = $this->getData(['module', $this->getUrl(0), 'config', 'nbaffidates' ]);
-			// option avec geolocalisation
-			$geolocalisation = $this->getData(['module', $this->getUrl(0), 'config', 'geolocalisation' ]);
-			
-			// Initialisations variables
-			self::$comptevisite = 0;
-			self::$comptepages = 0;
-			self::$dureevisites = 0;
-			$datedebut = date('Y/m/d H:i:s');
-			
-			// Initialisation du fichier cumul.json et contrôle de cohérence
-			if(! is_file(self::$fichiers_json.'cumul.json')){
-				$this -> initcumul();
-			} else{
-				// Contrôle de cohérence du fichier cumul.json, sinon restauration du dernier fichier valide
-				$json = file_get_contents(self::$fichiers_json.'cumul.json');
-				$cumul = json_decode($json, true);
-				if( ! isset($cumul['nb_clics']) || ! isset($cumul['nb_visites']) || ! isset($cumul['duree_visites']) || ! isset($cumul['clients'])
-					|| ! isset($cumul['robots']) || ! isset($cumul['date_debut']) || ! isset($cumul['date_fin']) || ! isset($cumul['pages'])){
-					if( is_file( self::$json_sauve.'cumul.json')) copy( self::$json_sauve.'cumul.json', self::$fichiers_json.'cumul.json');	
-				}
-			}
-			
-			
-			// Initialisation du fichier chrono.json avec pour clef la date, pour valeurs le nombre visites, le nombre de pages vues, la durée totale
-			if(! is_file(self::$fichiers_json.'chrono.json')){
-				$this -> initchrono();
-			}
-			
-			// Contrôle de cohérence du fichier filtre_primaire.json, sinon il est initialisé
-			if( is_file(self::$fichiers_json.'filtre_primaire.json')){
-				$json = file_get_contents(self::$fichiers_json.'filtre_primaire.json');
-				$fp = json_decode($json, true);
-				if( ! isset($fp['robots']) || ! isset($fp['listeIP']) || ! isset($fp['listeQS']) || ! isset($fp['listeBot'])){
-					$this->init_fp();	
-				}
-			} else{
+		if( !isset($_SESSION['translationType']) || $_SESSION['translationType'] ==='none' ) {
+			// Si le module n'existe pas, copie des ressources, on le crée avec des valeurs par défaut et on demande une validation de la configuration
+			if( $this->getData(['module', $this->getUrl(0), 'config', 'config']) !== true){
+				// Copie des fichiers de module/statislite/ressource/ vers self::DATAMODULE
+				if( !is_dir( self::DATAMODULE)) mkdir( self::DATAMODULE, 0755, true);
+				$this->custom_copy('./module/statislite/ressource', self::DATAMODULE);
+				if( !is_dir(self::DATA_DIR.'base/data_module/statislite')) mkdir( self::DATA_DIR.'base/data_module/statislite' , 0755);
+				if( !is_dir( self::$fichiers_json )) mkdir( self::$fichiers_json, 0755);
+				if( !is_dir( self::$tmp ))mkdir( self::$tmp, 0755);
+				if( !is_dir( self::$json_sauve ))mkdir( self::$json_sauve, 0755);
+				copy('./module/statislite/ressource/tmp/.htaccess', self::$tmp.'.htaccess');
+				
+				$this->setData(['module', $this->getUrl(0), 'config',[
+					'timeVisiteMini' => '30',
+					'timePageMini' => '5',
+					'nbPageMini' => '2',
+					'usersExclus' => '4',
+					'nbEnregSession' => '5',
+					'geolocalisation' => false,
+					'nbaffipagesvues' => '10',
+					'nbaffilangues' => '5',
+					'nbaffinavigateurs' => '5',
+					'nbaffise' => '5',
+					'nbaffipays' => '5',
+					'nbaffidates' => '5',
+					'config' => false,
+					'versionData' => self::VERSION
+				]]);
+				// Initialisation de filtre_primaire.json qui contient les paramètres de la configuration avancée
 				$this->init_fp();
-			}
-
-			// Lecture et décodage du fichier sessionLog.json
-			if( is_file(self::$fichiers_json.'sessionLog.json')){
-				$json = file_get_contents(self::$fichiers_json.'sessionLog.json');
+				// Valeurs en sortie
+				$this->addOutput([
+					'redirect' => helper::baseUrl().$this->getUrl(0).'/config',
+					'notification' => $text['statislite']['index'][0],
+					'state' => true
+				]);
 			}
 			else{
-				$json = '{}';
-			}
-			$log = json_decode($json, true);
+				// Mise à jour des données de module si nécessaire
+				if ( null===$this->getData(['module', $this->getUrl(0), 'config', 'versionData']) || version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), self::VERSION, '<') ) $this->update();
+				
+				/* 
+				 * Paramètres réglés en configuration du module
+				*/
+				// Temps minimum à passer sur le site en secondes pour valider une visite
+				$timeVisiteMini = $this->getData(['module', $this->getUrl(0), 'config', 'timeVisiteMini' ]);
+				// Temps minimum à passer sur une page pour la considérer comme vue
+				$timePageMini = $this->getData(['module', $this->getUrl(0), 'config', 'timePageMini' ]);
+				// Nombre de pages vues dans le site minimum
+				$nbpagemini = $this->getData(['module', $this->getUrl(0), 'config', 'nbPageMini' ]);
+				// Utilisateurs connectés à exclure des statistiques
+				$usersExclus = $this->getData(['module', $this->getUrl(0), 'config', 'usersExclus' ]);
+				// Affichage graphique : nombre de pages vues à afficher en commençant par la plus fréquente de 0 à toutes
+				$nbaffipagesvues = $this->getData(['module', $this->getUrl(0), 'config', 'nbaffipagesvues']);
+				// Affichage graphique : nombre de langues à afficher en commençant par la plus fréquente de 0 à toutes
+				$nbaffilangues = $this->getData(['module', $this->getUrl(0), 'config', 'nbaffilangues']);
+				// Affichage graphique : nombre de navigateurs à afficher en commençant par le plus fréquent de 0 à toutes
+				$nbaffinavigateurs = $this->getData(['module', $this->getUrl(0), 'config', 'nbaffinavigateurs']);
+				// Affichage graphique : nombre de systèmes d'exploitation à afficher en commençant par le plus fréquent de 0 à toutes
+				$nbaffise = $this->getData(['module', $this->getUrl(0), 'config', 'nbaffise']);
+				// Affichage graphique : nombre de pays à afficher en commençant par le plus fréquent de 0 à toutes
+				$nbaffipays = $this->getData(['module', $this->getUrl(0), 'config', 'nbaffipays']);
+				// Nombre de sessions affichées dans l'affichage détaillé
+				$nbEnregSession = $this->getData(['module', $this->getUrl(0), 'config', 'nbEnregSession' ]);
+				// Nombre de dates affichées dans l'affichage chronologique
+				$nbAffiDates = $this->getData(['module', $this->getUrl(0), 'config', 'nbaffidates' ]);
+				// option avec geolocalisation
+				$geolocalisation = $this->getData(['module', $this->getUrl(0), 'config', 'geolocalisation' ]);
+				
+				// Initialisations variables
+				self::$comptevisite = 0;
+				self::$comptepages = 0;
+				self::$dureevisites = 0;
+				$datedebut = date('Y/m/d H:i:s');
+				
+				// Initialisation du fichier cumul.json et contrôle de cohérence
+				if(! is_file(self::$fichiers_json.'cumul.json')){
+					$this -> initcumul();
+				} else{
+					// Contrôle de cohérence du fichier cumul.json, sinon restauration du dernier fichier valide
+					$json = file_get_contents(self::$fichiers_json.'cumul.json');
+					$cumul = json_decode($json, true);
+					if( ! isset($cumul['nb_clics']) || ! isset($cumul['nb_visites']) || ! isset($cumul['duree_visites']) || ! isset($cumul['clients'])
+						|| ! isset($cumul['robots']) || ! isset($cumul['date_debut']) || ! isset($cumul['date_fin']) || ! isset($cumul['pages'])){
+						if( is_file( self::$json_sauve.'cumul.json')) copy( self::$json_sauve.'cumul.json', self::$fichiers_json.'cumul.json');	
+					}
+				}
+				
+				
+				// Initialisation du fichier chrono.json avec pour clef la date, pour valeurs le nombre visites, le nombre de pages vues, la durée totale
+				if(! is_file(self::$fichiers_json.'chrono.json')){
+					$this -> initchrono();
+				}
+				
+				// Contrôle de cohérence du fichier filtre_primaire.json, sinon il est initialisé
+				if( is_file(self::$fichiers_json.'filtre_primaire.json')){
+					$json = file_get_contents(self::$fichiers_json.'filtre_primaire.json');
+					$fp = json_decode($json, true);
+					if( ! isset($fp['robots']) || ! isset($fp['listeIP']) || ! isset($fp['listeQS']) || ! isset($fp['listeBot'])){
+						$this->init_fp();	
+					}
+				} else{
+					$this->init_fp();
+				}
 
-			// Recherche de la première date dans le fichier sessionLog.json
-			foreach($log as $numSession=>$values){
-				$datedebut = substr($log[$numSession]['vues'][0], 0 , 19);
-				break;
-			}
-			
-			// Nom raccourci pour la page employant agenda
-			foreach($log as $numSession=>$values){
-				foreach($values['vues'] as $key=>$value){
-					if( strpos( $value, 'vue:dayGrid')){
-						$posSlash = strpos( $value, '/', 22);
-						$log[$numSession]['vues'][$key] = substr($value, 0 , 19).' * '.substr( $value,22, $posSlash - 22).'/date';
-					}					
+				// Lecture et décodage du fichier sessionLog.json
+				if( is_file(self::$fichiers_json.'sessionLog.json')){
+					$json = file_get_contents(self::$fichiers_json.'sessionLog.json');
 				}
-			}
+				else{
+					$json = '{}';
+				}
+				$log = json_decode($json, true);
 
-			/*
-			 * Filtrage des vues et des visites dans le fichier sessionLog.json
-			 * vues invalidées si : temps passé sur une page < $timePageMini ou 2 pages consécutives de même nom (si au moins 2 pages vues)
-			 * vues invalidées si : elles ne correspondent pas à une page existante (le nom de la vue doit commencer par le nom d'une page existante)
-			 * visites invalidées si: nombre de pages vues < $nbpagemini ou temps de visite < $timeVisiteMini.
-			 * visites invalidées si : utilisateur connecté exclu des statistiques
-			 * Comptage des vues par session et des visites validées,
-			 * Comptage des sessions invalidées par $nbpagemini, $timeVisiteMini ou $usersExclus.
-			*/
-			
-			foreach($log as $numSession=>$values){
-				$nbpageparsession = count($log[$numSession]['vues']);
-				// Liste des pages
-				$pages = $this->getData(['page']);
-				// Ajouter les pages dans les différentes traductions rédigées
-				// Liste des traductions rédigées
-				$langTrans=[];
-				foreach (self::$i18nList as $key => $value) {
-				  if( $this->getData(['config', 'i18n', $key]) === 'site') $langTrans[] = $key;		
+				// Recherche de la première date dans le fichier sessionLog.json
+				foreach($log as $numSession=>$values){
+					$datedebut = substr($log[$numSession]['vues'][0], 0 , 19);
+					break;
 				}
-				// Liste des pages en traduction rédigée
-				$pagesTrans=[];$pagesTranslate=[];
-				foreach( $langTrans as $key1=>$value1){
-				  $json='{}';
-				  if(is_file('site/data/'.$value1.'/page.json')) $json = file_get_contents('site/data/'.$value1.'/page.json');
-				  $trans = json_decode($json, true);
-				  if(isset($trans['page']))$pagesTrans[]=$trans['page'];
-				}
-				foreach($pagesTrans as $key=>$value){
-				  $pagesTranslate = array_merge($pagesTranslate, $value);
-				}
-				// Suppression des barres et des pages invalidées pour les pages en traduction rédigée
-				foreach($pagesTranslate as $key=>$value){
-				  if( $value['block'] === 'bar' || $value['disable'] === true) unset( $pagesTranslate[$key]);
-				}
-				// Suppression des barres et des pages invalidées pour les pages de base
-				foreach($pages as $page => $pageId) {
-					if ($this->getData(['page',$page,'block']) === 'bar' ||
-					$this->getData(['page',$page,'disable']) === true) {
-						unset($pages[$page]);
+				
+				// Nom raccourci pour la page employant agenda
+				foreach($log as $numSession=>$values){
+					foreach($values['vues'] as $key=>$value){
+						if( strpos( $value, 'vue:dayGrid')){
+							$posSlash = strpos( $value, '/', 22);
+							$log[$numSession]['vues'][$key] = substr($value, 0 , 19).' * '.substr( $value,22, $posSlash - 22).'/date';
+						}					
 					}
 				}
-				// Associer toutes les pages
-				$pages = array_merge($pages, $pagesTranslate);
-				$renum = false;
-				// Eliminer les vues dont le nom ne commence pas par un nom de page existante ou erreur 403
-				foreach($log[$numSession]['vues'] as $key => $nom_vue){
-					$nom = substr($nom_vue, 22);
-					if(strpos($nom,'/') === false){
-						$debut_nom = $nom;
+
+				/*
+				 * Filtrage des vues et des visites dans le fichier sessionLog.json
+				 * vues invalidées si : temps passé sur une page < $timePageMini ou 2 pages consécutives de même nom (si au moins 2 pages vues)
+				 * vues invalidées si : elles ne correspondent pas à une page existante (le nom de la vue doit commencer par le nom d'une page existante)
+				 * visites invalidées si: nombre de pages vues < $nbpagemini ou temps de visite < $timeVisiteMini.
+				 * visites invalidées si : utilisateur connecté exclu des statistiques
+				 * Comptage des vues par session et des visites validées,
+				 * Comptage des sessions invalidées par $nbpagemini, $timeVisiteMini ou $usersExclus.
+				*/
+				
+				foreach($log as $numSession=>$values){
+					$nbpageparsession = count($log[$numSession]['vues']);
+					// Liste des pages
+					$pages = $this->getData(['page']);
+					// Ajouter les pages dans les différentes traductions rédigées
+					// Liste des traductions rédigées
+					$langTrans=[];
+					foreach (self::$i18nList as $key => $value) {
+					  if( $this->getData(['config', 'i18n', $key]) === 'site') $langTrans[] = $key;		
 					}
-					else{
-						$debut_nom = substr($nom, 0, strpos($nom,'/'));
+					// Liste des pages en traduction rédigée
+					$pagesTrans=[];$pagesTranslate=[];
+					foreach( $langTrans as $key1=>$value1){
+					  $json='{}';
+					  if(is_file('site/data/'.$value1.'/page.json')) $json = file_get_contents('site/data/'.$value1.'/page.json');
+					  $trans = json_decode($json, true);
+					  if(isset($trans['page']))$pagesTrans[]=$trans['page'];
 					}
-					$occurence = false;
-					foreach($pages as $page => $pageId){
-						if($debut_nom === $page){
-							$occurence = true;
+					foreach($pagesTrans as $key=>$value){
+					  $pagesTranslate = array_merge($pagesTranslate, $value);
+					}
+					// Suppression des barres et des pages invalidées pour les pages en traduction rédigée
+					foreach($pagesTranslate as $key=>$value){
+					  if( $value['block'] === 'bar' || $value['disable'] === true) unset( $pagesTranslate[$key]);
+					}
+					// Suppression des barres et des pages invalidées pour les pages de base
+					foreach($pages as $page => $pageId) {
+						if ($this->getData(['page',$page,'block']) === 'bar' ||
+						$this->getData(['page',$page,'disable']) === true) {
+							unset($pages[$page]);
 						}
 					}
-					if($occurence === false){
-						unset($log[$numSession]['vues'][$key]);
-						$renum = true;
-					}
-				}
-				if($renum){
-					$i = 0;
-					$tableau[$numSession] =  array('vues' => array() );
-					foreach($log[$numSession]['vues'] as $key=>$value){
-						$tableau[$numSession]['vues'][$i] = $value;
-						$i++;
-					}
-					$log[$numSession]['vues'] = $tableau[$numSession]['vues'];
-					$nbpageparsession = count($log[$numSession]['vues']);
-				}
-				// Eliminer les vues dont la durée est inférieure à $timePageMini et les vues n portant le même nom que la vue n+1
-				// si il y a au moins 2 pages vues dans la session
-				$renum = false;
-				if( $nbpageparsession > 1){
-					for($i = 0; $i < $nbpageparsession - 1; $i++){
-						if( strtotime(substr($log[$numSession]['vues'][$i + 1], 0 , 19)) - strtotime(substr($log[$numSession]['vues'][$i], 0 , 19)) < $timePageMini
-							|| substr($log[$numSession]['vues'][$i+1], 22 , strlen($log[$numSession]['vues'][$i+1])) == substr($log[$numSession]['vues'][$i], 22 , strlen($log[$numSession]['vues'][$i]))){
-							unset($log[$numSession]['vues'][$i]);
+					// Associer toutes les pages
+					$pages = array_merge($pages, $pagesTranslate);
+					$renum = false;
+					// Eliminer les vues dont le nom ne commence pas par un nom de page existante ou erreur 403
+					foreach($log[$numSession]['vues'] as $key => $nom_vue){
+						$nom = substr($nom_vue, 22);
+						if(strpos($nom,'/') === false){
+							$debut_nom = $nom;
+						}
+						else{
+							$debut_nom = substr($nom, 0, strpos($nom,'/'));
+						}
+						$occurence = false;
+						foreach($pages as $page => $pageId){
+							if($debut_nom === $page){
+								$occurence = true;
+							}
+						}
+						if($occurence === false){
+							unset($log[$numSession]['vues'][$key]);
 							$renum = true;
 						}
 					}
-				}
-				// Si nécessaire renuméroter les clefs du tableau $log[$numSession]['vues'] : 0,1,2 etc...
-				if($renum){
-					$i = 0;
-					$tableau[$numSession] =  array('vues' => array() );
-					foreach($log[$numSession]['vues'] as $key=>$value){
-						$tableau[$numSession]['vues'][$i] = $value;
-						$i++;
-					}
-					$log[$numSession]['vues'] = $tableau[$numSession]['vues'];
-					$nbpageparsession = count($log[$numSession]['vues']);
-				}
-				if(isset($log[$numSession]['ip'])){
-					$ip = $log[$numSession]['ip'];
-				}
-				$datetimei = time();
-				if( $nbpageparsession > 0) $datetimei = strtotime(substr($log[$numSession]['vues'][0], 0 , 19));
-				// Si $nbpageparsession <=1 on force la valeur de $datetimef
-				if($nbpageparsession <= 1){ 
-					$datetimef = $datetimei + $timeVisiteMini;
-				}
-				else{
-					$datetimef = strtotime(substr($log[$numSession]['vues'][$nbpageparsession - 1], 0 , 19));
-				}
-				$dureesession = $datetimef - $datetimei;
-				// Recherche du groupe (0,1,2,3) correspondant à l'utilisateur connecté
-				$groupe_user_connected = 0;
-				$user_connected = $log[$numSession]['user_id'];
-				if( null !== $this->getData(['user', $user_connected,'group'])){
-					if($user_connected != 'visiteur'){
-						$groupe_user_connected = $this->getData(['user', $user_connected, 'group']);
-					}
-				}
-				// Si le nombre de pages vues dans la session est >= $nbpagemini et si la durée de la session est >= $timeVisiteMini
-				// et si l'utilisateur connecté n'est pas exclu des statistiques
-				if( $nbpageparsession >= $nbpagemini && $dureesession >= $timeVisiteMini
-					&& $groupe_user_connected < $usersExclus ){
-						// Mises à jour des variables pour affichage des statistiques
-						self::$comptepages = self::$comptepages + $nbpageparsession;
-						self::$comptevisite++;
-						self::$dureevisites = self::$dureevisites + $dureesession;
-						// Modification des élèments null en ''
-						if( is_null($log[$numSession]['referer'])){$log[$numSession]['referer'] = '';}
-						if( is_null($log[$numSession]['langage'])){$log[$numSession]['langage'] = '';}
-						if( is_null($log[$numSession]['userAgent'])){$log[$numSession]['userAgent'] = '';}
-						// Recherche de $log[$numSession]['client'][0] : langage préféré
-						$log[$numSession]['client'][0] = $this->langage($log[$numSession]['langage']);
-						// Recherche de $log[$numSession]['client'][1] : navigateur
-						$log[$numSession]['client'][1] = $this->navigateur($log[$numSession]['userAgent']);
-						// Recherche de $log[$numSession]['client'][2] : système d'exploitation
-						$log[$numSession]['client'][2] = $this->systeme($log[$numSession]['userAgent']);
-						// Geolocalisation si elle n'a pas été faite et si l'IP n'est pas déjà détruite
-						if(isset($log[$numSession]['ip'])){
-							/*if($geolocalisation && ! isset($log[$numSession]['geolocalisation'])){
-								$geo = $this->geolocalise($log[$numSession]['ip']);
-								$log[$numSession]['geolocalisation'] = $geo['country_name'].' - '.$geo['city'];
-							}*/
-							// CNIL : ne pas mémoriser d'adresse IP
-							unset($log[$numSession]['ip']);
+					if($renum){
+						$i = 0;
+						$tableau[$numSession] =  array('vues' => array() );
+						foreach($log[$numSession]['vues'] as $key=>$value){
+							$tableau[$numSession]['vues'][$i] = $value;
+							$i++;
 						}
-				}
-				// Sinon on supprime cet enregistrement de sessionLog.json et on l'enregistre dans sessionInvalide.json
-				// puis on enregistre dans cumul.json le résultat du filtrage par nombre de pages,temps de visite ou utilisateur exclu
-				else{			
-					// Lecture et décodage du fichier sessionInvalide.json
-					if( is_file(self::$fichiers_json.'sessionInvalide.json') ){
-						$json = file_get_contents(self::$fichiers_json.'sessionInvalide.json');
+						$log[$numSession]['vues'] = $tableau[$numSession]['vues'];
+						$nbpageparsession = count($log[$numSession]['vues']);
 					}
-					else{
-						$json = '{}';
-					}
-					$poub = json_decode($json, true);
-					$poub[$numSession] = $log[$numSession];
-					// CNIL : même dans le fichier sessionInvalide.json on ne conserve pas d'IP
-					unset($poub[$numSession]['ip']);
-					unset($poub[$numSession]['client']);
-					// Limitation de la taille du fichier sessionInvalide.json à 200 enregistrements
-					if(count($poub) > 200){
-						foreach($poub as $key=>$value){
-							unset($poub[$key]);
-							break;
-						}
-					}
-					// Encodage et sauvegarde du fichier sessionInvalide.json
-					$json = json_encode($poub);
-					file_put_contents(self::$fichiers_json.'sessionInvalide.json',$json);
-					// Suppression de la session
-					unset($log[$numSession]);
-					// Enregistrement dans cumul.json du résultat du filtrage
-					// np + tv + ue >= nombre de sessionInvalide car une même session peut être éliminée plusieurs fois
-					// A chaque fois np tv ou ue s'incrémente mais la sessionInvalide de même numéro de session est simplement modifiée
-					if($nbpageparsession < $nbpagemini){
-						$type = 'np';
-					}
-					elseif($dureesession < $timeVisiteMini){
-						$type = 'tv';
-					}
-					else{
-						$type = 'ue';
-					}
-					$json = file_get_contents(self::$fichiers_json.'cumul.json');
-					$cumul = json_decode($json, true);
-					$cumul['robots'][$type] = $cumul['robots'][$type] + 1;
-					$json = json_encode($cumul);
-					file_put_contents(self::$fichiers_json.'cumul.json',$json);
-					// Sauvegarde de sécurité de cumul.json dans le dossier json_sauve après un contrôle de cohérence
-					if( isset($cumul['nb_clics']) && isset($cumul['nb_visites']) && isset($cumul['duree_visites']) && isset($cumul['clients'])
-						&& isset($cumul['robots']) && isset($cumul['date_debut']) && isset($cumul['date_fin']) && isset($cumul['pages'])){
-						file_put_contents(self::$json_sauve.'cumul.json',$json);	
-					}
-				}
-			}
-			
-			
-			/*
-			 * Mise à jour du dossier affitampon.json destiné à l'affichage détaillé 
-			 *
-			*/
-			if( is_file(self::$fichiers_json.'affitampon.json')){
-				$json = file_get_contents(self::$fichiers_json.'affitampon.json');
-			}
-			else{
-				$json='{}';
-			}
-			$tampon = json_decode($json, true);
-			foreach($log as $numSession=>$values){
-				$tampon[$numSession] = $log[$numSession];			
-			}
-			// Fichier limité à 100 enregistrements
-			if( count($tampon) > 100){
-				foreach($tampon as $key=>$value){
-					unset($tampon[$key]);
-					if(count($tampon) <= 100){ break; }
-				}
-			}
-			$json = json_encode($tampon);
-			file_put_contents(self::$fichiers_json.'affitampon.json',$json);
-			
-			
-			/* 
-			 * Sauvegarde des données de sessionLog.json vers cumul.json et chrono.json
-			 * Réalisée si le dernier clic pour chaque session de sessionLog.json date de plus de $timemaj >= 10 minutes
-			 * Objectif conserver dans sessionLog.json les sessions qui sont encore peut être actives
-			 * Sauvegarde des données de filtre_primaire.json vers cumul.json
-			*/
-
-			$json = file_get_contents(self::$fichiers_json.'cumul.json');
-			$cumul = json_decode($json, true);
-			
-			// Sauvegarde des données de filtre_primaire.json vers cumul.json
-			$json = file_get_contents(self::$fichiers_json.'filtre_primaire.json');
-			$fp = json_decode($json, true);
-			$cumul['robots']['ua'] = $cumul['robots']['ua'] + $fp['robots']['ua'];
-			$cumul['robots']['ip'] = $cumul['robots']['ip'] + $fp['robots']['ip'];
-			$fp['robots']['ua'] = 0;
-			$fp['robots']['ip'] = 0;
-			$json = json_encode($fp);
-			file_put_contents(self::$fichiers_json.'filtre_primaire.json',$json);
-			
-			// Sauvegarde des données de sessionLog.json vers cumul.json et chrono.json
-			foreach($log as $numSession=>$values){
-				$nbpageparsession = count($log[$numSession]['vues']);
-				$nbpagesvalides = $nbpageparsession;
-				$tab = $log;
-				if( (time() - strtotime(substr($log[$numSession]['vues'][$nbpageparsession -1], 0, 19))) > self::$timemaj){
-					// Comptage du nombre de pages dans la session en ne comptant qu'une fois les pages de même nom 
-					// $nbpagesvalides sera utilisé par cumul.json et chrono.json, $tab est utilisé pour la maj du tableau $cumul['pages']
-					if($nbpageparsession >= 2){
-						foreach($tab[$numSession]['vues'] as $key=>$value){
-							$nom = substr($value, 22 , strlen($value)); 
-							//$date = strtotime(substr($value, 0 , 19)); ajouter dans le if && ( strtotime(substr($tab[$numSession]['vues'][$i], 0 , 19)) - $date) < 60)
-							for($i=$key + 1 ; $i < $nbpageparsession; $i++){
-								if( isset ($tab[$numSession]['vues'][$i])){
-									if( substr($tab[$numSession]['vues'][$i], 22 , strlen($tab[$numSession]['vues'][$i])) == $nom){
-										unset($tab[$numSession]['vues'][$i]);
-									}
-								}
+					// Eliminer les vues dont la durée est inférieure à $timePageMini et les vues n portant le même nom que la vue n+1
+					// si il y a au moins 2 pages vues dans la session
+					$renum = false;
+					if( $nbpageparsession > 1){
+						for($i = 0; $i < $nbpageparsession - 1; $i++){
+							if( strtotime(substr($log[$numSession]['vues'][$i + 1], 0 , 19)) - strtotime(substr($log[$numSession]['vues'][$i], 0 , 19)) < $timePageMini
+								|| substr($log[$numSession]['vues'][$i+1], 22 , strlen($log[$numSession]['vues'][$i+1])) == substr($log[$numSession]['vues'][$i], 22 , strlen($log[$numSession]['vues'][$i]))){
+								unset($log[$numSession]['vues'][$i]);
+								$renum = true;
 							}
 						}
-						$nbpagesvalides = count($tab[$numSession]['vues']);
 					}
-					// Mise à jour du tableau $cumul
-					$cumul['nb_clics'] = $cumul['nb_clics']  + $nbpagesvalides;
-					$cumul['nb_visites']++;
-					$cumul['date_fin'] = substr( $log[$numSession]['vues'][$nbpageparsession - 1], 0, 19);
-					$datetimei = strtotime(substr($log[$numSession]['vues'][0], 0 , 19));
-					$datetimef = strtotime(substr($log[$numSession]['vues'][$nbpageparsession - 1], 0 , 19));
-					$dureesession = $datetimef - $datetimei;
-					$cumul['duree_visites'] = $cumul['duree_visites'] + $dureesession;
-					
-					//langage préféré
-					if($log[$numSession]['client'][0] != 'fichier langages.txt absent'){
-						$clefreconnue = false;
-						foreach($cumul['clients']['langage'] as $key => $value){
-							// Si la clef == l'enregistrement dans log de la langue préférée on incrémente la valeur
-							if( $key == $log[$numSession]['client'][0]){
-								$cumul['clients']['langage'][$key]++;
-								$clefreconnue = true;
-							}
+					// Si nécessaire renuméroter les clefs du tableau $log[$numSession]['vues'] : 0,1,2 etc...
+					if($renum){
+						$i = 0;
+						$tableau[$numSession] =  array('vues' => array() );
+						foreach($log[$numSession]['vues'] as $key=>$value){
+							$tableau[$numSession]['vues'][$i] = $value;
+							$i++;
 						}
-						// Si une clef valide n'a pas été trouvée on la crée avec une valeur initialisée à 1
-						if(!$clefreconnue){
-							$cumul['clients']['langage'][$log[$numSession]['client'][0]] = 1;
-						}
+						$log[$numSession]['vues'] = $tableau[$numSession]['vues'];
+						$nbpageparsession = count($log[$numSession]['vues']);
 					}
-					
-					// Navigateur
-					if($log[$numSession]['client'][1] != 'fichier navigateurs.txt absent'){
-						$clefreconnue = false;
-						foreach($cumul['clients']['navigateur'] as $key => $value){
-							// Si la clef == l'enregistrement dans log du navigateur on incrémente la valeur
-							if( $key == $log[$numSession]['client'][1]){
-								$cumul['clients']['navigateur'][$key]++;
-								$clefreconnue = true;
-							}
-						}
-						// Si une clef valide n'a pas été trouvée on la crée avec une valeur initialisée à 1
-						if(!$clefreconnue){
-							$cumul['clients']['navigateur'][$log[$numSession]['client'][1]] = 1;
-						}
+					if(isset($log[$numSession]['ip'])){
+						$ip = $log[$numSession]['ip'];
 					}
-					
-					// Systèmes d'exploitation
-					if($log[$numSession]['client'][2] != 'fichier systemes.txt absent'){
-						$clefreconnue = false;
-						foreach($cumul['clients']['systeme'] as $key => $value){
-							// Si la clef == l'enregistrement dans log du systeme on incrémente la valeur
-							if( $key == $log[$numSession]['client'][2]){
-								$cumul['clients']['systeme'][$key]++;
-								$clefreconnue = true;
-							}
-						}
-						// Si une clef valide n'a pas été trouvée on la crée avec une valeur initialisée à 1
-						if(!$clefreconnue){
-							$cumul['clients']['systeme'][$log[$numSession]['client'][2]] = 1;
-						}
-					}
-					
-					// Mise à jour des variables liées au fichier sessionLog.json
-					self::$comptepages = self::$comptepages - $nbpageparsession;
-					self::$comptevisite--;
-					self::$dureevisites = self::$dureevisites - ( $datetimef - $datetimei );
-					
-					// Enregistrement des pages vues dans $cumul à partir de $tab
-					foreach($tab[$numSession]['vues'] as $vues=>$values){
-						$page = substr($values, 22, strlen($values));
-						if(isset($cumul['pages'][$page])){
-							$cumul['pages'][$page] = $cumul['pages'][$page] + 1;
-						}
-						else{
-							$cumul['pages'][$page] = 1;
-						}
-					}
-					
-					// Mise à jour du fichier chrono.json
-					$dateclef = substr($log[$numSession]['vues'][0], 0 , 10);
-					$json = file_get_contents(self::$fichiers_json.'chrono.json');
-					$chrono = json_decode($json, true);
-					if( ! isset($chrono[$dateclef])){
-						$chrono[$dateclef] = array( 'nb_visites' => 0, 'nb_pages_vues' => 0, 'duree' =>0);
-					}
-					$chrono[$dateclef]['nb_visites']++;
-					$chrono[$dateclef]['nb_pages_vues'] = $chrono[$dateclef]['nb_pages_vues'] + $nbpagesvalides;
-					$chrono[$dateclef]['duree'] = $chrono[$dateclef]['duree'] + $dureesession;
-					// Tri du tableau par clefs en commençant par la date la plus récente
-					krsort($chrono);
-					// Limitation aux 50 dernières dates
-					if( count($chrono) > 50){
-						$derniereclef = '';
-						foreach($chrono as $key => $value){
-							$derniereclef = $key;
-						}
-						unset($chrono[$derniereclef]);
-					}
-					// Encodage et sauvegarde de chrono.json
-					$json = json_encode($chrono);
-					file_put_contents(self::$fichiers_json.'chrono.json',$json);
-					
-					// Suppression des données sauvegardées
-					unset($log[$numSession]);	
-				}
-			}
-			
-			// Mise à jour des fichiers sessionLog.json et cumul.json
-			$json = json_encode($log);
-			file_put_contents(self::$fichiers_json.'sessionLog.json',$json);
-			$json = json_encode($cumul);
-			file_put_contents(self::$fichiers_json.'cumul.json',$json);
-			// Sauvegarde de sécurité de cumul.json dans le dossier json_sauve après un contrôle de cohérence
-			if( isset($cumul['nb_clics']) && isset($cumul['nb_visites']) && isset($cumul['duree_visites']) && isset($cumul['clients'])
-				&& isset($cumul['robots']) && isset($cumul['date_debut']) && isset($cumul['date_fin']) && isset($cumul['pages'])){
-				file_put_contents(self::$json_sauve.'cumul.json',$json);	
-			}
-			
-			// Comptage des visites
-			self::$comptepagestotal = self::$comptepages + $cumul['nb_clics'];
-			self::$comptevisitetotal = self::$comptevisite + $cumul['nb_visites'];
-			self::$dureevisitestotal = self::$dureevisites + $cumul['duree_visites'];
-			if(self::$comptevisitetotal != 0){
-				self::$dureevisitemoyenne = self::conversionTime((int)(self::$dureevisitestotal / self::$comptevisitetotal));
-			}
-			else{
-				self::$dureevisitemoyenne = 0;
-			}
-			self::$datedebut = $cumul['date_debut'];
-
-			// Pour affichage des pages vues
-			if($nbaffipagesvues != 0){
-				self::$pagesvuesaffi = array();
-				foreach($log as $numSession=>$val){
-					foreach($log[$numSession]['vues'] as $vues=>$values){
-						$page = substr($values, 22, strlen($values));
-						if(isset(self::$pagesvuesaffi[$page])){
-							self::$pagesvuesaffi[$page] = self::$pagesvuesaffi[$page] + 1;
-						}
-						else{
-							self::$pagesvuesaffi[$page] = 1;
-						}
-					}
-				}
-				foreach($cumul['pages'] as $page=>$values){
-					if(isset(self::$pagesvuesaffi[$page])){
-						self::$pagesvuesaffi[$page] = self::$pagesvuesaffi[$page] + $values;
-					}
-					else{
-						self::$pagesvuesaffi[$page] = $values;
-					}
-				}
-				arsort(self::$pagesvuesaffi);
-				if($nbaffipagesvues != 1000){
-					self::$pagesvuesaffi = array_slice(self::$pagesvuesaffi, 0, $nbaffipagesvues, true);
-				}
-				foreach(self::$pagesvuesaffi as $key => $value){
-					self::$scoremax = self::$pagesvuesaffi[$key];
-					break;
-				}
-			}
-			
-			// Pour affichage des langues
-			if($nbaffilangues != 0){
-				self::$languesaffi = array();
-				foreach($log as $numSession=>$val){
-					$lang = $log[$numSession]['client'][0];
-					if($log[$numSession]['client'][0] != 'fichier langages.txt absent'){
-						if(isset(self::$languesaffi[$lang])){
-							self::$languesaffi[$lang] = self::$languesaffi[$lang] + 1;
-						}
-						else{
-							self::$languesaffi[$lang] = 1;
-						}
-					}
-				}
-				foreach($cumul['clients']['langage'] as $lang=>$values){
-					if(isset(self::$languesaffi[$lang])){
-						self::$languesaffi[$lang] = self::$languesaffi[$lang] + $values;
-					}
-					else{
-						self::$languesaffi[$lang] = $values;
-					}
-				}
-				arsort(self::$languesaffi);
-				if($nbaffilangues != 1000){
-					self::$languesaffi = array_slice(self::$languesaffi, 0, $nbaffilangues, true);
-				}
-				foreach(self::$languesaffi as $key => $value){
-					self::$scoremaxlangues = self::$languesaffi[$key];
-					break;
-				}
-			}
-			
-			// Pour affichage des navigateurs
-			if($nbaffinavigateurs != 0){
-				self::$navigateursaffi = array();
-				foreach($log as $numSession=>$val){
-					$nav = $log[$numSession]['client'][1];
-					if($log[$numSession]['client'][1] != 'fichier navigateurs.txt absent'){
-						if(isset(self::$navigateursaffi[$nav])){
-							self::$navigateursaffi[$nav] = self::$navigateursaffi[$nav] + 1;
-						}
-						else{
-							self::$navigateursaffi[$nav] = 1;
-						}
-					}
-				}
-				foreach($cumul['clients']['navigateur'] as $navig=>$values){
-					if(isset(self::$navigateursaffi[$navig])){
-						self::$navigateursaffi[$navig] = self::$navigateursaffi[$navig] + $values;
-					}
-					else{
-						self::$navigateursaffi[$navig] = $values;
-					}
-				}
-				arsort(self::$navigateursaffi);
-				if($nbaffinavigateurs != 1000){
-					self::$navigateursaffi = array_slice(self::$navigateursaffi, 0, $nbaffinavigateurs, true);
-				}
-				foreach(self::$navigateursaffi as $key => $value){
-					self::$scoremaxnavi = self::$navigateursaffi[$key];
-					break;
-				}
-			}
-			
-			// Pour affichage des sytèmes d'exploitation
-			if($nbaffise != 0){
-				self::$systemesaffi = array();
-				foreach($log as $numSession=>$val){
-					$syse = $log[$numSession]['client'][2];
-					if($log[$numSession]['client'][2] != 'fichier systemes.txt absent'){
-						if(isset(self::$systemesaffi[$syse])){
-							self::$systemesaffi[$syse] = self::$systemesaffi[$syse] + 1;
-						}
-						else{
-							self::$systemesaffi[$syse] = 1;
-						}
-					}
-				}
-				foreach($cumul['clients']['systeme'] as $syse=>$values){
-					if(isset(self::$systemesaffi[$syse])){
-						self::$systemesaffi[$syse] = self::$systemesaffi[$syse] + $values;
-					}
-					else{
-						self::$systemesaffi[$syse] = $values;
-					}
-				}
-				arsort(self::$systemesaffi);
-				if($nbaffise != 1000){
-					self::$systemesaffi = array_slice(self::$systemesaffi, 0, $nbaffise, true);
-				}
-				foreach(self::$systemesaffi as $key => $value){
-					self::$scoremaxse = self::$systemesaffi[$key];
-					break;
-				}
-			}
-			
-			// Pour affichage chronologique
-			if( $nbAffiDates != 0){
-				$json = file_get_contents(self::$fichiers_json.'chrono.json');
-				self::$chronoaffi = json_decode($json, true);
-				// Mise à jour sans sauvegarde en prenant en compte sessionLog.json
-				foreach($log as $numSession=>$val){
-					$datetimei = strtotime(substr($log[$numSession]['vues'][0], 0 , 19));
-					$nbpageparsession = count($log[$numSession]['vues']);
+					$datetimei = time();
+					if( $nbpageparsession > 0) $datetimei = strtotime(substr($log[$numSession]['vues'][0], 0 , 19));
 					// Si $nbpageparsession <=1 on force la valeur de $datetimef
 					if($nbpageparsession <= 1){ 
 						$datetimef = $datetimei + $timeVisiteMini;
@@ -1211,42 +787,475 @@ class statislite extends common {
 						$datetimef = strtotime(substr($log[$numSession]['vues'][$nbpageparsession - 1], 0 , 19));
 					}
 					$dureesession = $datetimef - $datetimei;
-					$dateclef = substr($log[$numSession]['vues'][0], 0 , 10);
-					if( ! isset(self::$chronoaffi[$dateclef])){
-						self::$chronoaffi[$dateclef] = array( 'nb_visites' => 0, 'nb_pages_vues' => 0, 'duree' =>0);
+					// Recherche du groupe (0,1,2,3) correspondant à l'utilisateur connecté
+					$groupe_user_connected = 0;
+					$user_connected = $log[$numSession]['user_id'];
+					if( null !== $this->getData(['user', $user_connected,'group'])){
+						if($user_connected != 'visiteur'){
+							$groupe_user_connected = $this->getData(['user', $user_connected, 'group']);
+						}
 					}
-					self::$chronoaffi[$dateclef]['nb_visites']++;
-					self::$chronoaffi[$dateclef]['nb_pages_vues'] = self::$chronoaffi[$dateclef]['nb_pages_vues'] + $nbpageparsession;
-					self::$chronoaffi[$dateclef]['duree'] = self::$chronoaffi[$dateclef]['duree'] + $dureesession;
+					// Si le nombre de pages vues dans la session est >= $nbpagemini et si la durée de la session est >= $timeVisiteMini
+					// et si l'utilisateur connecté n'est pas exclu des statistiques
+					if( $nbpageparsession >= $nbpagemini && $dureesession >= $timeVisiteMini
+						&& $groupe_user_connected < $usersExclus ){
+							// Mises à jour des variables pour affichage des statistiques
+							self::$comptepages = self::$comptepages + $nbpageparsession;
+							self::$comptevisite++;
+							self::$dureevisites = self::$dureevisites + $dureesession;
+							// Modification des élèments null en ''
+							if( is_null($log[$numSession]['referer'])){$log[$numSession]['referer'] = '';}
+							if( is_null($log[$numSession]['langage'])){$log[$numSession]['langage'] = '';}
+							if( is_null($log[$numSession]['userAgent'])){$log[$numSession]['userAgent'] = '';}
+							// Recherche de $log[$numSession]['client'][0] : langage préféré
+							$log[$numSession]['client'][0] = $this->langage($log[$numSession]['langage']);
+							// Recherche de $log[$numSession]['client'][1] : navigateur
+							$log[$numSession]['client'][1] = $this->navigateur($log[$numSession]['userAgent']);
+							// Recherche de $log[$numSession]['client'][2] : système d'exploitation
+							$log[$numSession]['client'][2] = $this->systeme($log[$numSession]['userAgent']);
+							// Geolocalisation si elle n'a pas été faite et si l'IP n'est pas déjà détruite
+							if(isset($log[$numSession]['ip'])){
+								/*if($geolocalisation && ! isset($log[$numSession]['geolocalisation'])){
+									$geo = $this->geolocalise($log[$numSession]['ip']);
+									$log[$numSession]['geolocalisation'] = $geo['country_name'].' - '.$geo['city'];
+								}*/
+								// CNIL : ne pas mémoriser d'adresse IP
+								unset($log[$numSession]['ip']);
+							}
+					}
+					// Sinon on supprime cet enregistrement de sessionLog.json et on l'enregistre dans sessionInvalide.json
+					// puis on enregistre dans cumul.json le résultat du filtrage par nombre de pages,temps de visite ou utilisateur exclu
+					else{			
+						// Lecture et décodage du fichier sessionInvalide.json
+						if( is_file(self::$fichiers_json.'sessionInvalide.json') ){
+							$json = file_get_contents(self::$fichiers_json.'sessionInvalide.json');
+						}
+						else{
+							$json = '{}';
+						}
+						$poub = json_decode($json, true);
+						$poub[$numSession] = $log[$numSession];
+						// CNIL : même dans le fichier sessionInvalide.json on ne conserve pas d'IP
+						unset($poub[$numSession]['ip']);
+						unset($poub[$numSession]['client']);
+						// Limitation de la taille du fichier sessionInvalide.json à 200 enregistrements
+						if(count($poub) > 200){
+							foreach($poub as $key=>$value){
+								unset($poub[$key]);
+								break;
+							}
+						}
+						// Encodage et sauvegarde du fichier sessionInvalide.json
+						$json = json_encode($poub);
+						file_put_contents(self::$fichiers_json.'sessionInvalide.json',$json);
+						// Suppression de la session
+						unset($log[$numSession]);
+						// Enregistrement dans cumul.json du résultat du filtrage
+						// np + tv + ue >= nombre de sessionInvalide car une même session peut être éliminée plusieurs fois
+						// A chaque fois np tv ou ue s'incrémente mais la sessionInvalide de même numéro de session est simplement modifiée
+						if($nbpageparsession < $nbpagemini){
+							$type = 'np';
+						}
+						elseif($dureesession < $timeVisiteMini){
+							$type = 'tv';
+						}
+						else{
+							$type = 'ue';
+						}
+						$json = file_get_contents(self::$fichiers_json.'cumul.json');
+						$cumul = json_decode($json, true);
+						$cumul['robots'][$type] = $cumul['robots'][$type] + 1;
+						$json = json_encode($cumul);
+						file_put_contents(self::$fichiers_json.'cumul.json',$json);
+						// Sauvegarde de sécurité de cumul.json dans le dossier json_sauve après un contrôle de cohérence
+						if( isset($cumul['nb_clics']) && isset($cumul['nb_visites']) && isset($cumul['duree_visites']) && isset($cumul['clients'])
+							&& isset($cumul['robots']) && isset($cumul['date_debut']) && isset($cumul['date_fin']) && isset($cumul['pages'])){
+							file_put_contents(self::$json_sauve.'cumul.json',$json);	
+						}
+					}
 				}
-				// Tri du tableau par clefs en commençant par la date la plus récente
-				krsort(self::$chronoaffi);
-			}
+				
+				
+				/*
+				 * Mise à jour du dossier affitampon.json destiné à l'affichage détaillé 
+				 *
+				*/
+				if( is_file(self::$fichiers_json.'affitampon.json')){
+					$json = file_get_contents(self::$fichiers_json.'affitampon.json');
+				}
+				else{
+					$json='{}';
+				}
+				$tampon = json_decode($json, true);
+				foreach($log as $numSession=>$values){
+					$tampon[$numSession] = $log[$numSession];			
+				}
+				// Fichier limité à 100 enregistrements
+				if( count($tampon) > 100){
+					foreach($tampon as $key=>$value){
+						unset($tampon[$key]);
+						if(count($tampon) <= 100){ break; }
+					}
+				}
+				$json = json_encode($tampon);
+				file_put_contents(self::$fichiers_json.'affitampon.json',$json);
+				
+				
+				/* 
+				 * Sauvegarde des données de sessionLog.json vers cumul.json et chrono.json
+				 * Réalisée si le dernier clic pour chaque session de sessionLog.json date de plus de $timemaj >= 10 minutes
+				 * Objectif conserver dans sessionLog.json les sessions qui sont encore peut être actives
+				 * Sauvegarde des données de filtre_primaire.json vers cumul.json
+				*/
+
+				$json = file_get_contents(self::$fichiers_json.'cumul.json');
+				$cumul = json_decode($json, true);
+				
+				// Sauvegarde des données de filtre_primaire.json vers cumul.json
+				$json = file_get_contents(self::$fichiers_json.'filtre_primaire.json');
+				$fp = json_decode($json, true);
+				$cumul['robots']['ua'] = $cumul['robots']['ua'] + $fp['robots']['ua'];
+				$cumul['robots']['ip'] = $cumul['robots']['ip'] + $fp['robots']['ip'];
+				$fp['robots']['ua'] = 0;
+				$fp['robots']['ip'] = 0;
+				$json = json_encode($fp);
+				file_put_contents(self::$fichiers_json.'filtre_primaire.json',$json);
+				
+				// Sauvegarde des données de sessionLog.json vers cumul.json et chrono.json
+				foreach($log as $numSession=>$values){
+					$nbpageparsession = count($log[$numSession]['vues']);
+					$nbpagesvalides = $nbpageparsession;
+					$tab = $log;
+					if( (time() - strtotime(substr($log[$numSession]['vues'][$nbpageparsession -1], 0, 19))) > self::$timemaj){
+						// Comptage du nombre de pages dans la session en ne comptant qu'une fois les pages de même nom 
+						// $nbpagesvalides sera utilisé par cumul.json et chrono.json, $tab est utilisé pour la maj du tableau $cumul['pages']
+						if($nbpageparsession >= 2){
+							foreach($tab[$numSession]['vues'] as $key=>$value){
+								$nom = substr($value, 22 , strlen($value)); 
+								//$date = strtotime(substr($value, 0 , 19)); ajouter dans le if && ( strtotime(substr($tab[$numSession]['vues'][$i], 0 , 19)) - $date) < 60)
+								for($i=$key + 1 ; $i < $nbpageparsession; $i++){
+									if( isset ($tab[$numSession]['vues'][$i])){
+										if( substr($tab[$numSession]['vues'][$i], 22 , strlen($tab[$numSession]['vues'][$i])) == $nom){
+											unset($tab[$numSession]['vues'][$i]);
+										}
+									}
+								}
+							}
+							$nbpagesvalides = count($tab[$numSession]['vues']);
+						}
+						// Mise à jour du tableau $cumul
+						$cumul['nb_clics'] = $cumul['nb_clics']  + $nbpagesvalides;
+						$cumul['nb_visites']++;
+						$cumul['date_fin'] = substr( $log[$numSession]['vues'][$nbpageparsession - 1], 0, 19);
+						$datetimei = strtotime(substr($log[$numSession]['vues'][0], 0 , 19));
+						$datetimef = strtotime(substr($log[$numSession]['vues'][$nbpageparsession - 1], 0 , 19));
+						$dureesession = $datetimef - $datetimei;
+						$cumul['duree_visites'] = $cumul['duree_visites'] + $dureesession;
+						
+						//langage préféré
+						if($log[$numSession]['client'][0] != 'fichier langages.txt absent'){
+							$clefreconnue = false;
+							foreach($cumul['clients']['langage'] as $key => $value){
+								// Si la clef == l'enregistrement dans log de la langue préférée on incrémente la valeur
+								if( $key == $log[$numSession]['client'][0]){
+									$cumul['clients']['langage'][$key]++;
+									$clefreconnue = true;
+								}
+							}
+							// Si une clef valide n'a pas été trouvée on la crée avec une valeur initialisée à 1
+							if(!$clefreconnue){
+								$cumul['clients']['langage'][$log[$numSession]['client'][0]] = 1;
+							}
+						}
+						
+						// Navigateur
+						if($log[$numSession]['client'][1] != 'fichier navigateurs.txt absent'){
+							$clefreconnue = false;
+							foreach($cumul['clients']['navigateur'] as $key => $value){
+								// Si la clef == l'enregistrement dans log du navigateur on incrémente la valeur
+								if( $key == $log[$numSession]['client'][1]){
+									$cumul['clients']['navigateur'][$key]++;
+									$clefreconnue = true;
+								}
+							}
+							// Si une clef valide n'a pas été trouvée on la crée avec une valeur initialisée à 1
+							if(!$clefreconnue){
+								$cumul['clients']['navigateur'][$log[$numSession]['client'][1]] = 1;
+							}
+						}
+						
+						// Systèmes d'exploitation
+						if($log[$numSession]['client'][2] != 'fichier systemes.txt absent'){
+							$clefreconnue = false;
+							foreach($cumul['clients']['systeme'] as $key => $value){
+								// Si la clef == l'enregistrement dans log du systeme on incrémente la valeur
+								if( $key == $log[$numSession]['client'][2]){
+									$cumul['clients']['systeme'][$key]++;
+									$clefreconnue = true;
+								}
+							}
+							// Si une clef valide n'a pas été trouvée on la crée avec une valeur initialisée à 1
+							if(!$clefreconnue){
+								$cumul['clients']['systeme'][$log[$numSession]['client'][2]] = 1;
+							}
+						}
+						
+						// Mise à jour des variables liées au fichier sessionLog.json
+						self::$comptepages = self::$comptepages - $nbpageparsession;
+						self::$comptevisite--;
+						self::$dureevisites = self::$dureevisites - ( $datetimef - $datetimei );
+						
+						// Enregistrement des pages vues dans $cumul à partir de $tab
+						foreach($tab[$numSession]['vues'] as $vues=>$values){
+							$page = substr($values, 22, strlen($values));
+							if(isset($cumul['pages'][$page])){
+								$cumul['pages'][$page] = $cumul['pages'][$page] + 1;
+							}
+							else{
+								$cumul['pages'][$page] = 1;
+							}
+						}
+						
+						// Mise à jour du fichier chrono.json
+						$dateclef = substr($log[$numSession]['vues'][0], 0 , 10);
+						$json = file_get_contents(self::$fichiers_json.'chrono.json');
+						$chrono = json_decode($json, true);
+						if( ! isset($chrono[$dateclef])){
+							$chrono[$dateclef] = array( 'nb_visites' => 0, 'nb_pages_vues' => 0, 'duree' =>0);
+						}
+						$chrono[$dateclef]['nb_visites']++;
+						$chrono[$dateclef]['nb_pages_vues'] = $chrono[$dateclef]['nb_pages_vues'] + $nbpagesvalides;
+						$chrono[$dateclef]['duree'] = $chrono[$dateclef]['duree'] + $dureesession;
+						// Tri du tableau par clefs en commençant par la date la plus récente
+						krsort($chrono);
+						// Limitation aux 50 dernières dates
+						if( count($chrono) > 50){
+							$derniereclef = '';
+							foreach($chrono as $key => $value){
+								$derniereclef = $key;
+							}
+							unset($chrono[$derniereclef]);
+						}
+						// Encodage et sauvegarde de chrono.json
+						$json = json_encode($chrono);
+						file_put_contents(self::$fichiers_json.'chrono.json',$json);
+						
+						// Suppression des données sauvegardées
+						unset($log[$numSession]);	
+					}
+				}
+				
+				// Mise à jour des fichiers sessionLog.json et cumul.json
+				$json = json_encode($log);
+				file_put_contents(self::$fichiers_json.'sessionLog.json',$json);
+				$json = json_encode($cumul);
+				file_put_contents(self::$fichiers_json.'cumul.json',$json);
+				// Sauvegarde de sécurité de cumul.json dans le dossier json_sauve après un contrôle de cohérence
+				if( isset($cumul['nb_clics']) && isset($cumul['nb_visites']) && isset($cumul['duree_visites']) && isset($cumul['clients'])
+					&& isset($cumul['robots']) && isset($cumul['date_debut']) && isset($cumul['date_fin']) && isset($cumul['pages'])){
+					file_put_contents(self::$json_sauve.'cumul.json',$json);	
+				}
+				
+				// Comptage des visites
+				self::$comptepagestotal = self::$comptepages + $cumul['nb_clics'];
+				self::$comptevisitetotal = self::$comptevisite + $cumul['nb_visites'];
+				self::$dureevisitestotal = self::$dureevisites + $cumul['duree_visites'];
+				if(self::$comptevisitetotal != 0){
+					self::$dureevisitemoyenne = self::conversionTime((int)(self::$dureevisitestotal / self::$comptevisitetotal));
+				}
+				else{
+					self::$dureevisitemoyenne = 0;
+				}
+				self::$datedebut = $cumul['date_debut'];
+
+				// Pour affichage des pages vues
+				if($nbaffipagesvues != 0){
+					self::$pagesvuesaffi = array();
+					foreach($log as $numSession=>$val){
+						foreach($log[$numSession]['vues'] as $vues=>$values){
+							$page = substr($values, 22, strlen($values));
+							if(isset(self::$pagesvuesaffi[$page])){
+								self::$pagesvuesaffi[$page] = self::$pagesvuesaffi[$page] + 1;
+							}
+							else{
+								self::$pagesvuesaffi[$page] = 1;
+							}
+						}
+					}
+					foreach($cumul['pages'] as $page=>$values){
+						if(isset(self::$pagesvuesaffi[$page])){
+							self::$pagesvuesaffi[$page] = self::$pagesvuesaffi[$page] + $values;
+						}
+						else{
+							self::$pagesvuesaffi[$page] = $values;
+						}
+					}
+					arsort(self::$pagesvuesaffi);
+					if($nbaffipagesvues != 1000){
+						self::$pagesvuesaffi = array_slice(self::$pagesvuesaffi, 0, $nbaffipagesvues, true);
+					}
+					foreach(self::$pagesvuesaffi as $key => $value){
+						self::$scoremax = self::$pagesvuesaffi[$key];
+						break;
+					}
+				}
+				
+				// Pour affichage des langues
+				if($nbaffilangues != 0){
+					self::$languesaffi = array();
+					foreach($log as $numSession=>$val){
+						$lang = $log[$numSession]['client'][0];
+						if($log[$numSession]['client'][0] != 'fichier langages.txt absent'){
+							if(isset(self::$languesaffi[$lang])){
+								self::$languesaffi[$lang] = self::$languesaffi[$lang] + 1;
+							}
+							else{
+								self::$languesaffi[$lang] = 1;
+							}
+						}
+					}
+					foreach($cumul['clients']['langage'] as $lang=>$values){
+						if(isset(self::$languesaffi[$lang])){
+							self::$languesaffi[$lang] = self::$languesaffi[$lang] + $values;
+						}
+						else{
+							self::$languesaffi[$lang] = $values;
+						}
+					}
+					arsort(self::$languesaffi);
+					if($nbaffilangues != 1000){
+						self::$languesaffi = array_slice(self::$languesaffi, 0, $nbaffilangues, true);
+					}
+					foreach(self::$languesaffi as $key => $value){
+						self::$scoremaxlangues = self::$languesaffi[$key];
+						break;
+					}
+				}
+				
+				// Pour affichage des navigateurs
+				if($nbaffinavigateurs != 0){
+					self::$navigateursaffi = array();
+					foreach($log as $numSession=>$val){
+						$nav = $log[$numSession]['client'][1];
+						if($log[$numSession]['client'][1] != 'fichier navigateurs.txt absent'){
+							if(isset(self::$navigateursaffi[$nav])){
+								self::$navigateursaffi[$nav] = self::$navigateursaffi[$nav] + 1;
+							}
+							else{
+								self::$navigateursaffi[$nav] = 1;
+							}
+						}
+					}
+					foreach($cumul['clients']['navigateur'] as $navig=>$values){
+						if(isset(self::$navigateursaffi[$navig])){
+							self::$navigateursaffi[$navig] = self::$navigateursaffi[$navig] + $values;
+						}
+						else{
+							self::$navigateursaffi[$navig] = $values;
+						}
+					}
+					arsort(self::$navigateursaffi);
+					if($nbaffinavigateurs != 1000){
+						self::$navigateursaffi = array_slice(self::$navigateursaffi, 0, $nbaffinavigateurs, true);
+					}
+					foreach(self::$navigateursaffi as $key => $value){
+						self::$scoremaxnavi = self::$navigateursaffi[$key];
+						break;
+					}
+				}
+				
+				// Pour affichage des sytèmes d'exploitation
+				if($nbaffise != 0){
+					self::$systemesaffi = array();
+					foreach($log as $numSession=>$val){
+						$syse = $log[$numSession]['client'][2];
+						if($log[$numSession]['client'][2] != 'fichier systemes.txt absent'){
+							if(isset(self::$systemesaffi[$syse])){
+								self::$systemesaffi[$syse] = self::$systemesaffi[$syse] + 1;
+							}
+							else{
+								self::$systemesaffi[$syse] = 1;
+							}
+						}
+					}
+					foreach($cumul['clients']['systeme'] as $syse=>$values){
+						if(isset(self::$systemesaffi[$syse])){
+							self::$systemesaffi[$syse] = self::$systemesaffi[$syse] + $values;
+						}
+						else{
+							self::$systemesaffi[$syse] = $values;
+						}
+					}
+					arsort(self::$systemesaffi);
+					if($nbaffise != 1000){
+						self::$systemesaffi = array_slice(self::$systemesaffi, 0, $nbaffise, true);
+					}
+					foreach(self::$systemesaffi as $key => $value){
+						self::$scoremaxse = self::$systemesaffi[$key];
+						break;
+					}
+				}
+				
+				// Pour affichage chronologique
+				if( $nbAffiDates != 0){
+					$json = file_get_contents(self::$fichiers_json.'chrono.json');
+					self::$chronoaffi = json_decode($json, true);
+					// Mise à jour sans sauvegarde en prenant en compte sessionLog.json
+					foreach($log as $numSession=>$val){
+						$datetimei = strtotime(substr($log[$numSession]['vues'][0], 0 , 19));
+						$nbpageparsession = count($log[$numSession]['vues']);
+						// Si $nbpageparsession <=1 on force la valeur de $datetimef
+						if($nbpageparsession <= 1){ 
+							$datetimef = $datetimei + $timeVisiteMini;
+						}
+						else{
+							$datetimef = strtotime(substr($log[$numSession]['vues'][$nbpageparsession - 1], 0 , 19));
+						}
+						$dureesession = $datetimef - $datetimei;
+						$dateclef = substr($log[$numSession]['vues'][0], 0 , 10);
+						if( ! isset(self::$chronoaffi[$dateclef])){
+							self::$chronoaffi[$dateclef] = array( 'nb_visites' => 0, 'nb_pages_vues' => 0, 'duree' =>0);
+						}
+						self::$chronoaffi[$dateclef]['nb_visites']++;
+						self::$chronoaffi[$dateclef]['nb_pages_vues'] = self::$chronoaffi[$dateclef]['nb_pages_vues'] + $nbpageparsession;
+						self::$chronoaffi[$dateclef]['duree'] = self::$chronoaffi[$dateclef]['duree'] + $dureesession;
+					}
+					// Tri du tableau par clefs en commençant par la date la plus récente
+					krsort(self::$chronoaffi);
+				}
+				
+				// Pour affichage détaillé
+				$json = file_get_contents(self::$fichiers_json.'affitampon.json');
+				$tampon = json_decode($json, true);
+				// on change les clefs de $tampon : 0,1,2,3,...
+				$i=0;
+				$tableau = array();
+				foreach($tampon as $key=>$value){
+					$tableau[$i] = $value;
+					$i++;
+				}
+				$tampon = $tableau;
+				$nbsessiontampon = count($tampon);
+				if( $nbsessiontampon > 0 ){
+					for($i=0; $i < $nbEnregSession; $i++){
+						self::$affidetaille[$i] = $tampon[$nbsessiontampon - 1 - $i];
+						if($nbsessiontampon - 1 - $i === 0) break;
+					}
+				}
 			
-			// Pour affichage détaillé
-			$json = file_get_contents(self::$fichiers_json.'affitampon.json');
-			$tampon = json_decode($json, true);
-			// on change les clefs de $tampon : 0,1,2,3,...
-			$i=0;
-			$tableau = array();
-			foreach($tampon as $key=>$value){
-				$tableau[$i] = $value;
-				$i++;
+				// Valeurs en sortie
+				$this->addOutput([
+					'showBarEditButton' => true,
+					'showPageContent' => true,
+					'view' => 'index'
+				]);
 			}
-			$tampon = $tableau;
-			$nbsessiontampon = count($tampon);
-			if( $nbsessiontampon > 0 ){
-				for($i=0; $i < $nbEnregSession; $i++){
-					self::$affidetaille[$i] = $tampon[$nbsessiontampon - 1 - $i];
-					if($nbsessiontampon - 1 - $i === 0) break;
-				}
-			}
-		
+		} else {
 			// Valeurs en sortie
 			$this->addOutput([
-				'showBarEditButton' => true,
-				'showPageContent' => true,
-				'view' => 'index'
+				'redirect' => helper::baseUrl().'page/edit/'.$this->getUrl(0),
+				'notification' => $text['statislite']['index'][1],
+				'state' => false
 			]);
 		}
 	}

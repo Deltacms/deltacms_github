@@ -348,7 +348,10 @@ nav::before {
 	clear: left;
 	display: flex;
 }
-
+.box {
+	display:flex;
+	justify-content:space-between;
+}
 /* Menu vertical */
 .menuSide,
 .menuSideChild {
@@ -397,15 +400,6 @@ body > footer {
 #footersite {
 	margin: 0;
 }
-.footerbodyFixed {
-	position: fixed;
-	bottom: 0;
-	left: 0;
-	width: 100%;
-	z-index: 50;
-	background-color: inherit;
-	padding: inherit;
-}
 #footersiteRight,
 #footersiteLeft,
 #footersiteCenter,
@@ -437,6 +431,15 @@ footer #footerbody > div {
 #footerDisplaySearch,
 #footerDeltaCMS {
 	font-size: inherit;
+}
+.footerbodyFixed {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	z-index: 50;
+	background-color: inherit;
+	padding: inherit;
 }
 /* Réseaux sociaux */
 footer #footerSocials span {

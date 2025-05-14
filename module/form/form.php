@@ -18,7 +18,7 @@
  
 class form extends common {
 
-	const VERSION = '6.5';
+	const VERSION = '6.6';
 	const REALNAME = 'Formulaire';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -121,6 +121,9 @@ class form extends common {
 				$this->setData(['module', $this->getUrl(0), 'texts', 'noTrust', $text['form']['init'][13] ]);
 				$this->setData(['module', $this->getUrl(0), 'config', 'trustLimit', "80"]);
 				$this->setData(['module', $this->getUrl(0), 'config', 'versionData', '6.5']);
+			}
+			if( version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '6.6', '<') ){
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData', '6.6']);
 			}
 		}
 	}

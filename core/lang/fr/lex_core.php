@@ -38,6 +38,9 @@ $text['core']['showMemberFile'][2] = 'Actualiser la liste des fichiers';
 $text['core']['showMemberFile'][3] = 'Télécharger ce fichier -> clic droit - enregistrer la cible du lien';
 $text['core']['showMemberFile'][4] = 'Afficher ce fichier';
 $text['core']['showMemberFile'][5] = 'Téléchargez le fichier : ';
+$text['core']['pages2Json'][0] = 'Rechercher dans le site';
+$text['core']['pages2Json'][1] = 'Plan du site';
+$text['core']['pages2Json'][2] = 'Pages spéciales';
 // core.js.php
 $text['core_js'][0] = "Effectuer la mise à jour ?";
 // Select File

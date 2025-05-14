@@ -330,13 +330,9 @@ class page extends common {
 				$this->deleteData(['module', $url[0]]);
 				// Met à jour le site map
 				// $this->createSitemap('all');
-				// Met à jour 'config', 'statislite', 'enable' si aucume page utilise le module Statislite
+				// Met à jour 'config', 'statislite', 'enable' si aucume page n'utilise le module Statislite dans la langue de base
 				$inPages = helper::arrayCollumn($this->getData(['page']),'moduleId', 'SORT_DESC');
-				$statislite = 'off';
-				foreach($inPages as $key=>$value){
-				  if( $value === 'statislite') $statislite = 'on';
-				}
-				if( $statislite === 'off') $this->setData(['config', 'statislite', 'enable', false ]);
+				if( (!isset($_SESSION['translationType']) || $_SESSION['translationType']==='none') && ! in_array('statislite',$inPages)) $this->setData(['config', 'statislite', 'enable', false ]);			
 				// Valeurs en sortie
 				$this->addOutput([
 					'redirect' => helper::baseUrl(false),
@@ -700,7 +696,7 @@ class page extends common {
 						// Supprime l'ancienne page si l'id a changée
 						if($pageId !== $this->getUrl(2)) {
 							$this->deleteData(['page', $this->getUrl(2)]);
-							unlink (self::DATA_DIR . self::$i18n . '/content/' . $this->getUrl(2) . '.html');
+							if (file_exists(self::DATA_DIR . self::$i18n . '/content/' . $this->getUrl(2) . '.html')) unlink (self::DATA_DIR . self::$i18n . '/content/' . $this->getUrl(2) . '.html');						
 						}
 						// Traitement des pages spéciales affectées dans la config :
 						if ($this->getUrl(2) === $this->getData(['locale', 'legalPageId']) ) {
@@ -837,7 +833,9 @@ class page extends common {
 						}
 					}
 				}
-				self::$moduleIds = array_merge( ['' => $text['core_page']['edit'][1]] , helper::arrayCollumn(helper::getModules(),'realName','SORT_ASC'));			// Pages sans parent
+				self::$moduleIds = array_merge( ['' => $text['core_page']['edit'][1]] , helper::arrayCollumn(helper::getModules(),'realName','SORT_ASC'));
+				if( isset($_SESSION['translationType']) && $_SESSION['translationType'] !== 'none') unset(self::$moduleIds['statislite']);
+				// Pages sans parent
 				self::$pagesNoParentId = $pagesNoParentId;
 				foreach($this->getHierarchy() as $parentPageId => $childrenPageIds) {
 					if($parentPageId !== $this->getUrl(2)) {

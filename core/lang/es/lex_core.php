@@ -38,6 +38,9 @@ $text['core']['showMemberFile'][2] = 'Actualizar lista de archivos';
 $text['core']['showMemberFile'][3] = 'Descargar este archivo -> clic derecho - guardar destino del enlace';
 $text['core']['showMemberFile'][4] = 'Mostrar este archivo';
 $text['core']['showMemberFile'][5] = 'Descargar archivo: ';
+$text['core']['pages2Json'][0] = 'Buscar en el sitio';
+$text['core']['pages2Json'][1] = 'Mapa del sitio';
+$text['core']['pages2Json'][2] = 'Páginas especiales';
 // core.js.php
 $text['core_js'][0] = "¿Realizar actualización?";
 // Seleccione Archivo

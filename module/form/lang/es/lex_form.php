@@ -44,6 +44,7 @@ $text['form_view']['config'][42] = 'Si su cuestionario se refiere a datos person
 $text['form_view']['config'][43] = 'Textos';
 $text['form_view']['config'][44] = 'Índice de confianza mínimo';
 $text['form_view']['config'][45] = 'Índice de confianza mínimo para enviar el formulario. Para que esta limitación esté activa debes validar la opción Configurar el Sitio / Conexión Seguridad';
+$text['form_view']['config'][46] = 'Para evitar que el correo electrónico sea considerado spam, es preferible elegir una firma con el nombre del sitio';
 $text['form_view']['data'][0] = 'Atrás';
 $text['form_view']['data'][1] = 'Borrar todo';
 $text['form_view']['data'][2] = 'Exportar CSV';

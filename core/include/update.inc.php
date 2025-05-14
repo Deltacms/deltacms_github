@@ -276,4 +276,8 @@ if ($this->getData(['core', 'dataVersion']) < 5401) {
 	$this->setDataAllLocale(['locale', 'captchaAddition', $text['core_config_view']['locale'][70]]);
 	$this->setData(['core', 'dataVersion', 5401]);
 }
+if ($this->getData(['core', 'dataVersion']) < 5402) {
+	$this->setData(['config', 'mailDomainName', '']);
+	$this->setData(['core', 'dataVersion', 5402]);
+}
 ?>

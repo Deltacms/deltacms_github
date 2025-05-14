@@ -119,6 +119,7 @@ $text['statislite']['initDownload'][0] = 'Acción no permitida';
 $text['statislite']['initDownload'][1] = 'Restablecimiento del contador de clics del enlace hecho';
 $text['statislite']['sauveJson'][0] = 'Archivos Json guardados';
 $text['statislite']['index'][0] = 'Módulo inicializado con valores por defecto, validar o modificar la configuración';
+$text['statislite']['index'][1] = 'Una página con el módulo Statislite está prohibida en la traducción escrita, elimine esta página.';
 // Temps minimum de la visite
 $timeVisiteMini = [
 	'10' => '10 segundos',
@@ -147,10 +148,11 @@ $nbPageMini = [
 ];
 // Utilisateurs connectés à exclure des statistiques
 $users_exclus = [
-	'4' => 'ninguno',
+	'5' => 'ninguno',
 	'1' => 'todos',
-	'2' => 'editores y administradores',
-	'3' => 'administradores'
+	'2' => 'editores a administradores',
+	'3' => 'moderadores y administradores',
+	'4' => 'administradores'
 ];
 // Nombre de visites affichées dans affichage détaillé
 $nbEnregSession = [

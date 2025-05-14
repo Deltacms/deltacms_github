@@ -107,4 +107,26 @@ include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdm
 			</div>
 		</div>
 	</div>
+	<div class="row">
+		<div class="col12">
+			<div class="block">
+				<div class="blockTitle"><?php echo $text['core_config_view']['mail'][0]; ?>
+					<span id="specialeHelpButton" class="helpDisplayButton">
+						<a href="https://doc.deltacms.fr/reseau" target="_blank">
+							<?php echo template::ico('help', 'left');?>
+						</a>
+					</span>
+				</div>
+				<div class="row">
+					<div  class="col4">
+						<?php echo template::text('configMailDomainName', [
+							'label' => $text['core_config_view']['mail'][1],
+							'value' => $this->getData(['config', 'mailDomainName']),
+							'help' => $text['core_config_view']['mail'][2]
+						]); ?>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>

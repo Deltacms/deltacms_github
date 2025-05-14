@@ -38,22 +38,24 @@
         "contact": {
             "config": {
                 "captcha": true,
-                "group": 3,
+                "group": 4,
                 "user": "",
                 "mail": "",
                 "pageId": "",
                 "subject": "",
                 "replyto": false,
-                "signature": "logo",
+                "signature": "text",
                 "logoUrl": "",
                 "logoWidth": "40",
                 "maxSizeUpload": "500000",
-                "versionData": "6.5",
+                "versionData": "6.6",
                 "uploadJpg": true,
                 "uploadPng": true,
                 "uploadPdf": false,
                 "uploadZip": false,
-                "uploadTxt": false
+                "uploadTxt": false,
+				"rgpdCheck": false,
+				"trustLimit": "80"
 			},
 			"texts": {
                 "button": "Send",
@@ -65,7 +67,8 @@
 				"errorUploading": "Error while uploading file",
 				"notPdf": "The attachment is not a pdf document",
 				"notZip": "The attachment is not a zip document",
-				"fillCaptcha": " Fill in the Captcha "				
+				"fillCaptcha": " Fill in the Captcha ",
+				"noTrust": "You are not authorized to send an email"
             },
             "data": [],
             "input": [

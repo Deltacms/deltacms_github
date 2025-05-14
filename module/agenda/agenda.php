@@ -36,7 +36,7 @@ class agenda extends common {
 		'index' => self::GROUP_VISITOR
 	];
 
-	const VERSION = '7.5';	
+	const VERSION = '7.6';	
 	const REALNAME = 'Agenda';
 	const DELETE = true;
 	const UPDATE = '4.1';
@@ -152,10 +152,14 @@ class agenda extends common {
 				}
 				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','7.1']);
 			}
-			// Mise à jour vers la version 7.4
+			// Mise à jour vers la version 7.5
 			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '7.5', '<') ) {	
 				if(is_file('./module/agenda/view/index/index.css')) unlink('./module/agenda/view/index/index.css');
 				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','7.5']);
+			}
+			// Mise à jour vers la version 7.6
+			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '7.6', '<') ) {	
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','7.6']);
 			}
 		}
 	}
@@ -1290,7 +1294,11 @@ class agenda extends common {
 		try{
 			$mail = new PHPMailer\PHPMailer\PHPMailer;
 			$mail->CharSet = 'UTF-8';
-			$host = str_replace('www.', '', $_SERVER['HTTP_HOST']);
+			if(null !== $this->getData(['config', 'mailDomainName']) &&  $this->getData(['config', 'mailDomainName']) !==''){
+				$host = $this->getData(['config', 'mailDomainName']);
+			} else {
+				$host = str_replace('www.', '', $_SERVER['HTTP_HOST']);
+			}
 			$mail->setFrom('no-reply@' . $host, $this->getData(['config', 'title']));
 			$mail->addReplyTo('no-reply@' . $host, $this->getData(['config', 'title']));
 			if(is_array($to)) {
@@ -1313,6 +1321,7 @@ class agenda extends common {
 			}
 			$mail->isHTML(true);
 			$mail->Subject = $subject;
+			$mail->addCustomHeader('List-Unsubscribe', '<mailto:no-reply@'.$host.'>');
 			$mail->Body = $layout;
 			$mail->AltBody = strip_tags($content);
 			if($mail->send()) {

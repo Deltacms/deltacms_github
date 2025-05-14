@@ -44,6 +44,7 @@ $text['form_view']['config'][42] = 'Si votre questionnaire concerne des données
 $text['form_view']['config'][43] = 'Textes ';
 $text['form_view']['config'][44] = 'Indice de confiance minimum';
 $text['form_view']['config'][45] = 'Indice de confiance minimum pour soumettre le formulaire. Pour que cette limitation soit active vous devez valider l\'option dans Configurer le site / Connexion Sécurité';
+$text['form_view']['config'][46] = 'Pour que le courriel ne soit pas considéré comme un spam il est péférable de chosir une signature avec le nom du site';
 $text['form_view']['data'][0] = 'Retour';
 $text['form_view']['data'][1] = 'Tout effacer';
 $text['form_view']['data'][2] = 'Export CSV';

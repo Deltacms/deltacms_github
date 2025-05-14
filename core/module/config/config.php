@@ -507,6 +507,7 @@ class config extends common {
 						'proxyType' => $this->getInput('configProxyType'),
 						'proxyUrl' => $this->getInput('configProxyUrl'),
 						'proxyPort' => $this->getInput('configProxyPort',helper::FILTER_INT),
+						'mailDomainName' => $this->getInput('configMailDomainName', helper::FILTER_STRING_SHORT),
 						'social' => [
 							'facebookId' => $this->getInput('socialFacebookId'),
 							'linkedinId' => $this->getInput('socialLinkedinId'),

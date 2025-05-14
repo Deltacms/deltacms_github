@@ -18,7 +18,7 @@
 
 class news extends common {
 
-	const VERSION = '5.4';
+	const VERSION = '5.5';
 	const REALNAME = 'News';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -536,7 +536,7 @@ class news extends common {
 				// Détermination du type IM : image , IF : iframe, V: video, P : paragraphe avec balises <p></p>, A : autre
 				foreach($arrayContent as $key=>$value){
 					// Type de contenu pour les paragraphes
-					if( strpos($value, '<img') !== false && strpos($value, '/>') !== false){
+					if( strpos($value, '<img') !== false && strpos($value, '>') !== false){
 						$arrayType[$key] = 'IM';
 					} elseif( strpos($value, '<iframe') !== false && strpos($value, '</iframe>') !== false) {
 						$arrayType[$key] = 'IF';
@@ -709,9 +709,9 @@ class news extends common {
 				// Mettre à jour la version
 				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '5.2' ]);	
 			}
-			// Mise à jour 5.4
-			if (version_compare($versionData, '5.4', '<') ) {
-				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '5.4' ]);	
+			// Mise à jour 5.5
+			if (version_compare($versionData, '5.5', '<') ) {
+				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '5.5' ]);	
 			}
 		}
 	}

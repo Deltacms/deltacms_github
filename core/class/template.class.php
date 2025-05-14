@@ -591,7 +591,7 @@ class template {
     * @return string
     */
     public static function speech($text) {
-        return '<div class="speech"><div class="speechBubble">' . $text . '</div></div>';
+        return '<div class="speech"><div class="speechBubble">' . $text . '</div><span style="font-size: 3rem; font-weight: 900; line-height: 1;">Δ</span></div>';
     }
 
     /**

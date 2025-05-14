@@ -44,6 +44,7 @@ $text['form_view']['config'][42] = 'If your questionnaire concerns personal data
 $text['form_view']['config'][43] = 'Texts';
 $text['form_view']['config'][44] = 'Minimum trust index';
 $text['form_view']['config'][45] = 'Minimum trust index to submit the form. For this limitation to be active you must validate the option in Configuring the site / Connection Security';
+$text['form_view']['config'][46] = 'To prevent the email from being considered spam, it is preferable to choose a signature with the name of the site';
 $text['form_view']['data'][0] = 'Back';
 $text['form_view']['data'][1] = 'Delete all';
 $text['form_view']['data'][2] = 'CSV export';

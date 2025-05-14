@@ -76,22 +76,24 @@
         "contactenos": {
             "config": {
                 "captcha": true,
-                "group": 3,
+                "group": 4,
                 "user": "",
                 "mail": "",
                 "pageId": "",
                 "subject": "",
                 "replyto": false,
-                "signature": "logo",
+                "signature": "text",
                 "logoUrl": "",
                 "logoWidth": "40",
                 "maxSizeUpload": "500000",
-                "versionData": "6.5",
+                "versionData": "6.6",
                 "uploadJpg": true,
                 "uploadPng": true,
                 "uploadPdf": false,
                 "uploadZip": false,
-                "uploadTxt": false
+                "uploadTxt": false,
+				"rgpdCheck": false,
+				"trustLimit": "80"
 			},
 			"texts": {
 				"button": "Enviar",
@@ -103,7 +105,8 @@
 				"errorUploading": "Error al cargar el archivo",
 				"notPdf": "El adjunto no es un documento pdf",
 				"notZip": "El archivo adjunto no es un documento zip",
-				"fillCaptcha": " Complete el Captcha "			
+				"fillCaptcha": " Complete el Captcha ",
+				"noTrust": "No estás autorizado para enviar un correo electrónico"
             },
             "data": [],
             "input": [

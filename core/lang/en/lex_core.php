@@ -38,6 +38,9 @@ $text['core']['showMemberFile'][2] = 'Refresh file list';
 $text['core']['showMemberFile'][3] = 'Download this file -> right click - save link target';
 $text['core']['showMemberFile'][4] = 'Show this file';
 $text['core']['showMemberFile'][5] = 'Download file: ';
+$text['core']['pages2Json'][0] = 'Search the site';
+$text['core']['pages2Json'][1] = 'Site map';
+$text['core']['pages2Json'][2] = 'Special pages';
 // core.js.php
 $text['core_js'][0] = "Updating ?";
 // Select File

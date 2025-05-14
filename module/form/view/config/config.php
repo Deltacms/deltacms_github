@@ -163,16 +163,17 @@ else{
 				<div class="row" <?php if($this->getUser('group') < self::GROUP_MODERATOR) echo '<div style="display: none;">'; ?> >
 					<div class="col4">
 						<?php echo template::select('formConfigSignature', $signature, [
+							'help' => $text['form_view']['config'][46],
 							'label' => $text['form_view']['config'][20],
 							'selected' => $this->getData(['module', $this->getUrl(0), 'config', 'signature'])
 						]); ?>
 					</div>
 					<div class="col4">
-												<?php echo template::file('formConfigLogo', [
+						<?php echo template::file('formConfigLogo', [
 							'help' => $text['form_view']['config'][21],
-														'label' => $text['form_view']['config'][22],
-														'value' => $this->getData(['module', $this->getUrl(0), 'config', 'logoUrl'])
-												]); ?>
+							'label' => $text['form_view']['config'][22],
+							'value' => $this->getData(['module', $this->getUrl(0), 'config', 'logoUrl'])
+						]); ?>
 					</div>
 					<div class="col4">
 						<?php echo template::select('formConfigLogoWidth', $module::$logoWidth, [
