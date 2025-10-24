@@ -768,36 +768,38 @@ $(document).ready(function(){
 			$("#formCommentVisible").css("display","none");
 		}
 	});
-	/* Création d'un cookie à l'ouverture de la page formulaire*/
-	$(document).ready(function(){
-		const d = new Date();
-		time = d.getTime();
-		document.cookie = "evtO = " +  time  + ";path=/" + ";SameSite=Strict";
-	});
-	/* Création d'un cookie à la validation de la checkbox 'je ne suis pas un robot'*/
-	$( ".commentHumanCheck" ).click(function() {
-		const d = new Date();
-		time = d.getTime();
-		document.cookie = "evtH = " +  time  + ";path=/" + ";SameSite=Strict";
-	});
-	/* Création d'un cookie quand on arrive sur la checkbox 'je ne suis pas un robot' */
-	$( ".commentHumanCheck" ).mouseenter(function() {
-		const d = new Date();
-		time = d.getTime();
-		document.cookie = "evtA = " +  time  + ";path=/" + ";SameSite=Strict";
-	});
-	/* Création d'un cookie quand on quitte la checkbox 'je ne suis pas un robot' */
-	$( ".commentHumanCheck" ).mouseleave(function() {
-		const d = new Date();
-		time = d.getTime();
-		document.cookie = "evtS = " +  time  + ";path=/" + ";SameSite=Strict";
-	});
-	/* Création d'un cookie à la validation du formulaire */
-	$( ".commentHumanBotClose" ).click(function() {
-		const d = new Date();
-		time = d.getTime();
-		document.cookie = "evtV = " +  time  + ";path=/" + ";SameSite=Strict";
-	});
+	<?php if( $this->getData(['page',$this->getUrl(0),'commentEnable'])===true && ($this->getData(['config','cookieConsent'])===false || isset( $_COOKIE['DELTA_COOKIE_CONSENT']))){ ?>
+		/* Création d'un cookie à l'ouverture des commentaires */
+		$(document).ready(function(){
+			const d = new Date();
+			time = d.getTime();
+			document.cookie = "evtO = " +  time  + ";path=/" + ";SameSite=Strict";
+		});
+		/* Création d'un cookie à la validation de la checkbox 'je ne suis pas un robot'*/
+		$( ".commentHumanCheck" ).click(function() {
+			const d = new Date();
+			time = d.getTime();
+			document.cookie = "evtH = " +  time  + ";path=/" + ";SameSite=Strict";
+		});
+		/* Création d'un cookie quand on arrive sur la checkbox 'je ne suis pas un robot' */
+		$( ".commentHumanCheck" ).mouseenter(function() {
+			const d = new Date();
+			time = d.getTime();
+			document.cookie = "evtA = " +  time  + ";path=/" + ";SameSite=Strict";
+		});
+		/* Création d'un cookie quand on quitte la checkbox 'je ne suis pas un robot' */
+		$( ".commentHumanCheck" ).mouseleave(function() {
+			const d = new Date();
+			time = d.getTime();
+			document.cookie = "evtS = " +  time  + ";path=/" + ";SameSite=Strict";
+		});
+		/* Création d'un cookie à la validation du commentaire */
+		$( ".commentHumanBotClose" ).click(function() {
+			const d = new Date();
+			time = d.getTime();
+			document.cookie = "evtV = " +  time  + ";path=/" + ";SameSite=Strict";
+		});
+	<?php } ?>
 
 	/* Inversion des couleurs du site par chargement dans main.php de theme_invert.css */
 	$('.invertColorButton').on('click', function() {
@@ -884,5 +886,7 @@ $(document).ready(function(){
 		setInterval(updateTrustScore, 3000);
 		updateTrustScore();
 	<?php } ?>
-
 });
+
+
+

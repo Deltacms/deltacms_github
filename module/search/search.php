@@ -18,7 +18,7 @@
 
 class search extends common {
 
-	const VERSION = '3.8';
+	const VERSION = '3.9';
 	const REALNAME = 'Recherche';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -94,8 +94,8 @@ class search extends common {
 				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '3.7' ]);
 			}
 			// Mise à jour 3.8
-			if (version_compare($versionData, '3.8', '<') ) {
-				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '3.8' ]);
+			if (version_compare($versionData, '3.9', '<') ) {
+				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '3.9' ]);
 			}
 		}
 	}

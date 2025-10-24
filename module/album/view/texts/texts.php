@@ -4,14 +4,9 @@ $param = 'blog_view';
 include('./module/album/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_album.php');
 
 // drapeau pour la langue d'origine ou la langue en traduction rédigée
-if( $this->getInput('DELTA_I18N_SITE') === '' || $this->getInput('DELTA_I18N_SITE')=== null || $this->getInput('DELTA_I18N_SITE') === 'base'){
-	$flag = $this->getData(['config', 'i18n', 'langBase']);
-}
-else{
-	$flag = $this->getInput('DELTA_I18N_SITE');
-}
-?>
-<?php echo template::formOpen('albumTexts'); ?>
+$flag = $this->flagLang();
+
+echo template::formOpen('albumTexts'); ?>
 	<div class="row">
 		<div class="col2">
 			<?php echo template::button('albumTextsBack', [

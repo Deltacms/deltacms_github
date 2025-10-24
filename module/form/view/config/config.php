@@ -3,12 +3,7 @@
 $param = 'form_view';
 include('./module/form/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_form.php');
 // drapeau pour la langue d'origine ou la langue en traduction rédigée
-if( $this->getInput('DELTA_I18N_SITE') === '' || $this->getInput('DELTA_I18N_SITE')=== null || $this->getInput('DELTA_I18N_SITE') === 'base'){
-	$flag = $this->getData(['config', 'i18n', 'langBase']);
-}
-else{
-	$flag = $this->getInput('DELTA_I18N_SITE');
-}
+$flag = $this->flagLang();
 ?>
 <div id="formConfigCopy" class="displayNone">
 	<div class="formConfigInput">
@@ -241,6 +236,23 @@ else{
 							<div class="col2">
 								<?php echo template::checkbox('formConfigUploadPng', true, $text['form_view']['config'][34], [
 									'checked' => (bool) $this->getData(['module', $this->getUrl(0), 'config', 'uploadPng'])
+								]); ?>
+							</div>
+							<div class="col2">
+								<?php echo template::checkbox('formConfigUploadWebp', true, $text['form_view']['config'][47], [
+									'checked' => (bool) $this->getData(['module', $this->getUrl(0), 'config', 'uploadWebp'])
+								]); ?>
+							</div>
+							<div class="col2">
+								<?php echo template::checkbox('formConfigUploadAvif', true, $text['form_view']['config'][48], [
+									'checked' => (bool) $this->getData(['module', $this->getUrl(0), 'config', 'uploadAvif'])
+								]); ?>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col2">
+								<?php echo template::checkbox('formConfigUploadGif', true, $text['form_view']['config'][49], [
+									'checked' => (bool) $this->getData(['module', $this->getUrl(0), 'config', 'uploadGif'])
 								]); ?>
 							</div>
 							<div class="col2">

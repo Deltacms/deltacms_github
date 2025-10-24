@@ -1,14 +1,13 @@
-<?php // Commentaires de page, fichier inclus dans showComment() ?>
-
-<?php // Style lié au thème du site 
-if( isset( $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] ) && $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] === 'true' ) { 
+<?php // Commentaires de page, fichier inclus dans showComment()
+// Style lié au thème du site
+if( isset( $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] ) && $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] === 'true' ) {
 	$borderColor = helper::invertColor($this->getData(['theme', 'block', 'borderColor']));
 } else {
 	$borderColor = $this->getData(['theme', 'block', 'borderColor']);
 } ?>
 <script>
-$(':root').css('--borderColor', '<?= $borderColor; ?>');
-$(':root').css('--dataNameDate_font', '<?= $this->getData(['theme', 'text', 'font']); ?>');
+$(':root').css('--borderColor', '<?=$borderColor?>');
+$(':root').css('--dataNameDate_font', '<?=$this->getData(['theme', 'text', 'font'])?>');
 </script>
 <?php
 // Lexique
@@ -17,7 +16,7 @@ include('./core/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_
 // Pour les dates suivant la langue de rédaction du site (langue principale ou langue de traduction rédigée)
 if( function_exists('datefmt_create') && function_exists('datefmt_format') && extension_loaded('intl') ){
 	if( isset( $_SESSION['langFrontEnd']) && isset( $_SESSION['translationType']) && $_SESSION['translationType'] === 'site' ){
-		$lang_date =  $_SESSION['langFrontEnd'];
+		$lang_date = $_SESSION['langFrontEnd'];
 	} else {
 		$lang_date = $this->getData(['config', 'i18n', 'langBase']);
 	}
@@ -65,7 +64,7 @@ if($this->isPost() && isset($_POST['commentPageFormSubmit']) ) {
 	// Captcha demandée
 	if(	$this->getData(['config', 'social', 'comment', 'captcha']) ){
 		// option de détection de robot en premier cochée et $_SESSION['humanBot']==='human'
-		if(	$_SESSION['humanBot']==='human' && $this->getData(['config', 'connect', 'captchaBot'])=== true ) {
+		if(	$_SESSION['humanBot'] === 'human' && $this->getData(['config', 'connect', 'captchaBot']) === true ) {
 			// Présence des 5 cookies et checkbox cochée ?
 			$detectBot ='bot';
 			if ( isset ($_COOKIE['evtO']) && isset ($_COOKIE['evtV']) && isset ($_COOKIE['evtH'])
@@ -77,7 +76,7 @@ if($this->isPost() && isset($_POST['commentPageFormSubmit']) ) {
 				if( $time2 >= 1000 && $time3 >=300 && $time4 >=300 ) $detectBot = 'human';
 			}
 			// Bot présumé
-			if( $detectBot === 'bot') $_SESSION['humanBot']='bot';
+			if( $detectBot === 'bot') $_SESSION['humanBot'] = 'bot';
 		}
 		// $_SESSION['humanBot']==='bot' ou option 'Pas de Captcha pour un humain' non validée
 		elseif( md5($code) !== $_SESSION['captcha'] ) {
@@ -87,12 +86,12 @@ if($this->isPost() && isset($_POST['commentPageFormSubmit']) ) {
 
 	// Lecture des inputs
 	$valueText = $this->getInput('commentPageFormInput[0]', helper::FILTER_STRING_SHORT, true);
-	$valueTextarea =  $this->getInput('commentPageFormInput[1]', helper::FILTER_STRING_LONG_NOSTRIP, true);
+	$valueTextarea = $this->getInput('commentPageFormInput[1]', helper::FILTER_STRING_LONG_NOSTRIP, true);
 
 	// Mise à jour du brouillon
 	$_SESSION[$this->getUrl()]['draft']['text'] = $valueText;
-	$_SESSION[$this->getUrl()]['draft']['textarea']  = $valueTextarea;
-	
+	$_SESSION[$this->getUrl()]['draft']['textarea'] = $valueTextarea;
+
 	// Préparation du contenu des données ($data) et du mail
 	$data = [];
 	$content = '';
@@ -115,21 +114,21 @@ if($this->isPost() && isset($_POST['commentPageFormSubmit']) ) {
 		$this->setData(['comment', $this->getUrl(0), 'data', $id , $data]);
 		// Enregistrement de la date formatée
 		if( function_exists('datefmt_create') && function_exists('datefmt_format') && extension_loaded('intl') ){
-			$dateMessage =  datefmt_format($fmt, strtotime( date('Y/m/d H:i:s',$id))); 
+			$dateMessage = datefmt_format($fmt, strtotime( date('Y/m/d H:i:s',$id)));
 		} else {
-			if( mb_detect_encoding(date('d/m/Y - H:i',  $id), 'UTF-8', true)){
+			if( mb_detect_encoding(date('d/m/Y - H:i', $id), 'UTF-8', true)){
 				$dateMessage = date('d/m/Y - H:i', $id);
 			} else {
 				$dateMessage = helper::utf8Encode(date('d/m/Y - H:i', $id));
 			}
-		} 
+		}
 		$this->setData(['comment', $this->getUrl(0), 'data', $id , 'Date' , $dateMessage ]);
 		// Liste des utilisateurs
 		$userIdsFirstnames = helper::arrayCollumn($this->getData(['user']), 'firstname');
 		ksort($userIdsFirstnames);
 		$listUsers [] = '';
 		foreach($userIdsFirstnames as $userId => $userFirstname) {
-			$listUsers [] =  $userId;
+			$listUsers [] = $userId;
 		}
 		// Emission du mail
 		// Rechercher l'adresse en fonction du mail
@@ -224,12 +223,10 @@ if ( NULL !== $dataPage && is_array($dataPage) && $dataPage !== [] ) {
 	}
 }
 
-// Partie affichage  (View dans la structure classique)
+// Partie affichage (View dans la structure classique)
 // Adaptation de la langue dans tinymce pour la rédaction d'un message en fonction de la langue de la page, originale ou en traduction rédigée
 $lang = $this->getData(['config', 'i18n', 'langBase']);
-if ( !empty($_COOKIE["DELTA_I18N_SITE"])) {
-	if( $this->getInput('DELTA_I18N_SITE') !== 'base' ) $lang = $this->getInput('DELTA_I18N_SITE');
-}
+if( isset($_SESSION['translationType']) && $_SESSION['translationType']==='site' && isset($_SESSION['langFrontEnd'])) $lang = $_SESSION['langFrontEnd'];
 $lang_page = $lang;
 switch ($lang) {
 	case 'en' :
@@ -246,7 +243,7 @@ switch ($lang) {
 		break;
 }
 // Si la langue n'est pas supportée par Tinymce la langue d'administration est utilisée
-if( ! file_exists( 'core/vendor/tinymce/langs/'.$lang_page.'.js' )){	
+if( ! file_exists( 'core/vendor/tinymce/langs/'.$lang_page.'.js' )){
 	$lang_page = $text['core']['showComment'][7];
 }
 echo '<script> var lang_admin = "'.$lang_page.'"; </script>';
@@ -261,12 +258,12 @@ echo '<script> var lang_admin = "'.$lang_page.'"; </script>';
 	</div>
 </div>
 <?php // Formulaire
-$action =  helper::baseUrl().$this->getUrl().'#commentAnchor';
+$action = helper::baseUrl().$this->getUrl().'#commentAnchor';
 echo template::formOpenFile('commentPageFormForm', $action);
 ?>
 <div id="formCommentVisible" style="display: none;">
 	<div class="humanBot">
-		<?php 
+		<?php
 		$valueName = "";
 		if( $_SESSION[$this->getUrl()]['draft']['text'] !== "" ) {
 			$valueName = $_SESSION[$this->getUrl()]['draft']['text'];
@@ -286,14 +283,15 @@ echo template::formOpenFile('commentPageFormForm', $action);
 			'noDirty' => true
 		]); ?>
 	</div>
-	<?php if( $this->getData(['config', 'social', 'comment',  'captcha']) ){
-		if ( $_SESSION['humanBot']==='bot' || $this->getData(['config', 'connect', 'captchaBot'])===false ){?>
+	<?php if( $this->getData(['config', 'social', 'comment', 'captcha']) ){
+		if ( $_SESSION['humanBot'] === 'bot' || $this->getData(['config', 'connect', 'captchaBot']) === false
+		|| ( $this->getData(['config', 'cookieConsent']) === true && !isset( $_COOKIE['DELTA_COOKIE_CONSENT']) ) ) {?>
 		<div class="row">
 			<div class="col12 textAlignCenter">
 				<?php echo template::captcha('commentPageFormCaptcha', ''); ?>
 			</div>
 		</div>
-		<?php } else {?>
+		<?php } else { ?>
 		<div class="row formCheckBlue">
 			<?php echo template::text('commentPageFormInputBlue', [
 				'label' => 'Input Blue',
@@ -310,7 +308,7 @@ echo template::formOpenFile('commentPageFormForm', $action);
 			</div>
 		</div>
 		<br>
-		<?php } ; 
+		<?php } ;
 	} ?>
 	<div class="row textAlignCenter">
 		<div class="formInner commentHumanBotClose">
@@ -326,7 +324,7 @@ echo template::formOpenFile('commentPageFormForm', $action);
 <?php
 // Affichage des messages
 if( $data ){
-	echo '<div  id="commentAnchor">';
+	echo '<div id="commentAnchor">';
 		foreach( $data as $key1=>$value1){
 			if( is_array($value1)){
 				foreach( $value1 as $key2=>$value2){
@@ -342,24 +340,26 @@ if($pagesComment && $nbPage > 1){ ?>
 		$disabledPrev = false;
 		if($_SESSION[$commentNumPage] <= 1) $disabledPrev = true;
 		if($_SESSION[$commentNumPage] >= $nbPage) $disabledNext = true; ?>
-		<div class="textAlignCenter" style="margin-top: 20px;">
+		<div class="row">
+			<div class="col4 offset4 navcom">
 			<?php echo template::submit('commentPageFormPrev', [
 				'class' => 'commentPageButtonPrevNext',
 				'value' => '&lt;',
 				'disabled' => $disabledPrev,
 				'ico' =>''
 			]); ?>
-			<?php  echo template::button('commentButtonPageNumber',[
-				'class' =>  'commentPageButtonPageNb',
+			<?php echo template::button('commentButtonPageNumber',[
+				'class' => 'commentPageButtonPageNb',
 				'disabled' => true,
 				'value' => $this->getData(['locale', 'pageComment', 'page']).' '.$_SESSION[$commentNumPage].'/'.$nbPage
-			]);  ?>
+			]); ?>
 			<?php echo template::submit('commentPageFormNext', [
 				'class' => 'commentPageButtonPrevNext',
 				'value' => '>',
 				'disabled' => $disabledNext,
 				'ico' =>''
 			]); ?>
+			</div>
 		</div>
  <?php
 }

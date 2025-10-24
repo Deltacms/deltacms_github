@@ -15,10 +15,10 @@
  * @author Frédéric Tempez <frederic.tempez@outlook.com>
  * @copyright Copyright (C) 2018-2021, Frédéric Tempez
  */
- 
+
 class form extends common {
 
-	const VERSION = '6.6';
+	const VERSION = '6.8';
 	const REALNAME = 'Formulaire';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -55,7 +55,7 @@ class form extends common {
 
 	public static $listUsers = [
 	];
-	
+
 	public static $logoWidth = [
 		'40' => '40%',
 		'60' => '60%',
@@ -70,7 +70,7 @@ class form extends common {
 		'2000000' => '2Mo',
 		'5000000' => '5Mo'
 	];
-	
+
 	/**
 	 * Mise à jour du module
 	 */
@@ -78,9 +78,9 @@ class form extends common {
 		// Initialisation
 		if( null===$this->getData(['module', $this->getUrl(0), 'config', 'versionData']) ) {
 			$this->init();
-		} else {		
+		} else {
 			// mise à jour vers la version 4.1
-			if ( version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '4.1', '<') ) {	
+			if ( version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '4.1', '<') ) {
 				$this->setData(['module', $this->getUrl(0), 'config', 'uploadJpg',true]);
 				$this->setData(['module', $this->getUrl(0), 'config', 'uploadPng',false]);
 				$this->setData(['module', $this->getUrl(0), 'config', 'uploadPdf',false]);
@@ -110,7 +110,7 @@ class form extends common {
 					'errorUploading' => $text['form']['init'][8],
 					'notPdf' => $text['form']['init'][10],
 					'notZip' => $text['form']['init'][11],
-					'fillCaptcha' => $text['form']['init'][12]	
+					'fillCaptcha' => $text['form']['init'][12]
 					]
 				]);
 				$this->setData(['module', $this->getUrl(0), 'config', 'versionData', '6.2']);
@@ -122,12 +122,15 @@ class form extends common {
 				$this->setData(['module', $this->getUrl(0), 'config', 'trustLimit', "80"]);
 				$this->setData(['module', $this->getUrl(0), 'config', 'versionData', '6.5']);
 			}
-			if( version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '6.6', '<') ){
-				$this->setData(['module', $this->getUrl(0), 'config', 'versionData', '6.6']);
+			if( version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '6.8', '<') ){
+				$this->setData(['module', $this->getUrl(0), 'config', 'uploadWebp',false]);
+				$this->setData(['module', $this->getUrl(0), 'config', 'uploadAvif',false]);
+				$this->setData(['module', $this->getUrl(0), 'config', 'uploadGif',false]);
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData', '6.8']);
 			}
 		}
 	}
-	
+
 	/**
 	 * Initialisation à la création
 	 */
@@ -153,6 +156,9 @@ class form extends common {
 				'versionData' => self::VERSION,
 				'uploadJpg' => false,
 				'uploadPng' => false,
+				'uploadWebp' => false,
+				'uploadAvif' => false,
+				'uploadGif' => false,
 				'uploadPdf' => false,
 				'uploadZip' => false,
 				'uploadTxt' => false,
@@ -162,10 +168,10 @@ class form extends common {
 		]);
 		$this->setData([
 			'module',
-			$this->getUrl(0),		
+			$this->getUrl(0),
 			'texts',
 			[
-				'button' => $text['form_view']['index'][0],	
+				'button' => $text['form_view']['index'][0],
 				'wrongCaptcha' => $text['form']['init'][0],
 				'formSubmitted' => $text['form']['init'][3],
 				'notImage' => $text['form']['init'][4],
@@ -179,19 +185,19 @@ class form extends common {
 			]
 		]);
 	}
-	
+
 	/**
 	 * Configuration
 	 */
 	public function config() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < form::$actions['config'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			$param = '';
@@ -224,6 +230,9 @@ class form extends common {
 						'versionData' => self::VERSION,
 						'uploadJpg' => $this->getInput('formConfigUploadJpg', helper::FILTER_BOOLEAN),
 						'uploadPng' => $this->getInput('formConfigUploadPng', helper::FILTER_BOOLEAN),
+						'uploadWebp' => $this->getInput('formConfigUploadWebp', helper::FILTER_BOOLEAN),
+						'uploadAvif' => $this->getInput('formConfigUploadAvif', helper::FILTER_BOOLEAN),
+						'uploadGif' => $this->getInput('formConfigUploadGif', helper::FILTER_BOOLEAN),
 						'uploadPdf' => $this->getInput('formConfigUploadPdf', helper::FILTER_BOOLEAN),
 						'uploadZip' => $this->getInput('formConfigUploadZip', helper::FILTER_BOOLEAN),
 						'uploadTxt' => $this->getInput('formConfigUploadTxt', helper::FILTER_BOOLEAN),
@@ -272,19 +281,19 @@ class form extends common {
 			]);
 		}
 	}
-	
+
 	/**
 	 * Textes pour internationalisation
 	 */
 	public function texts() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < form::$actions['texts'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			$param = '';
@@ -304,13 +313,13 @@ class form extends common {
 					'fillCaptcha' => $this->getInput('formTextsFillCaptcha',helper::FILTER_STRING_SHORT),
 					'noTrust' => $this->getInput('formTextsNoTrust',helper::FILTER_STRING_SHORT)
 				]]);
-			
+
 				$this->addOutput([
 					'redirect' => helper::baseUrl() . $this->getUrl(0) . '/config',
 					'notification' => $text['form']['texts'][1],
 					'state' => true
 				]);
-				
+
 			}
 			// Valeurs en sortie
 			$this->addOutput([
@@ -328,14 +337,14 @@ class form extends common {
 	 * Données enregistrées
 	 */
 	public function data() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < form::$actions['data'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			$param = '';
@@ -377,18 +386,18 @@ class form extends common {
 	 * Export CSV
 	 */
 	public function export2csv() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < form::$actions['export2csv'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			$param = '';
-			include('./module/form/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_form.php');	
+			include('./module/form/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_form.php');
 			// Jeton incorrect
 			if ($this->getUrl(2) !== $_SESSION['csrf']) {
 				// Valeurs en sortie
@@ -435,14 +444,14 @@ class form extends common {
 	 * Suppression
 	 */
 	public function deleteall() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < form::$actions['deleteall'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			$param = '';
@@ -481,14 +490,14 @@ class form extends common {
 	 * Suppression
 	 */
 	public function delete() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < form::$actions['delete'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			$param = '';
@@ -544,7 +553,7 @@ class form extends common {
 			$_SESSION['draft']['checkbox'] = [];
 			$_SESSION['draft']['select'] = [];
 			$_SESSION['draft']['text'] = [];
-			$_SESSION['draft']['file'] = "";			
+			$_SESSION['draft']['file'] = "";
 		}
 		// Soumission du formulaire
 		if($this->isPost()) {
@@ -557,14 +566,14 @@ class form extends common {
 				if(	$_SESSION['humanBot']==='human' && $this->getData(['config', 'connect', 'captchaBot'])=== true ) {
 					// Présence des 6 cookies et checkbox cochée ?
 					$detectBot ='bot';
-					if ( isset ($_COOKIE['evtC']) && isset ($_COOKIE['evtO']) && isset ($_COOKIE['evtV']) && isset ($_COOKIE['evtH']) 
+					if ( isset ($_COOKIE['evtC']) && isset ($_COOKIE['evtO']) && isset ($_COOKIE['evtV']) && isset ($_COOKIE['evtH'])
 						&& isset ($_COOKIE['evtS']) && isset ($_COOKIE['evtA']) && $this->getInput('formHumanCheck', helper::FILTER_BOOLEAN) === true ) {
 						// Calcul des intervals de temps
 						$time1 = $_COOKIE['evtC'] - $_COOKIE['evtO']; // temps entre fin de saisie et ouverture de la page
 						$time2 = $_COOKIE['evtH'] - $_COOKIE['evtO']; // temps entre click checkbox et ouverture de la page
 						$time3 = $_COOKIE['evtV'] - $_COOKIE['evtH']; // temps entre validation formulaire et click checkbox
 						$time4 = $_COOKIE['evtS'] - $_COOKIE['evtA']; // temps passé sur la checkbox
-						if( $time1 >= 5000 && $time2 >= 1000 && $time3 >=300 && $time4 >=100 
+						if( $time1 >= 5000 && $time2 >= 1000 && $time3 >=300 && $time4 >=100
 							&& $this->getInput('formInputBlue')==='' ) $detectBot = 'human';
 					}
 					// Bot présumé
@@ -575,7 +584,7 @@ class form extends common {
 					$notice = $this->getData(['module', $this->getUrl(0), 'texts', 'wrongCaptcha']);
 				}
 			}
-			
+
 			// Mise à jour du brouillon
 			$textIndex = 0; $selectIndex=0; $checkboxIndex=0;
 			for( $index = 0; $index <= count($this->getData(['module', $this->getUrl(0), 'input'])); $index++){
@@ -607,42 +616,45 @@ class form extends common {
 						$_SESSION['draft']['file'] = basename($_FILES["fileToUpload"]["name"]);
 						break;
 					default:
-						$filter = helper::FILTER_STRING_SHORT;						
+						$filter = helper::FILTER_STRING_SHORT;
 				}
 			}
-			
-			// Ajout d'une notice sur la case à cocher d'acceptation des conditions si elle est utilisée et non cochée 
+
+			// Ajout d'une notice sur la case à cocher d'acceptation des conditions si elle est utilisée et non cochée
 			if(	$this->getData(['module', $this->getUrl(0), 'config', 'rgpdCheck'])) $rgpdCheckbox = $this->getInput('formRgpdCheck', helper::FILTER_BOOLEAN,true);
-			
+
 			// Préparation du contenu du mail
 			$data = [];
 			$replyTo = null;
 			$content = '';
-			$file_name = '';			
+			$file_name = '';
 			foreach($this->getData(['module', $this->getUrl(0), 'input']) as $index => $input) {
 
 				$filter = helper::FILTER_STRING_SHORT;
 				if( $input['type'] === 'textarea') $filter = helper::FILTER_STRING_LONG_NOSTRIP;
-				
+
 				$value = $this->getInput('formInput[' . $index . ']', $filter, $input['required']) === true ? 'X' : $this->getInput('formInput[' . $index . ']', $filter, $input['required']);
 				//  premier champ email ajouté au mail en reply si option active
 				if ($this->getData(['module', $this->getUrl(0), 'config', 'replyto']) === true &&
 					$input['type'] === 'mail') {
 					$replyTo = $value;
                 }
-				
+
 				// Traitement de la pièce jointe, fichier avec extension valide de taille maximum $sizeMax
 				// Fichier chargé dans site/file/uploads/ et effacé après l'envoi du mail
 				if( $input['type'] === 'file'){
 					$target_dir = self::FILE_DIR.'uploads';
 					$sizeMax = $this->getData(['module', $this->getUrl(0), 'config', 'maxSizeUpload']);
 					$extensions_valides = [];
-					if( $this->getData(['module', $this->getUrl(0), 'config', 'uploadJpg']) === true ) $extensions_valides = array_merge( $extensions_valides, array('jpg', 'jpeg')); 
+					if( $this->getData(['module', $this->getUrl(0), 'config', 'uploadJpg']) === true ) $extensions_valides = array_merge( $extensions_valides, array('jpg', 'jpeg'));
 					if( $this->getData(['module', $this->getUrl(0), 'config', 'uploadPng']) === true ) $extensions_valides = array_merge( $extensions_valides, array('png'));
+					if( $this->getData(['module', $this->getUrl(0), 'config', 'uploadWebp']) === true ) $extensions_valides = array_merge( $extensions_valides, array('webp'));
+					if( $this->getData(['module', $this->getUrl(0), 'config', 'uploadAvif']) === true ) $extensions_valides = array_merge( $extensions_valides, array('avif'));
+					if( $this->getData(['module', $this->getUrl(0), 'config', 'uploadGif']) === true ) $extensions_valides = array_merge( $extensions_valides, array('gif'));
 					if( $this->getData(['module', $this->getUrl(0), 'config', 'uploadPdf']) === true ) $extensions_valides = array_merge( $extensions_valides, array('pdf'));
 					if( $this->getData(['module', $this->getUrl(0), 'config', 'uploadZip']) === true ) $extensions_valides = array_merge( $extensions_valides, array('zip'));
-					if( $this->getData(['module', $this->getUrl(0), 'config', 'uploadTxt']) === true ) $extensions_valides = array_merge( $extensions_valides, array('txt'));										
-					$extensions_images = array( 'jpg' , 'jpeg' , 'gif' , 'png' );
+					if( $this->getData(['module', $this->getUrl(0), 'config', 'uploadTxt']) === true ) $extensions_valides = array_merge( $extensions_valides, array('txt'));
+					$extensions_images = ['jpg', 'jpeg', 'png', 'webp', 'avif', 'gif'];
 					$file_name = basename($_FILES["fileToUpload"]["name"]);
 					if( $_FILES["fileToUpload"]["error"] === 0){
 						if($file_name !== '' && $file_name !== null){
@@ -658,7 +670,7 @@ class form extends common {
 								$check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
 								if($check === false) $notice = $this->getData(['module', $this->getUrl(0), 'texts', 'notImage']);
 							}
-							
+
 							// Vérification que la pièce jointe est un fichier pdf quand son extension est pdf
 							if( $_FILES["fileToUpload"]["tmp_name"] !== '' && $_FILES["fileToUpload"]["tmp_name"] !== null
 								&& $imageFileType === 'pdf'){
@@ -673,14 +685,14 @@ class form extends common {
 								}
 								if($check === false) $notice = $this->getData(['module', $this->getUrl(0), 'texts', 'notPdf']);
 							}
-							
+
 							// Vérification que la pièce jointe est un fichier zip quand son extension est zip
 							if( $_FILES["fileToUpload"]["tmp_name"] !== '' && $_FILES["fileToUpload"]["tmp_name"] !== null
 								&& $imageFileType === 'zip'){
 								$zip = new ZipArchive;
 								$res = $zip->open($_FILES["fileToUpload"]["tmp_name"]);
 								if ($res !== true) $notice = $this->getData(['module', $this->getUrl(0), 'texts', 'notZip']);
-							}							
+							}
 
 							// Vérification de la taille du fichier
 							if ($_FILES["fileToUpload"]["size"] > $sizeMax) $notice = $this->getData(['module', $this->getUrl(0), 'texts', 'sizeExceeds']).' '.intval($sizeMax/1000).' Ko';
@@ -705,16 +717,16 @@ class form extends common {
 						}
 					}
 				}
-								
+
 				// Préparation des données pour la création dans la base
 				$data[$this->getData(['module', $this->getUrl(0), 'input', $index, 'name'])] = $value;
 				// Préparation des données pour le mail
 				if( $value !== '') $content .= '<strong>' . $this->getData(['module', $this->getUrl(0), 'input', $index, 'name']) . ' :</strong> ' . $value . '<br>';
 			}
-			
+
 			// Bot présumé, la page sera actualisée avec l'affichage du captcha
 			if( $detectBot === 'bot' ) $notice = $this->getData(['module', $this->getUrl(0), 'texts', 'fillCaptcha']);
-			
+
 			// Si absence d'erreur sur la pièce jointe
 			$sent = true;
 			if( $notice === ''){
@@ -781,9 +793,9 @@ class form extends common {
 					$notice = $text['form']['init'][13];
 				}
 				// Nettoyage du dossier self::FILE_DIR.uploads
-				$FilesUpload = glob( self::FILE_DIR.'uploads/*'); 
-				foreach($FilesUpload as $file) {   
-					if(is_file($file)) unlink($file); 
+				$FilesUpload = glob( self::FILE_DIR.'uploads/*');
+				foreach($FilesUpload as $file) {
+					if(is_file($file)) unlink($file);
 				}
 				// Redirection
 				$redirect = helper::baseUrl() . $this->getUrl(0);
@@ -797,12 +809,12 @@ class form extends common {
 					$_SESSION['draft']['checkbox'] = [];
 					$_SESSION['draft']['select'] = [];
 					$_SESSION['draft']['text'] = [];
-					$_SESSION['draft']['file'] = "";					
+					$_SESSION['draft']['file'] = "";
 				}
 			} else {
-				$sent = false;	
+				$sent = false;
 			}
-				
+
 			// Valeurs en sortie
 			if( $sent !== true) {
 				$_SESSION['humanBot']='bot';
@@ -818,7 +830,7 @@ class form extends common {
 				]
 			]);
 		}
-		
+
 		// Valeurs en sortie
 		$this->addOutput([
 			'showBarEditButton' => true,

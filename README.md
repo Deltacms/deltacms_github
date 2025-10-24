@@ -1,5 +1,5 @@
 
-# DeltaCMS 5.4.02
+# DeltaCMS 6.0.01
 
 DeltaCMS est un CMS sans base de données (flat-file) qui permet de créer et gérer facilement un site web sans aucune connaissance en programmation.
 L'administration du site est trilingue espagnol (castillan), anglais ou français, le site peut être rédigé dans une langue quelconque.
@@ -25,8 +25,8 @@ DeltaCMS a été créé à partir de ZwiiCMS 11.2.00.24 publié sous licence GNU
 
 ## Téléchargement de DeltaCMS
 
-Pour télécharger la dernière version publiée, il faut vous rendre sur la page de téléchargement du [site](https://deltacms.fr/telechargement)
-To download the latest version, go to the download page of the [site](https://deltacms.fr/telechargement)
+Pour télécharger la dernière version publiée, il faut vous rendre sur la page de téléchargement du [site](https://deltacms.fr/demarrer)
+To download the latest version, go to the download page of the [site](https://deltacms.fr/start)
 
 ## Installation
 
@@ -63,6 +63,7 @@ En cas de difficulté avec la nouvelle version, il suffira de téléverser la sa
 	[F] member.inc.php	   Affichage des fichiers pour un membre particulier
 	[F] themecss.inc.php   Mise à jour des fichiers de thème
 	[F] trust.inc.php      Mesure de l'indice de confiance
+  [R] lang                 Lexiques du core
   [R] layout               Mise en page
   [R] module               Modules du cœur
   [R] vendor               Librairies extérieures
@@ -74,11 +75,15 @@ En cas de difficulté avec la nouvelle version, il suffira de téléverser la sa
   [R] album                Album photo
   [R] blog                 Blog
   [R] form                 Gestionnaire de formulaires
+  [R] guestbook            Livre d'or
   [R] news                 Nouvelles
   [R] redirection          Redirection
   [R] search               Recherche
   [R] slider	           Slider diaporama
   [R] statislite           Statistiques de fréquentation
+  
+[R] plugin                 Dossier des plugins (si un plugin est installé)
+  [R] *plugins*            Un dossier par plugin, exemple [R]jscalendar
 
 [R] site                   Contenu du site
   [R] backup               Sauvegardes automatiques
@@ -88,10 +93,12 @@ En cas de difficulté avec la nouvelle version, il suffira de téléverser la sa
       [F] page.json        Données des pages
       [F] module.json      Données des modules de page
       [F] locale.json      Données du site propres à la langue
+	  [F] plugin.json      Liste des plugins installés par page dans la langue de base		
       [R] content          Dossier des contenus de page
         [F] accueil.html   Exemple contenu de la page d'accueil
 	  [R] data_module	   Données volumineuses des modules de page
 		[F] blog.json      Exemple de page avec module ayant des données volumineuses, un fichier par page ou un dossier pour statislite et agenda
+	  [R] plugin           Dossier des données produites par certains plugins
     [R] *modules*          Un dossier par module, exemple [R]search [R]agenda, pour les données du module
     [F] admin.css          Thème des pages d'administration
     [F] admin.json         Données de thème des pages d'administration
@@ -103,6 +110,8 @@ En cas de difficulté avec la nouvelle version, il suffira de téléverser la sa
     [F] fonts.json         Polices du site
 	[F] header.inc.php     Script personnalisable placé dans le header de la page
     [F] journal.log        Journalisation des actions
+	[F] pluginbody.inc.php Inclusion dans body des plugins installés
+	[F] pluginhead.inc.php Inclusion dans head des plugins installés
 	[F] session.json       Affichage des utilisateurs en ligne	    
     [F] theme.css          Thème du site
     [F] theme_invert.css   Thème du site avec couleurs inversées

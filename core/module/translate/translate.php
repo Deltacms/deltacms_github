@@ -65,11 +65,11 @@ class translate extends common {
 				if( $this->getInput('translateCopyAllPages') === '1'){
 					$copyFrom = $this->getInput('translateFormCopySource');
 				} else {
-					if( $this->getInput('DELTA_I18N_SITE') === '' || $this->getInput('DELTA_I18N_SITE')=== null || $this->getInput('DELTA_I18N_SITE') === 'base'){
+					if( !isset($_SESSION['translationType']) || $_SESSION['translationType']==='none' ){
 						$copyFrom = 'base';
 					}
 					else{
-						$copyFrom = $this->getInput('DELTA_I18N_SITE');
+						$copyFrom = $_SESSION['langFrontEnd'];
 					}
 				}
 				$toCreate = $this->getInput('translateFormCopyTarget');
@@ -99,6 +99,7 @@ class translate extends common {
 						}
 						$success  = (copy (self::DATA_DIR . $copyFrom . '/module.json', self::DATA_DIR . $toCreate . '/module.json') === true && $success  === true) ? true : false;
 						$success  = (copy (self::DATA_DIR . $copyFrom . '/page.json', self::DATA_DIR . $toCreate . '/page.json') === true && $success  === true) ? true : false;
+						$success  = (copy (self::DATA_DIR . $copyFrom . '/plugin.json', self::DATA_DIR . $toCreate . '/plugin.json') === true && $success  === true) ? true : false;
 						$success  = ($this->copyDir (self::DATA_DIR . $copyFrom . '/content', self::DATA_DIR . $toCreate . '/content') === true && $success  === true) ? true : false;
 						$success  = (copy ('core/module/translate/ressource/comment.json', self::DATA_DIR . $toCreate . '/comment.json') === true && $success  === true) ? true : false;
 						$success  = ($this->copyDir (self::DATA_DIR . $copyFrom . '/data_module', self::DATA_DIR . $toCreate . '/data_module') === true && $success  === true) ? true : false;
@@ -123,7 +124,8 @@ class translate extends common {
 							}							
 							$success  = (copy ('core/module/translate/ressource/module.json', self::DATA_DIR . $toCreate . '/module.json') === true && $success  === true) ? true : false;
 							$success  = (copy ('core/module/translate/ressource/page.json', self::DATA_DIR . $toCreate . '/page.json') === true && $success  === true) ? true : false;
-							$success  = (copy ('core/module/translate/ressource/comment.json', self::DATA_DIR . $toCreate . '/comment.json') === true && $success  === true) ? true : false;							
+							$success  = (copy ('core/module/translate/ressource/comment.json', self::DATA_DIR . $toCreate . '/comment.json') === true && $success  === true) ? true : false;
+							$success  = (copy ('core/module/translate/ressource/plugin.json', self::DATA_DIR . $toCreate . '/plugin.json') === true && $success  === true) ? true : false;							
 						}
 						// Si une page de même nom existe déjà elle sera écrasée
 						// Si une page est de nom différent mais de position identique, elle sera ajoutée au menu dans le bon ordre
@@ -132,6 +134,7 @@ class translate extends common {
 						$moduleAdd = $this->getData(['module',$pageId]);
 						$jsonPage = file_get_contents(self::DATA_DIR . $toCreate . '/page.json');
 						$jsonModule = file_get_contents(self::DATA_DIR . $toCreate . '/module.json');
+						$jsonPlugin = file_get_contents(self::DATA_DIR . $toCreate . '/plugin.json');
 						
 						// Ajout des données dans page.json
 						$fp= json_decode($jsonPage, true);
@@ -154,6 +157,16 @@ class translate extends common {
 							$jsonmod = json_encode($fp);
 							file_put_contents(self::DATA_DIR . $toCreate . '/module.json',$jsonmod);
 						}
+						
+						// Ajout des données dans plugin.json
+						$fp= json_decode($jsonPlugin, true);
+						foreach($this->getData(['plugin']) as $key=>$value){
+							// pour chaque plugin, si la page l'utilise ajouter dans le tableau $fp
+							if(in_array($pageId, $value)) $fp['plugin'][$key][$pageId]=$pageId;
+						}
+						$jsonplug= json_encode($fp);
+						file_put_contents(self::DATA_DIR . $toCreate . '/plugin.json',$jsonplug);
+						
 						// Ajout des données dans content						
 						$success  = (copy (self::DATA_DIR . $copyFrom . '/content/'.$pageId.'.html', self::DATA_DIR . $toCreate . '/content/'.$pageId.'.html') === true && $success  === true) ? true : false;
 						// Ajout des données, externes à module.json, contenues dans data_module/nom_de_la_page.json
@@ -265,8 +278,6 @@ class translate extends common {
 						AND  $this->getInput('translate' . strtoupper($keyi18n)) === 'delete')
 					{
 							$this->removeDir( self::DATA_DIR . $keyi18n);
-							// Au cas ou la langue est sélectionnée
-							helper::deleteCookie('DELTA_I18N_SITE');
 					}
 				}
 				// 'langBase' mémorise le code ISO de la langue sélectionnée ou de la valeur saisie si la langue sélectionnée est Autre langue
@@ -351,17 +362,12 @@ class translate extends common {
 	public function i18n() {
 
 		// Activation du drapeau sauf si c'est celui de la langue de base (drapeau utilisé pour revenir à la langue de base)
-		if ( $this->getUrl(2) !== $this->getData(['config', 'i18n', 'langBase']) && $this->getInput('DELTA_I18N_' . strtoupper($this->getUrl(3))) !== $this->getUrl(2) ) {
-			// Nettoyer et stocker le choix de l'utilisateur
-			helper::deleteCookie('DELTA_I18N_SITE');	
-			// Sélectionner
-			setcookie('DELTA_I18N_' . strtoupper($this->getUrl(3)) , $this->getUrl(2), time() + 3600, helper::baseUrl(false, false)  , '', helper::isHttps(), true);
+		if ( $this->getUrl(2) !== $this->getData(['config', 'i18n', 'langBase']) && $_SESSION['langFrontEnd'] !== $this->getUrl(2) ) {
 			// Mémorisation de la langue en Frontend et du type de traduction actif (site => rédigée, none => pas de traduction)	
 			$_SESSION['langFrontEnd'] = $this->getUrl(2);
 			$_SESSION['translationType'] = $this->getUrl(3);
 		// Désactivation du drapeau, langue base par défaut
 		} else {
-			setcookie('DELTA_I18N_SITE' , 'base', time() + 3600, helper::baseUrl(false, false)  , '', helper::isHttps(), true);
 			// Mise à jour des données de langue et de traduction en frontend
 			$_SESSION['langFrontEnd'] = $this->getData(['config', 'i18n', 'langBase']);
 			$_SESSION['translationType'] = 'none';			

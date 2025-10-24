@@ -29,7 +29,9 @@ class page extends common {
 		'commentEdit' => self::GROUP_MODERATOR,
 		'commentDelete' => self::GROUP_MODERATOR,
 		'commentAllDelete' => self::GROUP_MODERATOR,
-		'commentExport2csv' => self::GROUP_MODERATOR
+		'commentExport2csv' => self::GROUP_MODERATOR,
+		'plugin' => self::GROUP_MODERATOR,
+		'pluginDelete' => self::GROUP_MODERATOR
 	];
 
 	public static $moduleIds = [];
@@ -38,6 +40,7 @@ class page extends common {
 	public static $data = [];
 	public static $pages = [];
 	public static $memberIds = [];
+	public static $pluginNoHtml;
 
 	/**
 	 * Duplication
@@ -99,6 +102,15 @@ class page extends common {
 					$this->setData (['module',$pageId,$data]);
 					$notification = $text['core_page']['duplicate'][3];
 				}
+				// Duplication des données de plugins
+				foreach($this->getData(['plugin']) as $key=>$value){
+					if(in_array($url[0], array_keys( $value))){
+						$data = $this->getData(['plugin',$key]);
+						$data[$pageId]['position'] = $this->getData(['plugin',$key,$url[0],'position']);
+						$this->setData(['plugin', $key, $data]);
+					}
+				}				
+
 				// Duplication des données de page
 				if( is_file(self::DATA_DIR . self::$i18n . '/data_module/' . $url[0] . '.json'))
 				copy( self::DATA_DIR . self::$i18n . '/data_module/' . $url[0] . '.json', self::DATA_DIR . self::$i18n . '/data_module/' . $pageId . '.json');
@@ -326,8 +338,20 @@ class page extends common {
 				if (file_exists(self::DATA_DIR . self::$i18n . '/data_module/' . $url[0] . '.json')) {
 					unlink(self::DATA_DIR . self::$i18n . '/data_module/' . $url[0] . '.json');
 				}
-				
 				$this->deleteData(['module', $url[0]]);
+				// Met à jour le fichier plugin.json
+				$data = $this->getData(['plugin']);
+				foreach ($data as $key => $subArray) {
+					if (is_array($subArray) && in_array($url[0], array_keys( $subArray))) {
+						unset($data[$key][$url[0]]);
+					}
+				}
+				$this->setData(['plugin', $data]);	
+				// Nettoyage si plugin inutilisé
+				$dataPlugin = $this->getData(['plugin']);
+				foreach($dataPlugin as $key => $value){
+					if(empty($value)) $this->deleteData(['plugin',$key]);
+				}				
 				// Met à jour le site map
 				// $this->createSitemap('all');
 				// Met à jour 'config', 'statislite', 'enable' si aucume page n'utilise le module Statislite dans la langue de base
@@ -606,6 +630,149 @@ class page extends common {
 			
 		}
 	}
+	
+	/**
+	 * Gestion des Plugins
+	 */
+	public function plugin() {
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < page::$actions['plugin'] ) {
+			// Valeurs en sortie
+			$this->addOutput([
+				'access' => false
+			]);	
+		} else {
+			// Lexique
+			include('./core/module/page/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_page.php');
+			// Soumission du formulaire
+			$dataPlugin = $this->getData(['plugin']);
+			$pageId = $this->getUrl(2);
+			if($this->isPost()) {
+				foreach($dataPlugin as $key => $value){
+					if(null !== $this->getInput('configPluginPosition'.$key) && null!== $this->getData(['plugin',$key,$pageId])) $this->setData(['plugin',$key,$pageId,'position',$this->getInput('configPluginPosition'.$key)]);
+					if(null !== $this->getData(['plugin',$key,$pageId,'position']) && $this->getData(['plugin',$key,$pageId,'position'])==='') $this->setData(['plugin',$key,$pageId,'position','down']); 
+				}
+				// Redirection vers l'édition de page
+				$this->addOutput([
+					'redirect' => helper::baseUrl() .'page/edit/'. $pageId,
+					'notification' => $text['core_page']['plugin'][6],
+					'state' => true
+				]);
+			}
+			// Préparation de la liste des plugins associés à la page
+			if($dataPlugin) {
+				$pageId = $this->getUrl(2);
+				self::$pluginNoHtml = false;
+				foreach($dataPlugin as $key => $value){
+					if(isset($value[$pageId])){
+						$idTextarea = 'configPluginPage_' . $key;
+						$docpdf = is_file('plugin/'.$key.'/'.$key.'_doc.pdf')
+							? "<a href='"."plugin/".$key."/".$key."_doc.pdf' target='_blank'>".$text['core_page']['plugin'][1]."</a>"
+							: "";
+						if(is_file('plugin/'.$key.'/'.$key.'_page.html')) {
+							self::$data[] = [
+								$key,
+								$docpdf,
+								template::textarea($idTextarea, [
+									'value' => file_get_contents('plugin/'.$key.'/'.$key.'_page.html'),
+									'class' => 'editor'
+								]),
+								template::button('configPluginCopy', [
+									'class' => 'configPluginCopyText',
+									'data-target' => $idTextarea,
+									'value' => $text['core_page']['plugin'][2]
+								]),
+								template::button('formDataDelete', [
+									'class' => 'formDataDelete buttonRed',
+									'href' => helper::baseUrl() . 'page/pluginDelete/' . $this->getUrl(2) .'/'.$key.'/' . $_SESSION['csrf'],
+									'value' => template::ico('cancel')
+								])
+							];
+						} else {
+							self::$pluginNoHtml = true;
+							self::$data[] = [
+								$key,
+								$docpdf,
+								template::textarea($idTextarea, [
+									'value' => $text['core_page']['plugin'][3],
+									'class' => 'editor'
+								]),
+								template::select('configPluginPosition'.$key, $pluginBodyPosition, [
+									'help' => $text['core_page']['plugin'][5],
+									'label' => $text['core_page']['plugin'][4],
+									'selected' => $this->getData(['plugin',$key,$pageId,'position'])
+								]),
+								template::button('formDataDelete', [
+									'class' => 'formDataDelete buttonRed',
+									'href' => helper::baseUrl() . 'page/pluginDelete/' . $this->getUrl(2) .'/'.$key.'/' . $_SESSION['csrf'],
+									'value' => template::ico('cancel')
+								])
+							];
+						}
+					}
+				}
+			}			
+			$this->addOutput([
+				'title' => $this->getData(['page', $this->getUrl(2), 'title']),
+				'view' => 'plugin'
+			]);		
+		}
+		
+	}
+
+	/**
+	* pluginDelete
+	*/
+	public function pluginDelete() {
+		// Autorisation 
+		$group = $this->getUser('group');
+		if ($group === false ) $group = 0;
+		if( $group < page::$actions['pluginDelete'] ) {
+			// Valeurs en sortie
+			$this->addOutput([
+				'access' => false
+			]);	
+		} else {
+			// Lexique
+			include('./core/module/page/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_page.php');
+			// Jeton incorrect
+			if ($this->getUrl(4) !== $_SESSION['csrf']) {
+				// Valeurs en sortie
+				$this->addOutput([
+					'redirect' => helper::baseUrl() . 'page/edit/' . $this->getUrl(2),
+					'notification' => $text['core_page']['pluginDelete'][1]
+				]);
+			} else {
+				// La donnée n'existe pas
+				if( $this->getData(['plugin', $this->getUrl(3), $this->getUrl(2)]) === null) {
+					// Valeurs en sortie
+					$this->addOutput([
+						'redirect' => helper::baseUrl(). 'page/plugin/'.$this->getUrl(2),
+						'notification' => $text['core_page']['pluginDelete'][2],
+						'state' => false
+					]);
+				}
+				// Suppression
+				else {
+					$this->deleteData(['plugin', $this->getUrl(3), $this->getUrl(2), 'position']);
+					$this->deleteData(['plugin', $this->getUrl(3), $this->getUrl(2)]);
+					// Nettoyage si plugin inutilisé
+					$dataPlugin = $this->getData(['plugin']);
+					foreach($dataPlugin as $key => $value){
+						if(empty($value)) $this->deleteData(['plugin',$key]);
+					}
+					// Valeurs en sortie
+					$this->addOutput([
+						'redirect' => helper::baseUrl(). 'page/plugin/'.$this->getUrl(2),
+						'notification' => $text['core_page']['pluginDelete'][3],
+						'state' => true
+					]);
+				}
+			}			
+		}
+	}
 
 	/**
 	 * Édition
@@ -688,6 +855,19 @@ class page extends common {
 							if($this->getData(['locale', 'homePageId']) === $this->getUrl(2)) {
 								$this->setData(['locale', 'homePageId', $pageId]);
 							}
+							// Change le nom de la page dans plugin.json
+							$data = $this->getData(['plugin']);
+							foreach ($data as $key => $subArray) {
+								if (is_array($subArray)) {
+									foreach ($subArray as $index => $value) {
+										if ($index === $this->getUrl(2)) {
+											unset($data[$key][$index]);
+											$data[$key][$pageId] = $value;
+										}
+									}
+								}
+							}
+							$this->setData(['plugin', $data]);
 						}
 						// Supprime les données du module en cas de changement de module
 						if($this->getInput('pageEditModuleId') !== $this->getData(['page', $this->getUrl(2), 'moduleId'])) {
@@ -814,6 +994,72 @@ class page extends common {
 						}
 						// Met à jour le site map
 						// $this->createSitemap('all');
+						// Plugin
+						// Décompression du zip dans un dossier temporaire
+						$zipFilename =	$this->getInput('pageEditPluginInstallation', helper::FILTER_STRING_SHORT);
+						if( $zipFilename !== ''){
+							$tempFolder = 'scriptUpload';
+							$statePlugin = false;
+							$zip = new ZipArchive();
+							if($zip->open(self::FILE_DIR.'source/'.$zipFilename) === TRUE) {
+								mkdir(self::TEMP_DIR . $tempFolder, 0755);
+								$zip->extractTo(self::TEMP_DIR . $tempFolder );
+								// Contrôle de la validité du dossier
+								if(is_file(self::TEMP_DIR . $tempFolder .'/infoPlugin.php') && is_dir(self::TEMP_DIR . $tempFolder . '/script')){
+									include(self::TEMP_DIR . $tempFolder .'/infoPlugin.php');
+									// Installation du plugin
+									if(!is_dir('plugin')) mkdir('plugin', 0755);
+									if(!is_dir('plugin/'.$namePlugin)) mkdir('plugin/'.$namePlugin, 0755);
+									$this->copyDir(self::TEMP_DIR . $tempFolder,'plugin/'. $namePlugin, true);
+									// plugin.json : ajout de la page en cours si nécessaire
+									$pagesPlugin = $this->getData(['plugin', $namePlugin]);
+									if (!is_array($pagesPlugin)) $pagesPlugin = [];
+									if(!in_array($pageId, $pagesPlugin)) $pagesPlugin[$pageId] = ['position'=>'down'];
+									$this->setData(['plugin', $namePlugin, $pagesPlugin]);
+									// Head
+									if(is_file('plugin/' . $namePlugin . '/script/'. $namePlugin . '_head.inc.php')){
+										if(is_file(self::DATA_DIR . 'pluginhead.inc.php')){
+											$head = file_get_contents(self::DATA_DIR . 'pluginhead.inc.php');
+										} else {
+											$head = "<?php \$pageBars = [\$this->getUrl(0), \$this->getData(['page',\$this->getUrl(0),'barLeft']), \$this->getData(['page',\$this->getUrl(0),'barRight'])]; ?>";
+											file_put_contents(self::DATA_DIR . 'pluginhead.inc.php', $head, LOCK_EX);
+										} 
+										if(strpos($head, $beforeIncludeHead) === false){
+											$morehead = PHP_EOL."<?php ".$beforeIncludeHead.
+											PHP_EOL."if(is_array(\$this->getData(['plugin','".$namePlugin."'])) && array_intersect(\$pageBars, array_keys(\$this->getData(['plugin','".$namePlugin."'])))){".
+											PHP_EOL."	include('plugin/". $namePlugin ."/script/". $namePlugin . "_head.inc.php');".
+											PHP_EOL."}".PHP_EOL.$afterIncludeHead." ?>";
+											file_put_contents(self::DATA_DIR . 'pluginhead.inc.php', $morehead, FILE_APPEND | LOCK_EX);
+										}
+									}
+									// Body
+									if(is_file('plugin/' . $namePlugin . '/script/'. $namePlugin . '_body.inc.php')){
+										if(is_file(self::DATA_DIR . 'pluginbody.inc.php')){
+											$body = file_get_contents(self::DATA_DIR . 'pluginbody.inc.php');
+										} else {
+											$body = "<?php \$page = \$this->getUrl(0); ?>";
+											file_put_contents(self::DATA_DIR . 'pluginbody.inc.php', $body, LOCK_EX);
+										} 
+										if(strpos($body, $beforeIncludeBody) === false){
+											$morebody = PHP_EOL."<?php ".$beforeIncludeBody.
+											PHP_EOL."if(is_array(\$this->getData(['plugin','".$namePlugin."'])) && in_array(\$page, array_keys(\$this->getData(['plugin','".$namePlugin."']))) && \$this->getData(['plugin','".$namePlugin."',\$page,'position'])===\$pluginBodyPosition){".
+											PHP_EOL."	include('plugin/". $namePlugin ."/script/".$namePlugin."_body.inc.php');".
+											PHP_EOL."}".PHP_EOL.$afterIncludeBody." ?>";
+											file_put_contents(self::DATA_DIR . 'pluginbody.inc.php',$morebody,FILE_APPEND | LOCK_EX);
+										}									
+									}
+									$statePlugin = true;
+									$notificationPlugin = $text['core_page']['edit'][2].$namePlugin.$text['core_page']['edit'][3];
+								} else {
+									// Valeurs en sortie en cas d'échec
+									$statePlugin = false;
+									$notificationPlugin = $text['core_page']['edit'][4];
+								}
+								// Effacement du dossier temporaire
+								$this->removeDir(self::TEMP_DIR . $tempFolder);
+							}
+						}
+							
 						// Redirection vers la configuration
 						if($this->getInput('pageEditModuleRedirect', helper::FILTER_BOOLEAN)) {
 							// Valeurs en sortie
@@ -824,12 +1070,30 @@ class page extends common {
 						}
 						// Redirection vers la page
 						else {
-							// Valeurs en sortie
-							$this->addOutput([
-								'redirect' => helper::baseUrl() . $pageId,
-								'notification' => $text['core_page']['edit'][0],
-								'state' => true
-							]);
+							if(isset($_POST['pageEditPluginSubmit'])){
+								if($statePlugin === true) {
+									// Valeurs en sortie
+									$this->addOutput([
+										'redirect' => helper::baseUrl() .'page/plugin/'. $pageId,
+										'notification' => $notificationPlugin,
+										'state' => true
+									]);
+								} else {
+									// Valeurs en sortie
+									$this->addOutput([
+										'redirect' => helper::baseUrl() .'page/edit/'. $pageId,
+										'notification' => $notificationPlugin,
+										'state' => false
+									]);
+								}	
+							} else {
+								// Valeurs en sortie
+								$this->addOutput([
+									'redirect' => helper::baseUrl() . $pageId,
+									'notification' => $text['core_page']['edit'][0],
+									'state' => true
+								]);
+							}
 						}
 					}
 				}

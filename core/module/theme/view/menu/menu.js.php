@@ -126,7 +126,7 @@ $("input, select").on("change", function() {
 		$("#menu").addClass("container");
 	}
 
-	//  Largeur du menu quand la bannière est au dessus du site et limitée aus site en grand écran
+	//  Largeur du menu quand la bannière est au dessus du site et limitée au site en grand écran
 	if( $(window).width() >= 800 ){
 		if( <?php echo json_encode($this->getData(['theme', 'header', 'position']) === 'body'); ?> && <?php echo json_encode($this->getData(['theme', 'header', 'wide']) === 'container'); ?>){
 			if( $("#themeMenuPosition").val() === 'body-first' || $("#themeMenuPosition").val() === 'body-second'){
@@ -189,7 +189,7 @@ $("#themeMenuLoginLink").on("change", function() {
 	}
 }).trigger("change");
 
-// Affiche / Cache les options de la position
+// Affiche / Cache les options de la position et de la superposition bannière menu
 $("#themeMenuPosition").on("change", function() {
 	if($(this).val() === 'site-first' || $(this).val() === 'site-second') {
 		$("#themeMenuPositionOptions").slideDown();
@@ -199,6 +199,14 @@ $("#themeMenuPosition").on("change", function() {
 			$("#themeMenuMargin").prop("checked", false).trigger("change");
 		});
 	}
+	// Option pour la superposition menu bannière
+	if($(this).val() === 'superimposed') {
+		$("#themeMenuAbsoluteGapWrapper").removeClass('displayNone');
+	}
+	else {
+		$("#themeMenuAbsoluteGapWrapper").addClass('displayNone');
+	}
+
 }).trigger("change");
 
 // Affiche la sélection de couleur auto menu grand écran
@@ -286,3 +294,4 @@ if($(window).width() < 800) {
 		$("section").css("padding-top",bannerMenuHeightSection);
 	}
 }
+

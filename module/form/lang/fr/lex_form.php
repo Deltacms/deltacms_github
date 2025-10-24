@@ -36,7 +36,7 @@ $text['form_view']['config'][34] = 'png';
 $text['form_view']['config'][35] = 'pdf';
 $text['form_view']['config'][36] = 'zip';
 $text['form_view']['config'][37] = 'txt';
-$text['form_view']['config'][38] = 'Notez dans le label du champ fichier le type et la taille des fichiers autorisés. Des contrôles sont effectués sur les fichiers jpg, png, pdf et zip mais pas sur les fichiers txt. Prudence !';
+$text['form_view']['config'][38] = 'Notez dans le label du champ fichier le type et la taille des fichiers autorisés. Des contrôles sont effectués sur les fichiers images, pdf et zip mais pas sur les fichiers txt. Prudence !';
 $text['form_view']['config'][39] = 'Aide';
 $text['form_view']['config'][40] = 'module/form/view/config/config.help.html';
 $text['form_view']['config'][41] = 'Case à cocher d\'acceptation des conditions d\utilisation des données personnelles (RGPD)';
@@ -45,6 +45,9 @@ $text['form_view']['config'][43] = 'Textes ';
 $text['form_view']['config'][44] = 'Indice de confiance minimum';
 $text['form_view']['config'][45] = 'Indice de confiance minimum pour soumettre le formulaire. Pour que cette limitation soit active vous devez valider l\'option dans Configurer le site / Connexion Sécurité';
 $text['form_view']['config'][46] = 'Pour que le courriel ne soit pas considéré comme un spam il est péférable de chosir une signature avec le nom du site';
+$text['form_view']['config'][47] = 'webp';
+$text['form_view']['config'][48] = 'avif';
+$text['form_view']['config'][49] = 'gif';
 $text['form_view']['data'][0] = 'Retour';
 $text['form_view']['data'][1] = 'Tout effacer';
 $text['form_view']['data'][2] = 'Export CSV';
@@ -56,6 +59,7 @@ $text['form_view']['data'][7] = "Êtes-vous sûr de vouloir supprimer toutes les
 $text['form_view']['index'][0] = 'Envoyer';
 $text['form_view']['index'][1] = 'Le formulaire ne contient aucun champ.';
 $text['form_view']['index'][2] = 'fr';
+$text['form_view']['index'][3] = 'Extensions autorisées';
 
 $text['form_view']['texts'][0] = 'Retour';
 $text['form_view']['texts'][1] = 'Enregistrer';
@@ -92,7 +96,7 @@ $text['form']['init'][10] = 'La pièce jointe n\'est pas un document pdf';
 $text['form']['init'][11] = 'La pièce jointe n\'est pas un document zip';
 $text['form']['init'][12] = ' Renseignez le Captcha ';
 $text['form']['init'][13] = 'Vous n\'êtes pas autorisé à émettre un courriel';
-// Initialisation de flatpickr 
+// Initialisation de flatpickr
 $lang_flatpickr = 'fr';
 // Langue d'administration pour tinymce
 $lang_admin = 'fr_FR';

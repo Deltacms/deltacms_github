@@ -269,6 +269,8 @@ $text['core_theme_view']['menu'][61] = 'Inversión de color del sitio';
 $text['core_theme_view']['menu'][62] = 'Le permite cambiar entre la visualización con los colores del tema y una visualización con colores invertidos para la parte principal del sitio (excluyendo banner, menú, pie de página, imágenes, vídeos...)';
 $text['core_theme_view']['menu'][63] = 'Aumentar el tamaño de los caracteres';
 $text['core_theme_view']['menu'][64] = 'Esta opción coloca un icono en el menú que le permite aumentar el tamaño de fuente en la parte principal del sitio.';
+$text['core_theme_view']['menu'][65] = 'Posición vertical del menú';
+$text['core_theme_view']['menu'][66] = 'Ingrese un número entero entre 1 y 1000 para la posición vertical del menú con respecto a la parte superior del banner';
 $text['core_theme_view']['site'][0] = 'Atrás';
 $text['core_theme_view']['site'][1] = 'Ayuda';
 $text['core_theme_view']['site'][2] = 'Guardar';
@@ -445,8 +447,7 @@ $imagePositions = [
 $swiperEffects =[
 	'none' => 'Desplazamiento horizontal',
 	'vertical' => 'Desplazamiento vertical',
-	'fade' => 'Desplazamiento desvanecido',
-	'cube' => 'efecto cubico'
+	'fade' => 'Desplazamiento desvanecido'
 ];
 $swiperTime = [
 	'100' => '100ms',
@@ -487,6 +488,7 @@ $menuHeights = [
 $menuPositionsSite = [
 	'top' => 'Fuera del sitio',
 	'site-first' => 'Antes del encabezado',
+	'superimposed' => 'Superpuesto en el banner',
 	'site-second' => 'Después del encabezado',
 	'hide' => 'Oculto'
 ];

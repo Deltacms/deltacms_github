@@ -8,16 +8,14 @@ $arrayFlatpickr = ['fr', 'es', 'pt', 'el', 'it'];
 if( isset( $_SESSION['langFrontEnd'])){
 	$lang_base = $_SESSION['langFrontEnd'];
 } else {
-	$lang_base = $this->getData(['config', 'i18n', 'langBase']);	
+	$lang_base = $this->getData(['config', 'i18n', 'langBase']);
 }
 $lang_flatpickr = in_array($lang_base, $arrayFlatpickr) ? $lang_base : 'default';
 ?><script>var lang_flatpickr = "<?php echo $lang_flatpickr; ?>";</script><?php
 
 // Adaptation de la langue dans tinymce pour la rédaction d'un message en fonction de la langue de la page, originale ou en traduction rédigée
 $lang = $this->getData(['config', 'i18n', 'langBase']);
-if ( !empty($_COOKIE["DELTA_I18N_SITE"])) {
-	if( $this->getInput('DELTA_I18N_SITE') !== 'base' ) $lang = $this->getInput('DELTA_I18N_SITE');
-}
+if( isset($_SESSION['translationType']) && $_SESSION['translationType']==='site' && isset($_SESSION['langFrontEnd'])) $lang = $_SESSION['langFrontEnd'];
 $lang_page = $lang;
 switch ($lang) {
 	case 'en' :
@@ -70,14 +68,14 @@ if($this->getData(['module', $this->getUrl(0), 'input'])): ?>
 					'id' => 'formInput_' . $index,
 					'label' => $input['name'],
 					'selected' => isset($_SESSION['draft']['select'][$selectIndex])? $values[$_SESSION['draft']['select'][$selectIndex]] : ''
-				]); 
+				]);
 				$selectIndex++; ?>
 			<?php elseif($input['type'] === $module::TYPE_TEXT): ?>
 				<?php echo template::text('formInput[' . $index . ']', [
 					'id' => 'formInput_' . $index,
 					'label' => $input['name'],
 					'value' => isset($_SESSION['draft']['text'][$textIndex]) ? $_SESSION['draft']['text'][$textIndex] : ''
-				]); 
+				]);
 				$textIndex++; ?>
 			<?php elseif($input['type'] === $module::TYPE_TEXTAREA): ?>
 				<?php echo template::textarea('formInput[' . $index . ']', [
@@ -91,27 +89,40 @@ if($this->getData(['module', $this->getUrl(0), 'input'])): ?>
 				<?php echo template::date('formInput[' . $index . ']', [
 					'id' => 'formInput_' . $index,
 					'label' => $input['name'],
-					'value' => $_SESSION['draft']['datetime']		
+					'value' => $_SESSION['draft']['datetime']
 				]); ?>
-			<?php elseif($input['type'] === $module::TYPE_CHECKBOX): 
+			<?php elseif($input['type'] === $module::TYPE_CHECKBOX):
 				echo template::checkbox('formInput[' . $index . ']', true, $input['name'], [
-					'checked' => isset($_SESSION['draft']['checkbox'][$checkboxIndex]) ? $_SESSION['draft']['checkbox'][$checkboxIndex] : false	
-				]); 
-				$checkboxIndex++; ?>	
-			<?php elseif($input['type'] === $module::TYPE_FILE): ?>	
+					'checked' => isset($_SESSION['draft']['checkbox'][$checkboxIndex]) ? $_SESSION['draft']['checkbox'][$checkboxIndex] : false
+				]);
+				$checkboxIndex++; ?>
+			<?php elseif($input['type'] === $module::TYPE_FILE): ?>
+			<?php // liste les extensions de fichiers validées en config
+			$acceptfile = $this->getData(['module', $this->getUrl(0), 'config', 'uploadJpg']) == true ? '.jpg,.jpeg,' : '';
+			$acceptfile .= $this->getData(['module', $this->getUrl(0), 'config', 'uploadPng']) == true ? '.png,' : '';
+			$acceptfile .= $this->getData(['module', $this->getUrl(0), 'config', 'uploadWebp']) == true ? '.webp,' : '';
+			$acceptfile .= $this->getData(['module', $this->getUrl(0), 'config', 'uploadAvif']) == true ? '.avif,' : '';
+			$acceptfile .= $this->getData(['module', $this->getUrl(0), 'config', 'uploadGif']) == true ? '.gif,' : '';
+			$acceptfile .= $this->getData(['module', $this->getUrl(0), 'config', 'uploadPdf']) == true ? '.pdf,' : '';
+			$acceptfile .= $this->getData(['module', $this->getUrl(0), 'config', 'uploadZip']) == true ? '.zip,' : '';
+			$acceptfile .= $this->getData(['module', $this->getUrl(0), 'config', 'uploadTxt']) == true ? '.txt,' : '';
+			$validfile = substr($acceptfile,0,-1);// supprime la dernière virgule
+			?>
 				<label class='formLabel'> <?php echo $input['name']; ?> </label>
 				<div class="formInputFile">
 					<input type="hidden" name="MAX_FILE_SIZE" value="5000000">
-					<input type="file" name="fileToUpload" id="fileToUpload"> 
+					<input type="file" name="fileToUpload" id="fileToUpload" accept="<?=$validfile?>">
+					<span><?=$text['form_view']['index'][3]?> : <?=str_replace(',', ', ', $validfile)?></span>
 				</div>
 			<?php elseif($input['type'] === $module::TYPE_LABEL): ?>
 				<p class='formLabel'> <?php echo $input['name']; ?> </p>
 			<?php endif; ?>
-				
+
 		<?php endforeach; ?>
 		</div>
-		<?php if( $this->getData(['module', $this->getUrl(0), 'config', 'captcha']) ) { 
-			if ( $_SESSION['humanBot']==='bot' || $this->getData(['config', 'connect', 'captchaBot'])===false ){ ?>
+		<?php if( $this->getData(['module', $this->getUrl(0), 'config', 'captcha']) ) {
+			if ( $_SESSION['humanBot']==='bot' || $this->getData(['config', 'connect', 'captchaBot'])===false
+			|| ( $this->getData(['config', 'cookieConsent'])===true && !isset( $_COOKIE['DELTA_COOKIE_CONSENT']))){ ?>
 			<div class="row">
 				<div class="col12 textAlignCenter">
 					<?php echo template::captcha('formCaptcha', ''); ?>
@@ -122,7 +133,7 @@ if($this->getData(['module', $this->getUrl(0), 'input'])): ?>
 					<?php echo template::text('formInputBlue', [
 						'label' => 'Input Blue',
 						'value' => ''
-					]); ?>			
+					]); ?>
 				</div>
 				<br>
 				<div class="row formOuter">
@@ -134,7 +145,7 @@ if($this->getData(['module', $this->getUrl(0), 'input'])): ?>
 						</div>
 				</div>
 				<br>
-			<?php } ; 
+			<?php } ;
 		} ?>
 		<div class="row textAlignCenter">
 			<div class="formInner humanBotClose">

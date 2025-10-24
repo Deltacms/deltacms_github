@@ -5,9 +5,7 @@ include('./module/blog/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) .
 
 // Adaptation de la langue dans tinymce pour la rédaction d'un commentaire en fonction de la langue de la page, originale ou en traduction rédigée
 $lang = $this->getData(['config', 'i18n', 'langBase']);
-if ( !empty($_COOKIE["DELTA_I18N_SITE"])) {
-	if( $this->getInput('DELTA_I18N_SITE') !== 'base' ) $lang = $this->getInput('DELTA_I18N_SITE');
-}
+if( isset($_SESSION['translationType']) && $_SESSION['translationType']==='site' && isset($_SESSION['langFrontEnd'])) $lang = $_SESSION['langFrontEnd'];
 $lang_page = $lang;
 switch ($lang) {
 	case 'en' :
@@ -203,7 +201,8 @@ $pictureBlog = $this->getData(['data_module', $this->getUrl(0), 'posts', $this->
 			</div>
 			<div id="blogArticleContentAlarm"> </div>
 			<?php if($this->getUser('password') !== $this->getInput('DELTA_USER_PASSWORD')): ?>
-				<?php if( $_SESSION['humanBot']==='bot' || $this->getData(['config', 'connect', 'captchaBot'])=== false ) { ?>
+				<?php if( $_SESSION['humanBot']==='bot' || $this->getData(['config', 'connect', 'captchaBot'])=== false 
+				|| ( $this->getData(['config', 'cookieConsent'])===true && !isset( $_COOKIE['DELTA_COOKIE_CONSENT']))) { ?>
 					<div class="row">
 						<div class="col12">
 							<?php echo template::captcha('blogArticleCaptcha', ''); ?>

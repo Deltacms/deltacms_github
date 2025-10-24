@@ -17,6 +17,7 @@ class template {
             'id' => $nameId,
             //'name' => $nameId,
             'target' => '',
+			'data-target' => '',
             'uniqueSubmission' => false,
             'value' => 'Bouton'
         ], $attributes);

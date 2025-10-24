@@ -1,5 +1,26 @@
 # Changelog
 
+## Version 6.0.01 de Deltacms
+- Modifications :
+	- Page / édition de page : installation d'un plugin de façon semi-automatique à partir d'un fichier zip. Il restera à copier / coller l'éventuelle partie html dans votre page ou votre barre,
+	- Modules du zip : un dixième module, Guestbook (livre d'or) est désormais livré dans le zip,
+	- Gestion des cookies : elle a été améliorée et le cookie de langue a été supprimé. Une mise à jour des modules non fournis dans le zip est disponible, elle est obligatoire si vous utilisez des traductions rédigées dans votre site,
+	- Théme / Menu : modification du calcul de la hauteur des icônes de menu,
+	- Thème / Menu burger : suppression de la ligne supérieure d'icônes,
+	- Thème / Menu : nouvelle option le menu peut être superposé à la bannière, disponible pour une bannière dans le site,
+	- Thème / Bannière : suppression de l'effet cube pour la bannière animée,
+	- Les boutons et les champs modifiables sont plus fins.
+	- Module form en version 6.8 : Recherche de pièces jointes facilitée, ajout de trois formats d'image supplémentaires
+- Corrections :
+	- Tinymce / Insérer modifier un lien : l'url affichée suite à la sélection d'une ancre est maintenant fonctionnelle,
+	- Tinymce / Gabarits : légère modification du thème associé à la colorbox,
+- Sur le site :
+	- Bonus -> Plugins : un calendrier évènementiel 'jscalendar' d'Athanasios Grammatopoulos a été adapté pour Deltacms. Il est installable semi-automatiquement,
+	- Bonus -> Plugins : un export pdf 'html2pdf' d'Erik Koopmans a été adapté pour Deltacms. L'export est limité à la section principale de la page contrairement à celui des navigateurs, il est installable semi-automatiquement,
+	- Bonus -> Plugins : images-uploader permet d'envoyer des images dans un dossier sans passer par le gestionnaire de fichier, et de les afficher sous forme de galerie, l'envoi est possible en connexion à partir du groupe éditeur, il est installable automatiquement,
+	- Bonus -> Thèmes : un nouveau thème avec un menu fixe superposé à une bannière animée,
+	- Bonus -> Modules : mise à jour des modules suite à la nouvelle gestion des cookies, elle est à faire si vous utilisez des traductions rédigées dans votre site.
+
 ## Version 5.4.02 de Deltacms
 - Modifications :
 	- Configuration / Réseau : nouvelle variable pour déclarer explicitement le nom de domaine, utile pour les émissions de courriel depuis un sous-domaine,
@@ -33,7 +54,7 @@
 	- Page / Permission : correction d'un problème d'accès quand une page était réservée à un membre particulier.
 - Sur le site :
 	- Bonus / Thèmes : un nouveau thème est disponible au téléchargement, vous pouvez le tester sur https://template.deltacms.fr
-	- Bonus -> modules : Vidéo en version 1.6, en configuration l'espacement et l'ordre des vidéos sont paramétrables, l'ajout des vignettes facilite le tri et la rédaction des légendes	
+	- Bonus -> modules : Vidéo en version 1.6, en configuration l'espacement et l'ordre des vidéos sont paramétrables, l'ajout des vignettes facilite le tri et la rédaction des légendes
 
 ## Version 5.3.01 de Deltacms
 - Modifications :

@@ -267,7 +267,7 @@ if ($this->getData(['core', 'dataVersion']) < 5401) {
 	$this->deleteData(['theme', 'body', 'toTopbackgroundColor']);
 	$this->deleteData(['theme', 'body', 'toTopColor']);
 	// Forçage de la mise à jour de theme.css
-	if (file_exists(self::DATA_DIR . '/theme.css')) unlink (self::DATA_DIR . '/theme.css');
+	if (file_exists(self::DATA_DIR . 'theme.css')) unlink (self::DATA_DIR . 'theme.css');
 	// Nouveau paramètre dans config : mesure de confiance
 	$this->setData(['config', 'connect', 'trust', false]);
 	// Texte initial de l'aide pour le captcha additions
@@ -279,5 +279,19 @@ if ($this->getData(['core', 'dataVersion']) < 5401) {
 if ($this->getData(['core', 'dataVersion']) < 5402) {
 	$this->setData(['config', 'mailDomainName', '']);
 	$this->setData(['core', 'dataVersion', 5402]);
+}
+if ($this->getData(['core', 'dataVersion']) < 6001) {
+	// Nouveau fichier de données : plugin
+	if(is_file('core/module/install/ressource/database_fr/base/plugin.json')){
+		$listLang=[];
+		foreach (self::$i18nList as $key => $value) {
+			if( $this->getData(['config', 'i18n', $key]) === 'site') $listLang[] = $key;
+		}
+		$listLang[]="base";
+		foreach($listLang as $key=>$value){
+			if(is_dir(self::DATA_DIR.$value)) copy('core/module/install/ressource/database_fr/base/plugin.json', self::DATA_DIR.$value.'/plugin.json');
+		}
+	}
+	$this->setData(['core', 'dataVersion', 6001]);
 }
 ?>

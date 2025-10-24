@@ -269,6 +269,8 @@ $text['core_theme_view']['menu'][61] = 'Site color inversion';
 $text['core_theme_view']['menu'][62] = 'Allows you to switch between the display with the theme colors and a display with inverted colors for the main part of the site (excluding banner, menu, footer , images, videos...)';
 $text['core_theme_view']['menu'][63] = 'Increase character size';
 $text['core_theme_view']['menu'][64] = 'This option places an icon in the menu which allows you to increase the font size in the main part of the site.';
+$text['core_theme_view']['menu'][65] = 'Vertical menu position';
+$text['core_theme_view']['menu'][66] = 'Enter an integer between 1 and 1000 for the vertical position of the menu relative to the top of the banner';
 $text['core_theme_view']['site'][0] = 'Back';
 $text['core_theme_view']['site'][1] = 'Help';
 $text['core_theme_view']['site'][2] = 'Save';
@@ -448,8 +450,7 @@ $imagePositions = [
 $swiperEffects =[
 	'none' => 'Horizontal scrolling',
 	'vertical' => 'Scroll vertically',
-	'fade' => 'fade',
-	'cube' => 'cube effect'
+	'fade' => 'fade'
 ];
 $swiperTime = [
 	'100' => '100ms',
@@ -490,6 +491,7 @@ $menuHeights = [
 $menuPositionsSite = [
 	'top' => 'Outside the site',
 	'site-first' => 'Before the banner',
+	'superimposed' => 'Superimposed on the banner',	
 	'site-second' => 'After the banner',
 	'hide' => 'Hidden'
 ];

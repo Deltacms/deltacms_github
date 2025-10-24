@@ -1,0 +1,4 @@
+# Interdire l'exécution de fichiers
+<Files ~ "\.(php|phtml|pl|py|jsp|asp|html|htm|shtml|sh|cgi)$">
+	Require all denied
+</Files>

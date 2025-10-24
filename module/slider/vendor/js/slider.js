@@ -47,7 +47,7 @@ $(function () {
 	}
 	else
 	{
-		$("#wrapper").css('width', "100%");
+		$("#wrapper").css('margin', "0 -20px 0 -20px");
 	}
 	//La taille du wrapper étant défini on peut l'afficher
 	$("#wrapper").css('visibility', "visible");

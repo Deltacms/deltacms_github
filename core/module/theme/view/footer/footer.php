@@ -143,9 +143,12 @@ echo template::formOpen('themeFooterForm');
                 </div>
                 <div class="col3">
 					<?php // drapeau pour la langue d'origine ou la langue en traduction rédigée
-					$flag = 'site';
-					if( $this->getInput('DELTA_I18N_SITE') === 'base') $flag = $this->getData(['config', 'i18n', 'langBase']); ?>
-                    <?php $list = helper::arrayCollumn($module::$pagesList, 'title');
+					if( !isset($_SESSION['translationType']) || $_SESSION['translationType']==='none' ){
+						$flag = $this->getData(['config', 'i18n', 'langBase']);
+					}else{
+						$flag = $_SESSION['langFrontEnd'];
+					}
+                    $list = helper::arrayCollumn($module::$pagesList, 'title');
 					ksort($list);
 					echo template::select('configLegalPageId', array_merge(['none' => $text['core_theme_view']['footer'][24]] , $list ) , [
                         'label' => $text['core_theme_view']['footer'][25] . template::flag($flag, '20px'),

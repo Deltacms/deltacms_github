@@ -6,7 +6,7 @@
                 "feedsLabel": "Syndication RSS",
                 "itemsperPage": 6,
 				"previewSize" : 400,
-                "versionData": "7.6"
+                "versionData": "7.7"
             },
             "texts": {
                 "NoComment": "No comment yet",
@@ -48,7 +48,7 @@
                 "logoUrl": "",
                 "logoWidth": "40",
                 "maxSizeUpload": "500000",
-                "versionData": "6.6",
+                "versionData": "6.8",
                 "uploadJpg": true,
                 "uploadPng": true,
                 "uploadPdf": false,
@@ -109,7 +109,7 @@
                 "placeHolder": "One or more keywords",
                 "resultHideContent": false,
                 "previewLength": 100,
-                "versionData": "3.8",
+                "versionData": "3.9",
                 "nearWordText": "Related words",
                 "successTitle": "Result of your search",
                 "failureTitle": "No results",
@@ -128,7 +128,7 @@
                 "resultHideContent": false,
                 "placeHolder": "One or more keywords",
                 "submitText": "Search",
-                "versionData": "3.8",
+                "versionData": "3.9",
                 "nearWordText": "Related words",
                 "successTitle": "Result of your search",
                 "failureTitle": "No results",
@@ -173,7 +173,7 @@
                 "order": []
             },
 			"config": {
-				"versionData": "5.2",
+				"versionData": "5.3",
 				"texts": {
 					"backButton": "Return",
 					"geolocation": "Geolocalisation",

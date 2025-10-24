@@ -138,7 +138,7 @@ class JsonDb extends \Prowebcraft\Dot
         if ( is_writable($this->db) ) {
             // 3 essais
             for($i = 0; $i < 3; $i++) {
-                if( @file_put_contents($this->db, json_encode($this->data, JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT|LOCK_EX)) !== false) {
+                if (file_put_contents($this->db, json_encode($this->data, JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT), LOCK_EX) !== false) {
                     break;
                 }
                 // Pause de 10 millisecondes

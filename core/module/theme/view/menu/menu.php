@@ -2,13 +2,8 @@
 // Lexique
 include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
 
-// drapeau pour la langue d'origine ou la langue en traduction rédigée
-if( $this->getInput('DELTA_I18N_SITE') === '' || $this->getInput('DELTA_I18N_SITE')=== null || $this->getInput('DELTA_I18N_SITE') === 'base'){
-	$flag = $this->getData(['config', 'i18n', 'langBase']);
-}
-else{
-	$flag = $this->getInput('DELTA_I18N_SITE');
-}
+// drapeau pour la langue d'origine ou la langue en traduction rÃ©digÃ©e
+$flag = $this->flagLang();
 
 echo template::formOpen('themeMenuForm'); ?>
 <div class="row">
@@ -29,14 +24,14 @@ echo template::formOpen('themeMenuForm'); ?>
         'class' => 'buttonHelp'
       ]); ?>
     </div>
-	<div class="col2 offset4 submitPreview">
+	<div class="col2 offset4">
         <?php echo template::submit('themeMenuSubmitPreview',[
 			'value' => $text['core_theme_view']['header'][37],
 			'ico' =>'eye',
 			'class' => 'buttonPreview'
 		]); ?>
     </div>
-    <div class="col2 offsetPreview">
+    <div class="col2">
         <?php echo template::submit('themeMenuSubmit',[
 			'value' => $text['core_theme_view']['menu'][2]
 		]); ?>
@@ -73,6 +68,13 @@ echo template::formOpen('themeMenuForm'); ?>
 						<?php echo template::select('themeMenuHeight', $menuHeights, [
 						'label' => $text['core_theme_view']['menu'][8],
 						'selected' => $this->getData(['theme', 'menu', 'height'])
+					]); ?>
+				</div>
+				<div class="col4">
+						<?php echo template::text('themeMenuAbsoluteGap',[
+						'label' => $text['core_theme_view']['menu'][65],
+						'help' => $text['core_theme_view']['menu'][66],
+						'value' => $this->getData(['theme', 'menu', 'absoluteGap'])
 					]); ?>
 				</div>
 			</div>

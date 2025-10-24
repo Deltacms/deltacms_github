@@ -52,8 +52,8 @@ class common {
 
 	// Numéro de version
 	const DELTA_UPDATE_URL = 'https://github.com/Deltacms/deltacms_update/raw/refs/heads/main/master/';
-	const DELTA_VERSION = '5.4.02';
-	const DELTA_UPDATE_CHANNEL = "v5";
+	const DELTA_VERSION = '6.0.01';
+	const DELTA_UPDATE_CHANNEL = "v6";
 	const DELTA_BRAND = "RGVsdGFjbXM=";
 
 	public static $actions = [];
@@ -222,6 +222,7 @@ class common {
 	// Langue courante
 	public static $i18n;
 	public static $timezone;
+	public static $head_include;
 	private $url = '';
 	// Données de site
 	private $user = [];
@@ -248,7 +249,8 @@ class common {
 		'locale' => '',
 		'fonts' => '',
 		'session' =>'',
-		'comment' =>''
+		'comment' =>'',
+		'plugin' => ''
 	];
 
 	/**
@@ -265,9 +267,8 @@ class common {
 		}
 
 		// Déterminer la langue sélectionnée pour le chargement des fichiers de données
-		if (isset($this->input['_COOKIE']['DELTA_I18N_SITE'])
-		) {
-			self::$i18n = $this->input['_COOKIE']['DELTA_I18N_SITE'];
+		if (isset($_SESSION['translationType']) && $_SESSION['translationType']==='site') {
+			self::$i18n = $_SESSION['langFrontEnd'];
 		} else  {
 			self::$i18n = 'base';
 		}
@@ -993,7 +994,8 @@ class common {
 		if ($id === 'page' ||
 			$id === 'module'  ||
 			$id === 'locale' ||
-			$id === 'comment') {
+			$id === 'comment' ||
+			$id === 'plugin') {
 				$folder = self::DATA_DIR . $lang . '/' ;
 		} else {
 			$folder = self::DATA_DIR;
@@ -1285,7 +1287,7 @@ class common {
 	* @param string $dst dossier destination
 	* @return bool
 	*/
-	public function copyDir($src, $dst) {
+	public function copyDir($src, $dst, $recu = true) {
 		// Ouvrir le dossier source
 		$dir = opendir($src);
 		// Créer le dossier de destination
@@ -1300,7 +1302,7 @@ class common {
 			if (( $file != '.' ) && ( $file != '..' )) {
 				if ( is_dir($src . '/' . $file) ){
 					// Appel récursif des sous-dossiers
-					$success = $this->copyDir($src . '/' . $file, $dst . '/' . $file);
+					if($recu===true) $success = $this->copyDir($src . '/' . $file, $dst . '/' . $file);
 				}
 				else {
 					$success = copy($src . '/' . $file, $dst . '/' . $file);
@@ -1310,7 +1312,6 @@ class common {
 		closedir($dir);
 		return $success;
 	}
-
 
 	/**
 	 * Génère une archive d'un dossier et des sous-dossiers
@@ -1343,6 +1344,16 @@ class common {
 		$zip->close();
 	}
 
+	/* Retourne la langue d'origine ou la langue en traduction rédigée pour afficher les drapeaux de pays
+	*/
+	public function flagLang() {
+		if( !isset($_SESSION['translationType']) || $_SESSION['translationType']==='none' ){
+			return $this->getData(['config', 'i18n', 'langBase']);
+		}
+		else{
+			return $_SESSION['langFrontEnd'];
+		}		
+	}
 
 	/**
 	 * Affiche le consentement aux cookies
@@ -1386,7 +1397,17 @@ class common {
 		}
 
 	}
-
+	
+	/*
+	* Inclus le script personnalisé head.inc.php, pluginhead.inc.php et un script associé à un module
+	*/
+	public function showHeadInc() {
+		if (file_exists(self::DATA_DIR .'head.inc.php')) include(self::DATA_DIR .'head.inc.php');
+		if (file_exists(self::DATA_DIR .'pluginhead.inc.php')) include(self::DATA_DIR .'pluginhead.inc.php');
+		// Inclusion dans le head d'un script associé à un module
+		if( isset(self::$head_include) && file_exists(self::$head_include)) include(self::$head_include);
+	}
+	
 	/**
 	 * Formate le contenu de la page selon les gabarits
 	 * @param Page par defaut
@@ -1425,10 +1446,12 @@ class common {
 				$strlenUrl1 = 0;
 				if( $this->getUrl(1) !== null) $strlenUrl1 = strlen($this->getUrl(1));
 				if( $this->getData(['page', $this->getUrl(0), 'commentEnable']) === true &&  $strlenUrl1 < 3  ) $this->showComment();
-				if( $this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD')  && $this->getData(['page', $this->getUrl(0), 'memberFile']) === true && $this->getData(['page', $this->getUrl(0), 'group']) === self::GROUP_MEMBER) include('./core/include/member.inc.php');;
-				if (file_exists(self::DATA_DIR . 'body.inc.php')) {
-					include( self::DATA_DIR . 'body.inc.php');
+				if( $this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD')  && $this->getData(['page', $this->getUrl(0), 'memberFile']) === true && $this->getData(['page', $this->getUrl(0), 'group']) === self::GROUP_MEMBER) include('./core/include/member.inc.php');
+				if (file_exists(self::DATA_DIR . 'pluginbody.inc.php')){
+					$pluginBodyPosition = 'down';
+					include( self::DATA_DIR . 'pluginbody.inc.php');
 				}
+				if (file_exists(self::DATA_DIR . 'body.inc.php')) include( self::DATA_DIR . 'body.inc.php');
 				if($this->getData(['config', 'statislite', 'enable']) && is_dir(self::DATA_DIR.'base/data_module/statislite')){
 					include "module/statislite/include/stat.php";
 				}
@@ -1466,9 +1489,11 @@ class common {
 				if( $this->getData(['page', $this->getUrl(0), 'commentEnable']) === true &&  $strlenUrl1 < 3  ) $this->showComment();
 				// Ajouter et si option fichiers visibles est validée
 				if( $this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD') && $this->getData(['page', $this->getUrl(0), 'memberFile']) === true && $this->getData(['page', $this->getUrl(0), 'group']) === self::GROUP_MEMBER ) include('./core/include/member.inc.php');
-				if (file_exists(self::DATA_DIR . 'body.inc.php')) {
-						include(self::DATA_DIR . 'body.inc.php');
+				if (file_exists(self::DATA_DIR . 'pluginbody.inc.php')){
+					$pluginBodyPosition = 'down';
+					include( self::DATA_DIR . 'pluginbody.inc.php');
 				}
+				if (file_exists(self::DATA_DIR . 'body.inc.php')) include(self::DATA_DIR . 'body.inc.php');
 				if($this->getData(['config', 'statislite', 'enable']) && is_dir(self::DATA_DIR.'base/data_module/statislite')){
 					include "module/statislite/include/stat.php";
 				}
@@ -1515,7 +1540,10 @@ class common {
 		) {
 			echo '<h1 id="sectionTitle">' . $this->output['title'] . '</h1>';
 		}
-
+		if (file_exists(self::DATA_DIR . 'pluginbody.inc.php')){
+			$pluginBodyPosition = 'up';
+			include( self::DATA_DIR . 'pluginbody.inc.php');
+		}
 		echo $this->output['content'];
 	}
 
@@ -1896,6 +1924,55 @@ class common {
 			case 'site' :
 				echo '<nav '.$fixed.$burgerclass.'>';
 			break;
+			case 'superimposed' :
+				if( $this->getData(['theme', 'header', 'homePageOnly'])===true && $this->getUrl(0)!==$this->getData(['locale', 'homePageId']) && $this->getUrl(0)!=='theme'){
+					$superId = $fixed;
+				} else {
+					$gapRight='0';$gapLeft='0';
+					if( !( $this->getUrl(0)==='theme' && $this->getUrl(1)!=='menu')){
+						switch($this->getData(['theme', 'site', 'width'])){
+							case '75vw':
+								$gapRight = '-12.5vw';
+								$gapLeft='12.5vW';
+							break;
+							case '85vw':
+								$gapRight = '-7.5vw';
+								$gapLeft='7.5vW';
+							break;
+							case '95vw':
+								$gapRight = '-2.5vw';
+								$gapLeft='2.5vW';
+							break;
+						}
+					}
+					$alignValue = '0';
+					$alignSide = 'right';
+					$transform = 'translateX('.$gapRight.')';
+					switch($this->getData(['theme', 'menu', 'textAlign'])){
+					  case 'left':
+						$alignSide = 'left';
+						$transform = 'translateX('.$gapLeft.')';
+						break;
+					  case 'center':
+						$alignSide = 'left';
+						$alignValue = '50%';
+						$transform = 'translateX(-50%)';
+						break;
+					}
+					$top = $this->getData(['theme','menu','absoluteGap']);
+					$topheader = 0;
+					if( $this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD')) { $top = $top + 45; $topheader = 45;}
+					if($this->getUrl(0)==='theme' && $this->getUrl(1)=== null) $top = $top - 45;
+					$posmenu='absolute';
+					// Bannière fixe si elle est présente et si le menu est fixe
+					$posheader='relative';
+					if( $this->getData(['theme','menu','fixed'])===true && ($this->getUrl(0)!=='theme' || $this->getUrl(1)==='menu')) { $posheader='sticky'; $posmenu='fixed';} else { $topheader=0;}
+					$superId = 'id="superimposed"';
+					// Varaibles css
+					echo '<html style="--header-position: '.$posheader.';--header-top: '.$topheader.'px;--nav-position: '.$posmenu.'; --nav-top: '.$top.'px; --nav-'.$alignSide.': '.$alignValue.'; --nav-transform: '.$transform.';">';
+				}
+				echo '<nav '.$superId.$burgerclass.'>';
+				break;
 			case 'hide' :
 				?> <nav <?php if($this->getData(['theme', 'menu', 'position']) === 'hide'): ?> class="displayNone" <?php endif; ?> > <?php
 			break;
@@ -1908,7 +1985,7 @@ class common {
 		$height = (int) substr( $height, 0, $pospx);
 		$coef = str_replace('em', '', $this->getData(['theme', 'menu', 'fontSize']));
 		$heightLogo = (int) ($height + $fontsize*$coef - 5); // icônes des menus
-		$heightLogoBurger = $heightLogo + 5; // icônes dans le bandeau du menu burger
+		$heightLogoBurger = $heightLogo + 5; // icônes avec lien dans le bandeau du menu burger
 		// Pour le décalage du header ou de la section, par core.js.php en petit écran, transmision de la hauteur du bandeau du menu = 2* taille du texte (icône burger) + 2 * padding-topbottom défini par $this->getData(['theme', 'menu', 'height']);
 		$bannerHeight = 2 * $height + 2 * $fontsize;
 		?><script>var bannerMenuHeight = (<?php echo $bannerHeight;?>).toString() + "px";var bannerMenuHeightSection= (<?php echo $bannerHeight + 10;?>).toString() + "px";  </script><?php
@@ -1994,14 +2071,14 @@ class common {
 						break;
 					case 'icon' :
 						if ($this->getData(['page', $parentPageId, 'iconUrl']) != "") {
-							$itemsLeft .= '<div style="display: inline"><img alt="'.$this->getData(['page', $parentPageId, 'shortTitle']).'" src="'. $fileLogo.'" style="height:'.$heightLogo.'px; width:auto;"></div>';
+							$itemsLeft .= '<div class="iconPage"><img class="iconPageImg" alt="'.$this->getData(['page', $parentPageId, 'shortTitle']).'" src="'. $fileLogo.'" style="height:'.$heightLogo.'px; width:auto;"></div>';
 						} else {
 						$itemsLeft .= $this->getData(['page', $parentPageId, 'shortTitle']);
 						}
 						break;
 					case 'icontitle' :
 						if ($this->getData(['page', $parentPageId, 'iconUrl']) != "") {
-							$itemsLeft .= '<img alt="'.$this->getData(['page', $parentPageId, 'titlshortTitlee']).'" src="'. $fileLogo.'" style="height:'.$heightLogo.'px; width:auto;" data-tippy-content="';
+							$itemsLeft .= '<img class="iconPageImg" alt="'.$this->getData(['page', $parentPageId, 'titlshortTitlee']).'" src="'. $fileLogo.'" style="height:'.$heightLogo.'px; width:auto;" data-tippy-content="';
 							$itemsLeft .= $this->getData(['page', $parentPageId, 'shortTitle']).'">';
 						} else {
 							$itemsLeft .= $this->getData(['page', $parentPageId, 'shortTitle']);
@@ -2047,14 +2124,14 @@ class common {
 								break;
 							case 'icon' :
 								if ($this->getData(['page', $childKey, 'iconUrl']) != "") {
-								$itemsLeft .= '<img alt="'.$this->getData(['page', $parentPageId, 'shortTitle']).'" src="'. helper::baseUrl(false) .self::FILE_DIR.'source/'.$this->getData(['page', $childKey, 'iconUrl']).'" style="height:'.$heightLogo.'px; width:auto;">';
+								$itemsLeft .= '<img class="iconPageImg" alt="'.$this->getData(['page', $parentPageId, 'shortTitle']).'" src="'. helper::baseUrl(false) .self::FILE_DIR.'source/'.$this->getData(['page', $childKey, 'iconUrl']).'" style="height:'.$heightLogo.'px; width:auto;">';
 								} else {
 								$itemsLeft .= $this->getData(['page', $parentPageId, 'shortTitle']);
 								}
 								break;
 							case 'icontitle' :
 								if ($this->getData(['page', $childKey, 'iconUrl']) != "") {
-								$itemsLeft .= '<img alt="'.$this->getData(['page', $parentPageId, 'shortTitle']).'" src="'. helper::baseUrl(false) .self::FILE_DIR.'source/'.$this->getData(['page', $childKey, 'iconUrl']).'" style="height:'.$heightLogo.'px; width:auto;" data-tippy-content="';
+								$itemsLeft .= '<img class="iconPageImg" alt="'.$this->getData(['page', $parentPageId, 'shortTitle']).'" src="'. helper::baseUrl(false) .self::FILE_DIR.'source/'.$this->getData(['page', $childKey, 'iconUrl']).'" style="height:'.$heightLogo.'px; width:auto;" data-tippy-content="';
 								$itemsLeft .= $this->getData(['page', $childKey, 'shortTitle']).'">';
 								} else {
 								$itemsLeft .= $this->getData(['page', $childKey, 'shortTitle']);
@@ -2062,7 +2139,7 @@ class common {
 								break;
 							case 'icontext' :
 								if ($this->getData(['page', $childKey, 'iconUrl']) != "") {
-								$itemsLeft .= '<img alt="'.$this->getData(['page', $parentPageId, 'shortTitle']).'" src="'. helper::baseUrl(false) .self::FILE_DIR.'source/'.$this->getData(['page', $childKey, 'iconUrl']).'" style="height:'.$heightLogo.'px; width:auto;">';
+								$itemsLeft .= '<img class="iconPageImg" alt="'.$this->getData(['page', $parentPageId, 'shortTitle']).'" src="'. helper::baseUrl(false) .self::FILE_DIR.'source/'.$this->getData(['page', $childKey, 'iconUrl']).'" style="height:'.$heightLogo.'px; width:auto;">';
 								$itemsLeft .= $this->getData(['page', $childKey, 'shortTitle']);
 								} else {
 								$itemsLeft .= $this->getData(['page', $childKey, 'shortTitle']);
@@ -2103,32 +2180,34 @@ class common {
 		}
 		// Inversion des couleurs du site si option sélectionnée
 		if( $this->getData(['theme', 'menu', 'invertColor' ]) === true ){
-			$itemsRight .= '<li class="smallScreenInline"><a class="invertColorButton" href="'.helper::baseUrl().$this->getUrl().'"><img alt="" src="'. helper::baseUrl(false) .self::FILE_DIR.'source/icones/invertcolor.gif" style="height:'.($heightLogo - 4).'px; width:auto;"></a></li>';
+			$itemsRight .= '<li class="smallScreenInline"><a class="invertColorButton" href="'.helper::baseUrl().$this->getUrl().'"><img alt="" src="'. helper::baseUrl(false) .self::FILE_DIR.'source/icones/invertcolor.gif" style="height:'.($heightLogo).'px; width:auto;"></a></li>';
 		}
 		// Augmentation de font-size
 		if( $this->getData(['theme', 'menu', 'changeFontSize' ]) === true ){
-			$itemsRight .= '<li class="smallScreenInline"><a class="increaseFontBtn" href="'.helper::baseUrl().$this->getUrl().'"><img alt="" src="'. helper::baseUrl(false) .self::FILE_DIR.'source/icones/fontsize.gif" style="height:'.($heightLogo - 4).'px; width:auto;"></a></li>';
+			$itemsRight .= '<li class="smallScreenInline"><a class="increaseFontBtn" href="'.helper::baseUrl().$this->getUrl().'"><img alt="" src="'. helper::baseUrl(false) .self::FILE_DIR.'source/icones/fontsize.gif" style="height:'.($heightLogo).'px; width:auto;"></a></li>';
 		}
 
 		// Affichage du menu
+		/*
 		// En commençant par lien de connexion, barre de membre et les drapeaux uniquement en petit écran
 		echo '<ul class="smallScreenFlags">' .  $itemsRight;
 		if($this->getData(['config', 'i18n', 'enable']) === true) {
-			echo $this->showi18n();
+			echo $this->showi18n($heightLogo);
 		}
 		echo '</ul>';
+		*/
 		if( $itemsRight === '') $spaceMenu ='';
 		echo '<ul class="navMain" id="menuLeft">' . $itemsLeft  . $spaceMenu . $itemsRight ;
 		if($this->getData(['config', 'i18n', 'enable']) === true) {
 			$flagVisible = false;
 			foreach (self::$i18nList as $key => $value) {
-				if( $this->getData(['config', 'i18n', $key]) === 'site' || $this->getData(['config', 'i18n', $key]) === 'script' ){
+				if( $this->getData(['config', 'i18n', $key]) === 'site'){
 					$flagVisible = true;
 					continue;
 				}
 			}
 			if( $itemsRight === '' && $flagVisible === true ) echo $spaceMenu;
-			if( $flagVisible === true) echo $this->showi18n();
+			if( $flagVisible === true) echo $this->showi18n($heightLogo);
 		}
 		echo '</ul></div></nav>';
 	}
@@ -2234,6 +2313,8 @@ class common {
 
 	/**
     * Affiche les balises title et meta name
+	* NE PAS MODIFIER
+	* La suppression ou la modification de la ligne meta name="generator" entraîne l'arrêt de notre assistance
     */
     public function showMetaTitle() {
 	echo '<title>' . $this->output['metaTitle'] . '</title>'.'
@@ -2624,18 +2705,20 @@ class common {
 	/**
 	 * Affiche le cadre avec les drapeaux sélectionnés
 	 */
-	public function showi18n() {
+	public function showi18n($heightLogo) {
 		foreach (self::$i18nList as $key => $value) {
 
 			if ($this->getData(['config', 'i18n', $key]) === 'site') {
-				if ( isset($_COOKIE['DELTA_I18N_SITE'] ) AND $_COOKIE['DELTA_I18N_SITE'] === $key ) {
-					   $select = ' class="i18nFlagSelected" ';
+				if ( isset($_SESSION['translationType']) && isset($_SESSION['langFrontEnd']) && $_SESSION['langFrontEnd']===$key ) {
+					   $select = 'class="i18nFlagSelected"';
+					   $height = $heightLogo + 2;
 				   } else {
-					   $select = ' class="i18nFlag flag" ';
+					   $select = 'class="i18nFlag"';
+					   $height = $heightLogo - 2;
 				   }
 
 					echo '<li class="smallScreenInline">';
-					echo '<a href="' . helper::baseUrl() . 'translate/i18n/' . $key . '/' . $this->getData(['config', 'i18n',$key]) . '/' . $this->getUrl(0) . '"><img ' . $select . ' alt="' .  $value . '" src="' . helper::baseUrl(false) . 'core/module/translate/ressource/i18n/png/' . $key . '.png"></a>';
+					echo '<a '. $select.' href="' . helper::baseUrl() . 'translate/i18n/' . $key . '/' . $this->getData(['config', 'i18n',$key]) . '/' . $this->getUrl(0) . '"><img  alt="' .  $value . '" src="' . helper::baseUrl(false) . 'core/module/translate/ressource/i18n/png/' . $key . '.png" style="height:'.$height.'px; width:auto;"></a>';
 					echo '</li>';
 			}
 		}
@@ -2688,6 +2771,12 @@ class core extends common {
 					}
 				}
 			}
+		}
+		
+		// Initialisation des paramètres d'accessibilité
+		if( $this->getData(['config', 'cookieConsent'])===false || isset( $_COOKIE['DELTA_COOKIE_CONSENT'])){
+			if( $this->getData(['theme','menu','invertColor'])===true && !isset( $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] )) setcookie( 'DELTA_COOKIE_INVERTCOLOR', 'false',['expires' => 0, 'path' => '/', 'samesite' => 'Strict']);
+			if( $this->getData(['theme','menu','changeFontSize'])===true && !isset( $_COOKIE['DELTA_COOKIE_FONTSIZE'] )) setcookie( 'DELTA_COOKIE_FONTSIZE', '0',['expires' => 0, 'path' => '/', 'samesite' => 'Strict']);
 		}
 
 		// Fuseau horaire

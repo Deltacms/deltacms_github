@@ -3,12 +3,7 @@
 // Lexique
 include('./module/agenda/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_agenda.php');
 // drapeau pour la langue d'origine ou la langue en traduction rédigée
-if( $this->getInput('DELTA_I18N_SITE') === '' || $this->getInput('DELTA_I18N_SITE')=== null || $this->getInput('DELTA_I18N_SITE') === 'base'){
-	$flag = $this->getData(['config', 'i18n', 'langBase']);
-}
-else{
-	$flag = $this->getInput('DELTA_I18N_SITE');
-}
+$flag = $this->flagLang();
 if(! is_dir(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0))){ $readonly = true;}else{ $readonly = false;}
 echo template::formOpen('configuration'); ?>
 <div class="row">

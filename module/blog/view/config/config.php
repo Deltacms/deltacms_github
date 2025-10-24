@@ -4,12 +4,7 @@ $param = 'blog_view';
 include('./module/blog/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_blog.php');
 
 // drapeau pour la langue d'origine ou la langue en traduction rédigée
-if( $this->getInput('DELTA_I18N_SITE') === '' || $this->getInput('DELTA_I18N_SITE')=== null || $this->getInput('DELTA_I18N_SITE') === 'base'){
-	$flag = $this->getData(['config', 'i18n', 'langBase']);
-}
-else{
-	$flag = $this->getInput('DELTA_I18N_SITE');
-}
+$flag = $this->flagLang();
 
 echo template::formOpen('blogConfig'); ?>
 	<div class="row">

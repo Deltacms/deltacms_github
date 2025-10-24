@@ -78,9 +78,9 @@ $this->getData(['theme', 'footer', 'position']) === 'body') {
 	$marginBottomSmall = $margin;
 	$marginBottomLarge = $margin;
 }
-// Site overflow visible si le menu est dans le site ou avant ou après la bannière dans le site
+// Site overflow visible si le menu est dans le site ou superposé à la bannière ou avant ou après la bannière dans le site
 $overflowSite = 'hidden';
-if( $this->getData(['theme', 'menu', 'position'])==='site' || ( $this->getData(['theme', 'header', 'position'])==='site' &&
+if( $this->getData(['theme', 'menu', 'position'])==='site' || $this->getData(['theme', 'menu', 'position'])==='superimposed' || ( $this->getData(['theme', 'header', 'position'])==='site' &&
 ( $this->getData(['theme', 'menu', 'position'])==='site-first' || $this->getData(['theme', 'menu', 'position'])==='site-second' ))) $overflowSite = 'visible';
 $css .= '@media screen and (min-width: 800px) { #site { overflow: '.$overflowSite.'; } }';
 $css .= '@media screen and (max-width: 799px) { .container { max-width: 100vw; } }';

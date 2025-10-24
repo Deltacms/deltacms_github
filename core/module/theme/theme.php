@@ -208,7 +208,7 @@ class theme extends common {
 		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
-		if( $group < theme::$actions['editfonts'] ) {
+		if( $group < theme::$actions['editFonts'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
@@ -586,6 +586,10 @@ class theme extends common {
 					 ) {
 						$this->setData(['theme', 'menu', 'position','site']);
 				}
+				// Menu superposé avec la bannière qui devient en dehors du site ou cachée
+				if( $this->getData(['theme','header','position']) !== 'site' && $this->getData(['theme', 'menu', 'position']) === 'superimposed'){
+					$this->setData(['theme', 'menu', 'position','site']);
+				}
 				// Suppression de l'image en contenu personnalisé
 				if( $this->getData(['theme','header','feature']) == 'feature'){
 						$this->setData(['theme','header', 'image',""]);
@@ -666,6 +670,8 @@ class theme extends common {
 			include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
 			// Soumission du formulaire
 			if($this->isPost()) {
+				// Filtrage de la position si le menu est superposé à la bannière
+				$absoluteGap = (int) ($this->getInput('themeMenuAbsoluteGap'));
 				$this->setData([ 'theme', 'update', true]);
 				$this->setData(['theme', 'menu', [
 					'backgroundColor' => $this->getInput('themeMenuBackgroundColor'),
@@ -707,7 +713,8 @@ class theme extends common {
 					'burgerActiveColorAuto' => $this->getInput('themeMenuBurgerActiveColorAuto', helper::FILTER_BOOLEAN),
 					'burgerActiveColor' => $this->getInput('themeMenuBurgerActiveColor'),
 					'burgerBackgroundColorSub' => $this->getInput('themeMenuBurgerBackgroundColorSub'),
-					'burgerOverlay' => $this->getInput('themeMenuBurgerOverlay', helper::FILTER_BOOLEAN)
+					'burgerOverlay' => $this->getInput('themeMenuBurgerOverlay', helper::FILTER_BOOLEAN),
+					'absoluteGap' => $absoluteGap
 				]]);
 				$this->setData(['locale', 'menuBurger', [
 					'burgerLeftIconLink' => $this->getInput('themeMenuBurgerLeftIconLink'),
@@ -839,13 +846,15 @@ class theme extends common {
 					'textColor' => $this->getInput('themeTextTextColor'),
 					'linkColor'=> $this->getInput('themeTextLinkColor')
 				]]);
+				// Si le site est fluide fixer site margin à false
+				$siteMargin = $this->getInput('themeSiteWidth') === '100%' ? false : $this->getInput('themeSiteMargin',helper::FILTER_BOOLEAN);
 				$this->setData(['theme', 'site', [
 					'backgroundColor' => $this->getInput('themeSiteBackgroundColor'),
 					'radius' => $this->getInput('themeSiteRadius'),
 					'shadow' => $this->getInput('themeSiteShadow'),
 					'scrollspeed' => $this->getInput('themeSiteScrollSpeed'),
 					'width' => $this->getInput('themeSiteWidth'),
-					'margin' => $this->getInput('themeSiteMargin',helper::FILTER_BOOLEAN),
+					'margin' => $siteMargin,
 					'ScrollUaDbackgroundColor' => $this->getInput('themeSiteScrollUaDBackground'),
 					'scrollUaDColor' => $this->getInput('themeSiteScrollUaDColor')
 				]]);
@@ -1243,14 +1252,11 @@ class theme extends common {
 		}
 		$swiperContent .= '</div></div></div>';
 		$swiperContent .= '<script> var swiperBanner = new Swiper(".mySwiper", { ';
-		// Effets retenus fade, cube, sans effet avec défilement H ou V
+		// Effets retenus fade, sans effet avec défilement H ou V
 		$reverse ='false';
 		switch ($effect) {
 			case 'fade':
 				$swiperContent .= 'effect: "fade",';
-				break;
-			case 'cube':
-				$swiperContent .= 'effect: "cube",';
 				break;
 			case 'vertical':
 				$swiperContent .= 'direction: "vertical",';

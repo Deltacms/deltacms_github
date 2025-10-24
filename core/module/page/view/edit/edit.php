@@ -93,7 +93,7 @@ echo template::formOpen('pageEditForm'); ?>
 								]); ?>
 							</div>
 							<?php if( null !== $this->getData(['page', $this->getUrl(2), 'moduleId']) && $this->getData(['page', $this->getUrl(2), 'moduleId']) !== '' ) { ?>
-								<div class="col3 verticalAlignBottom">
+								<div class="col2 offset1 verticalAlignBottom">
 								<?php echo template::button('pageEditModuleConfig', [
 									'uniqueSubmission' => true,
 									'value' => template::ico('gear')
@@ -163,14 +163,14 @@ else {
 								'help' => $text['core_page_view']['edit'][46]
 							]); ?>
 						</div>
-						<div class="col4 pageCommentEnable">
+						<div class="col2 pageCommentEnable">
 							<?php echo template::button('pageEditCommentConfig', [
 								'href' => helper::baseUrl() . 'config',
 								'ico' => 'cogs',
 								'value' => $text['core_page_view']['edit'][48]
 							]); ?>
 						</div>
-						<div class="col4 pageCommentEnable">
+						<div class="col2 offset2 pageCommentEnable">
 							<?php echo template::button('pageEditCommentManage', [
 								'href' => helper::baseUrl() . 'page/comment/' . $this->getUrl(2),
 								'ico' => 'gear',
@@ -182,6 +182,45 @@ else {
 		</div>
 	</div>
 	</div>
+	
+<?php // Plugins ?>	
+	<div class="row">
+	<div class="col12" >
+		<div class="block">
+			<div class="blockTitle"><?php echo $text['core_page_view']['edit'][54]; ?>
+				<span id="specialeHelpButton" class="helpDisplayButton">
+					<a href="https://doc.deltacms.fr/plugins" target="_blank">
+						<?php echo template::ico('help', 'left');?>
+					</a>
+				</span>
+			</div>
+			<div class="blockContainer">
+					<div class="row">
+						<div class="col4">
+							<?php echo template::file('pageEditPluginInstallation', [
+									'type' => 2
+							]); ?>
+						</div>
+						<div class="col2">
+							<?php echo template::submit('pageEditPluginSubmit', [
+								'value' => $text['core_page_view']['edit'][56]
+							]); ?>
+						</div>
+						<div class="col2 offset2">
+							<?php 
+							echo template::hidden('pageEditPluginManageSubmit');
+							echo template::button('pageEditPluginManage', [
+								'href' => helper::baseUrl() . 'page/plugin/' . $this->getUrl(2),
+								'ico' => 'gear',
+								'value' => $text['core_page_view']['edit'][55]
+							]); ?>
+						</div>
+					</div>
+			</div>
+		</div>
+	</div>
+	</div>
+	
 	<div class="row">
 		<div class="col12" id="pageEditBlockLayout">
 			<div class="block">

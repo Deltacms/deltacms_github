@@ -26,7 +26,7 @@ class slider extends common {
 		'index' => self::GROUP_VISITOR
 	];
 	
-	const VERSION = '6.6';	
+	const VERSION = '6.7';	
 	const REALNAME = 'Slider';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -117,6 +117,10 @@ class slider extends common {
 				// Nouvelle option bordure et ombre des blocs
 				$this->setData(['module', $this->getUrl(0), 'config', 'sliderBorder', false]);
 				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','6.6']);
+			}
+			// Version 6.7
+			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '6.7', '<') ) {
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','6.7']);
 			}
 		}		
 	}	

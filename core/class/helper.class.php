@@ -299,6 +299,7 @@ class helper {
 	 * @return array
 	 */
 	public static function colorVariants($rgba) {
+		if (!isset($rgba) || !is_string($rgba) || $rgba === '') $rgba = 'rgba(0,0,0,1)';
 		preg_match('#\(+(.*)\)+#', $rgba, $matches);
 		$rgba = explode(',', $matches[1]);
 		return [
@@ -316,6 +317,7 @@ class helper {
 	 * @return string
 	 */
 	public static function invertColor($rgba) {
+		if (!isset($rgba) || !is_string($rgba) || $rgba === '') return 'rgba(0,0,0,1)';
 		// Extraire les valeurs RGBA
 		list($r, $g, $b, $a) = sscanf($rgba, 'rgba(%d, %d, %d, %f)');
 		// Inverser les couleurs

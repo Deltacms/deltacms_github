@@ -102,9 +102,6 @@ class install extends common {
 						'<strong>'.$text['core_install']['index'][4].' : </strong> ' . $this->getInput('installId') . '<br>',
 						null
 					);
-					// Nettoyer les cookies de langue d'une précédente installation
-					helper::deleteCookie('DELTA_I18N_SITE');
-					helper::deleteCookie('DELTA_I18N_SCRIPT');
 					
 					// Installation du site de test en français, le site light est installé par défaut pour la langue de rédaction fr
 					$langSource = ( $langBase === 'en' || $langBase === 'es' || $langBase === 'fr') ? $langBase : $langAdmin;

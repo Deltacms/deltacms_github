@@ -269,6 +269,8 @@ $text['core_theme_view']['menu'][61] = 'Inversion des couleurs du site';
 $text['core_theme_view']['menu'][62] = 'Permet de commuter, pour la partie principale du site, entre l\'affichage avec les couleurs du thème ou l\'affichage avec des couleurs inversées ( hors bannière, menu, footer, images, vidéos...)';
 $text['core_theme_view']['menu'][63] = 'Augmenter la taille des caractères';
 $text['core_theme_view']['menu'][64] = 'Cette option place dans le menu une icône qui permet d\'augmenter la taille des caractères dans la partie principale du site.';
+$text['core_theme_view']['menu'][65] = 'Position verticale du menu';
+$text['core_theme_view']['menu'][66] = 'Saisir un nombre entier compris entre 1 et 1000 pour la position verticale du menu par rapport au haut de la bannière';
 $text['core_theme_view']['site'][0] = 'Retour';
 $text['core_theme_view']['site'][1] = 'Aide';
 $text['core_theme_view']['site'][2] = 'Enregistrer';
@@ -447,8 +449,7 @@ $imagePositions = [
 $swiperEffects =[
 	'none' => 'Défilement horizontal',
 	'vertical' => 'Défilement vertical',
-	'fade' => 'fondu',
-	'cube' => 'effet cube'
+	'fade' => 'fondu'
 ];
 $swiperTime = [
 	'100' => '100ms',
@@ -489,6 +490,7 @@ $menuHeights = [
 $menuPositionsSite = [
 	'top' => 'En-dehors du site',
 	'site-first' => 'Avant la bannière',
+	'superimposed' => 'Superposé à la bannière',
 	'site-second' => 'Après la bannière',
 	'hide' => 'Caché'
 ];

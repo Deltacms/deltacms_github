@@ -11,7 +11,7 @@ include('./module/search/lang/'. $this->getData(['config', 'i18n', 'langAdmin'])
                         'value' => $module::$motclef
                     ]); ?>
                 </div>
-                <?php $col = empty($this->getData(['module', $this->getUrl(0), 'config', 'submitText'])) ? 'col1' : 'col3';?>
+                <?php $col = empty($this->getData(['module', $this->getUrl(0), 'config', 'submitText'])) ? 'col1' : 'col2';?>
                 <div class="<?php echo $col;?> verticalAlignMiddle">
                     <?php echo template::submit('pageEditSubmit', [
                         'value' => $this->getData(['module', $this->getUrl(0), 'config', 'submitText']),

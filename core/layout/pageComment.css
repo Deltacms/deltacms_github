@@ -56,14 +56,13 @@
 }
 
 .msgs .block .dataComment{
-	
+
 }
 
 .msgs .block .dataComment > p {
     margin: 0;
-    line-height: 1.2;	
+    line-height: 1.2;
 }
-
 
 #commentPageFormForm .editorWysiwygComment {
 	overflow: auto;
@@ -78,15 +77,19 @@
 .formCheckBlue {
 	display: none;
 }
-
-.commentPageButtonPrevNext{ 
-	border-radius: 10%; 
+div.navcom {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+button[type=submit].commentPageButtonPrevNext {
+	border-radius: 10%;
 	width: 60px;
 	font-size: 1.2em;
 }
 .commentPageButtonPageNb{
 	width: 120px;
-  	font-size: 1em;	
+  	font-size: 1em;
 }
 
 #buttonCommentShowForm {

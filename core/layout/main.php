@@ -1,11 +1,7 @@
-<?php
-if( !isset( $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] )) setcookie( 'DELTA_COOKIE_INVERTCOLOR', 'false',['expires' => 0, 'path' => '/', 'samesite' => 'Strict']);
-if( !isset( $_COOKIE['DELTA_COOKIE_FONTSIZE'] )) setcookie( 'DELTA_COOKIE_FONTSIZE', '0',['expires' => 0, 'path' => '/', 'samesite' => 'Strict']);
-?>
 <!DOCTYPE html>
 <?php
 $lang = $this->getData(['config', 'i18n', 'langBase']);
-if( $this->getInput('DELTA_I18N_SITE') !== '' && $this->getInput('DELTA_I18N_SITE') !== null && $this->getInput('DELTA_I18N_SITE') !== 'base') $lang = $this->getInput('DELTA_I18N_SITE');
+if( isset($_SESSION['translationType']) && $_SESSION['translationType']==='site' && isset($_SESSION['langFrontEnd'])) $lang = $_SESSION['langFrontEnd'];
 if( $this->getData(['config', 'social', 'headFacebook' ]) === true) { echo '<html prefix="og: http://ogp.me/ns#" lang="'.$lang.'">'.PHP_EOL; }
 else { echo '<html lang="'.$lang.'">'.PHP_EOL; }
 $suffix = $this->getData(['page', $this->getUrl(0), 'moduleId']) === 'templateswitch' || $this->getUrl(0) === 'theme' ? '?v='. time() : '';
@@ -45,8 +41,8 @@ $suffix = $this->getData(['page', $this->getUrl(0), 'moduleId']) === 'templatesw
 			AND $this->getData(['module', $this->getUrl(0), 'config', 'feeds']) === TRUE ): ?>
 		<link rel="alternate" type="application/rss+xml" href="'<?=helper::baseUrl(). $this->getUrl(0) . '/rss'?>" title="fLUX rss">
 		<?php endif;
-		if (file_exists(self::DATA_DIR .'head.inc.php')) include(self::DATA_DIR .'head.inc.php');
-		if (isset($head_include)) include ($head_include);
+		// Chargement des scripts personnalisés head
+		$this->showHeadInc();
 		?>
 	</head>
 	<body>
@@ -81,6 +77,9 @@ $suffix = $this->getData(['page', $this->getUrl(0), 'moduleId']) === 'templatesw
 		if( $this->getData(['theme', 'header', 'position']) === 'site'
 			OR ( $this->getData(['theme', 'header', 'position']) === 'hide' AND $this->getUrl(0) === 'theme' ) )
 			$this->showHeader( 'site' );
+			
+		//Menu superposé à la bannière, bannière dans le site
+		if( $this->getData(['theme', 'menu', 'position']) === 'superimposed' ) $this->showMenu( 'superimposed');
 
 		// Menu après la bannière, bannière dans le site
 		if( $this->getData(['theme', 'menu', 'position']) === 'site-second' ) $this->showMenu( 'site-second');

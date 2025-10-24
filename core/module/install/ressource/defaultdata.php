@@ -78,7 +78,7 @@ class init extends common {
 			]
 		],
 		'core' => [
-			'dataVersion' => 5402,
+			'dataVersion' => 6001,
 			'lastBackup' => 0,
 			'lastClearTmp' => 0,
 			'lastAutoUpdate' => 0,
@@ -164,6 +164,7 @@ class init extends common {
 		],
 		'module' => [],
 		'comment' => [],
+		'plugin' =>[],
 		'fonts'=> [
 			'liberation-sans'=> [
 				'name'=> 'Liberation Sans',
