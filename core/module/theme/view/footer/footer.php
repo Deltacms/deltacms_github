@@ -216,6 +216,14 @@ echo template::formOpen('themeFooterForm');
 						]); ?>
                 </div>
             </div>
+			<div class="row">
+				<div class="col6 offset3">
+					<?php echo template::text('themeFooterTextPreview', [
+						'value' => 'AZPQW azpqw 159 , ; : ! àéèü ç',
+						'class' => 'classThemeFooterTextPreview'
+					]); ?>
+				</div>
+			</div>
         </div>
     </div>
 </div>

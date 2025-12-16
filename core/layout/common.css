@@ -327,6 +327,7 @@ nav li ul li {
 }
 nav .navSub a {
 	text-align: left;
+	overflow-wrap: break-word;
 }
 nav a {
 	display: inherit;
@@ -381,13 +382,16 @@ li .menuSideChild {
 .iconPageImg{
 	max-height: 30px;
 	min-height: 15px;
-}	
+}
 a.button > img.flag {
 	margin-left: 5px;
 }
 /* Corps */
 section {
 	min-height: 65vh;
+}
+section * {
+	overflow-wrap: break-word;
 }
 section #sectionTitle {
 	margin-top: 0;
@@ -1138,5 +1142,31 @@ body.editorWysiwyg > .blockFullWidth {
 }
 .imageFullWidth img {
 	width: 100%;
+}
+
+/* Template radio button */
+/* Conteneur d’un bouton radio */
+.radioInput {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+/* Pour un affichage horizontal */
+.radioInput.inline {
+    display: inline-flex;
+    margin-right: 12px;
+    margin-bottom: 0;
+}
+
+/* Le bouton radio */
+.radioInput input[type="radio"] {
+    margin-right: 4px;
+}
+
+/* Le texte à droite du bouton */
+.radioInput label {
+    cursor: pointer;
+    margin: 0;
 }
 /**/

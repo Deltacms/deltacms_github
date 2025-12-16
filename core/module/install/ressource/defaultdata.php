@@ -78,7 +78,7 @@ class init extends common {
 			]
 		],
 		'core' => [
-			'dataVersion' => 6001,
+			'dataVersion' => 6002,
 			'lastBackup' => 0,
 			'lastClearTmp' => 0,
 			'lastAutoUpdate' => 0,
@@ -362,7 +362,6 @@ class init extends common {
 				'image' => 'theme/defaut/banniere_1500x200.jpg',
 				'imagePosition' => 'center center',
 				'imageRepeat' => 'no-repeat',
-				'margin' => false,
 				'position' => 'site',
 				'textAlign' => 'center',
 				'textColor' => 'rgba(255, 255, 255, 1)',

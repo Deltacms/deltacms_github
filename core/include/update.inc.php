@@ -294,4 +294,7 @@ if ($this->getData(['core', 'dataVersion']) < 6001) {
 	}
 	$this->setData(['core', 'dataVersion', 6001]);
 }
+if ($this->getData(['core', 'dataVersion']) < 6002) {
+	$this->setData(['core', 'dataVersion', 6002]);
+}
 ?>

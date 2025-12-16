@@ -9,7 +9,7 @@
 	border: 1px solid;
 }
 
-@media screen and (max-width: 799px) {
+@media (max-width: 799px) {
 	.userOuter{
 		width: 100%;
 	}

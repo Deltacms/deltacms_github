@@ -173,7 +173,7 @@
                 "order": []
             },
 			"config": {
-				"versionData": "5.3",
+				"versionData": "6.0",
 				"texts": {
 					"backButton": "Return",
 					"geolocation": "Geolocalisation",

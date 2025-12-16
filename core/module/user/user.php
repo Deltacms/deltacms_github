@@ -14,8 +14,7 @@
  * Delta was created from version 11.2.00.24 of ZwiiCMS
  * @author Rémi Jean <remi.jean@outlook.com>
  * @copyright 2008-2018 © Rémi Jean
- * @author Frédéric Tempez <frederic.tempez@outlook.com>
- * @copyright 2018-2021 © Frédéric Tempez
+ * @copyright 2018-2021 © Zwiicms team
  */
 
 class user extends common {
@@ -50,15 +49,15 @@ class user extends common {
 	 * Ajout
 	 */
 	public function add() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < user::$actions['add'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
-		} else {	
+			]);
+		} else {
 			// Lexique
 			include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
 			// Soumission du formulaire
@@ -106,7 +105,7 @@ class user extends common {
 				if( $check === true && $this->getData(['user', $userId, 'group']) === 1 ){
 					if( !is_dir('site/file/source/membersDirectory')) mkdir('site/file/source/membersDirectory',0705);
 					if( !is_dir('site/file/source/membersDirectory/'.$userId)) mkdir('site/file/source/membersDirectory/'.$userId,0705);
-				}				
+				}
 				// Envoie le mail
 				$sent = true;
 				if($this->getInput('userAddSendMail', helper::FILTER_BOOLEAN) && $check === true) {
@@ -150,15 +149,15 @@ class user extends common {
 	 * Suppression
 	 */
 	public function delete() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < user::$actions['delete'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
-		} else {	
+			]);
+		} else {
 			// Lexique
 			include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
 			// Accès refusé
@@ -206,15 +205,15 @@ class user extends common {
 	 * Édition
 	 */
 	public function edit() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < user::$actions['edit'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
-		} else {	
+			]);
+		} else {
 			// Lexique
 			include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
 
@@ -402,15 +401,15 @@ class user extends common {
 	 * Liste des utilisateurs
 	 */
 	public function index() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < user::$actions['index'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
-		} else {	
+			]);
+		} else {
 			// Lexique
 			include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
 
@@ -446,7 +445,7 @@ class user extends common {
 	 * Connexion
 	 */
 	public function login() {
-	
+
 		// Lexique
 		include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
 		// Soumission du formulaire
@@ -464,7 +463,7 @@ class user extends common {
 					$captcha = false;
 				} else {
 					$captcha = true;
-				}	
+				}
 			}
 			/**
 			 * Aucun compte existant
@@ -607,15 +606,15 @@ class user extends common {
 	 * Déconnexion
 	 */
 	public function logout() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < user::$actions['logout'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
-		} else {	
+			]);
+		} else {
 			// Lexique
 			include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
 			// Ne pas effacer l'identifiant mais seulement le mot de passe
@@ -698,15 +697,15 @@ class user extends common {
 	 * Importation CSV d'utilisateurs
 	 */
 	public function import() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < user::$actions['import'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
-		} else {	
+			]);
+		} else {
 			// Lexique
 			include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
 			// Soumission du formulaire
@@ -841,20 +840,20 @@ class user extends common {
 			]);
 		}
 	}
-	
+
 	/**
 	 * Exportation CSV d'utilisateurs
 	 */
 	public function export() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < user::$actions['export'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
-		} else {	
+			]);
+		} else {
 			// Lexique
 			include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
 			$notification = $text['core_user']['export'][0].time().'_listusers.csv';
@@ -882,7 +881,7 @@ class user extends common {
 			]);
 		}
 	}
-	
+
 	/*
 	* Génère un mot de passe aléatoire
 	* @param $length nombre de caractères du mot de passe

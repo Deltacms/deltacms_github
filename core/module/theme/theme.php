@@ -14,8 +14,7 @@
  * Delta was created from version 11.2.00.24 of ZwiiCMS
  * @author Rémi Jean <remi.jean@outlook.com>
  * @copyright 2008-2018 © Rémi Jean
- * @author Frédéric Tempez <frederic.tempez@outlook.com>
- * @copyright 2018-2021 © Frédéric Tempez
+ * @copyright 2018-2021 © Zwiicms team
  */
 
 class theme extends common {
@@ -552,7 +551,6 @@ class theme extends common {
 					'image' => $this->getInput('themeHeaderImage'),
 					'imagePosition' => $this->getInput('themeHeaderImagePosition'),
 					'imageRepeat' => $this->getInput('themeHeaderImageRepeat'),
-					'margin' => $this->getInput('themeHeaderMargin', helper::FILTER_BOOLEAN),
 					'position' => $this->getInput('themeHeaderPosition'),
 					'textAlign' => $this->getInput('themeHeaderTextAlign'),
 					'textColor' => $this->getInput('themeHeaderTextColor'),
@@ -590,9 +588,10 @@ class theme extends common {
 				if( $this->getData(['theme','header','position']) !== 'site' && $this->getData(['theme', 'menu', 'position']) === 'superimposed'){
 					$this->setData(['theme', 'menu', 'position','site']);
 				}
-				// Suppression de l'image en contenu personnalisé
+				// Suppression de l'image en contenu personnalisé et changement de la position du menu si il était superposé
 				if( $this->getData(['theme','header','feature']) == 'feature'){
 						$this->setData(['theme','header', 'image',""]);
+						if( $this->getData(['theme','menu','position']) === "superimposed") $this->setData(['theme','menu','position','site-second']);
 				}
 				// Application de la hauteur de l'image sélectionnée si hauteur de l'image sur hauteur du contenu
 				if( $this->getData(['theme', 'header', 'feature']) ==='wallpaper' &&
@@ -671,7 +670,8 @@ class theme extends common {
 			// Soumission du formulaire
 			if($this->isPost()) {
 				// Filtrage de la position si le menu est superposé à la bannière
-				$absoluteGap = (int) ($this->getInput('themeMenuAbsoluteGap'));
+				$absoluteGap = (int) $this->getInput('themeMenuAbsoluteGap');
+				if($absoluteGap < 0) $absoluteGap = 0;
 				$this->setData([ 'theme', 'update', true]);
 				$this->setData(['theme', 'menu', [
 					'backgroundColor' => $this->getInput('themeMenuBackgroundColor'),

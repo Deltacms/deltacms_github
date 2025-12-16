@@ -9,9 +9,9 @@ foreach($module::$pictures as $picture => $legend):
 // détermination des photos redimensionnées et originales
 $photo = basename($picture);
 $url_photo = dirname($picture);
-$photo_960 = strpos($photo, 't960.');
 $original = str_replace('_t960','',$photo);
 $urloriginal = $url_photo.'/backup/'.strtolower($original);
+$existoriginal = strpos($photo, 't960.') && file_exists($urloriginal);
 $urlback = (isset($urloriginal)) ? $urloriginal : 0;
 if (file_exists($urloriginal)) {
 $get_location = albumHelper::gps_exif($urloriginal);
@@ -19,34 +19,38 @@ $get_location = albumHelper::gps_exif($urloriginal);
 else {
 $get_location = albumHelper::gps_exif($picture);
 }
+clearstatcache();
 ?>
 <?php if($i % 6 === 1): ?>
-	<div class="row">
+<div class="row">
 <?php endif; ?>
 	<div class="col2 gallery">
-		<a href="<?=$picture?>" class="galleryGalleryPicture" data-caption="<?=$legend?>">
-		<figure class="album"><img src="<?=albumHelper::makeThumbnail($picture)?>" alt="<?=$legend?>">
-		<?php if ( ($photo_960 !== false) && (file_exists($urloriginal)) ): ?>
-	<figcaption><div class="galleryGalleryName picResized" onclick="window.open('<?=$urlback?>');" data-tippy-content="image originale">
-	<?php else: ?>
-	<figcaption><div class="galleryGalleryName">
-	<?php endif;
-	if (!empty($legend)):
-	$shortenedLegend = helper::subword($legend, 0, 20);
-	if ( strlen($shortenedLegend) < strlen($legend) ) $legend = $shortenedLegend.'...';
-	echo $legend;
-	// nettoyage et affichage du nom des images
-	else:
-	$separe = array('_','-','t960');
-	$picname = str_replace($separe, ' ', $photo);
-	$picname = preg_replace('/(\.jpe?g|\.png|\.gif|\.webp|\.avif)$/i', '', $picname);
-	$shortenedPicname = helper::subword($picname, 0, 20);
-	if ( strlen($shortenedPicname) < strlen($picname) ) $picname = $shortenedPicname.'...';
-	echo $picname;
-	endif;
-	?>
-	</div></figcaption></figure>
-	</a>
+		<figure class="album"><a class="galleryGalleryPicture" href="<?=$picture?>" data-caption="<?=$legend?>"><img src="<?=albumHelper::makeThumbnail($picture)?>" alt="<?=$legend?>"></a>
+		<?php
+		if ($existoriginal): ?>
+		<figcaption>
+			<div class="galleryGalleryName"><a rel="data-lity" href="<?=$urlback?>" data-tippy-content="image originale">
+		<?php else: ?>
+		<figcaption>
+			<div class="galleryGalleryName">
+		<?php endif;
+		// Affichage de la légende,
+		if (!empty($legend)):
+			$shortenedLegend = helper::subword($legend, 0, 30);
+		if ( strlen($shortenedLegend) < strlen($legend) ) $legend = $shortenedLegend.'...';
+			echo $legend;
+			// ou, nettoyage et affichage du nom des images
+			else:
+			$separe = ['_','-','t960'];
+			$picname = str_replace($separe, ' ', pathinfo($photo, PATHINFO_FILENAME));
+			$shortenedPicname = helper::subword($picname, 0, 30);
+		if ( strlen($shortenedPicname) < strlen($picname) ) $picname = $shortenedPicname.'...';
+			echo $picname;
+		endif;
+		if ($existoriginal) echo '</a>';
+		?></div>
+			</figcaption>
+		</figure>
 	<?php
 	// ajout du marqueur aux images contenant des données exif gps
 	$data = isset($get_location) ? $get_location : NULL;
@@ -63,7 +67,7 @@ $get_location = albumHelper::gps_exif($picture);
 	<?php } ?>
 	</div>
 	<?php if($i % 6 === 0 OR $i === $picturesNb): ?>
-	</div>
+</div>
 	<?php
 	endif;
 	$i++;

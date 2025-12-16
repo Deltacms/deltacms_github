@@ -1,5 +1,27 @@
 # Changelog
 
+## Version 6.0.02 de Deltacms
+- Modifications :
+	- Langage PHP : Deltacms est compatible avec PHP 8.4,
+	- Configuration / Journalisation : le fichier journal est désormais limité en taille,
+	- Page / Gestion des plugins : amélioration de la présentation de l'option position pour les plugins sans html à copier,
+	- Sous-menus en grand écran : si leur hauteur dépasse celle disponible une barre de défilement adaptée au thème du site apparaît,
+	- Thème / Bannière : suppression de l'option d'alignement avec le contenu,
+	- Album en version 6.0, simplification plus quelques modifications du code, affichage totalement remanié.
+- Corrections :
+	- Thème / Menu : le menu superposé à la bannière, pour une bannière dans le site et sans contenu personnalisé, est maintenant opérationnel pour l'ensemble de ces options,
+	- Page / Plugin : le plugin s'affichait sur la page de configuration du module situé sur la même page,
+	- Menu / Icônes pour les membres : effacement après déconnexion d'une session ouverte avec l'option 'Se souvenir de mon identifiant',
+	- Thème / Footer / Qui est en ligne ? : un visiteur connecté avec l'option 'Se souvenir de mon identifiant' est maintenant affiché comme visiteur après déconnexion,
+	- Une variable de session utilisée pour les traductions pouvait provoquer un warning,
+	- Thème : l'aperçu de l'ensemble des polices est maintenant fonctionnel, un aperçu supplémentaire est disposé sous la mise en forme du texte ou des titres,
+	- Page / Gabarits dans Tinymce et Barres latérales : les colonnes 'col2' ne sont plus limitées en largeur en petit écran, sauf pour les boutons.
+- Sur le site :
+	- Bonus / Plugin : upload-img en version 4.4, securité renforcée, interface en langue courante pour en, es, fr
+	- Bonus / Plugin : CompressImage réduit et compresse vos images en les transférant sur votre site dans un dossier choisi
+	- Bonus / Plugin : jscalendarsort, une variante du calendrier évenementiel avec un affichage des évènements classés par ordre alphanumérique,
+	- Bonus -> Thèmes : un nouveau thème avec un menu fixe superposé à une bannière animée.
+
 ## Version 6.0.01 de Deltacms
 - Modifications :
 	- Page / édition de page : installation d'un plugin de façon semi-automatique à partir d'un fichier zip. Il restera à copier / coller l'éventuelle partie html dans votre page ou votre barre,

@@ -15,7 +15,7 @@
 	}
 /* Bannière */
 	header {
-	   margin: 0;
+	  margin: 0;
 	}
 /* Items du menu */
 	.smallScreenFlags {
@@ -65,24 +65,37 @@
 	}
 /* Menu superposé à la bannière */
 	nav#superimposed {
-		position: var(--nav-position,absolute);
+		position: var(--nav-position,relative);
+		top: var(--nav-top,0);
+		margin-top: var(--nav-margintop,0);
 		z-index: 10;
-		top: var(--nav-top, 0);
-		left: var(--nav-left, auto);
-		right: var(--nav-right, auto);
-		transform: var(--nav-transform, none);
 	}
-	#superimposed #menu a {
-		padding: 5px 10px;
+	nav#superimposed .navSub{
+		z-index: -1;
+		pointer-events:none;
 	}
-	header {
-		position: var(--header-position, relative);
-		top: var(--header-top, 0);
+/* Overlayscrollbars */
+	.navSub .os-scrollbar-track {
+		background: rgba(0,0,0,0) !important;
+	}
+	.navSub .os-scrollbar-handle {
+		background: var(--navsub-scrollbar,blue) !important;
+	}
+	.navSub .os-scrollbar.os-scrollbar-vertical {
+		width: 8px !important;
+		right: 3px !important;
+	}
+	.navSub .os-content {
+		margin-right: 3px;
+	}
+	.navSub {
+		overflow-y: auto;
+		max-height: var(--submenu-max,300px) !important;
+	}
 
-	}
 /* Corps */
 	section {
-	   padding: 20px;
+	   padding: var(--section-paddingtop,20px) 20px 20px;
 	}
 /* Grille */
 	.col1 {
@@ -181,9 +194,9 @@
 	body {
 	   margin: 0 auto !important ;
 	}
-	body > header {
+	/*body > header {
 	   margin: 0 auto !important ;
-	}
+	}*/
 	.tippy-tooltip {
 	   font-size: 0.8rem !important ;
 	}
@@ -191,6 +204,9 @@
 	   padding-right: 10px !important ;
 	   padding-left: 10px !important ;
 	   padding-bottom: 10px !important ;
+	}
+	header {
+	   margin: 0;
 	}
 /* siteContainer */
 	.siteContainer {
@@ -211,11 +227,8 @@
 		border-radius: 0;
 	}
 /* Colonnes */
-	.col1 {
-		width: 25%;
-	}
-	.col2 {
-		width:50%
+	.col2:has(.button), .col2:has(button) {
+		width: 50%;
 	}
 /* Tableaux */
 	.table thead {
@@ -303,7 +316,7 @@
 	   max-height: 80vh;
 	   float: left;
 	   overflow-x: hidden;
-       overflow-y: auto;
+	   overflow-y: auto;
 	}
 	nav #menu a{
 		padding:10px 10px;

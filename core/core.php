@@ -15,8 +15,7 @@
  * Delta was created from version 11.2.00.24 of ZwiiCMS
  * @author Rémi Jean <remi.jean@outlook.com>
  * @copyright 2008-2018 © Rémi Jean
- * @author Frédéric Tempez <frederic.tempez@outlook.com>
- * @copyright 2018-2021 © Frédéric Tempez
+ * @copyright 2018-2021 © Zwiicms team
  */
 
 class common {
@@ -52,7 +51,7 @@ class common {
 
 	// Numéro de version
 	const DELTA_UPDATE_URL = 'https://github.com/Deltacms/deltacms_update/raw/refs/heads/main/master/';
-	const DELTA_VERSION = '6.0.01';
+	const DELTA_VERSION = '6.0.02';
 	const DELTA_UPDATE_CHANNEL = "v6";
 	const DELTA_BRAND = "RGVsdGFjbXM=";
 
@@ -121,7 +120,8 @@ class common {
 			'delta-ico',
 			'imagemap',
 			'simplelightbox',
-			'swiper'
+			'swiper',
+			'overlayscrollbars'
 		],
 		// chargement des styles dans head
 		'vendorCss' => [],
@@ -266,6 +266,8 @@ class common {
 			$this->input['_COOKIE'] = $_COOKIE;
 		}
 
+		if (!isset($_SESSION['translationType'])) $_SESSION['translationType'] = 'none';
+
 		// Déterminer la langue sélectionnée pour le chargement des fichiers de données
 		if (isset($_SESSION['translationType']) && $_SESSION['translationType']==='site') {
 			self::$i18n = $_SESSION['langFrontEnd'];
@@ -284,6 +286,9 @@ class common {
 			]);
 		}
 
+
+		// Initialisation de $_SESSION['langFrontEnd']
+		if(!isset($_SESSION['langFrontEnd'])) $_SESSION['langFrontEnd'] = $this->getData(['config','i18n','langBase']);
 
 		// Installation fraîche, initialisation des modules manquants
 		// La langue d'installation par défaut est base
@@ -1126,18 +1131,18 @@ class common {
 		}
 		$source_image = false;
 		// Type d'image
-		switch ($fileInfo['extension']) {
-			case 'jpeg':
-			case 'jpg':
+		$image_info = getimagesize($src);
+		switch ($image_info['mime']) {
+			case 'image/jpeg':
 				$source_image = imagecreatefromjpeg($src);
 				break;
-			case 'png':
+			case 'image/png':
 				$source_image = imagecreatefrompng($src);
 				break;
-			case 'gif':
+			case 'image/gif':
 				$source_image = imagecreatefromgif($src);
 				break;
-			case 'webp':
+			case 'image/webp':
 				$webpContents = file_get_contents($src);
 				$anim = ( strpos($webpContents, 'ANIM') !== false || strpos($webpContents, 'ANMF') !== false );
 				if ($anim === false) {
@@ -1145,7 +1150,7 @@ class common {
 				}
 				else { $source_image = false; }
 				break;
-			case 'avif':
+			case 'image/avif':
 				$source_image = function_exists('imagecreatefromavif') ? @imagecreatefromavif($src) : false;
 		}
 		// Image valide
@@ -1155,16 +1160,16 @@ class common {
 			/* find the "desired height" of this thumbnail, relative to the desired width  */
 			$desired_height = floor($height * ($desired_width / $width));
 			/* create a new, "virtual" image */
-			$virtual_image = imagecreatetruecolor($desired_width, $desired_height);
+			$virtual_image = imagecreatetruecolor((int)$desired_width, (int)$desired_height);
 			// preserve transparency
-			if ($fileInfo['extension'] !== 'jpg' || $fileInfo['extension'] !== 'jpeg') {
+			if ($image_info[2] !== 2) {
 				imagecolortransparent($virtual_image, imagecolorallocatealpha($virtual_image, 0, 0, 0, 127));
 				imagealphablending($virtual_image, false);
 				imagesavealpha($virtual_image, true);
 				}
 			/* copy source image at a resized size */
 			imagecopyresampled($virtual_image, $source_image, 0, 0, 0, 0, $desired_width, $desired_height, $width, $height);
-			switch(mime_content_type($src) ) {
+			switch ($image_info['mime']) {
 				case 'image/jpeg':
 					return (imagejpeg($virtual_image, $dest));
 					break;
@@ -1352,7 +1357,7 @@ class common {
 		}
 		else{
 			return $_SESSION['langFrontEnd'];
-		}		
+		}
 	}
 
 	/**
@@ -1397,17 +1402,17 @@ class common {
 		}
 
 	}
-	
+
 	/*
 	* Inclus le script personnalisé head.inc.php, pluginhead.inc.php et un script associé à un module
 	*/
 	public function showHeadInc() {
 		if (file_exists(self::DATA_DIR .'head.inc.php')) include(self::DATA_DIR .'head.inc.php');
-		if (file_exists(self::DATA_DIR .'pluginhead.inc.php')) include(self::DATA_DIR .'pluginhead.inc.php');
+		if (file_exists(self::DATA_DIR .'pluginhead.inc.php') && null=== $this->getUrl(1)) include(self::DATA_DIR .'pluginhead.inc.php');
 		// Inclusion dans le head d'un script associé à un module
 		if( isset(self::$head_include) && file_exists(self::$head_include)) include(self::$head_include);
 	}
-	
+
 	/**
 	 * Formate le contenu de la page selon les gabarits
 	 * @param Page par defaut
@@ -1447,7 +1452,7 @@ class common {
 				if( $this->getUrl(1) !== null) $strlenUrl1 = strlen($this->getUrl(1));
 				if( $this->getData(['page', $this->getUrl(0), 'commentEnable']) === true &&  $strlenUrl1 < 3  ) $this->showComment();
 				if( $this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD')  && $this->getData(['page', $this->getUrl(0), 'memberFile']) === true && $this->getData(['page', $this->getUrl(0), 'group']) === self::GROUP_MEMBER) include('./core/include/member.inc.php');
-				if (file_exists(self::DATA_DIR . 'pluginbody.inc.php')){
+				if (file_exists(self::DATA_DIR . 'pluginbody.inc.php') && null=== $this->getUrl(1)){
 					$pluginBodyPosition = 'down';
 					include( self::DATA_DIR . 'pluginbody.inc.php');
 				}
@@ -1489,7 +1494,7 @@ class common {
 				if( $this->getData(['page', $this->getUrl(0), 'commentEnable']) === true &&  $strlenUrl1 < 3  ) $this->showComment();
 				// Ajouter et si option fichiers visibles est validée
 				if( $this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD') && $this->getData(['page', $this->getUrl(0), 'memberFile']) === true && $this->getData(['page', $this->getUrl(0), 'group']) === self::GROUP_MEMBER ) include('./core/include/member.inc.php');
-				if (file_exists(self::DATA_DIR . 'pluginbody.inc.php')){
+				if (file_exists(self::DATA_DIR . 'pluginbody.inc.php') && null=== $this->getUrl(1)){
 					$pluginBodyPosition = 'down';
 					include( self::DATA_DIR . 'pluginbody.inc.php');
 				}
@@ -1530,8 +1535,7 @@ class common {
 	 * @param Page par défaut
 	 */
 	public function showContent() {
-		if(
-			$this->output['title']
+		if ($this->output['title']
 			AND (
 				$this->getData(['page', $this->getUrl(0)]) === null
 				OR $this->getData(['page', $this->getUrl(0), 'hideTitle']) === false
@@ -1540,7 +1544,7 @@ class common {
 		) {
 			echo '<h1 id="sectionTitle">' . $this->output['title'] . '</h1>';
 		}
-		if (file_exists(self::DATA_DIR . 'pluginbody.inc.php')){
+		if (file_exists(self::DATA_DIR . 'pluginbody.inc.php') && null === $this->getUrl(1)) {
 			$pluginBodyPosition = 'up';
 			include( self::DATA_DIR . 'pluginbody.inc.php');
 		}
@@ -1703,7 +1707,7 @@ class common {
 		// Enregistrement et affichage des personnes en ligne
 		if( $this->getData(['theme', 'footer', 'displayWhois']) === true ){
 			if( ! file_exists(self::DATA_DIR . 'session.json'))	file_put_contents(self::DATA_DIR . 'session.json', '{}');
-			$user_type = $this->getUser('id') ? $this->getData(['user', $this->getUser('id'), 'group']) : 0 ;
+			$user_type = ($this->getUser('id') && $this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD'))? $this->getUser('group') : 0 ;
 			// id de session par cookie et cookies désactivés
 			if( null===session_id() || session_id() === ''){
 				$characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,-';
@@ -1899,6 +1903,12 @@ class common {
 		} else {
 			$fixed='';
 		}
+		// Initialisation des variables de session utilisées pour transmettre les variables css
+		$_SESSION['varcss-navsub-scrollbar'] = $this->getData(['theme','menu','textColor']);
+		$_SESSION['varcss-nav-position'] = 'relative';
+		$_SESSION['varcss-nav-top'] = '0';
+		$_SESSION['varcss-nav-margintop'] = '0';
+		$_SESSION['varcss-section-paddingtop'] ='20px';
 		switch ($position) {
 			case 'top':
 				echo '<nav '.$fixed.$burgerclass.'>';
@@ -1925,51 +1935,35 @@ class common {
 				echo '<nav '.$fixed.$burgerclass.'>';
 			break;
 			case 'superimposed' :
-				if( $this->getData(['theme', 'header', 'homePageOnly'])===true && $this->getUrl(0)!==$this->getData(['locale', 'homePageId']) && $this->getUrl(0)!=='theme'){
+				$style='';
+				if( $this->getData(['theme', 'header', 'homePageOnly'])===true && $this->getUrl(0)!==$this->getData(['locale', 'homePageId']) && $this->getUrl(0)!=='theme' && $this->getUrl(0)!=='page'){
 					$superId = $fixed;
 				} else {
-					$gapRight='0';$gapLeft='0';
-					if( !( $this->getUrl(0)==='theme' && $this->getUrl(1)!=='menu')){
-						switch($this->getData(['theme', 'site', 'width'])){
-							case '75vw':
-								$gapRight = '-12.5vw';
-								$gapLeft='12.5vW';
-							break;
-							case '85vw':
-								$gapRight = '-7.5vw';
-								$gapLeft='7.5vW';
-							break;
-							case '95vw':
-								$gapRight = '-2.5vw';
-								$gapLeft='2.5vW';
-							break;
-						}
+					// Valeur par défaut des décalages menu et section sous la bannière
+					$marginTop = -$this->getData(['theme','menu','absoluteGap']);
+					$sectionPaddingTop = -$marginTop;
+					if( $this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD')) { $top = 45;} else { $top = 0;}
+					if( ($this->getUrl(0)==='theme' && $this->getUrl(1)!=='menu') || $this->getData(['theme','menu','fixed'])===false) $top = 0;
+					$posmenu='relative';
+					if( $this->getData(['theme','menu','fixed'])===true && ($this->getUrl(0)!=='theme' || $this->getUrl(1)==='menu')) $posmenu='sticky';
+					if( $this->getUrl(0)==='theme' && null===$this->getUrl(1)){
+						$posmenu = 'relative';
+						$sectionPaddingTop= 20;
+						$top = $marginTop;
+						$marginTop=0;
 					}
-					$alignValue = '0';
-					$alignSide = 'right';
-					$transform = 'translateX('.$gapRight.')';
-					switch($this->getData(['theme', 'menu', 'textAlign'])){
-					  case 'left':
-						$alignSide = 'left';
-						$transform = 'translateX('.$gapLeft.')';
-						break;
-					  case 'center':
-						$alignSide = 'left';
-						$alignValue = '50%';
-						$transform = 'translateX(-50%)';
-						break;
+					if( $this->getUrl(0)==='page' && $this->getData(['theme', 'header', 'homePageOnly'])===true){
+						$posmenu = 'relative';
+						$sectionPaddingTop= 20;
+						$marginTop=0;
+						$top=0;
 					}
-					$top = $this->getData(['theme','menu','absoluteGap']);
-					$topheader = 0;
-					if( $this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD')) { $top = $top + 45; $topheader = 45;}
-					if($this->getUrl(0)==='theme' && $this->getUrl(1)=== null) $top = $top - 45;
-					$posmenu='absolute';
-					// Bannière fixe si elle est présente et si le menu est fixe
-					$posheader='relative';
-					if( $this->getData(['theme','menu','fixed'])===true && ($this->getUrl(0)!=='theme' || $this->getUrl(1)==='menu')) { $posheader='sticky'; $posmenu='fixed';} else { $topheader=0;}
-					$superId = 'id="superimposed"';
-					// Varaibles css
-					echo '<html style="--header-position: '.$posheader.';--header-top: '.$topheader.'px;--nav-position: '.$posmenu.'; --nav-top: '.$top.'px; --nav-'.$alignSide.': '.$alignValue.'; --nav-transform: '.$transform.';">';
+					$superId = 'id="superimposed" ';
+					// Les variables de session permettent de transmettre les valeurs des variables css en association avec varcss.css.php
+					$_SESSION['varcss-nav-position'] = $posmenu;
+					$_SESSION['varcss-nav-top'] = $top.'px';
+					$_SESSION['varcss-nav-margintop'] = $marginTop.'px';
+					$_SESSION['varcss-section-paddingtop'] = $sectionPaddingTop.'px';
 				}
 				echo '<nav '.$superId.$burgerclass.'>';
 				break;
@@ -2169,7 +2163,7 @@ class common {
 			'">' . template::ico('login') .'</a></li>';
 		}
 		// Commandes pour les membres simples
-		if($this->getUser('group') == self::GROUP_MEMBER
+		if($this->getUser('group') === self::GROUP_MEMBER && $this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD')
 			&& ( $this->getData(['theme','menu','memberBar']) === true
 				|| $this->getData(['theme','footer','displayMemberBar']) === false
 				)
@@ -2314,12 +2308,13 @@ class common {
 	/**
     * Affiche les balises title et meta name
 	* NE PAS MODIFIER
-	* La suppression ou la modification de la ligne meta name="generator" entraîne l'arrêt de notre assistance
+	* La suppression ou la modification de ces lignes rend le cms inutilisable
     */
     public function showMetaTitle() {
 	echo '<title>' . $this->output['metaTitle'] . '</title>'.'
 		<meta name="description" content="' . $this->output['metaDescription'] . '">'.'
 		<meta name="generator" content="'. base64_decode(common::DELTA_BRAND) .' '. common::DELTA_VERSION .'">'.'
+		<base href="'.helper::baseUrl(true).'">'.'
 		<link rel="canonical" href="'. helper::baseUrl(true).$this->getUrl() .'">'.PHP_EOL;
     }
 
@@ -2591,8 +2586,10 @@ class common {
 					$this->setData(['theme','header','swiperContent', $string]);
 				}
 				if( ! $homePageOnly ) echo $this->getData(['theme','header','swiperContent']);
-			} ?>
-		</header> <?php
+			}
+			// Menu superposé à la bannière et page de configuration thème overlay
+			if( $this->getData(['theme', 'menu', 'position']) === 'superimposed' && $this->getUrl(0)==='theme' && null===$this->getUrl(1)) $this->showMenu( 'superimposed');?>
+		</header><?php
 	}
 
 	/**
@@ -2772,7 +2769,7 @@ class core extends common {
 				}
 			}
 		}
-		
+
 		// Initialisation des paramètres d'accessibilité
 		if( $this->getData(['config', 'cookieConsent'])===false || isset( $_COOKIE['DELTA_COOKIE_CONSENT'])){
 			if( $this->getData(['theme','menu','invertColor'])===true && !isset( $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] )) setcookie( 'DELTA_COOKIE_INVERTCOLOR', 'false',['expires' => 0, 'path' => '/', 'samesite' => 'Strict']);
@@ -2860,15 +2857,6 @@ class core extends common {
 						if( $value['type'] === 'file' ){
 							$format ='';
 							switch (pathinfo($value['file'], PATHINFO_EXTENSION)){
-								case 'ttf':
-									$format = 'truetype';
-									break;
-								case 'otf':
-									$format = 'opentype';
-									break;
-								case 'eot':
-									$format = 'embedded-opentype';
-									break;
 								case 'woff':
 									$format = 'woff';
 									break;
@@ -2885,8 +2873,8 @@ class core extends common {
 			}
 			$colors = helper::colorVariants($this->getData(['admin','backgroundColor']));
 			$css .= '#site{background-color:' . $colors['normal']. ';}';
-			$css .= '.row > div {font:' . $this->getData(['admin','fontSize']) . ' "' . $this->getData(['fonts', $this->getData(['admin', 'fontText']), 'name']) . '", sans-serif;}';
-			$css .= 'body h1, h2, h3, .block > h4, .blockTitle, h5, h6 {font-family:' .   $this->getData(['fonts', $this->getData(['admin', 'fontTitle']), 'name']) . ', sans-serif;color:' . $this->getData(['admin','colorTitle' ]) . ';}';
+			$css .= '.row > div {font:' . $this->getData(['admin','fontSize']) . ' "' . $this->getData(['fonts', $this->getData(['admin', 'fontText']), 'name']) . '";}';
+			$css .= 'body h1, h2, h3, .block > h4, .blockTitle, h5, h6 {font-family:' .   $this->getData(['fonts', $this->getData(['admin', 'fontTitle']), 'name']) . ';color:' . $this->getData(['admin','colorTitle' ]) . ';}';
 
 			// TinyMCE
 			$css .= 'body:not(.editorWysiwyg),span .delta-ico-help {color:' . $this->getData(['admin','colorText']) . ';}';
@@ -2969,6 +2957,8 @@ class core extends common {
 			$dataLog .= $this->getUrl();
 			$dataLog .= PHP_EOL;
 			file_put_contents(self::DATA_DIR . 'journal.log', $dataLog, FILE_APPEND);
+			// Si journal.log > 100000 bytes supprimer les lignes 2 à 201,
+			if (filesize(self::DATA_DIR . 'journal.log') > 100000) helper::deleteLinesFile(self::DATA_DIR . 'journal.log', 2, 201);
 		}
 		// Force la déconnexion des membres bannis ou d'une seconde session
 		if (

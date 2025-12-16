@@ -30,7 +30,7 @@ echo template::formOpen('pageEditPluginForm'); ?>
 <?php } ?>
 </div>
 <?php if($module::$data): ?>
-		<?php echo template::table([2,2,6,1,1], $module::$data,[$text['core_page_view']['plugin'][2],$text['core_page_view']['plugin'][3],$text['core_page_view']['plugin'][4],'','']); ?>
+		<?php echo template::table([1,1,1,7,1,1], $module::$data,[$text['core_page_view']['plugin'][2],$text['core_page_view']['plugin'][9],$text['core_page_view']['plugin'][3],$text['core_page_view']['plugin'][4],'','']); ?>
 	<?php else: ?>
 		<?php echo template::speech($text['core_page_view']['plugin'][5]); ?>
 <?php endif; ?>

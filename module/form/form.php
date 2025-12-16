@@ -5,15 +5,16 @@
  * For full copyright and license information, please see the LICENSE
  * file that was distributed with this source code.
  * @author Sylvain Lelièvre <lelievresylvain@free.fr>
- * @copyright Copyright (C) 2021, Sylvain Lelièvre
+ * @copyright 2021 © Sylvain Lelièvre
+ * @author Lionel Croquefer
+ * @copyright 2022 © Lionel Croquefer
  * @license GNU General Public License, version 3
  * @link https://deltacms.fr/
  *
  * Delta was created from version 11.2.00.24 of ZwiiCMS
  * @author Rémi Jean <remi.jean@outlook.com>
- * @copyright Copyright (C) 2008-2018, Rémi Jean
- * @author Frédéric Tempez <frederic.tempez@outlook.com>
- * @copyright Copyright (C) 2018-2021, Frédéric Tempez
+ * @copyright 2008-2018 © Rémi Jean
+ * @copyright 2018-2021 © Zwiicms team
  */
 
 class form extends common {

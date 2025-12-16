@@ -79,6 +79,7 @@ $text['core_page_view']['plugin'][5] = 'No plugin on this page';
 $text['core_page_view']['plugin'][6] = 'Are you sure you want to remove this plugin from this page?';
 $text['core_page_view']['plugin'][7] = 'Save';
 $text['core_page_view']['plugin'][8] = 'Help';
+$text['core_page_view']['plugin'][9] = 'Version';
 $text['core_page']['duplicate'][0] = "Invalid token";
 $text['core_page']['duplicate'][1] = "Unauthorised duplication";
 $text['core_page']['duplicate'][2] = "The page has been duplicated";
@@ -114,7 +115,7 @@ $text['core_page']['plugin'][4] = 'Position';
 $text['core_page']['plugin'][5] = 'Top the plugin is displayed at the top under the page title, otherwise it is displayed at the bottom';
 $text['core_page']['plugin'][6] = 'Registered plugin positioning';
 
-// Tinymce et Flatpickr	
+// Tinymce et Flatpickr
 $lang_admin = 'en_GB';
 $lang_flatpickr = 'default';
 // Selects
@@ -171,7 +172,7 @@ $memberIds0 = [
 	0 => 'All members'
 ];
 $pluginBodyPosition = [
-	'down' => 'Bottom',
-	'up' => 'Top'
+	'up' => 'Top',
+	'down' => 'Bottom'
 ];
 ?>

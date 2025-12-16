@@ -54,7 +54,7 @@ $( document ).ready(function() {
 	/*
 	* Enleve le menu fixe en édition de page
 	*/
-	$("nav").removeAttr('id');
+	$("nav").removeAttr('id=navfixed');
 
 	/**
 	* Bloque/Débloque le bouton de configuration au changement de module

@@ -8,3 +8,7 @@
 #scrollUaD {
     display: block;
 }
+
+.textPreviewTemplate {
+	min-height: 40px;
+}

@@ -14,8 +14,7 @@
  * Delta was created from version 11.2.00.24 of ZwiiCMS
  * @author Rémi Jean <remi.jean@outlook.com>
  * @copyright 2008-2018 © Rémi Jean
- * @author Frédéric Tempez <frederic.tempez@outlook.com>
- * @copyright 2018-2021 © Frédéric Tempez
+ * @copyright 2018-2021 © Zwiicms team
  */
 
 
@@ -59,19 +58,19 @@ class install extends common {
 				$userLastname = $this->getInput('installLastname', helper::FILTER_STRING_SHORT, true);
 				$userMail = $this->getInput('installMail', helper::FILTER_MAIL, true);
 				$userId = $this->getInput('installId', helper::FILTER_ID, true);
-				
+
 				// Langues
 				$langAdmin = $this->getInput('installLangAdmin');
 				$langBase = $this->getInput('installLangBase');
 				$this->setData(['config', 'i18n', 'langAdmin', $langAdmin]);
 				$this->setData(['config', 'i18n', 'langBase', $langBase]);
-				
+
 				// Localisation avec ordre de locales : $langAdmin puis les 2 autres
 				$this->localisation($langAdmin);
 
 				// Création de l'utilisateur si les données sont complétées.
 				// success retour de l'enregistrement des données
-				
+
 				$success = $this->setData([
 					'user',
 					$userId,
@@ -86,9 +85,9 @@ class install extends common {
 						'password' => $this->getInput('installPassword', helper::FILTER_PASSWORD, true)
 					]
 				]);
-				
+
 				// Lexique
-				include('./core/module/install/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_install.php');			
+				include('./core/module/install/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_install.php');
 				// Compte créé, envoi du mail et création des données du site
 				if ($success) { // Formulaire complété envoi du mail
 					// Envoie le mail
@@ -102,7 +101,7 @@ class install extends common {
 						'<strong>'.$text['core_install']['index'][4].' : </strong> ' . $this->getInput('installId') . '<br>',
 						null
 					);
-					
+
 					// Installation du site de test en français, le site light est installé par défaut pour la langue de rédaction fr
 					$langSource = ( $langBase === 'en' || $langBase === 'es' || $langBase === 'fr') ? $langBase : $langAdmin;
 					if( $langAdmin === 'fr'){
@@ -112,7 +111,7 @@ class install extends common {
 							if( $langBase === 'en' || $langBase === 'es') $this->copyDir( './core/module/install/ressource/databaselight_'.$langBase.'/base/', './site/data/base/');
 						}
 					}
-					
+
 					// Installation du site de test dans une langue d'administration différente du français
 					if( $langAdmin !== 'fr'){
 						if ($this->getInput('installDefaultData',helper::FILTER_BOOLEAN) === FALSE) {
@@ -120,17 +119,17 @@ class install extends common {
 							if($langBase !== 'fr') $this->copyDir( './core/module/install/ressource/database_'.$langSource.'/search/', './site/data/search/');
 						}
 						else{
-							if($langBase !== 'fr') $this->copyDir( './core/module/install/ressource/databaselight_'.$langSource.'/base/', './site/data/base/');							
+							if($langBase !== 'fr') $this->copyDir( './core/module/install/ressource/databaselight_'.$langSource.'/base/', './site/data/base/');
 						}
 					}
-					
+
 					// Personnalisation de la page d'accueil en fonction de la langue de rédaction choisie
 					if( $langBase !== $langAdmin && file_exists( './core/module/install/ressource/'. $langBase . '/accueil.html'  )){
 						$accueil = $text['core_install']['index'][6];
 						copy('./core/module/install/ressource/'. $langBase . '/accueil.html', './site/data/base/content/'. $accueil);
 					}
-					
-					
+
+
 					// Images exemples livrées dans tous les cas
 					try {
 						// Décompression dans le dossier de fichier temporaires
@@ -170,7 +169,7 @@ class install extends common {
 					}
 					$this->copyDir('core/module/install/ressource/themes', self::FILE_DIR . 'source/theme');
 					unlink(self::FILE_DIR . 'source/theme/themes.json');
-					
+
 					// Modification des textes 'Pied de page personnalisé', 'Bannière vide' et du lien vers la page d'accueil situé dans theme.json ( $this->setData pose problème)
 					if($langAdmin !== 'fr' || $langBase === 'en' || $langBase === 'es' || $langBase === 'fr'){
 						switch ($langBase){
@@ -202,7 +201,7 @@ class install extends common {
 						$json = json_encode($theme);
 						file_put_contents(self::DATA_DIR.'theme.json',$json);
 					}
-					
+
 					// Valeurs en sortie
 					$this->addOutput([
 						'redirect' => helper::baseUrl(false),
@@ -217,7 +216,7 @@ class install extends common {
 			$dataThemes = file_get_contents('core/module/install/ressource/themes/themes.json');
 			$dataThemes = json_decode($dataThemes, true);
 			self::$themes = helper::arrayCollumn($dataThemes, 'name');
-			
+
 			// Valeurs en sortie
 			$this->addOutput([
 				'display' => self::DISPLAY_LAYOUT_LIGHT,
@@ -231,14 +230,14 @@ class install extends common {
 	 * Étapes de mise à jour
 	 */
 	public function steps() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < install::$actions['steps'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			switch($this->getInput('step', helper::FILTER_INT)) {
 				// Préparation
@@ -356,14 +355,14 @@ class install extends common {
 	 * Mise à jour
 	 */
 	public function update() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < install::$actions['update'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			include('./core/module/install/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_install.php');

@@ -14,8 +14,7 @@
  * Delta was created from version 11.2.00.24 of ZwiiCMS
  * @author Rémi Jean <remi.jean@outlook.com>
  * @copyright 2008-2018 © Rémi Jean
- * @author Frédéric Tempez <frederic.tempez@outlook.com>
- * @copyright 2018-2021 © Frédéric Tempez
+ * @copyright 2018-2021 © Zwiicms team
  */
 
 class sitemap extends common
@@ -34,8 +33,8 @@ class sitemap extends common
 		include('./core/module/sitemap/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_sitemap.php');
 
         $items = '<ul>';
-		
-		
+
+
 		// Groupe du client connecté (1, 2, 3, 4) ou non connecté (0)
 		$groupUser = $this->getUser('group') === false ? 0 : $this->getUser('group');
         foreach ($this->getHierarchy(null, true, null) as $parentId => $childIds) {
@@ -57,17 +56,17 @@ class sitemap extends common
                 } else {
                     // page désactivée
 					if ( $groupUser < 2 ){
-						$items .= '<a class="disabled-link">'  .$this->getData(['page', $parentId, 'title']) . '</a>';	
+						$items .= '<a class="disabled-link">'  .$this->getData(['page', $parentId, 'title']) . '</a>';
 					} else {
 						$pageUrl = ($parentId !== $this->getData(['locale', 'homePageId'])) ? helper::baseUrl() . $parentId : helper::baseUrl(false);
-						$items .= '<a href="' . $pageUrl .'">'  .$this->getData(['page', $parentId, 'title']) . '</a>';	
+						$items .= '<a href="' . $pageUrl .'">'  .$this->getData(['page', $parentId, 'title']) . '</a>';
 					}
                 }
                 // ou articles d'un blog
-                
+
                 if ($this->getData(['page', $parentId, 'moduleId']) === 'blog'  &&
                 !empty($this->getData(['module',$parentId, 'posts' ]))) {
-                    $items .= '<ul>';									
+                    $items .= '<ul>';
                     // Ids des articles par ordre de publication
                     $articleIdsPublishedOns = helper::arrayCollumn($this->getData(['module', $parentId,'posts']), 'publishedOn', 'SORT_DESC');
                     $articleIdsStates = helper::arrayCollumn($this->getData(['module', $parentId, 'posts']), 'state', 'SORT_DESC');
@@ -85,8 +84,8 @@ class sitemap extends common
                         }
                     }
                     $items .= '</ul>';
-                } 
-                
+                }
+
                 foreach ($childIds as $childId) {
 					// Passer les sous-pages désactivées si client < éditeur
 					if ( $this->getData(['page',$childId,'disable']) === true && $groupUser < 2 ) {
@@ -94,8 +93,8 @@ class sitemap extends common
 					}
 					$items .= '<ul>';
 					// Sous-page
-					$items .= ' <li>';              
-					if ( ($this->getData(['page', $childId, 'disable']) === false && $this->getUser('group') >= $this->getData(['page', $parentId, 'group'])) 
+					$items .= ' <li>';
+					if ( ($this->getData(['page', $childId, 'disable']) === false && $this->getUser('group') >= $this->getData(['page', $parentId, 'group']))
 						|| ( $this->getData(['page', $childId, 'disable']) === true && $groupUser >= 2)) {
 						$pageUrl = ($childId !== $this->getData(['locale', 'homePageId'])) ? helper::baseUrl() . $childId : helper::baseUrl(false) ;
 						$items .= '<a href="' . $pageUrl . '">' . $this->getData(['page', $childId, 'title']) . '</a>';
@@ -105,7 +104,7 @@ class sitemap extends common
 					}
 					$items .= '</li>';
 
-                    // Articles d'une sous-page blog                
+                    // Articles d'une sous-page blog
                     if ($this->getData(['page', $childId, 'moduleId']) === 'blog'  &&
                                 !empty($this->getData(['module', $childId, 'posts' ]))) {
                         $items .= '<ul>';
@@ -132,7 +131,7 @@ class sitemap extends common
             $items .= '</li>';
         }
         // Fin du grand bloc
-        $items .= '</ul>';    
+        $items .= '</ul>';
 		self::$siteMap = $items;
 
         // Valeurs en sortie

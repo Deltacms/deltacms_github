@@ -19,7 +19,7 @@ class Dot implements ArrayAccess
      *
      * @param array|null $data Data
      */
-    public function __construct(array $data = null)
+    public function __construct(array|null $data = null)
     {
         if (is_array($data)) {
             $this->data = $data;

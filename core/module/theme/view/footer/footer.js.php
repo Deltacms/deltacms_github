@@ -7,11 +7,21 @@
  * Aperçu en direct
  */
 $("input, select").on("change", function() {
-	var footerFont = $("#themeFooterFont").val();
+	// Aperçu de la mise en forme du texte
+	let footerFont = $('#themeFooterFont option:selected').text().trim();
+	$('#themeFooterTextPreview').css({
+        fontFamily: footerFont,
+        fontSize: $('#themeFooterFontSize').val(),
+		fontWeight: $('#themeFooterFontWeight').val(),
+        textTransform: $('#themeFooterTextTransform').val(),
+		color: $('#themeFooterTextColor').val(),
+		backgroundColor: $('#themeFooterBackgroundColor').val()
+    });
+
 	// Couleurs du pied de page
-	var colors = core.colorVariants($("#themeFooterBackgroundColor").val());
-	var textColor = $("#themeFooterTextColor").val();
-	var css = "footer {background-color:" + colors.normal + ";color:" + textColor + "}";
+	let colors = core.colorVariants($("#themeFooterBackgroundColor").val());
+	let textColor = $("#themeFooterTextColor").val();
+	let css = "footer {background-color:" + colors.normal + ";color:" + textColor + "}";
 	css += "footer a{color:" + textColor + "}";
 	// Couleur de l'éditeur
 	css += ".editorWysiwyg{background-color:" + colors.normal + " !important; color:" + textColor + " !important;}";
@@ -24,7 +34,7 @@ $("input, select").on("change", function() {
 	css += "#footerText > p {text-align:" + $("#themeFooterTextAlign").val() + "}";
 	css += "#footerCopyright{text-align:" + $("#themeFooterCopyrightAlign").val() + "}";
 	// Taille, couleur, épaisseur et capitalisation du titre de la bannière
-	css += "footer span, #footerText > p {color:" + $("#themeFooterTextColor").val() + ";font-family:'" + footerFont.replace(/\+/g, " ") + "',sans-serif;font-weight:" + $("#themeFooterFontWeight").val() + ";font-size:" + $("#themeFooterFontSize").val() + ";text-transform:" + $("#themeFooterTextTransform").val() + "}";
+	css += "footer span, #footerText > p {color:" + $("#themeFooterTextColor").val() + ";font-family:'" + footerFont.replace(/\+/g, " ") + "';font-weight:" + $("#themeFooterFontWeight").val() + ";font-size:" + $("#themeFooterFontSize").val() + ";text-transform:" + $("#themeFooterTextTransform").val() + "}";
 	// Marge
 	if($("#themeFooterMargin").is(":checked")) {
 		css += 'footer{padding: 0 20px;}';
@@ -66,7 +76,7 @@ $("input, select").on("change", function() {
 // Bloc texte personnalisé
 $(".themeFooterContent, #themeFooterTextPosition, #themeFooterSocialsPosition, #themeFooterCopyrightPosition").on("change",function() {
 	// Position site ou body
-	var footerPosition = $("#themeFooterPosition").val();
+	let footerPosition = $("#themeFooterPosition").val();
 	switch($("#themeFooterTextPosition").val()) {
 			case "hide":
 				$("#footerText").hide();
@@ -83,7 +93,7 @@ $(".themeFooterContent, #themeFooterTextPosition, #themeFooterSocialsPosition, #
 						break;
 					case "right" :
 						textPosition = "Right";
-						break;						
+						break;
 				}
 				$("#footerText").show().appendTo("#footer" + footerPosition + textPosition);
 				break;
@@ -104,7 +114,7 @@ $(".themeFooterContent, #themeFooterTextPosition, #themeFooterSocialsPosition, #
 						break;
 					case "right" :
 						socialsPosition = "Right";
-						break;						
+						break;
 				}
 				$("#footerSocials").show().appendTo("#footer" + footerPosition + socialsPosition);
 				break;
@@ -125,7 +135,7 @@ $(".themeFooterContent, #themeFooterTextPosition, #themeFooterSocialsPosition, #
 						break;
 					case "right" :
 						copyrightPosition = "Right";
-						break;						
+						break;
 				}
 				$("#footerCopyright").show().appendTo("#footer" + footerPosition + copyrightPosition);
 				break;
@@ -136,14 +146,14 @@ $(".themeFooterContent, #themeFooterTextPosition, #themeFooterSocialsPosition, #
 // Modification dynamique de la mise en page
 $("#themeFooterTemplate").on("change",function() {
 	// Nettoyage des sélecteurs des contenus
-	var $el = $(".themeFooterContent");
+	let $el = $(".themeFooterContent");
 	$el.empty();
 	// Eléments des position de contenus
 	$.each(newOptions[$("#themeFooterTemplate").val()], function(key,value) {
 		$el.append($("<option></option>")
 			.attr("value", key).text(value));
 		});
-	var position = $("#themeFooterPosition").val();
+	let position = $("#themeFooterPosition").val();
 	// Masquer les contenus
 	$("#footerCopyright").hide();
 	$("#footerText").hide();
@@ -186,7 +196,7 @@ $("#themeFooterSocialsPosition").on("change", function() {
 			$("#themeFooterCopyrightPosition").prop('selectedIndex',0);
 			$("#footerCopyright").hide();
 		}
-	}		
+	}
 }).trigger("change");
 
 $("#themeFooterTextPosition").on("change", function() {
@@ -199,7 +209,7 @@ $("#themeFooterTextPosition").on("change", function() {
 			$("#themeFooterCopyrightPosition").prop('selectedIndex',0);
 			$("#footerCopyright").hide();
 		}
-	}		
+	}
 }).trigger("change");
 
 $("#themeFooterCopyrightPosition").on("change", function() {
@@ -212,7 +222,7 @@ $("#themeFooterCopyrightPosition").on("change", function() {
 			$("#themeFooterSocialsPosition").prop('selectedIndex',0);
 			$("#footerSocials").hide();
 		}
-	}		
+	}
 }).trigger("change");
 
 // Affiche / Cache les options du footer fixe
@@ -332,12 +342,12 @@ if($(window).width() < 800) {
 	$("section").css("padding-top","10px");
 	$("#site.container header, header.container").css("padding-top","0");
 	// Variables du thème
-	var positionNav = <?php echo json_encode($this->getData(['theme', 'menu', 'position'])); ?>;
-	var positionHeader = <?php echo json_encode($this->getData(['theme', 'header', 'position'])); ?>;
-	var tinyHidden = <?php echo json_encode($this->getData(['theme', 'header', 'tinyHidden'])); ?>;
+	let positionNav = <?php echo json_encode($this->getData(['theme', 'menu', 'position'])); ?>;
+	let positionHeader = <?php echo json_encode($this->getData(['theme', 'header', 'position'])); ?>;
+	let tinyHidden = <?php echo json_encode($this->getData(['theme', 'header', 'tinyHidden'])); ?>;
 	// bannerMenuHeight et bannerMenuHeightSection transmis par core.php / showMenu()
-	var burgerFixed = <?php echo json_encode($this->getData(['theme', 'menu', 'burgerFixed'])); ?>;
-	var burgerOverlay = <?php echo json_encode($this->getData(['theme', 'menu', 'burgerOverlay'])); ?>;
+	let burgerFixed = <?php echo json_encode($this->getData(['theme', 'menu', 'burgerFixed'])); ?>;
+	let burgerOverlay = <?php echo json_encode($this->getData(['theme', 'menu', 'burgerOverlay'])); ?>;
 	if( positionNav !=='hide' && burgerFixed === true && burgerOverlay === false){
 		// Bannière masquée décaler la section
 		if( tinyHidden === true ){
@@ -349,6 +359,6 @@ if($(window).width() < 800) {
 	}
 	if( positionNav !=='hide' && burgerFixed === true && ( burgerOverlay === true && tinyHidden === true || positionHeader === 'hide' )){
 		// Bannière masquée ou cachée décaler la section
-		$("section").css("padding-top",bannerMenuHeightSection); 
+		$("section").css("padding-top",bannerMenuHeightSection);
 	}
 }

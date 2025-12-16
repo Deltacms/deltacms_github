@@ -1,4 +1,4 @@
-<!-- version <?php echo $module::VERSION; ?> de l'album -->
+<!-- version <?=$module::VERSION?> de l'album -->
 <?php
 // Lexique
 $param = '';
@@ -12,18 +12,17 @@ if($i % 4 === 1):
 ?>
 		<div class="row">
 	<?php endif; ?>
-			<div class="col3">
-				<a href="<?php echo helper::baseUrl() . $this->getUrl(0); ?>/<?php echo $galleryId; ?>" class="galleryPicture">
-					<figure class="album"><img src="<?php if ($this->getData(['module', $this->getUrl(0), $galleryId, 'config', 'homePicture']) === null ) {
-					echo albumHelper::makeThumbnail($module::$firstPictures[$galleryId]); }
-					else {
-					echo albumHelper::makeThumbnail($this->getData(['module', $this->getUrl(0), $galleryId, 'config', 'directory']) . '/' . $this->getData(['module', $this->getUrl(0), $galleryId, 'config', 'homePicture']));
-					}  ?>" alt="<?php echo $gallery['config']['name']; ?>">
-				<figcaption><div class="galleryName"><?php echo $gallery['config']['name']; ?></div></figcaption></figure>
-			</a>
+		<div class="col3">
+			<figure class="album"><a href="<?=helper::baseUrl().$this->getUrl(0).'/'.$galleryId?>" class="galleryPicture"><img src="<?php if ($this->getData(['module', $this->getUrl(0), $galleryId, 'config', 'homePicture']) === null ) {
+			echo albumHelper::makeThumbnail($module::$firstPictures[$galleryId]); }
+			else {
+			echo albumHelper::makeThumbnail($this->getData(['module', $this->getUrl(0), $galleryId, 'config', 'directory']).'/'.$this->getData(['module', $this->getUrl(0), $galleryId, 'config', 'homePicture']));
+			}  ?>" alt="<?=$gallery['config']['name']?>"></a>
+				<figcaption><div class="galleryName"><?=$gallery['config']['name']?></div></figcaption>
+			</figure>
 		</div>
 	<?php if($i % 4 === 0 OR $i === $galleriesNb): ?>
-		</div>
+	</div>
 	<?php
 	endif;
 	$i++;

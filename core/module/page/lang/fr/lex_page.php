@@ -79,6 +79,7 @@ $text['core_page_view']['plugin'][5] = 'Pas de plugin sur cette page';
 $text['core_page_view']['plugin'][6] = 'Êtes-vous sûr de vouloir supprimer ce plugin de cette page ?';
 $text['core_page_view']['plugin'][7] = 'Enregistrer';
 $text['core_page_view']['plugin'][8] = 'Aide';
+$text['core_page_view']['plugin'][9] = 'Version';
 $text['core_page']['duplicate'][0] = "Jeton invalide";
 $text['core_page']['duplicate'][1] = "Duplication non autorisée";
 $text['core_page']['duplicate'][2] = "La page a été dupliquée";
@@ -115,7 +116,7 @@ $text['core_page']['plugin'][5] = 'En haut le plugin s\'affiche sous le titre de
 $text['core_page']['plugin'][6] = 'Positionnement des plugins enregistré';
 
 // Tinymce et Flatpickr
-$lang_admin = 'fr_FR'; 
+$lang_admin = 'fr_FR';
 $lang_flatpickr = 'fr';
 // Selects
 $pagesNoParentId = [
@@ -172,7 +173,7 @@ $memberIds0 = [
 	0 => 'Tous les membres'
 ];
 $pluginBodyPosition = [
-	'down' => 'En bas',
-	'up' => 'En haut'
+	'up' => 'En haut',
+	'down' => 'En bas'
 ];
 ?>

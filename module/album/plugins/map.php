@@ -1,7 +1,7 @@
 <?php
 /* @license GNU General Public License, version 3
  * création @Lionel Croquefer 2019
- * Version du 11 octobre 2024
+ * Version du 7 novembre 2025
  */
 $lat = $_GET['lat'];
 $lon = $_GET['lon'];
@@ -41,32 +41,34 @@ height: 100vh;
 <body>
 <div id="mapid"> </div>
 <script>
-var mymap = L.map('mapid',{
+const mymap = L.map('mapid',{
 	fullscreenControl: true,
 	fullscreenControlOptions: {
 	position: 'topleft'
-	}}).setView([<?=$lat?>, <?=$lon?>], <?=$zoom?>);
+}}).setView([<?=$lat?>, <?=$lon?>], <?=$zoom?>);
 
-var baselayers = {
-"OpenTopoMap": L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
-			maxZoom: 17,
-			attribution: '&copy; <a href="//opentopomap.org/about" target="_blank">OpenTopoMap</a> | SRTM (CC-BY-SA)'
-		}),
+const baselayers = {
+"OpenHikingMap": L.tileLayer("https://tile.openmaps.fr/opentopomap/{z}/{x}/{y}.png", {
+		maxZoom: 19,
+		maxNativeZoom: 18,
+		attribution: '&copy; <a href="//openmaps.fr/" target="_blank">OpenHikingMap</a> | SRTM (CC-BY-SA)'
+	}),
 "OpenStreetMap": L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-			maxZoom: 19,
-			attribution: '&copy; <a href="//www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
-		}),
+		maxZoom: 19,
+		attribution: '&copy; <a href="//www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
+	}),
 "Satellite" : L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
-			maxZoom: 18,
-			attribution: '&copy; <a href="//www.esri.com/fr-fr/" target="_blank">Esri</a> ArcGIS'
-		})
+		maxZoom: 19,
+		maxNativeZoom: 18,
+		attribution: '&copy; <a href="//www.esri.com/fr-fr/" target="_blank">Esri</a> ArcGIS'
+	})
 };
 
-var marker = L.marker([<?=$lat?>, <?=$lon?>]).addTo(mymap)
+let marker = L.marker([<?=$lat?>, <?=$lon?>]).addTo(mymap)
     .bindPopup('altitude = '+ <?=$alt?> +' m')
     .openPopup();
 
-var layerControl = L.control.layers(baselayers).addTo(mymap);
+let layerControl = L.control.layers(baselayers).addTo(mymap);
 baselayers.Satellite.addTo(mymap);
 
 	// detect fullscreen toggling

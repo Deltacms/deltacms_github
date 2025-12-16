@@ -14,8 +14,7 @@
  * Delta was created from version 11.2.00.24 of ZwiiCMS
  * @author Rémi Jean <remi.jean@outlook.com>
  * @copyright 2008-2018 © Rémi Jean
- * @author Frédéric Tempez <frederic.tempez@outlook.com>
- * @copyright 2018-2021 © Frédéric Tempez
+ * @copyright 2018-2021 © Zwiicms team
  */
 
 class config extends common {
@@ -162,14 +161,14 @@ class config extends common {
 	// Variable pour construire la liste des pages du site
 	public static $pagesList = [];
 	public static $orphansList = [];
-	
+
 	// Constantes pour les champs de commentaires dans Social
 	const TYPE_MAIL = 'mail';
 	const TYPE_TEXT = 'text';
 	const TYPE_TEXTAREA = 'textarea';
 	const TYPE_DATETIME = 'date';
 	const ITEMSPAGE = 10;
-	
+
 	// Variable pour les champs de commentaires dans Social
 	public static $listUsers = [];
 	public static $nbItemPage = [
@@ -185,14 +184,14 @@ class config extends common {
 	 * Robots.txt
 	 */
 	public function generateFiles() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < config::$actions['generateFiles'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			$param='';
@@ -217,19 +216,19 @@ class config extends common {
 	 * Sauvegarde des données
 	 */
 	public function backup() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < config::$actions['backup'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			$param='';
 			include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
-		
+
 			// Soumission du formulaire
 			if($this->isPost()) {
 				// Creation du ZIP
@@ -262,14 +261,14 @@ class config extends common {
 	 * Active ou désactive le mode Open Graph
 	 */
 	public function configOpenGraph() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < config::$actions['configOpenGraph'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			$param='';
@@ -297,19 +296,19 @@ class config extends common {
 	 * Procédure d'importation
 	 */
 	public function restore() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < config::$actions['restore'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			$param='';
 			include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
-		
+
 			// Soumission du formulaire
 			if($this->isPost() ) {
 
@@ -358,7 +357,7 @@ class config extends common {
 					// Restaurer les users originaux d'une v10 si option cochée
 					if (!empty($users) && $this->getInput('configRestoreImportUser', helper::FILTER_BOOLEAN) === true) $this->setData(['user',$users]);
 				}
-				
+
 				// Message de notification
 				$notification  = $success === true ? $text['core_config']['restore'][4] : $text['core_config']['restore'][5] ;
 				$redirect = $this->getInput('configRestoreImportUser', helper::FILTER_BOOLEAN) === true ?  helper::baseUrl() . 'config/restore' : helper::baseUrl() . 'user/login/';
@@ -385,19 +384,19 @@ class config extends common {
 	 * Configuration
 	 */
 	public function index() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < config::$actions['index'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			$param='';
 			include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
-			
+
 			// Liste des utilisateurs
 			$userIdsFirstnames = helper::arrayCollumn($this->getData(['user']), 'firstname');
 			ksort($userIdsFirstnames);
@@ -405,7 +404,7 @@ class config extends common {
 			foreach($userIdsFirstnames as $userId => $userFirstname) {
 				self::$listUsers [] =  $userId;
 			}
-			
+
 			// Soumission du formulaire
 			if($this->isPost()) {
 
@@ -480,7 +479,7 @@ class config extends common {
 						'impossibleText' => $this->getInput('localeImpossibleText', helper::FILTER_STRING_SHORT)
 					]
 				]);
-				
+
 				// Vérification que la lecture des fichiers d'update est possible
 				$autoUpdate = $this->getInput('configAutoUpdate', helper::FILTER_BOOLEAN);
 				$errorAutoUpdate = false;
@@ -633,7 +632,7 @@ class config extends common {
 									// Met à jour la baseUrl
 									$this->setData(['core', 'baseUrl', helper::baseUrl(true,false) ]);
 				}
-								
+
 				// Générer robots.txt et sitemap
 				// $this->generateFiles();
 				// Valeurs en sortie
@@ -644,7 +643,7 @@ class config extends common {
 					'redirect' => helper::baseUrl() . 'config',
 					'notification' => $success ? $text['core_config']['index'][1] : $text['core_config']['index'][2],
 					'state' => $success
-				]);			
+				]);
 			}
 			// Générer la liste des pages disponibles
 			self::$pagesList = $this->getData(['page']);
@@ -678,14 +677,14 @@ class config extends common {
 
 
 	public function script() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < config::$actions['script'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			$param='';
@@ -727,14 +726,14 @@ class config extends common {
 	 */
 
 	public function logReset() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < config::$actions['logReset'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			$param='';
@@ -748,7 +747,7 @@ class config extends common {
 				// Valeurs en sortie
 					$this->addOutput([
 					'title' => $text['core_config']['logReset'][0],
-					'view' => 'index',
+					'redirect' => helper::baseUrl() . 'config/index',
 					'notification' => $text['core_config']['logReset'][1],
 					'state' => true
 				]);
@@ -756,7 +755,7 @@ class config extends common {
 				// Valeurs en sortie
 				$this->addOutput([
 					'title' => $text['core_config']['logReset'][0],
-					'view' => 'index',
+					'redirect' => helper::baseUrl() . 'config/index',
 					'notification' => $text['core_config']['logReset'][2],
 					'state' => false
 				]);
@@ -770,14 +769,14 @@ class config extends common {
 	  * Télécharger le fichier de log
 	  */
 	  public function logDownload() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < config::$actions['logDownload'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			$param='';
@@ -809,19 +808,19 @@ class config extends common {
 	 * Tableau des IP blacklistés
 	 */
 	public function blacklistDownload () {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < config::$actions['blacklistDownload'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			$param='';
 			include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
-		
+
 			ob_start();
 			$fileName = self::TEMP_DIR . 'blacklist.log';
 			$d = $text['core_config']['blacklistDownload'][0]. PHP_EOL;
@@ -861,25 +860,25 @@ class config extends common {
 	 */
 
 	public function blacklistReset() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < config::$actions['blacklistReset'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			$param='';
 			include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
-		
+
 			if ( file_exists(self::DATA_DIR . 'blacklist.json') ) {
 				$this->setData(['blacklist',[]]);
 				// Valeurs en sortie
-					$this->addOutput([
+				$this->addOutput([
 					'title' => $text['core_config']['blacklistReset'][0],
-					'view' => 'index',
+					'redirect' => helper::baseUrl() . 'config/index',
 					'notification' => $text['core_config']['blacklistReset'][1],
 					'state' => true
 				]);
@@ -887,7 +886,7 @@ class config extends common {
 				// Valeurs en sortie
 				$this->addOutput([
 					'title' => $text['core_config']['blacklistReset'][0],
-					'view' => 'index',
+					'redirect' => helper::baseUrl() . 'config/index',
 					'notification' => $text['core_config']['blacklistReset'][2],
 					'state' => false
 				]);
@@ -899,19 +898,19 @@ class config extends common {
 	 * Récupération des backups auto dans le gestionnaire de fichiers
 	 */
 	public function copyBackups() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < config::$actions['copyBackups'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			$param='';
 			include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
-		
+
 			// Créer le répertoire manquant
 			if (!is_dir(self::FILE_DIR.'source/backup')) {
 				mkdir(self::FILE_DIR.'source/backup', 0755);

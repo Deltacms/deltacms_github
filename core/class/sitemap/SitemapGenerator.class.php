@@ -215,7 +215,7 @@ class SitemapGenerator
      * @param FileSystem|null $fs
      * @param Runtime|null $runtime
      */
-    public function __construct(string $baseURL, string $basePath = "", FileSystem $fs = null, Runtime $runtime = null)
+    public function __construct(string $baseURL, string $basePath = "", ?FileSystem $fs = null, ?Runtime $runtime = null)
     {
         $this->urls = [];
         $this->baseURL = rtrim($baseURL, '/');
@@ -331,10 +331,10 @@ class SitemapGenerator
 
     public function validate(
         string $path,
-        DateTime $lastModified = null,
-        string $changeFrequency = null,
-        float $priority = null,
-        array $alternates = null,
+        DateTime|null $lastModified = null,
+        string|null $changeFrequency = null,
+        float|null $priority = null,
+        array|null $alternates = null,
         array $extensions = [])
     {
         if (!(1 <= mb_strlen($path) && mb_strlen($path) <= self::MAX_URL_LEN)) {
@@ -370,10 +370,10 @@ class SitemapGenerator
      */
     public function addURL(
         string $path,
-        DateTime $lastModified = null,
-        string $changeFrequency = null,
-        float $priority = null,
-        array $alternates = null,
+        DateTime|null $lastModified = null,
+        string|null $changeFrequency = null,
+        float|null $priority = null,
+        array|null $alternates = null,
         array $extensions = []
     ): SitemapGenerator
     {

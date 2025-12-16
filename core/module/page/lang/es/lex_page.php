@@ -79,6 +79,7 @@ $text['core_page_view']['plugin'][5] = 'No hay ningún plugin en esta página';
 $text['core_page_view']['plugin'][6] = '¿Estás seguro de que quieres eliminar este plugin de esta página?';
 $text['core_page_view']['plugin'][7] = 'Guardar';
 $text['core_page_view']['plugin'][8] = 'Ayuda';
+$text['core_page_view']['plugin'][9] = 'Versión';
 $text['core_page']['duplicate'][0] = "Token no válido";
 $text['core_page']['duplicate'][1] = "Duplicación no autorizada";
 $text['core_page']['duplicate'][2] = "La página ha sido duplicada";
@@ -115,7 +116,7 @@ $text['core_page']['plugin'][5] = 'Arriba se muestra en la parte superior, debaj
 $text['core_page']['plugin'][6] = 'Posicionamiento del complemento registrado';
 
 // Tinymce et Flatpickr
-$lang_admin = 'es'; 
+$lang_admin = 'es';
 $lang_flatpickr = 'es';
 // Selects
 $pagesNoParentId = [
@@ -172,7 +173,7 @@ $memberIds0 = [
 	0 => 'Todos los miembros'
 ];
 $pluginBodyPosition = [
-	'down' => 'Abajo',
-	'up' => 'Arriba'
+	'up' => 'Arriba',
+	'down' => 'Abajo'
 ];
 ?>

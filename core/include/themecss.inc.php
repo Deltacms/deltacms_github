@@ -1,5 +1,5 @@
-<?php 
-/* 
+<?php
+/*
 * Modification des fichiers de thème theme.css, theme.json et theme_invert.css
 */
 // Version
@@ -34,7 +34,7 @@ foreach( $tab as $key=>$value){
 // Fond du body
 $colors = helper::colorVariants($this->getData(['theme', 'body', 'backgroundColor']));
 // Body
-$css .= 'body{font-family:"' . $this->getData(['fonts', $this->getData(['theme', 'text', 'font']), 'name']) . '",sans-serif}';
+$css .= 'body{font-family:"' . $this->getData(['fonts', $this->getData(['theme', 'text', 'font']), 'name']) . '"}';
 if($themeBodyImage = $this->getData(['theme', 'body', 'image'])) {
 	// Image dans html pour éviter les déformations.
 	$css .= 'html {background-image:url("../file/source/' . $themeBodyImage . '");background-position:' . $this->getData(['theme', 'body', 'imagePosition']) . ';background-attachment:' . $this->getData(['theme', 'body', 'imageAttachment']) . ';background-size:' . $this->getData(['theme', 'body', 'imageSize']) . ';background-repeat:' . $this->getData(['theme', 'body', 'imageRepeat']) . '}';
@@ -52,7 +52,7 @@ $css .= '#scrollUaD {background-color:' .$this->getData(['theme', 'site', 'Scrol
 $colors = helper::colorVariants($this->getData(['theme', 'text', 'linkColor']));
 $css .= 'a{color:' . $colors['normal'] . '}';
 // Couleurs de site dans TinyMCe
-$css .= 'div.mce-edit-area {font-family:"' . $this->getData(['fonts', $this->getData(['theme', 'text', 'font']), 'name']) . '",sans-serif}';
+$css .= 'div.mce-edit-area {font-family:"' . $this->getData(['fonts', $this->getData(['theme', 'text', 'font']), 'name']) . '"}';
 // Site dans TinyMCE pour la class ajoutée par init.js dans l'iframe
 $css .= '.editorWysiwyg {background-color:' . $this->getData(['theme', 'site', 'backgroundColor']) . '; margin:0 !important; padding-top: 10px;}';
 $css .= '.editorWysiwygHeader {background-color:' . $this->getData(['theme', 'header', 'backgroundColor']) . '; color:' . $this->getData(['theme', 'header', 'textColor']) . '; margin:0 !important; padding-top: 10px;}';
@@ -82,8 +82,8 @@ $this->getData(['theme', 'footer', 'position']) === 'body') {
 $overflowSite = 'hidden';
 if( $this->getData(['theme', 'menu', 'position'])==='site' || $this->getData(['theme', 'menu', 'position'])==='superimposed' || ( $this->getData(['theme', 'header', 'position'])==='site' &&
 ( $this->getData(['theme', 'menu', 'position'])==='site-first' || $this->getData(['theme', 'menu', 'position'])==='site-second' ))) $overflowSite = 'visible';
-$css .= '@media screen and (min-width: 800px) { #site { overflow: '.$overflowSite.'; } }';
-$css .= '@media screen and (max-width: 799px) { .container { max-width: 100vw; } }';
+$css .= '@media (min-width: 800px) { #site { overflow: '.$overflowSite.'; } }';
+$css .= '@media (max-width: 799px) { .container { max-width: 100vw; } }';
 $css .= $this->getData(['theme', 'site', 'width']) === '100%'
 		? '@media (min-width: 800px) {#site{margin:0 auto ' . $marginBottomLarge . ' 0 !important;}}@media (max-width: 799px) {#site{margin:0 auto ' . $marginBottomSmall . ' 0 !important;}}#site.light{margin:5% auto !important;} body{margin:0 auto !important;}  #bar{margin:0 auto !important;} body > header{margin:0 auto !important;} body > nav {margin: 0 auto !important;} body > footer {margin:0 auto !important;}'
 		: '@media (min-width: 800px) {#site{margin: ' . $margin . ' auto ' . $marginBottomLarge .  ' auto !important;}}@media (max-width: 799px) {#site{margin:0 auto ' . $marginBottomSmall .  ' auto !important;}}#site.light{margin: 5% auto !important;} body{margin:0px 10px;}  #bar{margin: 0 -10px;} body > header{margin: 0 -10px;} body > nav {margin: 0 -10px;} body > footer {margin: 0 -10px;} ';
@@ -100,7 +100,7 @@ $css .= '.button:hover,button[type=\'submit\']:hover,.pagination a:hover,input[t
 $css .= '.helpButton span:hover{color:' . $colors['darken'] . '}';
 $css .= '.button:active,button[type=\'submit\']:active,.pagination a:active{background-color:' . $colors['veryDarken'] . '}';
 $colors = helper::colorVariants($this->getData(['theme', 'title', 'textColor']));
-$css .= 'h1,h2,h3,h4,h5,h6,h1 a,h2 a,h3 a,h4 a,h5 a,h6 a,.blockTitle,.accordion-title{color:' . $colors['normal'] . ';font-family:"' . $this->getData(['fonts', $this->getData(['theme', 'title', 'font']), 'name']) . '",sans-serif;font-weight:' . $this->getData(['theme', 'title', 'fontWeight']) . ';text-transform:' . $this->getData(['theme', 'title', 'textTransform']) . '}';
+$css .= 'h1,h2,h3,h4,h5,h6,h1 a,h2 a,h3 a,h4 a,h5 a,h6 a,.blockTitle,.accordion-title{color:' . $colors['normal'] . ';font-family:"' . $this->getData(['fonts', $this->getData(['theme', 'title', 'font']), 'name']) . '";font-weight:' . $this->getData(['theme', 'title', 'fontWeight']) . ';text-transform:' . $this->getData(['theme', 'title', 'textTransform']) . '}';
 $css .= 'h1 a:hover,h2 a:hover,h3 a:hover,h4 a:hover,h5 a:hover,h6 a:hover{color:' . $colors['darken'] . '}';
 // Les blocs
 $colors = helper::colorVariants($this->getData(['theme', 'block', 'backgroundTitleColor']));
@@ -112,14 +112,6 @@ $css .= 'figure.image { border-color: ' . $this->getdata(['theme','block','borde
 // Bannière
 
 // Eléments communs
-if($this->getData(['theme', 'header', 'margin'])) {
-	if($this->getData(['theme', 'menu', 'position']) === 'site-first') {
-		$css .= 'header{margin:0 20px}';
-	}
-	else {
-		$css .= 'header{margin:20px 20px 0 20px}';
-	}
-}
 $colors = helper::colorVariants($this->getData(['theme', 'header', 'backgroundColor']));
 $css .= 'header{background-color:' . $colors['normal'] . '; color:' . $this->getData(['theme', 'header', 'textColor']) . ';}';
 // Calcul de la hauteur du bandeau du menu burger utilisé dans plusieurs cas
@@ -142,7 +134,7 @@ if ($this->getData(['theme','header','feature']) === 'wallpaper' ) {
 		$css .= 'header #wallPaper{background-image:url("../file/source/' . $themeHeaderImage . '");background-position:' . $this->getData(['theme', 'header', 'imagePosition']) . ';background-repeat:' . $this->getData(['theme', 'header', 'imageRepeat']) . '}';
 	}
 	$colors = helper::colorVariants($this->getData(['theme', 'header', 'textColor']));
-	$css .= 'header #wallPaper span{color:' . $colors['normal'] . ';font-family:"' . $this->getData(['fonts', $this->getData(['theme', 'header', 'font']), 'name']) . '",sans-serif;font-weight:' . $this->getData(['theme', 'header', 'fontWeight']) . ';font-size:' . $this->getData(['theme', 'header', 'fontSize']) . ';text-transform:' . $this->getData(['theme', 'header', 'textTransform']) . '}';
+	$css .= 'header #wallPaper span{color:' . $colors['normal'] . ';font-family:"' . $this->getData(['fonts', $this->getData(['theme', 'header', 'font']), 'name']) . '";font-weight:' . $this->getData(['theme', 'header', 'fontWeight']) . ';font-size:' . $this->getData(['theme', 'header', 'fontSize']) . ';text-transform:' . $this->getData(['theme', 'header', 'textTransform']) . '}';
 	// En petit écran pour s'adapter à des textes longs
 	$search ='em';
 	if( $this->getData(['theme', 'header', 'fontSize']) === '2.4vmax' ) $search = 'vmax';
@@ -258,7 +250,7 @@ if(
 	) {
 		$css .= 'nav{padding:0 10px;}';
 }
-$css .= '#toggle span,#menu a{padding:' . $this->getData(['theme', 'menu', 'height']) .';font-family:"' . $this->getData(['fonts', $this->getData(['theme', 'menu', 'font']), 'name']) . '",sans-serif;font-weight:' . $this->getData(['theme', 'menu', 'fontWeight']) . ';font-size:' . $this->getData(['theme', 'menu', 'fontSize']) . ';text-transform:' . $this->getData(['theme', 'menu', 'textTransform']) . '}';
+$css .= '#toggle span,#menu a{padding:' . $this->getData(['theme', 'menu', 'height']) .';font-family:"' . $this->getData(['fonts', $this->getData(['theme', 'menu', 'font']), 'name']) . '";font-weight:' . $this->getData(['theme', 'menu', 'fontWeight']) . ';font-size:' . $this->getData(['theme', 'menu', 'fontSize']) . ';text-transform:' . $this->getData(['theme', 'menu', 'textTransform']) . '}';
 
 // Pied de page
 $colors = helper::colorVariants($this->getData(['theme', 'footer', 'backgroundColor']));
@@ -268,7 +260,7 @@ if($this->getData(['theme', 'footer', 'margin'])) {
 	$css .= 'footer{padding:0}';
 }
 
-$css .= 'footer span, #footerText > p {color:' . $this->getData(['theme', 'footer', 'textColor']) . ';font-family:"' . $this->getData(['fonts', $this->getData(['theme', 'footer', 'font']), 'name']) . '",sans-serif;font-weight:' . $this->getData(['theme', 'footer', 'fontWeight']) . ';font-size:' . $this->getData(['theme', 'footer', 'fontSize']) . ';text-transform:' . $this->getData(['theme', 'footer', 'textTransform']) . '}';
+$css .= 'footer span, #footerText > p {color:' . $this->getData(['theme', 'footer', 'textColor']) . ';font-family:"' . $this->getData(['fonts', $this->getData(['theme', 'footer', 'font']), 'name']) . '";font-weight:' . $this->getData(['theme', 'footer', 'fontWeight']) . ';font-size:' . $this->getData(['theme', 'footer', 'fontSize']) . ';text-transform:' . $this->getData(['theme', 'footer', 'textTransform']) . '}';
 $css .= 'footer {background-color:' . $colors['normal'] . ';color:' . $this->getData(['theme', 'footer', 'textColor']) . '}';
 $css .= 'footer a{color:' . $this->getData(['theme', 'footer', 'textColor']) . '}';
 $css .= 'footer #footersite > div {margin:' . $this->getData(['theme', 'footer', 'height']) . ' 0}';
@@ -312,7 +304,7 @@ $css_invert .= '@media (max-width: 799px) { body {background-color:'.$background
 $css_invert .= '#scrollUaD {background-color:' .helper::invertColor($this->getData(['theme', 'site', 'ScrollUaDbackgroundColor'])). ';color:'.helper::invertColor($this->getData(['theme', 'site', 'scrollUaDColor'])).';}';
 // Titres
 $colors = helper::colorVariants(helper::invertColor($this->getData(['theme', 'title', 'textColor'])));
-$css_invert .= 'h1,h2,h3,h4,h5,h6,h1 a,h2 a,h3 a,h4 a,h5 a,h6 a,.blockTitle,.accordion-title{color:' . $colors['normal'] . ';font-family:"' . $this->getData(['fonts', $this->getData(['theme', 'title', 'font']), 'name']) . '",sans-serif;font-weight:' . $this->getData(['theme', 'title', 'fontWeight']) . ';text-transform:' . $this->getData(['theme', 'title', 'textTransform']) . '}';
+$css_invert .= 'h1,h2,h3,h4,h5,h6,h1 a,h2 a,h3 a,h4 a,h5 a,h6 a,.blockTitle,.accordion-title{color:' . $colors['normal'] . ';font-family:"' . $this->getData(['fonts', $this->getData(['theme', 'title', 'font']), 'name']) . '";font-weight:' . $this->getData(['theme', 'title', 'fontWeight']) . ';text-transform:' . $this->getData(['theme', 'title', 'textTransform']) . '}';
 $css_invert .= 'h1 a:hover,h2 a:hover,h3 a:hover,h4 a:hover,h5 a:hover,h6 a:hover{color:' . $colors['darken'] . '}';
 //liens
 $colors = helper::colorVariants(helper::invertColor($this->getData(['theme', 'text', 'linkColor'])));
@@ -336,7 +328,7 @@ $css_invert .= 'figure.image { border-color: ' . helper::invertColor($this->getd
 // footer
 $colors = helper::colorVariants(helper::invertColor($this->getData(['theme', 'footer', 'backgroundColor'])));
 $footerColorInvert =  helper::invertColor($this->getData(['theme', 'footer', 'textColor']));
-$css_invert .= 'footer span, #footerText > p {color:' . $footerColorInvert . ';font-family:"' . $this->getData(['fonts', $this->getData(['theme', 'footer', 'font']), 'name']) . '",sans-serif;font-weight:' . $this->getData(['theme', 'footer', 'fontWeight']) . ';font-size:' . $this->getData(['theme', 'footer', 'fontSize']) . ';text-transform:' . $this->getData(['theme', 'footer', 'textTransform']) . '}';
+$css_invert .= 'footer span, #footerText > p {color:' . $footerColorInvert . ';font-family:"' . $this->getData(['fonts', $this->getData(['theme', 'footer', 'font']), 'name']) . '";font-weight:' . $this->getData(['theme', 'footer', 'fontWeight']) . ';font-size:' . $this->getData(['theme', 'footer', 'fontSize']) . ';text-transform:' . $this->getData(['theme', 'footer', 'textTransform']) . '}';
 $css_invert .= 'footer {background-color:' . $colors['normal'] . ';color:' . $footerColorInvert . '}';
 $css_invert .= 'footer a{color:' . $footerColorInvert . '}';
 

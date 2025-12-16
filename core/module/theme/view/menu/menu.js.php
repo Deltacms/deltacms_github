@@ -18,8 +18,19 @@ $(document).ready(function(){
  * Aperçu en direct
  */
 $("input, select").on("change", function() {
-	var menuFont = $("#themeMenuFont").val();
-	var colors = core.colorVariants($("#themeMenuBackgroundColor").val());
+	// Aperçu de la mise en forme du texte
+	const menuFont = $('#themeMenuFont option:selected').text().trim();
+	$('#themeMenuTextPreview').css({
+        fontFamily: menuFont,
+        fontSize: $('#themeMenuFontSize').val(),
+		fontWeight: $('#themeMenuFontWeight').val(),
+        textTransform: $('#themeMenuTextTransform').val(),
+		color: $('#themeMenuTextColor').val(),
+		backgroundColor: $('#themeMenuBackgroundColor').val()
+    });
+
+	let colors = core.colorVariants($("#themeMenuBackgroundColor").val());
+	let css='';
 	if( $(window).width() >= 800 ){
 		// Couleurs du menu en grand écran
 		css = "nav,nav.navLevel1 a{background-color:" + colors.normal + "}";
@@ -31,7 +42,7 @@ $("input, select").on("change", function() {
 			css += "nav a:hover{background-color:" +  $("#themeMenuActiveColor").val() +  ";color:" + $('#themeMenuActiveTextColor').val() + ";}";
 		}
 		// sous menu
-		var colors = core.colorVariants($("#themeMenuBackgroundColorSub").val());
+		colors = core.colorVariants($("#themeMenuBackgroundColorSub").val());
 		css += 'nav .navSub a{background-color:' + colors.normal + '}';
 	} else {
 		// Couleurs du menu burger
@@ -42,7 +53,7 @@ $("input, select").on("change", function() {
 		css += "nav #menu a, nav #menu a:hover{color:" + $("#themeMenuBurgerTextMenuColor").val() + "}"; // texte du menu
 		css += "nav #menu, nav.navMain a{background-color:" + $("#themeMenuBurgerBackgroundColor").val() + "}"; // arrière plan du menu
 		css += "nav #menu .navSub a{background-color:" + $("#themeMenuBurgerBackgroundColorSub").val() + "}"; // fond du sous menu
-		var colors = core.colorVariants($("#themeMenuBurgerBackgroundColor").val());
+		colors = core.colorVariants($("#themeMenuBurgerBackgroundColor").val());
 		if ($("#themeMenuBurgerActiveColorAuto").is(':checked')) { // fond du menu pour la page active
 			css += "nav #menu .active{background-color:" + colors.veryDarken + ";color:" + $('#themeMenuBurgerActiveTextColor').val() + ";}";
 		} else {
@@ -53,7 +64,7 @@ $("input, select").on("change", function() {
 	}
 
 	// Taille, hauteur, épaisseur et capitalisation de caractères du menu
-	css += "#toggle span,#menu a{padding:" + $("#themeMenuHeight").val() + ";font-family:'" + menuFont.replace(/\+/g, " ")  + "',sans-serif;font-weight:" + $("#themeMenuFontWeight").val() + ";font-size:" + $("#themeMenuFontSize").val() + ";text-transform:" + $("#themeMenuTextTransform").val() + "}";
+	css += "#toggle span,#menu a{padding:" + $("#themeMenuHeight").val() + ";font-family:'" + menuFont.replace(/\+/g, " ")  + "';font-weight:" + $("#themeMenuFontWeight").val() + ";font-size:" + $("#themeMenuFontSize").val() + ";text-transform:" + $("#themeMenuTextTransform").val() + "}";
 	// Alignement du menu
 	css += "#menu{text-align:" + $("#themeMenuTextAlign").val() + "}";
 	// Marge
@@ -230,10 +241,8 @@ $("#themeMenuBurgerActiveColorAuto").on("change", function() {
 // Affiche la sélection de superposition bandeau du menu / bannière
 $("#themeMenuBurgerFixed").on("change", function() {
 	if ($(this).is(':checked') ) {
-		console.log('checked');
 		$("#themeMenuBurgerOverlayWrapper").slideDown();
 	} else {
-		console.log('no checked');
 		$("#themeMenuBurgerOverlayWrapper").slideUp();
 	}
 }).trigger("change");
@@ -274,12 +283,12 @@ if($(window).width() < 800) {
 	$(".container").css("max-width","100%");
 	$("nav").css("padding","0");
 	// Variables du thème
-	var positionNav = <?php echo json_encode($this->getData(['theme', 'menu', 'position'])); ?>;
-	var positionHeader = <?php echo json_encode($this->getData(['theme', 'header', 'position'])); ?>;
-	var tinyHidden = <?php echo json_encode($this->getData(['theme', 'header', 'tinyHidden'])); ?>;
+	const positionNav = <?php echo json_encode($this->getData(['theme', 'menu', 'position'])); ?>;
+	const positionHeader = <?php echo json_encode($this->getData(['theme', 'header', 'position'])); ?>;
+	const tinyHidden = <?php echo json_encode($this->getData(['theme', 'header', 'tinyHidden'])); ?>;
 	// bannerMenuHeight et bannerMenuHeightSection transmis par core.php / showMenu()
-	var burgerFixed = <?php echo json_encode($this->getData(['theme', 'menu', 'burgerFixed'])); ?>;
-	var burgerOverlay = <?php echo json_encode($this->getData(['theme', 'menu', 'burgerOverlay'])); ?>;
+	const burgerFixed = <?php echo json_encode($this->getData(['theme', 'menu', 'burgerFixed'])); ?>;
+	const burgerOverlay = <?php echo json_encode($this->getData(['theme', 'menu', 'burgerOverlay'])); ?>;
 	if( positionNav !=='hide' && burgerFixed === true && burgerOverlay === false){
 		// Bannière masquée décaler la section
 		if( tinyHidden === true ){

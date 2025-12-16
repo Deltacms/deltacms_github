@@ -14,8 +14,7 @@
  * Delta was created from version 11.2.00.24 of ZwiiCMS
  * @author Rémi Jean <remi.jean@outlook.com>
  * @copyright 2008-2018 © Rémi Jean
- * @author Frédéric Tempez <frederic.tempez@outlook.com>
- * @copyright 2018-2021 © Frédéric Tempez
+ * @copyright 2018-2021 © Zwiicms team
  */
 
 class translate extends common {
@@ -41,14 +40,14 @@ class translate extends common {
 	 * Configuration avancée des langues
 	 */
 	public function copy() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < translate::$actions['copy'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			include('./core/module/translate/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_translate.php');
@@ -121,11 +120,11 @@ class translate extends common {
 								$success  = (copy ('core/module/install/ressource/database_'.$toCreate.'/base/locale.json', self::DATA_DIR . $toCreate . '/locale.json') === true && $success  === true) ? true : false;
 							} else {
 								$success  = (copy (self::DATA_DIR . $copyFrom . '/locale.json', self::DATA_DIR . $toCreate . '/locale.json') === true && $success  === true) ? true : false;
-							}							
+							}
 							$success  = (copy ('core/module/translate/ressource/module.json', self::DATA_DIR . $toCreate . '/module.json') === true && $success  === true) ? true : false;
 							$success  = (copy ('core/module/translate/ressource/page.json', self::DATA_DIR . $toCreate . '/page.json') === true && $success  === true) ? true : false;
 							$success  = (copy ('core/module/translate/ressource/comment.json', self::DATA_DIR . $toCreate . '/comment.json') === true && $success  === true) ? true : false;
-							$success  = (copy ('core/module/translate/ressource/plugin.json', self::DATA_DIR . $toCreate . '/plugin.json') === true && $success  === true) ? true : false;							
+							$success  = (copy ('core/module/translate/ressource/plugin.json', self::DATA_DIR . $toCreate . '/plugin.json') === true && $success  === true) ? true : false;
 						}
 						// Si une page de même nom existe déjà elle sera écrasée
 						// Si une page est de nom différent mais de position identique, elle sera ajoutée au menu dans le bon ordre
@@ -135,21 +134,21 @@ class translate extends common {
 						$jsonPage = file_get_contents(self::DATA_DIR . $toCreate . '/page.json');
 						$jsonModule = file_get_contents(self::DATA_DIR . $toCreate . '/module.json');
 						$jsonPlugin = file_get_contents(self::DATA_DIR . $toCreate . '/plugin.json');
-						
+
 						// Ajout des données dans page.json
 						$fp= json_decode($jsonPage, true);
 						$fp['page'] = array_merge($fp['page'], array($pageId => $pageAdd));
-						// Si c'est une sous-page lire la valeur de parentPageId dans la langues d'origine et si il n'y a pas de page parent de même nom dans la langue cible positionner parentPageId à "" 
-						if( ! array_key_exists( $this->getData(['page', $pageId, 'parentPageId']), $fp['page'])) $fp['page'][$pageId]['parentPageId'] = "";	
+						// Si c'est une sous-page lire la valeur de parentPageId dans la langues d'origine et si il n'y a pas de page parent de même nom dans la langue cible positionner parentPageId à ""
+						if( ! array_key_exists( $this->getData(['page', $pageId, 'parentPageId']), $fp['page'])) $fp['page'][$pageId]['parentPageId'] = "";
 						// Si la page ou la sous-page possède 1 ou 2 barres les copier automatiquement si c'est autorisé, et copier leur contenu
 						if( $copyBarAuto === '1' && ($this->getData(['page', $pageId, 'barLeft']) !== '' || $this->getData(['page', $pageId, 'barRight']) !== '')){
 							$nameBar = $this->getData(['page', $pageId, 'barLeft']) !== '' ? $this->getData(['page', $pageId, 'barLeft']) : $this->getData(['page', $pageId, 'barRight']);
 							$fp['page'] = array_merge($fp['page'], array( $nameBar => $this->getData(['page',$nameBar]) ));
 							$success  = (copy (self::DATA_DIR . $copyFrom . '/content/'.$nameBar.'.html', self::DATA_DIR . $toCreate . '/content/'.$nameBar.'.html') === true && $success  === true) ? true : false;
-						}						
+						}
 						$jsonmod = json_encode($fp);
 						file_put_contents(self::DATA_DIR . $toCreate . '/page.json',$jsonmod);
-						
+
 						// Ajout des données dans module.json
 						if( $moduleAdd !== NULL && $moduleAdd !==''){
 							$fp= json_decode($jsonModule, true);
@@ -157,7 +156,7 @@ class translate extends common {
 							$jsonmod = json_encode($fp);
 							file_put_contents(self::DATA_DIR . $toCreate . '/module.json',$jsonmod);
 						}
-						
+
 						// Ajout des données dans plugin.json
 						$fp= json_decode($jsonPlugin, true);
 						foreach($this->getData(['plugin']) as $key=>$value){
@@ -166,8 +165,8 @@ class translate extends common {
 						}
 						$jsonplug= json_encode($fp);
 						file_put_contents(self::DATA_DIR . $toCreate . '/plugin.json',$jsonplug);
-						
-						// Ajout des données dans content						
+
+						// Ajout des données dans content
 						$success  = (copy (self::DATA_DIR . $copyFrom . '/content/'.$pageId.'.html', self::DATA_DIR . $toCreate . '/content/'.$pageId.'.html') === true && $success  === true) ? true : false;
 						// Ajout des données, externes à module.json, contenues dans data_module/nom_de_la_page.json
 						if( is_file( self::DATA_DIR . $copyFrom . '/data_module/'.$pageId.'.json' ) ) copy (self::DATA_DIR . $copyFrom . '/data_module/'.$pageId.'.json'  , self::DATA_DIR . $toCreate . '/data_module/'.$pageId.'.json' );
@@ -216,9 +215,9 @@ class translate extends common {
 					case 'barre' :
 						self::$pagesList[$page]= $text['core_translate']['copy'][11].$this->getData(['page',$page,'shortTitle']).' ( '. $this->getData(['page',$page,'title']).' - '.$page.' )';
 					break;
-					
-				}		
-			}	
+
+				}
+			}
 			// Tableau des langues installées
 			foreach ($i18nList as $key => $value) {
 				if ($this->getData(['config','i18n', $key]) === 'site') {
@@ -232,7 +231,7 @@ class translate extends common {
 				if( ! is_dir( self::DATA_DIR.$key )) unset( $installed[$key]);
 			}
 			self::$languagesInstalled = array_merge(['base'	=> $text['core_translate']['copy'][5] ],$installed);
-			
+
 			// Valeurs en sortie
 			$this->addOutput([
 				'title' => $text['core_translate']['copy'][2],
@@ -245,15 +244,15 @@ class translate extends common {
 	 * Configuration
 	 */
 	public function index() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < translate::$actions['index'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
-		} else {		
+			]);
+		} else {
 			// Lexique
 			include('./core/module/translate/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_translate.php');
 
@@ -266,7 +265,7 @@ class translate extends common {
 					// La nouvelle langue originale du site était une langue en traduction rédigée
 					if( is_dir('./site/data/'.$this->getInput('translateLangBase'))){
 						$this->removeDir('./site/data/base');
-						rename('./site/data/'. $this->getInput('translateLangBase') , './site/data/base');	
+						rename('./site/data/'. $this->getInput('translateLangBase') , './site/data/base');
 					}
 				}
 				// Edition des langues
@@ -312,10 +311,10 @@ class translate extends common {
 					'eu' 			 	=> $this->getInput('translateEU')
 
 				]]);
-				
+
 				// Mise à jour de la localisation
 				$this->localisation($this->getData(['config', 'i18n', 'langAdmin' ]));
-					
+
 				// Valeurs en sortie
 				$this->addOutput([
 					'redirect' => helper::baseUrl() . $this->getUrl(),
@@ -330,21 +329,21 @@ class translate extends common {
 						'none'   => $text['core_translate']['index'][1],
 						'site'   => $text['core_translate']['index'][3],
 						'delete' => $text['core_translate']['index'][4]
-					];				
+					];
 					self::$siteTranslate = $key !== $this->getData(['config', 'i18n', 'langBase']) ? false : true;
 				} else {
 					self::$translateOptions [$key] = [
 						'none'   => $text['core_translate']['index'][1],
 						'site'   => $text['core_translate']['index'][3]
-					];						
+					];
 				}
 				// Limitation du choix pour la langue d'origine
 				if ( $key === $this->getData(['config', 'i18n', 'langBase'])){
 					self::$translateOptions [$key] = [
 						'none'   => $text['core_translate']['index'][1],
 						'site'   => $text['core_translate']['index'][5]
-					];			
-				}			
+					];
+				}
 			}
 			// Valeurs en sortie
 			$this->addOutput([
@@ -363,14 +362,14 @@ class translate extends common {
 
 		// Activation du drapeau sauf si c'est celui de la langue de base (drapeau utilisé pour revenir à la langue de base)
 		if ( $this->getUrl(2) !== $this->getData(['config', 'i18n', 'langBase']) && $_SESSION['langFrontEnd'] !== $this->getUrl(2) ) {
-			// Mémorisation de la langue en Frontend et du type de traduction actif (site => rédigée, none => pas de traduction)	
+			// Mémorisation de la langue en Frontend et du type de traduction actif (site => rédigée, none => pas de traduction)
 			$_SESSION['langFrontEnd'] = $this->getUrl(2);
 			$_SESSION['translationType'] = $this->getUrl(3);
 		// Désactivation du drapeau, langue base par défaut
 		} else {
 			// Mise à jour des données de langue et de traduction en frontend
 			$_SESSION['langFrontEnd'] = $this->getData(['config', 'i18n', 'langBase']);
-			$_SESSION['translationType'] = 'none';			
+			$_SESSION['translationType'] = 'none';
 		}
 
 		// Valeurs en sortie

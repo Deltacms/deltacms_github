@@ -73,7 +73,7 @@ $("section")
 /**
  * Affiche le bouton zones cachées en grand écran et en petit écran
  */
- var tinyHidden = "<?php echo $this->getData(['theme', 'header', 'tinyHidden']); ?>" ;
+ let tinyHidden = "<?php echo $this->getData(['theme', 'header', 'tinyHidden']); ?>" ;
  <?php 
  include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
  if( $this->getData(['theme', 'header', 'position']) === 'hide'
@@ -99,12 +99,12 @@ if($(window).width() < 800) {
 	$("section").css("padding-top","10px");
 	$("#site.container header, header.container").css("padding-top","0");
 	// Variables du thème
-	var positionNav = <?php echo json_encode($this->getData(['theme', 'menu', 'position'])); ?>;
-	var positionHeader = <?php echo json_encode($this->getData(['theme', 'header', 'position'])); ?>;
-	var tinyHidden = <?php echo json_encode($this->getData(['theme', 'header', 'tinyHidden'])); ?>;
+	const positionNav = <?php echo json_encode($this->getData(['theme', 'menu', 'position'])); ?>;
+	const positionHeader = <?php echo json_encode($this->getData(['theme', 'header', 'position'])); ?>;
+	tinyHidden = <?php echo json_encode($this->getData(['theme', 'header', 'tinyHidden'])); ?>;
 	// bannerMenuHeight et bannerMenuHeightSection transmis par core.php / showMenu()
-	var burgerFixed = <?php echo json_encode($this->getData(['theme', 'menu', 'burgerFixed'])); ?>;
-	var burgerOverlay = <?php echo json_encode($this->getData(['theme', 'menu', 'burgerOverlay'])); ?>;
+	const burgerFixed = <?php echo json_encode($this->getData(['theme', 'menu', 'burgerFixed'])); ?>;
+	const burgerOverlay = <?php echo json_encode($this->getData(['theme', 'menu', 'burgerOverlay'])); ?>;
 	if( positionNav !=='hide' && burgerFixed === true){
 		// si bannière masquée
 		if( tinyHidden === true ){

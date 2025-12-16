@@ -11,8 +11,8 @@ $suffix = $this->getData(['page', $this->getUrl(0), 'moduleId']) === 'templatesw
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<?php $this->showMetaTitle();
 		if( $this->getData(['config', 'social', 'headFacebook' ]) === true) $this->showMetaPropertyFacebook(); ?>
-		<base href="<?=helper::baseUrl(true)?>">
 		<link rel="stylesheet" href="core/vendor/normalize/normalize.min.css">
+		<link rel="stylesheet" href="core/layout/varcss.css.php">
 		<link rel="stylesheet" href="core/layout/common.css">
 		<link rel="stylesheet" href="<?=self::DATA_DIR.'theme.css'.$suffix?>">
 		<?php if( isset( $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] ) && $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] === 'true' ) echo '<link rel="stylesheet" href="'.self::DATA_DIR.'theme_invert.css">'.PHP_EOL;
@@ -77,9 +77,9 @@ $suffix = $this->getData(['page', $this->getUrl(0), 'moduleId']) === 'templatesw
 		if( $this->getData(['theme', 'header', 'position']) === 'site'
 			OR ( $this->getData(['theme', 'header', 'position']) === 'hide' AND $this->getUrl(0) === 'theme' ) )
 			$this->showHeader( 'site' );
-			
-		//Menu superposé à la bannière, bannière dans le site
-		if( $this->getData(['theme', 'menu', 'position']) === 'superimposed' ) $this->showMenu( 'superimposed');
+
+		//Menu superposé à la bannière, bannière dans le site, sauf sur la page de configuration de thème overlay
+		if( $this->getData(['theme', 'menu', 'position']) === 'superimposed' && ($this->getUrl(0)!=='theme' || null!==$this->getUrl(1))) $this->showMenu( 'superimposed');
 
 		// Menu après la bannière, bannière dans le site
 		if( $this->getData(['theme', 'menu', 'position']) === 'site-second' ) $this->showMenu( 'site-second');

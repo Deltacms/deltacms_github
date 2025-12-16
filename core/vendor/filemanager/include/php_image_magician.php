@@ -338,8 +338,8 @@ class imageLib {
 		// *** Get optimal width and height - based on $option
 		$dimensionsArray = $this->getDimensions($newWidth, $newHeight, $option);
 
-		$optimalWidth = round($dimensionsArray['optimalWidth']);
-		$optimalHeight = round($dimensionsArray['optimalHeight']);
+		$optimalWidth = (int)round($dimensionsArray['optimalWidth']);
+		$optimalHeight = (int)round($dimensionsArray['optimalHeight']);
 
 		// *** Resample - create image canvas of x, y size
 		$this->imageResized = imagecreatetruecolor($optimalWidth, $optimalHeight);
@@ -472,7 +472,7 @@ class imageLib {
 		$cropStartY = (int) $cropArray['y'];
 
 		// *** Crop this bad boy
-		$crop = imagecreatetruecolor($newWidth, $newHeight);
+		$crop = imagecreatetruecolor((int)$newWidth, (int)$newHeight);
 		$this->keepTransparancy($optimalWidth, $optimalHeight, $crop);
 		imagecopyresampled($crop, $this->imageResized, 0, 0, $cropStartX, $cropStartY, $newWidth, $newHeight, $newWidth, $newHeight);
 
@@ -1456,7 +1456,7 @@ class imageLib {
   Round corners
 *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**-*-*-*-*-*-*-*-*-*-*-*-*-*/
 
-	public function roundCorners($radius = 5, $bgColor = 'transparent')
+	public function roundCorners(int $radius = 5, $bgColor = 'transparent')
 		# Author:     Jarrod Oberto
 		# Date:       19-05-2011
 		# Purpose:    Create rounded corners on your image
@@ -1467,7 +1467,7 @@ class imageLib {
 		# Notes:
 		#
 	{
-
+		$radius = (int)$radius;
 		// *** Check if the user wants transparency
 		$isTransparent = false;
 		if ( ! is_array($bgColor))
@@ -1573,7 +1573,7 @@ class imageLib {
 		$shadowDistance = $blur * 0.25;
 
 		// *** Set blur width and height
-		$blurWidth = $blurHeight = $blur;
+		$blurWidth = $blurHeight = (int)$blur;
 
 
 		if ($shadowAngle == 0)
@@ -1599,8 +1599,8 @@ class imageLib {
 
 
 		$image = $this->imageResized;
-		$width = $this->width;
-		$height = $this->height;
+		$width = (int)$this->width;
+		$height = (int)$this->height;
 
 
 		$newImage = imagecreatetruecolor($width, $height);

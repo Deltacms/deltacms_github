@@ -25,28 +25,45 @@ $("input, select").on("change",function() {
 	}
 
 	/**
+	* Aperçu du texte et des titres sous les selects
+	*/
+	let titleFont = $('#themeTitleFont option:selected').text().trim();
+	let textFont = $('#themeTextFont option:selected').text().trim();
+
+	$('#textPreview').css({
+        fontFamily: textFont,
+        fontSize: $('#themeTextFontSize').val(),
+		color: $('#themeTextTextColor').val(),
+		backgroundColor: $('#themeSiteBackgroundColor').val()
+    });
+    $('#titlePreview').css({
+        fontFamily: titleFont,
+        fontWeight: $('#themeTitleFontWeight').val(),
+        textTransform: $('#themeTitleTextTransform').val(),
+		color: $('#themeTitleTextColor').val(),
+		backgroundColor: $('#themeSiteBackgroundColor').val()
+    });
+
+	/**
 	 * Aperçu dans la boîte
 	 */
-
-	var titleFont = $("#themeTitleFont").val();
-	var textFont = $("#themeTextFont").val();
 	// Couleurs des boutons
-	var colors = core.colorVariants($("#themeButtonBackgroundColor").val());
+	let colors = core.colorVariants($("#themeButtonBackgroundColor").val());
 	css = ".button.buttonSubmitPreview{background-color:" + colors.normal + ";}";
 	css += ".button.buttonSubmitPreview:hover{background-color:" + colors.darken + "}";
 	css += ".button.buttonSubmitPreview{color:" + colors.text + ";}";
 
 	// Couleurs des liens
-	var colors = core.colorVariants($("#themeTextLinkColor").val());
+	colors = core.colorVariants($("#themeTextLinkColor").val());
 	css += "a.urlPreview{color:" + colors.normal + "}";
 	css += "a.urlPreview:hover{color:" + colors.darken + "}";
 	// Couleur, polices, épaisseur et capitalisation de caractères des titres
-	css += ".headerPreview,.headerPreview{color:" + $("#themeTitleTextColor").val() + ";font-family:'" + titleFont.replace(/\+/g, " ") + "',sans-serif;font-weight:" + $("#themeTitleFontWeight").val() + ";text-transform:" + $("#themeTitleTextTransform").val() + "}";
+	css += ".headerPreview,.headerPreview{color:" + $("#themeTitleTextColor").val() + ";font-family:'" + titleFont.replace(/\+/g, " ") + "';font-weight:" + $("#themeTitleFontWeight").val() + ";text-transform:" + $("#themeTitleTextTransform").val() + "}";
 	// Police de caractères
 	// Police + couleur
-	css += ".textPreview,.urlPreview{color:" + $("#themeTextTextColor").val() + ";font-family:'" + textFont.replace(/\+/g, " ") + "',sans-serif; font-size:" + $("#themeTextFontSize").val() + ";}";
+	css += ".textPreview,.urlPreview{color:" + $("#themeTextTextColor").val() + ";font-family:'" + textFont.replace(/\+/g, " ") + "'; font-size:" + $("#themeTextFontSize").val() + ";}";
 	// Couleur des liens
-	//css += "a.preview,.buttonSubmitPreview{font-family:'" + textFont.replace(/\+/g, " ") + "',sans-serif}";
+	//css += "a.preview,.buttonSubmitPreview{font-family:'" + textFont.replace(/\+/g, " ") + "'}";
 
 	// Taille du texte
 	// Couleur du texte
@@ -65,7 +82,7 @@ $("input, select").on("change",function() {
 		css += ".button, button{font-size:1em;}";
 	}
 	// Largeur du site
-	var margin = '20px';
+	let margin = '20px';
 	if ( $("#themeSiteMargin").is(":checked") || $(window).width() < 800 ) margin = '0px' ;
 	css += ".container{max-width:" + $("#themeSiteWidth").val() + "}";
 	if ($("#themeSiteWidth").val() === "100%") {
@@ -79,8 +96,8 @@ $("input, select").on("change",function() {
 	css += "#site{border-radius:" + $("#themeSiteRadius").val() + ";box-shadow:" + $("#themeSiteShadow").val() + " #212223}";
 
 	// Couleur ou image de fond
-	var backgroundImage = <?php if( $this->getData(['theme','body','image']) !== '') { echo json_encode(helper::baseUrl(false) . self::FILE_DIR . 'source/' . $this->getData(['theme','body','image']));} else { echo 'null';} ?> ;
-	var backgroundcolor = <?php echo json_encode($this->getdata(['theme','body','backgroundColor'])); ?>;
+	let backgroundImage = <?php if( $this->getData(['theme','body','image']) !== '') { echo json_encode(helper::baseUrl(false) . self::FILE_DIR . 'source/' . $this->getData(['theme','body','image']));} else { echo 'null';} ?> ;
+	let backgroundcolor = <?php echo json_encode($this->getdata(['theme','body','backgroundColor'])); ?>;
 	if(backgroundImage) {
 		css += "div.bodybackground{background-image:url(" + backgroundImage + ");background-repeat:" + $("#themeBodyImageRepeat").val() + ";background-position:" + $("#themeBodyImagePosition").val() + ";background-attachment:" + $("#themeBodyImageAttachment").val() + ";background-size:" + $("#themeBodyImageSize").val() + "}";
 		css += "div.bodybackground{background-color:rgba(0,0,0,0);}";
@@ -93,8 +110,8 @@ $("input, select").on("change",function() {
 
 	// Les blocs
 
-	var colors = core.colorVariants($("#themeBlockBackgroundTitleColor").val());
-	css += ".block.preview {background-color: " + $("#themeBlockBackgroundColor").val() + ";padding: 20px 20px 10px;margin: 20px 0;	word-wrap: break-word;border-radius: " + $("#themeBlockBorderRadius").val() + ";border: 1px solid " + $("#themeBlockBorderColor").val() + ";box-shadow: " + $("#themeBlockBorderShadow").val() + " " + $("#themeBlockBorderColor").val() + ";}.block.preview .blockTitle.preview {background: "  + colors.normal + ";color:" + colors.text + ";font-family:'" + titleFont.replace(/\+/g, " ") + "',sans-serif;margin: -20px -20px 10px -20px; padding: 10px;border-radius: " + $("#themeBlockBorderRadius").val() + " " + $("#themeBlockBorderRadius").val() + " 0px 0px;}";
+	colors = core.colorVariants($("#themeBlockBackgroundTitleColor").val());
+	css += ".block.preview {background-color: " + $("#themeBlockBackgroundColor").val() + ";padding: 20px 20px 10px;margin: 20px 0;	word-wrap: break-word;border-radius: " + $("#themeBlockBorderRadius").val() + ";border: 1px solid " + $("#themeBlockBorderColor").val() + ";box-shadow: " + $("#themeBlockBorderShadow").val() + " " + $("#themeBlockBorderColor").val() + ";}.block.preview .blockTitle.preview {background: "  + colors.normal + ";color:" + colors.text + ";font-family:'" + titleFont.replace(/\+/g, " ") + "';margin: -20px -20px 10px -20px; padding: 10px;border-radius: " + $("#themeBlockBorderRadius").val() + " " + $("#themeBlockBorderRadius").val() + " 0px 0px;}";
 
 	/**
 	 * Injection dans le DOM
@@ -119,12 +136,12 @@ if($(window).width() < 800) {
 	$("#site.container header, header.container").css("padding-top","0");
 	$(".container").css("max-width","100%");
 	// Variables du thème
-	var positionNav = <?php echo json_encode($this->getData(['theme', 'menu', 'position'])); ?>;
-	var positionHeader = <?php echo json_encode($this->getData(['theme', 'header', 'position'])); ?>;
-	var tinyHidden = <?php echo json_encode($this->getData(['theme', 'header', 'tinyHidden'])); ?>;
+	let positionNav = <?php echo json_encode($this->getData(['theme', 'menu', 'position'])); ?>;
+	let positionHeader = <?php echo json_encode($this->getData(['theme', 'header', 'position'])); ?>;
+	let tinyHidden = <?php echo json_encode($this->getData(['theme', 'header', 'tinyHidden'])); ?>;
 	// bannerMenuHeight et bannerMenuHeightSection transmis par core.php / showMenu()
-	var burgerFixed = <?php echo json_encode($this->getData(['theme', 'menu', 'burgerFixed'])); ?>;
-	var burgerOverlay = <?php echo json_encode($this->getData(['theme', 'menu', 'burgerOverlay'])); ?>;
+	let burgerFixed = <?php echo json_encode($this->getData(['theme', 'menu', 'burgerFixed'])); ?>;
+	let burgerOverlay = <?php echo json_encode($this->getData(['theme', 'menu', 'burgerOverlay'])); ?>;
 	if( positionNav !=='hide' && burgerFixed === true && burgerOverlay === false){
 		// Bannière masquée décaler la section
 		if( tinyHidden === true ){
@@ -139,3 +156,6 @@ if($(window).width() < 800) {
 		$("section").css("padding-top",bannerMenuHeightSection);
 	}
 }
+
+
+

@@ -14,8 +14,7 @@
  * Delta was created from version 11.2.00.24 of ZwiiCMS
  * @author Rémi Jean <remi.jean@outlook.com>
  * @copyright 2008-2018 © Rémi Jean
- * @author Frédéric Tempez <frederic.tempez@outlook.com>
- * @copyright 2018-2021 © Frédéric Tempez
+ * @copyright 2018-2021 © Zwiicms team
  */
 
 class page extends common {
@@ -46,14 +45,14 @@ class page extends common {
 	 * Duplication
 	 */
 	public function duplicate() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < page::$actions['duplicate'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			include('./core/module/page/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_page.php');
@@ -109,7 +108,7 @@ class page extends common {
 						$data[$pageId]['position'] = $this->getData(['plugin',$key,$url[0],'position']);
 						$this->setData(['plugin', $key, $data]);
 					}
-				}				
+				}
 
 				// Duplication des données de page
 				if( is_file(self::DATA_DIR . self::$i18n . '/data_module/' . $url[0] . '.json'))
@@ -138,14 +137,14 @@ class page extends common {
 	 * Création
 	 */
 	public function add() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < page::$actions['add'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			include('./core/module/page/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_page.php');
@@ -203,14 +202,14 @@ class page extends common {
 	 * Suppression
 	 */
 	public function delete() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < page::$actions['delete'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			include('./core/module/page/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_page.php');
@@ -318,8 +317,8 @@ class page extends common {
 			}
 			// Suppression
 			else {
-				// Effacer le dossier du module 
-				// Attention ces données spécifiques à une page $url[0] devraient être dans un dossier data_module 
+				// Effacer le dossier du module
+				// Attention ces données spécifiques à une page $url[0] devraient être dans un dossier data_module
 				// Si dans 2 langues on utilise un même nom de page, ces données seront perdues pour les 2 langues
 				$moduleId = $this->getData(['page',$url[0],'moduleId']);
 				if( $moduleId !== null && $moduleId !==''){
@@ -346,17 +345,17 @@ class page extends common {
 						unset($data[$key][$url[0]]);
 					}
 				}
-				$this->setData(['plugin', $data]);	
+				$this->setData(['plugin', $data]);
 				// Nettoyage si plugin inutilisé
 				$dataPlugin = $this->getData(['plugin']);
 				foreach($dataPlugin as $key => $value){
 					if(empty($value)) $this->deleteData(['plugin',$key]);
-				}				
+				}
 				// Met à jour le site map
 				// $this->createSitemap('all');
 				// Met à jour 'config', 'statislite', 'enable' si aucume page n'utilise le module Statislite dans la langue de base
 				$inPages = helper::arrayCollumn($this->getData(['page']),'moduleId', 'SORT_DESC');
-				if( (!isset($_SESSION['translationType']) || $_SESSION['translationType']==='none') && ! in_array('statislite',$inPages)) $this->setData(['config', 'statislite', 'enable', false ]);			
+				if( (!isset($_SESSION['translationType']) || $_SESSION['translationType']==='none') && ! in_array('statislite',$inPages)) $this->setData(['config', 'statislite', 'enable', false ]);
 				// Valeurs en sortie
 				$this->addOutput([
 					'redirect' => helper::baseUrl(false),
@@ -371,14 +370,14 @@ class page extends common {
 	 * Gestion des commentaires
 	 */
 	public function comment() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < page::$actions['comment'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Mémorisation de la pagination
 			$_SESSION['pagePageComment'] = null !== $this->getUrl(3) ? $this->getUrl(3) : '1';
@@ -418,27 +417,27 @@ class page extends common {
 						])
 					];
 				}
-			}			
+			}
 			$this->addOutput([
 				'title' => $this->getData(['page', $this->getUrl(2), 'title']),
 				'view' => 'comment'
-			]);		
+			]);
 		}
-		
+
 	}
 
 	/**
 	* commentEdit
 	*/
 	public function commentEdit() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < page::$actions['commentEdit'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			include('./core/module/page/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_page.php');
@@ -479,23 +478,23 @@ class page extends common {
 					'view' => 'commentedit'
 				]);
 				}
-			}			
-			
+			}
+
 		}
 	}
-	
+
 	/**
 	* commentDelete
 	*/
 	public function commentDelete() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < page::$actions['commentDelete'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			include('./core/module/page/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_page.php');
@@ -525,23 +524,23 @@ class page extends common {
 						'state' => true
 					]);
 				}
-			}			
-			
+			}
+
 		}
 	}
-	
+
 	/**
 	* commentAllDelete
 	*/
 	public function commentAllDelete() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < page::$actions['commentAllDelete'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			include('./core/module/page/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_page.php');
 			// Jeton incorrect
@@ -571,23 +570,23 @@ class page extends common {
 						'notification' => $text['core_page']['commentAllDelete'][3]
 					]);
 				}
-			}			
-			
+			}
+
 		}
 	}
-	
+
 	/**
 	* commentExport2csv
 	*/
 	public function commentExport2csv() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < page::$actions['commentExport2csv'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			include('./core/module/page/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_page.php');
@@ -626,23 +625,23 @@ class page extends common {
 						'redirect' => helper::baseUrl() . 'page/edit/'. $this->getUrl(2)
 					]);
 				}
-			}			
-			
+			}
+
 		}
 	}
-	
+
 	/**
 	 * Gestion des Plugins
 	 */
 	public function plugin() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < page::$actions['plugin'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			include('./core/module/page/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_page.php');
@@ -652,7 +651,7 @@ class page extends common {
 			if($this->isPost()) {
 				foreach($dataPlugin as $key => $value){
 					if(null !== $this->getInput('configPluginPosition'.$key) && null!== $this->getData(['plugin',$key,$pageId])) $this->setData(['plugin',$key,$pageId,'position',$this->getInput('configPluginPosition'.$key)]);
-					if(null !== $this->getData(['plugin',$key,$pageId,'position']) && $this->getData(['plugin',$key,$pageId,'position'])==='') $this->setData(['plugin',$key,$pageId,'position','down']); 
+					if(null !== $this->getData(['plugin',$key,$pageId,'position']) && $this->getData(['plugin',$key,$pageId,'position'])==='') $this->setData(['plugin',$key,$pageId,'position','down']);
 				}
 				// Redirection vers l'édition de page
 				$this->addOutput([
@@ -668,12 +667,19 @@ class page extends common {
 				foreach($dataPlugin as $key => $value){
 					if(isset($value[$pageId])){
 						$idTextarea = 'configPluginPage_' . $key;
+						// Numéro de version
+						$version ="";
+						if( is_file('plugin/'.$key.'/infoPlugin.php')){
+							include('plugin/'.$key.'/infoPlugin.php');
+							$version = $versionPlugin;
+						}
 						$docpdf = is_file('plugin/'.$key.'/'.$key.'_doc.pdf')
 							? "<a href='"."plugin/".$key."/".$key."_doc.pdf' target='_blank'>".$text['core_page']['plugin'][1]."</a>"
 							: "";
 						if(is_file('plugin/'.$key.'/'.$key.'_page.html')) {
 							self::$data[] = [
 								$key,
+								$version,
 								$docpdf,
 								template::textarea($idTextarea, [
 									'value' => file_get_contents('plugin/'.$key.'/'.$key.'_page.html'),
@@ -694,14 +700,12 @@ class page extends common {
 							self::$pluginNoHtml = true;
 							self::$data[] = [
 								$key,
+								$version,
 								$docpdf,
-								template::textarea($idTextarea, [
-									'value' => $text['core_page']['plugin'][3],
-									'class' => 'editor'
-								]),
-								template::select('configPluginPosition'.$key, $pluginBodyPosition, [
-									'help' => $text['core_page']['plugin'][5],
+								$text['core_page']['plugin'][3],
+								template::radio('configPluginPosition'.$key, $pluginBodyPosition, [
 									'label' => $text['core_page']['plugin'][4],
+									'help' => $text['core_page']['plugin'][5],
 									'selected' => $this->getData(['plugin',$key,$pageId,'position'])
 								]),
 								template::button('formDataDelete', [
@@ -713,27 +717,27 @@ class page extends common {
 						}
 					}
 				}
-			}			
+			}
 			$this->addOutput([
 				'title' => $this->getData(['page', $this->getUrl(2), 'title']),
 				'view' => 'plugin'
-			]);		
+			]);
 		}
-		
+
 	}
 
 	/**
 	* pluginDelete
 	*/
 	public function pluginDelete() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < page::$actions['pluginDelete'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			include('./core/module/page/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_page.php');
@@ -770,7 +774,7 @@ class page extends common {
 						'state' => true
 					]);
 				}
-			}			
+			}
 		}
 	}
 
@@ -778,14 +782,14 @@ class page extends common {
 	 * Édition
 	 */
 	public function edit() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < page::$actions['edit'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			include('./core/module/page/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_page.php');
@@ -802,7 +806,7 @@ class page extends common {
 				self::$memberIds = $memberIds0;
 				foreach( $this->getData(['user']) as $id => $value){
 				  if($value['group'] === 1) self::$memberIds = array_merge( self::$memberIds, array($id));
-				} 
+				}
 				// Soumission du formulaire
 				if($this->isPost()) {
 					// Si le Title n'est pas vide, premier test pour positionner la notification du champ obligatoire
@@ -844,7 +848,7 @@ class page extends common {
 								}
 							}
 							// Change le nom du fichier des données de page dans /data_module/
-							if (file_exists(self::DATA_DIR . self::$i18n . '/data_module/' . $this->getUrl(2) . '.json')) 
+							if (file_exists(self::DATA_DIR . self::$i18n . '/data_module/' . $this->getUrl(2) . '.json'))
 								rename(self::DATA_DIR . self::$i18n . '/data_module/' . $this->getUrl(2) . '.json', self::DATA_DIR . self::$i18n . '/data_module/' . $pageId . '.json');
 							// Change l'Id de la page dans comment.json si des commentaires existent
 							if( null !== $this->getData(['comment', $this->getUrl(2) ]) ){
@@ -876,7 +880,7 @@ class page extends common {
 						// Supprime l'ancienne page si l'id a changée
 						if($pageId !== $this->getUrl(2)) {
 							$this->deleteData(['page', $this->getUrl(2)]);
-							if (file_exists(self::DATA_DIR . self::$i18n . '/content/' . $this->getUrl(2) . '.html')) unlink (self::DATA_DIR . self::$i18n . '/content/' . $this->getUrl(2) . '.html');						
+							if (file_exists(self::DATA_DIR . self::$i18n . '/content/' . $this->getUrl(2) . '.html')) unlink (self::DATA_DIR . self::$i18n . '/content/' . $this->getUrl(2) . '.html');
 						}
 						// Traitement des pages spéciales affectées dans la config :
 						if ($this->getUrl(2) === $this->getData(['locale', 'legalPageId']) ) {
@@ -1023,7 +1027,7 @@ class page extends common {
 										} else {
 											$head = "<?php \$pageBars = [\$this->getUrl(0), \$this->getData(['page',\$this->getUrl(0),'barLeft']), \$this->getData(['page',\$this->getUrl(0),'barRight'])]; ?>";
 											file_put_contents(self::DATA_DIR . 'pluginhead.inc.php', $head, LOCK_EX);
-										} 
+										}
 										if(strpos($head, $beforeIncludeHead) === false){
 											$morehead = PHP_EOL."<?php ".$beforeIncludeHead.
 											PHP_EOL."if(is_array(\$this->getData(['plugin','".$namePlugin."'])) && array_intersect(\$pageBars, array_keys(\$this->getData(['plugin','".$namePlugin."'])))){".
@@ -1039,14 +1043,14 @@ class page extends common {
 										} else {
 											$body = "<?php \$page = \$this->getUrl(0); ?>";
 											file_put_contents(self::DATA_DIR . 'pluginbody.inc.php', $body, LOCK_EX);
-										} 
+										}
 										if(strpos($body, $beforeIncludeBody) === false){
 											$morebody = PHP_EOL."<?php ".$beforeIncludeBody.
 											PHP_EOL."if(is_array(\$this->getData(['plugin','".$namePlugin."'])) && in_array(\$page, array_keys(\$this->getData(['plugin','".$namePlugin."']))) && \$this->getData(['plugin','".$namePlugin."',\$page,'position'])===\$pluginBodyPosition){".
 											PHP_EOL."	include('plugin/". $namePlugin ."/script/".$namePlugin."_body.inc.php');".
 											PHP_EOL."}".PHP_EOL.$afterIncludeBody." ?>";
 											file_put_contents(self::DATA_DIR . 'pluginbody.inc.php',$morebody,FILE_APPEND | LOCK_EX);
-										}									
+										}
 									}
 									$statePlugin = true;
 									$notificationPlugin = $text['core_page']['edit'][2].$namePlugin.$text['core_page']['edit'][3];
@@ -1059,7 +1063,7 @@ class page extends common {
 								$this->removeDir(self::TEMP_DIR . $tempFolder);
 							}
 						}
-							
+
 						// Redirection vers la configuration
 						if($this->getInput('pageEditModuleRedirect', helper::FILTER_BOOLEAN)) {
 							// Valeurs en sortie
@@ -1085,7 +1089,7 @@ class page extends common {
 										'notification' => $notificationPlugin,
 										'state' => false
 									]);
-								}	
+								}
 							} else {
 								// Valeurs en sortie
 								$this->addOutput([

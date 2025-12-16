@@ -193,7 +193,7 @@ abstract class Feed
     * @return   self
     * @throws   \InvalidArgumentException if the element name is not a string, empty or NULL.
     */
-    public function setChannelElement($elementName, $content, array $attributes = null, $multiple = false)
+    public function setChannelElement($elementName, $content, array|null $attributes = null, $multiple = false)
     {
         if (empty($elementName))
             throw new \InvalidArgumentException('The element name may not be empty or NULL.');
@@ -812,7 +812,7 @@ abstract class Feed
     * @return   string  formatted xml tag
     * @throws   \InvalidArgumentException if the tagContent is not an array and not a string.
     */
-    private function makeNode($tagName, $tagContent, array $attributes = null, $omitEndTag = false)
+    private function makeNode($tagName, $tagContent, array|null $attributes = null, $omitEndTag = false)
     {
         $nodeText = '';
         $attrText = '';

@@ -569,7 +569,7 @@ class template {
                     '<option value="%s"%s style="font-family: %s;"> %s </option>',
                     $value,
                     $selected == $value ? ' selected' : '', // Double == pour ignorer le type de variable car $_POST change les types en string
-                    $value,
+                    $text,
                     $text
                 ) : sprintf(
                     '<option value="%s"%s>%s</option>',
@@ -788,4 +788,77 @@ class template {
         // Retourne le html
         return $html;
     }
+	
+	/* Input radio button 
+	*/
+	public static function radio($nameId, array $options, array $attributes = []) {
+		// Attributs par défaut
+		$attributes = array_merge([
+			'before' => true,
+			'class' => '',
+			'classWrapper' => '',
+			'noDirty' => false,
+			'disabled' => false,
+			'help' => '',
+			'id' => $nameId,
+			'label' => '',
+			'name' => $nameId,
+			'selected' => '',
+			'inline' => false // pour choisir affichage horizontal ou vertical
+		], $attributes);
+
+		// Sauvegarde des données en cas d’erreur
+		if($attributes['before'] && array_key_exists($attributes['id'], common::$inputBefore)) {
+			$attributes['selected'] = common::$inputBefore[$attributes['id']];
+		}
+
+		// Suppression de selected="..." dans <select ....>
+		$selected = $attributes['selected'];
+		$attributes['selected'] = '';
+
+		// Début du wrapper
+		$html = '<div id="' . $attributes['id'] . 'Wrapper" class="inputWrapper ' . $attributes['classWrapper'] . '">';
+
+		// Label
+		if($attributes['label']) {
+			$html .= self::label($attributes['id'], $attributes['label'], [
+				'help' => $attributes['help']
+			]);
+		}
+
+		// Notice
+		$notice = '';
+		if(array_key_exists($attributes['id'], common::$inputNotices)) {
+			$notice = common::$inputNotices[$attributes['id']];
+			$attributes['class'] .= ' notice';
+		}
+		$html .= self::notice($attributes['id'], $notice);
+
+		// Groupe radio
+		foreach($options as $value => $text) {
+			$inputId = $attributes['id'] . '_' . $value;
+
+			$html .= '<div class="radioInput' . ($attributes['inline'] ? ' inline' : '') . '">';
+			$html .= sprintf(
+				'<input type="radio" %s value="%s" id="%s"%s>',
+				helper::sprintAttributes([
+					'name' => $attributes['name'],
+					'disabled' => $attributes['disabled'],
+					'noDirty' => $attributes['noDirty'],
+					'class' => $attributes['class']
+				]),
+				$value,
+				$inputId,
+				($selected == $value ? ' checked' : '')
+			);
+			$html .= sprintf('<label for="%s">%s</label>', $inputId, $text);
+			$html .= '</div>';
+		}
+
+		// Fin du wrapper
+		$html .= '</div>';
+
+		return $html;
+	}
+
 }

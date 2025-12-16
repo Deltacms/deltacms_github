@@ -7,7 +7,7 @@
  */
 setlocale(LC_NUMERIC,'English','en_US','en_US.UTF-8');
 class album extends common {
-	const VERSION = '5.3';
+	const VERSION = '6.0';
 	const REALNAME = 'Album Photo';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -35,8 +35,8 @@ class album extends common {
 	];
 
 	/**
-	 * Mise à jour du module
-	 * Appelée par les fonctions index et config
+	* Mise à jour du module
+	* Appelée par les fonctions index et config
 	*/
 	private function update() {
 		// Lexique
@@ -61,7 +61,7 @@ class album extends common {
 	}
 
 	/**
-	 * Initialisation
+	* Initialisation
 	*/
 	private function init() {
 		// Lexique
@@ -74,8 +74,8 @@ class album extends common {
 	}
 
 	/**
-	 * Tri de la liste des galeries sans bouton
-	 */
+	* Tri de la liste des galeries sans bouton
+	*/
 	public function sortGalleries () {
 		// Autorisation
 		$group = $this->getUser('group');
@@ -107,9 +107,8 @@ class album extends common {
 	}
 
 	/**
-	 * Traduction de textes en langue frontend
-	 *
-	 */
+	* Traduction de textes en langue frontend
+	*/
 	public function texts() {
 		// Autorisation
 		$group = $this->getUser('group');
@@ -149,9 +148,8 @@ class album extends common {
 	}
 
 	/**
-	 * Tri de la liste des images
-	 *
-	 */
+	* Tri de la liste des images
+	*/
 	public function sortPictures() {
 		// Autorisation
 		$group = $this->getUser('group');
@@ -184,8 +182,8 @@ class album extends common {
 	}
 
 	/**
-	 * Configuration
-	 */
+	* Configuration
+	*/
 	public function config() {
 		// Autorisation
 		$group = $this->getUser('group');
@@ -276,8 +274,8 @@ class album extends common {
 	}
 
 	/**
-	 * Suppression
-	 */
+	* Suppression
+	*/
 	public function delete() {
 		// Autorisation
 		$group = $this->getUser('group');
@@ -322,8 +320,8 @@ class album extends common {
 	}
 
 	/**
-	 * Liste des dossiers
-	 */
+	* Liste des dossiers
+	*/
 	public function dirs() {
 		// Autorisation
 		$group = $this->getUser('group');
@@ -337,14 +335,14 @@ class album extends common {
 			$filter = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'avif'];
 			$this->addOutput([
 				'display' => self::DISPLAY_JSON,
-				'content' => helper::scanDir(self::FILE_DIR.'source', $filter)
+				'content' => helper::scanDir(self::FILE_DIR.'source', $filter, $sort = true)
 			]);
 		}
 	}
 
 	/**
-	 * Édition
-	 */
+	* Édition
+	*/
 	public function edit() {
 		// Autorisation
 		$group = $this->getUser('group');
@@ -489,8 +487,8 @@ class album extends common {
 }
 
 	/**
-	 * Accueil
-	 */
+	* Accueil
+	*/
 	public function index() {
 		// Mise à jour des données de module
 		if ( null===$this->getData(['module', $this->getUrl(0), 'config', 'versionData']) || version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), self::VERSION, '<') ) $this->update();
@@ -660,10 +658,7 @@ class albumHelper extends helper {
 
 	// renommage des fichiers transformés
 	public static function renamePic($foto) {
-		$imor = basename($foto);
-		$extension = strrchr($imor,'.');
-		$namimor = str_replace($extension,'',$imor);
-		$redimg = dirname($foto).'/'.$namimor.'_t960.jpg';
+		$redimg = dirname($foto).'/'.pathinfo($foto, PATHINFO_FILENAME).'_t960.jpg';
 		return $redimg;
 	}
 
@@ -677,7 +672,7 @@ class albumHelper extends helper {
 
 	// réorientation
 	public static function reorientation($foto) {
-		$size = @getimagesize($foto);
+		$size = getimagesize($foto);
 		$mime = $size['mime'];
 		// seules les images/jpeg sont réorientées
 		if ((function_exists('exif_read_data')) && ($mime == 'image/jpeg')) {
@@ -700,7 +695,7 @@ class albumHelper extends helper {
 				imagejpeg($image, self::renamePic($foto), 80);
 				self::backUp($foto);
 				echo '<script>document.location.reload(false);</script>';
-				exit('Réorientation des photos...');
+				exit('Réorientation de la photo '.basename($foto));
 				}
 			}
 		}
@@ -709,7 +704,7 @@ class albumHelper extends helper {
 	// redimension
 	public static function redimension($foto) {
 	$max_size = 960;// dimension du plus petit côté
-	$infoto = @getimagesize($foto);
+	$infoto = getimagesize($foto);
 		$large = $infoto[0];
 		$haut = $infoto[1];
 		$type = $infoto[2];
@@ -733,7 +728,7 @@ class albumHelper extends helper {
 				imagedestroy($im);
 		}
 			echo '<script>document.location.reload(false);</script>';
-			exit('Redimension des photos...');
+			exit('Redimension de la photo '.basename($foto));
 		}
 	}
 
@@ -748,7 +743,7 @@ class albumHelper extends helper {
 				$nommage = self::formate($foto);
 				$foto = rename($foto,$nommage);
 				echo '<script>document.location.reload(false);</script>';
-				exit('Renommage des photos...');
+				exit('Renommage de la photo '.basename($foto));
 			} else {
 				self::reorientation($foto);
 				self::redimension($foto);
@@ -770,9 +765,7 @@ class albumHelper extends helper {
 			$cache = substr(strrchr(dirname($foto), '/'), 1);
 			self::makeDir($dossiercache.'/'.$cache);
 
-			$par = basename($foto);
-			$extension = strrchr($par,'.');
-			$vignette = str_replace($extension,'',$par);
+			$vignette = str_replace(strrchr(basename($foto),'.'),'',basename($foto));
 			$miniature = $dossiercache.'/'.$cache.'/tn-'.$vignette.'-'.filesize($foto).'.webp';
 
 			if (!file_exists($miniature)) {
@@ -789,8 +782,8 @@ class albumHelper extends helper {
 				$height = ceil($height*$convert);
 				}
 
-				$largeur = $width;
-				$hauteur = $height;
+				$largeur = (int)round($width);
+				$hauteur = (int)round($height);
 
 			switch ($type) {
 				case 1:

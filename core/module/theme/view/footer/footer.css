@@ -11,9 +11,13 @@
 * Titre zone TinyMCE
 */
 .titleWysiwygContent {
-    font-family: "Oswald",sans-serif;
+    font-family: Roboto,sans-serif;
     font-weight: bold;
     text-transform: none;
     font-size: 1.0em;
     margin: 10px;
+}
+
+.classThemeFooterTextPreview {
+	min-height: 40px;
 }

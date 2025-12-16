@@ -45,7 +45,8 @@ echo template::formOpen('themeMenuForm'); ?>
                <div class="col4">
                     <?php
                     if( $this->getData(['theme', 'header', 'position']) == "site"){
-                    	echo template::select('themeMenuPosition', $menuPositionsSite, [
+						$menuSite = $this->getData(['theme', 'header', 'feature' ]) == "feature" ? $menuPositionsSiteFeature : $menuPositionsSite;
+                    	echo template::select('themeMenuPosition', $menuSite, [
                             'label' => $text['core_theme_view']['menu'][4],
 							'help' =>  $text['core_theme_view']['menu'][59],
                             'selected' => $this->getData(['theme', 'menu', 'position'])
@@ -428,6 +429,14 @@ echo template::formOpen('themeMenuForm'); ?>
 						]); ?>
                 </div>
             </div>
+			<div class="row">
+				<div class="col4 offset4">
+					<?php echo template::text('themeMenuTextPreview', [
+						'value' => 'AZPQW azpqw 159 , ; : ! àéèü ç',
+						'class' => 'classThemeMenuTextPreview'
+					]); ?>
+				</div>
+			</div>			
         </div>
     </div>
 </div>

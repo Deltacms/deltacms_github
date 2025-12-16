@@ -242,6 +242,14 @@ echo template::formOpen('themeSiteForm'); ?>
 						]); ?>
 					</div>
 				</div>
+				<div class="row">
+					<div class="col12">
+						<?php echo template::text('textPreview', [
+							'value' => 'AZPQW azpqw 159 , ; : ! àéèü ç',
+							'class' => 'textPreviewTemplate'
+						]); ?>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class="col6">
@@ -265,6 +273,14 @@ echo template::formOpen('themeSiteForm'); ?>
 						<?php echo template::select('themeTitleTextTransform', $textTransforms, [
 							'label' => $text['core_theme_view']['site'][28],
 							'selected' => $this->getData(['theme', 'title', 'textTransform'])
+						]); ?>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col12">
+						<?php echo template::text('titlePreview', [
+							'value' => 'AZPQW azpqw 159 , ; : ! àéèü ç',
+							'class' => 'textPreviewTemplate'
 						]); ?>
 					</div>
 				</div>

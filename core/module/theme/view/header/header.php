@@ -77,13 +77,6 @@ include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmi
                                 ]); ?>
                     </div>
                 </div>
-                <div class="col4">
-                    <div id="themeHeaderPositionOptions" class="displayNone">
-                        <?php echo template::checkbox('themeHeaderMargin', true, $text['core_theme_view']['header'][9], [
-                                'checked' => $this->getData(['theme', 'header', 'margin'])
-                            ]); ?>
-                    </div>
-                </div>
             </div>
 
 			<div class="row">
@@ -170,6 +163,14 @@ include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmi
                 </div>
 
             </div>
+			<div class="row">
+				<div class="col4 offset4">
+					<?php echo template::text('themeHeaderTextPreview', [
+						'value' => 'AZPQW azpqw 159 , ; : ! àéèü ç',
+						'class' => 'classThemeHeaderTextPreview'
+					]); ?>
+				</div>
+			</div>
         </div>
     </div>
 </div>

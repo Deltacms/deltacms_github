@@ -82,7 +82,7 @@ class Item
     * @return   self
     * @throws   \InvalidArgumentException if the element name is not a string, empty or NULL.
     */
-    public function addElement($elementName, $content, array $attributes = null, $overwrite = FALSE, $allowMultiple = FALSE)
+    public function addElement($elementName, $content, array|null $attributes = null, $overwrite = FALSE, $allowMultiple = FALSE)
     {
         if (empty($elementName))
             throw new \InvalidArgumentException('The element name may not be empty or NULL.');

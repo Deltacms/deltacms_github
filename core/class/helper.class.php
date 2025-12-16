@@ -623,7 +623,7 @@ class helper {
 	 * @param array $filter array des extensions à filtrer
 	 * @return array
 	 */
-	public static function scanDir($dir, $filter = []) {
+	public static function scanDir($dir, $filter = [], $sort = false) {
 		$exclu = ["agenda", "backup", "fonts", "icones", "theme"];
 		$dirContent = [];
 		$iterator = new DirectoryIterator($dir);
@@ -632,6 +632,7 @@ class helper {
 				if(in_array($fileInfos, $exclu)) continue;
   				$dirContent[] = $dir . '/' . $fileInfos->getBasename();
 				$dirContent = array_merge($dirContent, self::scanDir($dir . '/' . $fileInfos->getBasename()));
+				if($sort===true) sort($dirContent);
 			}
 		}
 		if( $filter ===[] ){
@@ -686,4 +687,25 @@ class helper {
 		}
 	}	
 
+	/*
+	* Supprime des lignes d'un fichier texte
+	* utilisée pour limiter la taille de journal.log
+	* @param string $file url du fichier
+	* @param int $firstLineDeleted première ligne à supprimer
+	* @param int $lastLineDeleted dernière ligne à supprimer
+	* @return bool
+	*/
+	public static function deleteLinesFile($file, $firstLineDeleted, $lastLineDeleted) {
+		$lines = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+		$count = count($lines);
+		if($count > ($lastLineDeleted)) {
+			$linesNew = array_merge(
+				array_slice($lines, 0, max(0, $firstLineDeleted -1)),
+				array_slice($lines, $lastLineDeleted)
+			);
+			file_put_contents($file, implode(PHP_EOL, $linesNew) . PHP_EOL, LOCK_EX);
+			return true;
+		}
+		return false;
+	}
 }
