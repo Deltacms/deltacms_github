@@ -15,7 +15,7 @@ if($module::$galleries){
 	if (count($module::$pictures) != 0){
 		$classRslides = $this->getData(['module', $this->getUrl(0), 'config', 'sliderBorder']) === true ? $classRslides = "rslides block" : $classRslides = "rslides";
 		?>
-		<div id="wrapper">
+		<div id="slider-wrapper">
 		<div class="rslides_container">
 		<?php if($module::$view_boutons == "slider1"){
 			echo '<ul class="'.$classRslides.'" id="slider1">';

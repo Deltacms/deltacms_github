@@ -10,8 +10,17 @@ var lang_admin = "<?php echo $lang_admin; ?>";
 var lang_flatpickr = "<?php echo $lang_flatpickr; ?>";
 var initSnipcart = "<?php echo $initSnipcart; ?>";
 </script>
-<?php
-echo template::formOpen('pageEditForm'); ?>
+<?php // Ajout des feuilles de style pour Tinymce
+foreach($this->getData(['plugin']) as $key=>$value){
+	if(array_key_exists($this->getUrl(2)??'', $value)){
+		$urlCss = 'plugin/'.$key.'/vendor/'.$key.'.css';
+		$urlHtml = 'plugin/'.$key.'/'.$key.'_page.html';
+		if(is_file($urlCss) && is_file($urlHtml)) $this->add_tinymce_css($urlCss);
+	}
+}
+?>
+<script> window.tinymceContentCss = <?= json_encode(self::$tinymceContentCss ?? [],	JSON_UNESCAPED_SLASHES) ?>;</script>
+<?php echo template::formOpen('pageEditForm'); ?>
 	<div class="row">
 		<div class="col2">
 			<?php $href = helper::baseUrl() . $this->getUrl(2); ?>

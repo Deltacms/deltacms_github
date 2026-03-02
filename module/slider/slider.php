@@ -25,7 +25,7 @@ class slider extends common {
 		'index' => self::GROUP_VISITOR
 	];
 	
-	const VERSION = '6.7';	
+	const VERSION = '6.8';	
 	const REALNAME = 'Slider';
 	const DELETE = true;
 	const UPDATE = '0.0';

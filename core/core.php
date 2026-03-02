@@ -51,7 +51,7 @@ class common {
 
 	// Numéro de version
 	const DELTA_UPDATE_URL = 'https://github.com/Deltacms/deltacms_update/raw/refs/heads/main/master/';
-	const DELTA_VERSION = '6.0.02';
+	const DELTA_VERSION = '6.0.03';
 	const DELTA_UPDATE_CHANNEL = "v6";
 	const DELTA_BRAND = "RGVsdGFjbXM=";
 
@@ -252,6 +252,9 @@ class common {
 		'comment' =>'',
 		'plugin' => ''
 	];
+	
+	// Feuilles de style à injecter dans Tinymce
+	public static array $tinymceContentCss = [];
 
 	/**
 	 * Constructeur commun
@@ -2034,7 +2037,7 @@ class common {
 				$classMobile ='';
 				if($_SESSION['terminal'] === 'mobile') $classMobile = ' ico_mobile';
 				$iconSubExistLargeScreen= '<span class="delta-ico-down' .$classMobile. ' iconSubExistLargeScreen" style="font-size:1em"><!----></span>';
-				$iconSubExistSmallScreen= '<span class="delta-ico-plus iconSubExistSmallScreen" style="font-size:1em"><!----></span>';
+				$iconSubExistSmallScreen= '<span class="delta-ico-down iconSubExistSmallScreen"><!----></span>';
 
 			}
 			// Si la page est désactivée et sans sous-page active et client < éditeur => elle n'est pas affichée
@@ -2728,6 +2731,17 @@ class common {
 		include('./core/include/trust.inc.php');
 		return $trust_score;
 	}
+	
+	/**
+	 * Ajoute une feuille de style dans TinyMCE
+	 */
+	public static function add_tinymce_css(string $url): void
+	{
+		$url = helper::baseurl(false).$url;
+		if (!in_array($url, self::$tinymceContentCss, true)) {
+			self::$tinymceContentCss[] = $url;
+		}
+	}
 }
 
 class core extends common {
@@ -3000,11 +3014,10 @@ class core extends common {
 			if(
 				$this->getData(['page', $this->getUrl(0), 'group']) === self::GROUP_VISITOR
 				OR (
-					$this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD')
-					AND ( // C'est au minimum un éditeur et son groupe est autorisé sur la page
-						$this->getUser('group') >= self::GROUP_EDITOR AND $this->getUser('group') >= $this->getData(['page', $this->getUrl(0), 'group'])
-						//  OU si c'est un membre ET ( page commune OU c'est le membre autorisé)
-						OR $this->getUser('group') === self::GROUP_MEMBER AND ( $this->getData(['page', $this->getUrl(0), 'member']) === 'allMembers' OR $this->getData(['page', $this->getUrl(0), 'member'])=== $this->getUser('id')))
+					$this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD') AND $this->getUser('group') >= $this->getData(['page', $this->getUrl(0), 'group'])
+					AND ( $this->getUser('group') >= self::GROUP_EDITOR  // C'est au minimum un éditeur  OU si c'est un membre ET ( page commune OU c'est le membre autorisé)
+						OR $this->getUser('group') === self::GROUP_MEMBER AND ( $this->getData(['page', $this->getUrl(0), 'member']) === 'allMembers' OR $this->getData(['page', $this->getUrl(0), 'member'])=== $this->getUser('id'))
+					)
 				)
 			) {
 				$access = true;
@@ -3315,8 +3328,23 @@ class core extends common {
 			header('Location:' . helper::baseUrl() . 'user/login/');
 			exit();
 		}
-		if (empty($this->output['content']) || $this->output['content'] == null) {
+		if ($this->getData(['page', $this->getUrl(0)]) === null && ! in_array($this->getUrl(0),self::$coreModuleIds, true)) {
 			$_SESSION['humanBot'] = 'bot';
+			//cette page existe peut-être dans une autre langue ?
+			$siteKey=[];
+			foreach($this->getData(['config','i18n']) as $key=>$value){
+				if($value==='site' && $key!== $this->getData(['config','i18n','langBase'])) $siteKey[]=$key;
+			}
+			sort($siteKey);
+			$siteKey[]='base';
+			foreach($siteKey as $key=>$value){
+				if(is_file('./site/data/'.$value.'/content/'.$this->getUrl(0).'.html')){
+					$_SESSION['langFrontEnd'] = $value === 'base'? $this->getData(['config','i18n','langBase']) : $value;
+					$_SESSION['translationType'] = $value === 'base'? 'none':'site';
+					header('Location:' . helper::baseUrl() . $this->getUrl(0));
+					exit;
+				}
+			}
 			if ( $this->getData(['locale','page404']) !== 'none'
 				AND $this->getData(['page',$this->getData(['locale','page404'])])) {
 				header('Location:' . helper::baseUrl() . $this->getData(['locale','page404']));
@@ -3324,7 +3352,7 @@ class core extends common {
 				http_response_code(404);
 				$this->addOutput([
 					'title' => $text['core']['router'][5],
-					'content' => template::speech( $text['core']['router'][6] )
+					'content' => template::speech( $text['core']['router'][6] ),
 				]);
 			}
 		}

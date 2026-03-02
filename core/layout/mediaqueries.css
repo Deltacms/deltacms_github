@@ -175,6 +175,17 @@
 		margin: 0 -20px;
 		padding: 10px;
 	}
+	/* VideoFullWidth */
+	.videoFullWidth {
+		overflow: hidden;
+		position: relative;
+		margin: 0 -20px;
+	}
+	.videoFullWidth video {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
 	.socialIconSvg {
 		margin: 0 5px -10px 5px;
 	}
@@ -183,7 +194,7 @@
 		flex-wrap: nowrap;
 		font-size: 15px;
 		padding-bottom: 3px;
-	}
+	}	
 }
 
 
@@ -355,6 +366,23 @@
 	nav #menuSpace {
 		height: 10px;
 	}
+	nav #menu .navSub a {
+		padding-left: 30px;
+	}
+	
+/* Icone animée pour le sous-menu burger */
+	nav span.delta-ico-down.iconSubExistSmallScreen{
+	  transition: transform 0.25s ease;
+	  font-size: 1.5em;
+	  cursor: pointer;		
+	}
+	nav span.delta-ico-down.iconSubExistSmallScreen:not(.iconUp){
+		  transform: rotate(0deg);
+	}
+	nav span.delta-ico-down.iconSubExistSmallScreen.iconUp {
+	  transform: rotate(-180deg);
+	}
+
 /* Position du bloc dans le site sur les petits écrans */
 	.smallScreenFlags {
 	   display: inline-block;
@@ -419,6 +447,21 @@
 	.blockFullWidth {
 		margin: 0 -10px;
 		padding: 10px;
+	}
+	.videoFullWidth {
+		position: relative;
+		width: 100vw;
+		height: var(--height-small-screen, 400px);
+		left: 50%;
+		margin-left: -50vw;
+		overflow: hidden;
+	}
+	.videoFullWidth video {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: var(--position-small-screen, 50%) center;
+		display: block;
 	}
 	.socialIconSvg {
 		margin: 0 5px;

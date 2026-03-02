@@ -1,5 +1,22 @@
 # Changelog
 
+## Version 6.0.03 de Deltacms
+- Modifications :
+	- Des pages en traduction rédigée peuvent être atteintes par un lien externe, de même on peut placer dans une langue un lien vers une page rédigée dans une autre langue,
+	- Page / Edition / nouveau Gabarit : video pleine largeur, sans marge quelque soit l'écran, cover, paramétrage de sa hauteur et de la partie affichée en petit écran,
+	- Page / Edition / Tinymce : amélioration du rendu WYSIWYG pour certains plugins par installation automatique des feuilles de style dans Tinymce,
+	- Utilisateurs : l'administrateur peut demander à un utilisateur de modifier son mot de passe, celui-ci sera automatiquement dirigé vers sa page utilisateur après connexion,
+	- Thème / Menu en petit écran : modification des icônes d'accès au sous-menu.
+- Corrections :
+	- Un membre pouvait avoir accès à une page privée en saisissant directement son url,
+	- Pages d'erreurs : une tentative d'accès à une page interdite affichait une page d'erreur 404,
+	- Utilisateurs : tri alphabétique correct de la liste des pages de redirection, l'option 'Sans redirection' est placée en premier,
+	- Module Slider : il est maintenant compatible avec les plugins Jscalendar et JscalendarSort.
+- Sur le site :
+	- Bonus -> Plugin : deltachat un chat 100% Deltacms qui s'intègre à votre thème,
+	- Bonus -> Plugin : FondVideo ajoute une vidéo en fond de page,
+	- Bonus -> Plugin : animated-slides un diaporama avec animation des images facilement paramétrable.
+
 ## Version 6.0.02 de Deltacms
 - Modifications :
 	- Langage PHP : Deltacms est compatible avec PHP 8.4,

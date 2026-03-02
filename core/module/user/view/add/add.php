@@ -108,13 +108,16 @@ include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin
 				]); ?>
 				<?php echo template::checkbox('userAddSendMail', true,
 				 $text['core_user_view']['add'][25]);
-				?>
+				if($this->getUser('group') === self::GROUP_ADMIN) {
+					echo template::checkbox('userAddChangePw', true, $text['core_user_view']['add'][33], [
+						'checked' => $this->getData(['user', $this->getUrl(2), 'changePw']) ?? false,
+						'help' => $text['core_user_view']['add'][34]
+					]);
+				} ?>
 			</div>
 			<div class="block">
 				<div class="blockTitle"><?php echo $text['core_user_view']['add'][26]; ?></div>
-				<?php $list = helper::arrayCollumn($module::$pagesList, 'title');
-				ksort($list);
-				echo template::select('userRedirectPageId', $list, [
+				<?php echo template::select('userRedirectPageId', $module::$pagesList, [
 						'label' => $text['core_user_view']['add'][27],
 						'selected' =>$this->getData(['user', $this->getUrl(2),'redirectPageId']),
 						'help' => $text['core_user_view']['add'][28]

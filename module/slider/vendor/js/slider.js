@@ -12,7 +12,7 @@ a.pauseControls&&d.hover(function(){clearInterval(q)},function(){n()})}}if("unde
 $(function () {
 
 	//Fonction jquery pour déterminer la largeur du wrapper
-	$.wrapper = function(){
+	$.sliderwrapper = function(){
 	// Adaptation de la largeur du wrapper en fonction de la largeur de la page client et de la largeur du site
 	// 10000 pour la sélection 100%
 	if(maxwidth != 10000){
@@ -43,14 +43,14 @@ $(function () {
 		if(largeur_pour_cent > 100) { largeur_pour_cent=100;}
 		largeur=largeur_pour_cent.toString() + "%";
 
-		$("#wrapper").css('width', largeur);
+		$("#slider-wrapper").css('width', largeur);
 	}
 	else
 	{
-		$("#wrapper").css('margin', "0 -20px 0 -20px");
+		$("#slider-wrapper").css('margin', "0 -20px 0 -20px");
 	}
 	//La taille du wrapper étant défini on peut l'afficher
-	$("#wrapper").css('visibility', "visible");
+	$("#slider-wrapper").css('visibility', "visible");
 	}
 	
 	//Fonction jquery pour afficher et positionner les éventuels boutons verticalement
@@ -128,14 +128,14 @@ $(function () {
 		navContainer: ""       				// Selector: Where auto generated controls should be appended to, default is after the <ul>
 	});
 	
-	//Exécution des fonctions $.wrapper et $.bouton au ready du document puis sur un redimensionnement de la fenêtre
+	//Exécution des fonctions $.sliderwrapper et $.bouton au ready du document puis sur un redimensionnement de la fenêtre
 	//Problème si la fonction responsiveslides() n'est pas finie la hauteur de l'img sera à 0 d'où les conditions 
 	//dans la fonction $.bouton(), il faudrait mettre un callback...
-	$.wrapper();
+	$.sliderwrapper();
 	console.log($('.rslides img').height());
 	$.bouton();
 	$(window).resize(function(){
-		$.wrapper();
+		$.sliderwrapper();
 		$.bouton();
 	});
 	

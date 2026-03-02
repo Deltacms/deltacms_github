@@ -5,8 +5,16 @@ include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) .
 // Passage de la langue d'administration à Tinymce et flatpickr
 $lang_admin = $text['news_view']['edit'][12];
 $lang_flatpickr = $text['news_view']['edit'][13];
-?><script> var lang_admin = "<?php echo $lang_admin; ?>";	var lang_flatpickr = "<?php echo $lang_flatpickr; ?>";var newsAddEdit = true;</script>
-
+?><script> var lang_admin = "<?php echo $lang_admin; ?>";	var lang_flatpickr = "<?php echo $lang_flatpickr; ?>";</script>
+<?php 
+// Ajout de la feuille de style pour Tinymce
+$this->add_tinymce_css('site/data/news/themeNews.css');
+?><script>
+window.tinymceContentCss = <?= json_encode(
+	self::$tinymceContentCss ?? [],
+	JSON_UNESCAPED_SLASHES
+) ?>;
+</script> 
 <?php echo template::formOpen('newsEditForm'); ?>
 	<div class="row">
 		<div class="col2">

@@ -98,7 +98,8 @@ class user extends common {
 						"accessTimer" => null,
 						"accessCsrf" => null,
 						"files" => $this->getInput('userAddFiles', helper::FILTER_BOOLEAN),
-						"redirectPageId" => $this->getInput('userRedirectPageId', helper::FILTER_STRING_SHORT)
+						"redirectPageId" => $this->getInput('userRedirectPageId', helper::FILTER_STRING_SHORT),
+						"changePw" => $this->getInput('userAddChangePw', helper::FILTER_BOOLEAN)
 					]
 				]);
 				// Création du dossier site/file/source/membersDirectory/id_membre_particulier
@@ -127,7 +128,6 @@ class user extends common {
 				]);
 			}
 			// Générer la liste des pages disponibles
-			$redirectPage = array( 'noRedirect'=> array( 'title'=>$text['core_user']['add'][10]));
 			self::$pagesList = $this->getData(['page']);
 			foreach(self::$pagesList as $page => $pageId) {
 				if ($this->getData(['page',$page,'block']) === 'bar' ||
@@ -136,7 +136,13 @@ class user extends common {
 					unset(self::$pagesList[$page]);
 				}
 			}
-			self::$pagesList = array_merge( $redirectPage, self::$pagesList);
+			self::$pagesList = helper::arrayCollumn(self::$pagesList, 'title');
+			uasort(self::$pagesList, function ($a, $b) {
+				$a = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $a);
+				$b = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $b);
+				return strnatcasecmp($a, $b);
+			});
+			self::$pagesList = [ 'noRedirect' => $text['core_user']['add'][10]] + self::$pagesList;			
 			// Valeurs en sortie
 			$this->addOutput([
 				'title' => $text['core_user']['add'][9],
@@ -255,8 +261,10 @@ class user extends common {
 						// L'ancien mot de passe est correct
 						if(password_verify($this->getInput('userEditOldPassword'), $this->getData(['user', $this->getUrl(2), 'password']))) {
 							// La confirmation correspond au mot de passe
+							$newPwOk = false;
 							if($this->getInput('userEditNewPassword') === $this->getInput('userEditConfirmPassword')) {
 								$newPassword = $this->getInput('userEditNewPassword', helper::FILTER_PASSWORD, true);
+								$newPwOk = true;
 								// Déconnexion de l'utilisateur si il change le mot de passe de son propre compte
 								if($this->getUser('id') === $this->getUrl(2)) {
 									helper::deleteCookie('DELTA_USER_ID');
@@ -290,6 +298,13 @@ class user extends common {
 						$newfirstname = $this->getData(['user', $this->getUrl(2), 'firstname']);
 						$newlastname = $this->getData(['user', $this->getUrl(2), 'lastname']);
 					}
+					// Changement du mot de passe effectif
+					if( $newPwOk === true && $this->getInput('userEditNewPassword') !== $this->getInput('userEditOldPassword')) {
+						$changePw = false;
+					} else {
+						$changePw = $this->getData(['user', $this->getUrl(2), 'changePw']);
+						if($this->getUser('group') === self::GROUP_ADMIN) $changePw = $this->getInput('userEditChangePw', helper::FILTER_BOOLEAN);
+					}
 					// Modifie l'utilisateur
 					$this->setData([
 						'user',
@@ -309,7 +324,8 @@ class user extends common {
 							'accessTimer' => $this->getData(['user',$this->getUrl(2),'accessTimer']),
 							'accessCsrf' => $this->getData(['user',$this->getUrl(2),'accessCsrf']),
 							'files' => $this->getInput('userEditFiles', helper::FILTER_BOOLEAN),
-							'redirectPageId' => $this->getInput('userRedirectPageId', helper::FILTER_STRING_SHORT)
+							'redirectPageId' => $this->getInput('userRedirectPageId', helper::FILTER_STRING_SHORT),
+							'changePw' => $changePw
 						]
 					]);
 					// Redirection spécifique si l'utilisateur change son mot de passe
@@ -332,16 +348,22 @@ class user extends common {
 					]);
 				}
 				// Générer la liste des pages disponibles
-				$redirectPage = array( 'noRedirect'=> array( 'title'=> $text['core_user']['edit'][3]) );
 				self::$pagesList = $this->getData(['page']);
 				foreach(self::$pagesList as $page => $pageId) {
 					if ($this->getData(['page',$page,'block']) === 'bar' ||
 						$this->getData(['page',$page,'disable']) === true ||
-						$this->getData(['page',$page,'title']) === null ) {
+						$this->getData(['page',$page,'title']) === null ||
+						$this->getData(['page',$page,'group']) > $this->getUser('group') ) {
 						unset(self::$pagesList[$page]);
 					}
 				}
-				self::$pagesList = array_merge( $redirectPage, self::$pagesList);
+				self::$pagesList = helper::arrayCollumn(self::$pagesList, 'title');
+				uasort(self::$pagesList, function ($a, $b) {
+					$a = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $a);
+					$b = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $b);
+					return strnatcasecmp($a, $b);
+				});
+				self::$pagesList = [ 'noRedirect' => $text['core_user']['edit'][3]] + self::$pagesList;
 				// Valeurs en sortie
 				$this->addOutput([
 					'title' => $this->getData(['user', $this->getUrl(2), 'firstname']) . ' ' . $this->getData(['user', $this->getUrl(2), 'lastname']),
@@ -544,11 +566,19 @@ class user extends common {
 						// Page de redirection par défaut
 						$redirectPage = helper::baseUrl() . str_replace('_', '/', str_replace('__', '#', $this->getUrl(2)));
 						if( null !==($this->getData(['user',$userId,'redirectPageId'])) AND $this->getData(['user',$userId,'redirectPageId']) !== 'noRedirect') $redirectPage = helper::baseUrl() . $this->getData(['user',$userId,'redirectPageId']);
+						if( ($this->getData(['user',$userId,'changePw']) ?? false) === true){
+							$redirectPage = helper::baseUrl().'user/edit/'.$userId.'/'.$_SESSION['csrf'];
+							$notif = $text['core_user']['login'][8];
+							$state = false;
+						} else {
+							$notif = $text['core_user']['login'][6] . $this->getData(['user',$userId,'firstname']) . ' ' . $this->getData(['user',$userId,'lastname']);
+							$state = true;
+						}
 						// Valeurs en sortie
 						$this->addOutput([
-							'notification' => $text['core_user']['login'][6] . $this->getData(['user',$userId,'firstname']) . ' ' . $this->getData(['user',$userId,'lastname']) ,
+							'notification' =>  $notif,
 							'redirect' => $redirectPage,
-							'state' => true
+							'state' => $state
 						]);
 					}
 				// Sinon notification d'échec et captcha addition

@@ -49,19 +49,22 @@ if ( typeof(bodyIframe) == 'undefined') {
 	var bodyIframe = "editorWysiwyg";
 };
 
-// Adaptations pour la saisie des news
-if ( typeof(newsAddEdit) == 'undefined') {
-	var newsAddEdit = false;
-};
-if(newsAddEdit){
-	var content_css = [ baseUrl + "core/layout/common.css",baseUrl + "core/layout/mediaqueries.css",baseUrl + "core/vendor/tinymce/content.css",baseUrl + "site/data/theme.css",baseUrl + "site/data/news/themeNews.css",baseUrl + "site/data/custom.css"];
-} else {
-	var content_css = [baseUrl + "core/layout/common.css",baseUrl + "core/layout/mediaqueries.css",baseUrl + "core/vendor/tinymce/content.css",baseUrl + "site/data/theme.css",baseUrl + "site/data/custom.css"];
+// Feuilles de style à ajouter dans Tinymce
+var contentCss = [
+	baseUrl + "core/layout/common.css",
+	baseUrl + "core/layout/mediaqueries.css",
+	baseUrl + "core/vendor/tinymce/content.css",
+	baseUrl + "site/data/theme.css",
+	baseUrl + "site/data/custom.css"
+];
+
+if (window.tinymceContentCss) {
+    contentCss = contentCss.concat(window.tinymceContentCss);
 }
-newAddEdit = false;
+
 var pluginsList = "advlist anchor autolink autosave autoresize codemirror fullscreen hr image link lists media nonbreaking paste searchreplace tabfocus table template";
 var toolbarList = "restoredraft | undo redo | formatselect bold italic underline forecolor backcolor | fontsizeselect | alignleft aligncenter alignright alignjustify | bullist numlist | table template | image media link | code fullscreen";
-// Vocabulaire pour templates description
+// Vocabulaire pour templates nom et description
 switch (lang_admin) {
 	case 'fr_FR':
 		var blocktext = "Bloc de texte";
@@ -83,6 +86,8 @@ switch (lang_admin) {
 		var descolorbox = "Bloc coloré aligné avec les textes.";
 		var descolorboxwide = "Bloc coloré sans marge quelque soit l'écran.";
 		var desimagewide = "Image sans marge quelque soit l'écran.";
+		var videowide = "Video pleine largeur";
+		var desvideowide = "Video sans marge quelque soit l'écran, cover, paramétrage de sa hauteur et de sa position en petit écran.";
     break;
 	case 'en_GB':
 		var blocktext = "Text Block";
@@ -104,6 +109,8 @@ switch (lang_admin) {
 		var descolorbox = "Colored box aligned with the texts.";
 		var descolorboxwide = "Colored box without borders whatever the screen.";
 		var desimagewide = "Borderless image whatever the screen.";
+		var videowide = "Full width video";
+		var desvideowide = "Borderless video regardless of screen size, cover, height and position settings for small screens.";
     break;
 	case 'es':
 		var blocktext = "Bloque de texto";
@@ -125,6 +132,8 @@ switch (lang_admin) {
 		var descolorbox = "Cuadro coloreado alineado con los textos.";
 		var descolorboxwide = "Cuadro coloreado sin bordes sea cual sea la pantalla.";
 		var desimagewide = "Imagen sin bordes en cualquier pantalla.";
+		var videowide = "Vídeo de ancho completo";
+		var desvideowide = "Vídeo sin bordes independientemente del tamaño de la pantalla, altura y posición para pantallas pequeñas.";
     break;
 }
 var templatesList = [
@@ -173,6 +182,11 @@ var templatesList = [
 			url: baseUrl + "core/vendor/tinymce/templates/" + lang_admin + "/imagefullwidth.html",
 			description: desimagewide
 		},
+		{
+			title: videowide,
+			url: baseUrl + "core/vendor/tinymce/templates/" + lang_admin + "/videofullwidth.html",
+			description: desvideowide
+		},		
 		{
 			title: accordion +"2",
 			url: baseUrl + "core/vendor/tinymce/templates/" + lang_admin + "/accordion.html",
@@ -246,6 +260,9 @@ tinymce.init({
 			e.content = e.content.replace(/ \/>/g, '>');
 			e.content = e.content.replace(/(height|width)="(\d+)px"/g, '$1="$2"');
 			e.content = e.content.replace(/(controls)(="controls")/g, '$1');
+			// attributs booléens vidéo HTML5
+			e.content = e.content.replace(/\b(autoplay|muted|loop|playsinline)="(?:\1)?"/g, '$1');
+			e.content = e.content.replace(/\b(autoplay|muted|loop|playsinline)=""/g, '$1');
 		});
 		// Ajout d'un espace insécable à la suite d'une image à sa création
 		ed.on('NodeChange', function (e) {
@@ -338,7 +355,7 @@ tinymce.init({
 	// Contenu du menu contextuel
 	contextmenu: "selectall searchreplace | hr | media image  link anchor nonbreaking  | insertable  cell row column deletetable",
 	// Fichiers CSS à intégrer à l'éditeur
-	content_css,
+	content_css: contentCss,
 	// Classe à ajouter à la balise body dans l'iframe
 	body_class: bodyIframe,
 	// Affiche les menus

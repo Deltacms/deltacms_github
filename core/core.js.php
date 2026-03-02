@@ -66,58 +66,62 @@ core.colorVariants = function(rgba) {
 /**
  * Crée un message de confirmation
  */
-core.confirm = function(text, yesCallback, noCallback) {
-	var lightbox = lity(function($) {
-		return $("<div>")
-			.addClass("lightbox")
-			.append(
-				$("<span>").text(text),
-				$("<div>")
-					.addClass("lightboxButtons")
-					.append(
-						$("<a>")
-							.addClass("button grey")
-							.text(textConfirmNo)
-							.on("click", function() {
-								lightbox.options('button', true);
-								lightbox.close();
-								if(typeof noCallback !== "undefined") {
-									noCallback();
-								}
-						}),
-						$("<a>")
-							.addClass("button")
-							.text(textConfirmYes)
-							.on("click", function() {
-								lightbox.options('button', true);
-								lightbox.close();
-								if(typeof yesCallback !== "undefined") {
-									yesCallback();
-								}
-						})
-					)
-			)
-	}(jQuery));
-	// Callback lors d'un clic sur le fond et sur la croix de fermeture
-	lightbox.options('button', false);
-	$(document).on('lity:close', function(event, instance) {
-		if(
-			instance.options('button') === false
-			&& typeof noCallback !== "undefined"
-		) {
-			noCallback();
-		}
-	});
-	// Validation de la lightbox avec le bouton entrée
-	$(document).on("keyup", function(event) {
-		if(event.keyCode === 13) {
-			lightbox.close();
-			if(typeof yesCallback !== "undefined") {
-				yesCallback();
-			}
-		}
-	});
-	return false;
+ core.confirm = function(text, yesCallback, noCallback) {
+    var lightbox = lity(function($) {
+        return $("<div>")
+            .addClass("lightbox")
+            .append(
+                $("<span>").text(text),
+                $("<div>")
+                    .addClass("lightboxButtons")
+                    .append(
+                        $("<a>")
+                            .addClass("button grey")
+                            .text(textConfirmNo)
+                            .on("click", function() {
+                                lightbox.options('button', true);
+                                lightbox.close();
+                                if (typeof noCallback !== "undefined") {
+                                    noCallback();
+                                }
+                            }),
+                        $("<a>")
+                            .addClass("button")
+                            .text(textConfirmYes)
+                            .on("click", function() {
+                                lightbox.options('button', true);
+                                lightbox.close();
+                                if (typeof yesCallback !== "undefined") {
+                                    yesCallback();
+                                }
+                            })
+                    )
+            );
+    }(jQuery));
+
+    lightbox.options('button', false);
+    // Namespace unique
+    const ns = '.coreConfirm';
+    // Close handler
+    $(document).on('lity:close' + ns, function(event, instance) {
+        $(document).off(ns);
+        if (
+            instance.options('button') === false &&
+            typeof noCallback !== "undefined"
+        ) {
+            noCallback();
+        }
+    });
+    // Enter handler
+    $(document).on("keyup" + ns, function(event) {
+        if (event.keyCode === 13) {
+            lightbox.close();
+            if (typeof yesCallback !== "undefined") {
+                yesCallback();
+            }
+        }
+    });
+    return false;
 };
 
 /**
@@ -456,14 +460,13 @@ core.start = function() {
 				if( $(select).css("z-index") === "-1" ) {
 					$(select).css("z-index","1");
 					$(select).css("opacity","1");
-					$(select).css("padding-left","20px");
 					$(select).css("position","static");
-					$(select2).removeClass('delta-ico-plus').addClass('delta-ico-minus');
+					$(select2).addClass('iconUp');
 				} else {
 					$(select).css("z-index","-1");
 					$(select).css("opacity","0");
 					$(select).css("position","absolute");
-					$(select2).removeClass('delta-ico-minus').addClass('delta-ico-plus');
+					$(select2).removeClass('iconUp');
 				}
 			}
 			// Affichage du sous-menu si une sous-page est active
@@ -475,32 +478,34 @@ core.start = function() {
 					if( $(select3).hasClass("active") ){
 							$(select).css("z-index","1");
 							$(select).css("opacity","1");
-							$(select).css("padding-left","20px");
 							$(select).css("position","static");
-							$(select2).removeClass('delta-ico-plus').addClass('delta-ico-minus');
+							$(select2).addClass('iconUp');
 					}
 				});
 			}
+			// Largeur du sous-menu burger
+			$("nav #menu .navSub a").css("width","100%");
+			// Affichage masquage du sous-menu
 			$("nav #menu ul li span").click(function() {
 				// id de la page parent
 				var parentId = $(this).parents().attr("id");
-				displaySubPages( parentId);
+				displaySubPages(parentId);
 			});
+			// Affichage du sous-menu sur page parent désactivée
 			$("nav #menu a.disabled-link").click(function() {
 				// id de la page parent
 				var parentId = $(this).parents().parents().attr("id");
-				displaySubPages( parentId);
+				displaySubPages(parentId);
 			});
 		}
 	});
 
 	/*
-	* Retour en grand écran : annulation du padding-left, de la position static et adaptation du décalage si connecté
+	* Retour en grand écran : annulation de la position static et adaptation du décalage si connecté
 	*/
 	$(window).on("resize", function() {
 		if($(window).width() > 799) {
 			$('nav ul li ul').css("position","absolute");
-			$('nav ul li ul').css("padding-left","0px");
 			var barHeight = $(" #bar ").css("height");
 			$("#navfixedconnected").css("top",barHeight);
 			$("nav ul li ul").css("opacity", "");
@@ -642,7 +647,7 @@ $(document).ready(function(){
 				const rect = sousMenu.getBoundingClientRect();
 				const espaceDispo = window.innerHeight - rect.top;
 				// Calcul de la variable --submenu-max qui fixe max-height de navSub dans mediaqueries.css
-				sousMenu.style.setProperty("--submenu-max", espaceDispo + "px");
+				sousMenu.style.setProperty("--submenu-max", parseInt(espaceDispo) + "px");
 				// Initialisation de OverlayScrollbars une seule fois
 				if (!submenu.data('os-initialized')) {
 					const osInstance = OverlayScrollbarsGlobal.OverlayScrollbars(sousMenu, {
