@@ -13,7 +13,7 @@
 
 class guestbook extends common {
 
-	const VERSION = '2.6';
+	const VERSION = '2.7';
 	const REALNAME = 'Livre d\'or';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -62,7 +62,7 @@ class guestbook extends common {
 		} else {
 			// Lexique
 			$param = '';
-			include('./module/guestbook/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_guestbook.php');
+			include('./module/guestbook/lang/'. $_SESSION['langAdmin'] . '/lex_guestbook.php');
 			if( version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '2.0', '<') ){
 				// Déplacement des 'data' de module.json à .../data_module/nomdelapage.json 'data'
 				$this->setData(['data_module', $this->getUrl(0), 'data', $this->getData(['module', $this->getUrl(0), 'data']) ]);
@@ -96,8 +96,8 @@ class guestbook extends common {
 				$this->setData(['module', $this->getUrl(0), 'config', 'signature', 'text']);
 				$this->setData(['module', $this->getUrl(0), 'config', 'versionData', '2.5']);
 			}
-			if( version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '2.6', '<') ){
-				$this->setData(['module', $this->getUrl(0), 'config', 'versionData', '2.6']);
+			if( version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '2.7', '<') ){
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData', '2.7']);
 			}			
 		}
 	}
@@ -108,7 +108,7 @@ class guestbook extends common {
 	private function init() {
 		// Lexique
 		$param = '';
-		include('./module/guestbook/lang/'. helper::lexlang($this->getData(['config', 'i18n', 'langBase']) , $this->getData(['config', 'i18n', 'langAdmin'])) . '/lex_guestbook.php');
+		include('./module/guestbook/lang/'. helper::lexlang($this->getData(['config', 'i18n', 'langBase']) , $_SESSION['langAdmin']) . '/lex_guestbook.php');
 		$this->setData([
 			'module',
 			$this->getUrl(0),
@@ -161,7 +161,7 @@ class guestbook extends common {
 		} else {
 			// Lexique
 			$param = '';
-			include('./module/guestbook/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_guestbook.php');
+			include('./module/guestbook/lang/'. $_SESSION['langAdmin'] . '/lex_guestbook.php');
 			// Liste des utilisateurs
 			$userIdsFirstnames = helper::arrayCollumn($this->getData(['user']), 'firstname');
 			ksort($userIdsFirstnames);
@@ -248,7 +248,7 @@ class guestbook extends common {
 		} else {
 			// Lexique
 			$param = '';
-			include('./module/guestbook/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_guestbook.php');
+			include('./module/guestbook/lang/'. $_SESSION['langAdmin'] . '/lex_guestbook.php');
 			// Soumission du formulaire
 			if($this->isPost()) {
 				$this->setData(['module', $this->getUrl(0), 'texts',[
@@ -297,7 +297,7 @@ class guestbook extends common {
 		} else {
 			// Lexique
 			$param = '';
-			include('./module/guestbook/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_guestbook.php');
+			include('./module/guestbook/lang/'. $_SESSION['langAdmin'] . '/lex_guestbook.php');
 			$data = $this->getData(['data_module', $this->getUrl(0), 'data']);
 			if($data) {
 				// Pagination
@@ -347,7 +347,7 @@ class guestbook extends common {
 		} else {
 			// Lexique
 			$param = '';
-			include('./module/guestbook/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_guestbook.php');
+			include('./module/guestbook/lang/'. $_SESSION['langAdmin'] . '/lex_guestbook.php');
 			// Jeton incorrect
 			if ($this->getUrl(2) !== $_SESSION['csrf']) {
 				// Valeurs en sortie
@@ -408,7 +408,7 @@ class guestbook extends common {
 		} else {
 			// Lexique
 			$param = '';
-			include('./module/guestbook/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_guestbook.php');
+			include('./module/guestbook/lang/'. $_SESSION['langAdmin'] . '/lex_guestbook.php');
 			// Jeton incorrect
 			if ($this->getUrl(2) !== $_SESSION['csrf']) {
 				// Valeurs en sortie
@@ -455,7 +455,7 @@ class guestbook extends common {
 		} else {
 			// Lexique
 			$param = '';
-			include('./module/guestbook/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_guestbook.php');
+			include('./module/guestbook/lang/'. $_SESSION['langAdmin'] . '/lex_guestbook.php');
 			// Jeton incorrect
 			if ($this->getUrl(3) !== $_SESSION['csrf']) {
 				// Valeurs en sortie
@@ -494,7 +494,7 @@ class guestbook extends common {
 		// Lexique
 		$param = '';
 		$detectBot ='';
-		include('./module/guestbook/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_guestbook.php');
+		include('./module/guestbook/lang/'. $_SESSION['langAdmin'] . '/lex_guestbook.php');
 		// Création du brouillon s'il n'existe pas
 		if( !isset($_SESSION['draftG'])){
 			$_SESSION['draftG'] = [];
@@ -583,7 +583,7 @@ class guestbook extends common {
 				$id = time();
 				$this->setData(['data_module', $this->getUrl(0), 'data', $id , $data]);
 				// Ajout de la date en clair pour les données dans le json
-				if( $this->getData(['config', 'i18n', 'langAdmin']) === 'en' ){
+				if( $_SESSION['langAdmin'] === 'en' ){
 					$dateMessage = date('m/d/Y H:i', $id);
 				} else {
 					$dateMessage = date('d/m/Y H:i', $id);

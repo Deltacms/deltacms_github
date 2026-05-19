@@ -59,7 +59,7 @@ class user extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
+			include('./core/module/user/lang/'. $_SESSION['langAdmin'] . '/lex_user.php');
 			// Soumission du formulaire
 			if($this->isPost()) {
 				$check=true;
@@ -142,7 +142,7 @@ class user extends common {
 				$b = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $b);
 				return strnatcasecmp($a, $b);
 			});
-			self::$pagesList = [ 'noRedirect' => $text['core_user']['add'][10]] + self::$pagesList;			
+			self::$pagesList = [ 'noRedirect' => $text['core_user']['add'][10]] + self::$pagesList;
 			// Valeurs en sortie
 			$this->addOutput([
 				'title' => $text['core_user']['add'][9],
@@ -165,7 +165,7 @@ class user extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
+			include('./core/module/user/lang/'. $_SESSION['langAdmin'] . '/lex_user.php');
 			// Accès refusé
 			if(
 				// L'utilisateur n'existe pas
@@ -221,7 +221,7 @@ class user extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
+			include('./core/module/user/lang/'. $_SESSION['langAdmin'] . '/lex_user.php');
 
 			if ($this->getUrl(3) !== $_SESSION['csrf'] &&
 				$this->getUrl(4) !== $_SESSION['csrf']) {
@@ -378,7 +378,7 @@ class user extends common {
 	 */
 	public function forgot() {
 		// Lexique
-		include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
+		include('./core/module/user/lang/'. $_SESSION['langAdmin'] . '/lex_user.php');
 		// Soumission du formulaire
 		if($this->isPost()) {
 			$userId = $this->getInput('userForgotId', helper::FILTER_ID, true);
@@ -433,7 +433,7 @@ class user extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
+			include('./core/module/user/lang/'. $_SESSION['langAdmin'] . '/lex_user.php');
 
 			$userIdsFirstnames = helper::arrayCollumn($this->getData(['user']), 'firstname');
 			ksort($userIdsFirstnames);
@@ -469,7 +469,7 @@ class user extends common {
 	public function login() {
 
 		// Lexique
-		include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
+		include('./core/module/user/lang/'. $_SESSION['langAdmin'] . '/lex_user.php');
 		// Soumission du formulaire
 		$logStatus = '';
 		if($this->isPost()) {
@@ -487,6 +487,9 @@ class user extends common {
 					$captcha = true;
 				}
 			}
+			// Check le password même si le compte n'existe pas pour avoir un temps de réponse constant
+			$passwordHash = $this->getData(['user', $userId, 'password']) ?? '$2y$10kfkkllmlllmpkkkk66652jfhfhgdgdoyekslpeuhfollljjeudhsijide';
+			$validPassword = password_verify($this->getInput('userLoginPassword', helper::FILTER_STRING_SHORT, true),$passwordHash);
 			/**
 			 * Aucun compte existant
 			 */
@@ -532,15 +535,17 @@ class user extends common {
 				// Check la présence des variables et contrôle du blocage du compte si valeurs dépassées
 				// Vérification du mot de passe et du groupe
 				if (
-					( $this->getData(['user',$userId,'connectTimeout']) + $this->getData(['config', 'connect', 'timeout'])  ) < time()
-					AND $this->getData(['user',$userId,'connectFail']) < $this->getData(['config', 'connect', 'attempt'])
-					AND password_verify($this->getInput('userLoginPassword', helper::FILTER_STRING_SHORT, true), $this->getData(['user', $userId, 'password']))
-					AND $this->getData(['user', $userId, 'group']) >= self::GROUP_MEMBER
+					$validPassword === true
 					AND $captcha === true
+					AND ( $this->getData(['user',$userId,'connectTimeout']) + $this->getData(['config', 'connect', 'timeout'])  ) < time()
+					AND $this->getData(['user',$userId,'connectFail']) < $this->getData(['config', 'connect', 'attempt'])
+					AND $this->getData(['user', $userId, 'group']) >= self::GROUP_MEMBER
 				) {
 					// RAZ
 					$this->setData(['user',$userId,'connectFail',0 ]);
 					$this->setData(['user',$userId,'connectTimeout',0 ]);
+					// modification de l'id de session
+					session_regenerate_id(true);
 					// Expiration
 					$expire = $this->getInput('userLoginLongTime') ? strtotime("+1 year") : 0;
 					$c = $this->getInput('userLoginLongTime', helper::FILTER_BOOLEAN) === true ? 'true' : 'false';
@@ -646,7 +651,7 @@ class user extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
+			include('./core/module/user/lang/'. $_SESSION['langAdmin'] . '/lex_user.php');
 			// Ne pas effacer l'identifiant mais seulement le mot de passe
 			if (array_key_exists('DELTA_USER_LONGTIME',$_COOKIE)
 				AND $_COOKIE['DELTA_USER_LONGTIME'] !== 'true' ) {
@@ -669,7 +674,7 @@ class user extends common {
 	 */
 	public function reset() {
 		// Lexique
-		include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
+		include('./core/module/user/lang/'. $_SESSION['langAdmin'] . '/lex_user.php');
 		// Accès refusé
 		if(
 			// L'utilisateur n'existe pas
@@ -737,7 +742,7 @@ class user extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
+			include('./core/module/user/lang/'. $_SESSION['langAdmin'] . '/lex_user.php');
 			// Soumission du formulaire
 			$notification = '';
 			$success = true;
@@ -885,7 +890,7 @@ class user extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
+			include('./core/module/user/lang/'. $_SESSION['langAdmin'] . '/lex_user.php');
 			$notification = $text['core_user']['export'][0].time().'_listusers.csv';
 			$success = true;
 			$csv ='';

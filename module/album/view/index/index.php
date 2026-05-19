@@ -2,7 +2,7 @@
 <?php
 // Lexique
 $param = '';
-include('./module/album/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_album.php');
+include('./module/album/lang/'. $_SESSION['langAdmin'] . '/lex_album.php');
 
 if($module::$galleries):
 $i = 1;

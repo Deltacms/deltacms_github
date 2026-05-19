@@ -1,6 +1,6 @@
 <?php echo template::formOpen('searchConfig');
 // Lexique
-include('./module/search/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_search.php');
+include('./module/search/lang/'. $_SESSION['langAdmin'] . '/lex_search.php');
 
 ?>
 <?php // drapeau pour la langue d'origine ou la langue en traduction rédigée

@@ -1,7 +1,7 @@
 <?php
 // Lexique
 $param = '';
-include('./module/album/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_album.php');
+include('./module/album/lang/'. $_SESSION['langAdmin'] . '/lex_album.php');
 
 $i = 1;
 $picturesNb = count($module::$pictures);
@@ -63,7 +63,7 @@ clearstatcache();
 	}
 	$exif_data = "lat=".$lis[0]."&lon=".$lis[1]."&alt=".$lis[2]."&zoom=15";
 	?>
-	<div class="osm"><a href="module/album/plugins/map.php?<?=$exif_data?>" rel="data-lity" title="<?=$this->getData(['module', $this->getUrl(0), 'config', 'texts', 'geolocation'])?>"><img src="module/album/plugins/leaflet/images/marker-icon.png" style="width: 20px; height: auto;" alt="GPS"></a></div>
+	<div class="osm"><a href="module/album/plugins/map.php?<?=$exif_data?>" rel="data-lity" title="<?=$this->getData(['module', $this->getUrl(0), 'config', 'texts', 'geolocation'])?>"><img src="core/vendor/geolocation/leaflet/images/marker-icon.png" style="width: 20px; height: auto;" alt="GPS"></a></div>
 	<?php } ?>
 	</div>
 	<?php if($i % 6 === 0 OR $i === $picturesNb): ?>

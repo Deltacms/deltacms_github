@@ -1,6 +1,6 @@
 <?php
 // Lexique
-include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
+include('./core/module/theme/lang/'. $_SESSION['langAdmin'] . '/lex_theme.php');
 
 echo template::formOpen('themeEditFonts'); ?>
 <div class="row">

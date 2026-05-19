@@ -1,7 +1,7 @@
 <?php
 // Lexique
 $param = 'social_view';
-include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
+include('./core/module/config/lang/'. $_SESSION['langAdmin'] . '/lex_config.php');
 ?>
 <div id="socialContainer">
 	<div class="row">
@@ -66,7 +66,7 @@ include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdm
 	<div class="row">
 		<div class="col12">
 			<div class="block">
-				<div class="blockTitle"><?php echo $text['core_config_view']['social'][19]; ?></div>			
+				<div class="blockTitle"><?php echo $text['core_config_view']['social'][19]; ?></div>
 					<div>
 						<?php echo template::checkbox('socialConfigMailOptionsToggle', true, $text['core_config_view']['social'][23], [
 							'checked' => (bool) $this->getData(['config', 'social', 'comment', 'group']) ||
@@ -171,7 +171,7 @@ include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdm
 						<?php echo template::checkbox('socialHeadFacebook', true, $text['core_config_view']['social'][16], [
 							'checked' => $this->getData(['config', 'social','headFacebook']),
 							'help' => $text['core_config_view']['social'][17]
-						]); ?>					
+						]); ?>
 					</div>
 				</div>
 				<div class="row">

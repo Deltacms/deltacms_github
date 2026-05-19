@@ -1,7 +1,7 @@
 <?php
 // Lexique
 $param='';
-include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
+include('./core/module/config/lang/'. $_SESSION['langAdmin'] . '/lex_config.php');
 ?>
 <div id="setupContainer">
 	<div class="row">
@@ -158,7 +158,7 @@ include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdm
 							}
 							echo template::textarea('modulesPhp1',[
 								'value' => $listText
-							]); ?> 
+							]); ?>
 						</div>
 					</div>
 					<div class="row">
@@ -243,12 +243,12 @@ include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdm
 					<div class="col12">
 						<div class="block">
 							<div class="blockTitle"><?php echo $text['core_config_view']['setup'][38];?></div>
-							<p> <?php echo $text['core_config_view']['setup'][39];?><a href="https://forum.deltacms.fr" target="_blank">https://forum.deltacms.fr</a> </p> 
+							<p> <?php echo $text['core_config_view']['setup'][39];?><a href="https://forum.deltacms.fr" target="_blank">https://forum.deltacms.fr</a> </p>
 							<p> <?php echo $text['core_config_view']['setup'][40];?> </p>
 							<p> <?php echo $text['core_config_view']['setup'][41];?> </p>
 							<div class="row">
 								<div class="col2">
-									<a href="javascript:void(0);" id="buttonHtmlToClipboard" name="buttonHtmlToClipboard" class="button"><?php echo $text['core_config_view']['setup'][35];?></a>	
+									<a href="javascript:void(0);" id="buttonHtmlToClipboard" name="buttonHtmlToClipboard" class="button"><?php echo $text['core_config_view']['setup'][35];?></a>
 								</div>
 							</div>
 						</div>

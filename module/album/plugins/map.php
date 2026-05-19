@@ -1,14 +1,29 @@
 <?php
 /* @license GNU General Public License, version 3
  * création @Lionel Croquefer 2019
- * Version du 7 novembre 2025
+ * Version du 13 avril 2026
  */
+session_start();
+switch ($_SESSION['langAdmin']) {
+    case 'en':
+        $textAltitude = "'altitude = '";
+        $textAlt = "'indefinite or 0'";
+        break;
+    case 'es':
+        $textAltitude = "'altitud = '";
+        $textAlt = "'indefinida o 0'";
+        break;
+    case 'fr':
+        $textAltitude = "'altitude = '";
+        $textAlt = "'indéterminée ou 0'";
+        break;
+	}
 $lat = $_GET['lat'];
 $lon = $_GET['lon'];
 $altitude = $_GET['alt'];
 if ($altitude > 0) { $alt = $altitude; }
 else {
-$alt = "'indéterminée ou 0'";
+$alt = $textAlt;
 }
 $zoom = $_GET['zoom'];
 ?>
@@ -18,8 +33,8 @@ $zoom = $_GET['zoom'];
 <meta charset="utf-8">
 <title>Mapop</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<link rel="stylesheet" href="leaflet/leaflet.css">
-<link rel="stylesheet" href="leaflet/Control.FullScreen.css">
+<link rel="stylesheet" href="../../../core/vendor/geolocation/leaflet/leaflet.css">
+<link rel="stylesheet" href="../../../core/vendor/geolocation/leaflet/Control.FullScreen.css">
 <style>
 html, body{
 width: 100vw;
@@ -34,8 +49,8 @@ width: 100%;
 height: 100vh;
 }
 </style>
-<script src="leaflet/leaflet.js"></script>
-<script src="leaflet/Control.FullScreen.js"></script>
+<script src="../../../core/vendor/geolocation/leaflet/leaflet.js"></script>
+<script src="../../../core/vendor/geolocation/leaflet/Control.FullScreen.js"></script>
 </head>
 
 <body>
@@ -65,7 +80,7 @@ const baselayers = {
 };
 
 let marker = L.marker([<?=$lat?>, <?=$lon?>]).addTo(mymap)
-    .bindPopup('altitude = '+ <?=$alt?> +' m')
+    .bindPopup(<?=$textAltitude?> +' '+ <?=$alt?> +' m')
     .openPopup();
 
 let layerControl = L.control.layers(baselayers).addTo(mymap);

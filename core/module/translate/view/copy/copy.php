@@ -1,6 +1,6 @@
 <?php echo template::formOpen('translateFormCopy');
 // Lexique
-include('./core/module/translate/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_translate.php');
+include('./core/module/translate/lang/'. $_SESSION['langAdmin'] . '/lex_translate.php');
 
 // drapeau pour la langue d'origine ou la langue en traduction rédigée
 $flag = $this->flagLang();
@@ -40,7 +40,7 @@ $flag = $this->flagLang();
                         ]); ?>
                 </div>
                 <div class="col6 pagesList">
-				<?php 
+				<?php
 				asort($module::$pagesList);
 				echo template::select('translateCopyPage', $module::$pagesList, [
 						'label' => $text['core_translate_view']['copy'][7].template::flag($flag, '20px'),

@@ -1,6 +1,6 @@
 <?php
 // Lexique
-include('./core/module/page/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_page.php');
+include('./core/module/page/lang/'. $_SESSION['langAdmin'] . '/lex_page.php');
 
 echo template::formOpen('pageEditPluginForm'); ?>
 <div class="row">

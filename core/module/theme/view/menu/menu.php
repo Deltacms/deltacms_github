@@ -1,6 +1,6 @@
 <?php
 // Lexique
-include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
+include('./core/module/theme/lang/'. $_SESSION['langAdmin'] . '/lex_theme.php');
 
 // drapeau pour la langue d'origine ou la langue en traduction rédigée
 $flag = $this->flagLang();
@@ -56,7 +56,7 @@ echo template::formOpen('themeMenuForm'); ?>
 							'label' => $text['core_theme_view']['menu'][4],
 							'help' =>  $text['core_theme_view']['menu'][59],
 							'selected' => $this->getData(['theme', 'menu', 'position'])
-						]);					
+						]);
                     }else{
 						echo template::select('themeMenuPosition', $menuPositionsHide, [
 							'label' => $text['core_theme_view']['menu'][4],
@@ -250,8 +250,8 @@ echo template::formOpen('themeMenuForm'); ?>
                                 'selected' => $this->getData(['theme', 'menu', 'burgerContent']),
                                 'help' => $text['core_theme_view']['menu'][17]
                             ]); ?>
-                </div>	
-				
+                </div>
+
 			</div>
 			<div id="themeMenuBurgerTitle" class="row <?php if( $this->getData(['theme', 'menu', 'burgerContent']) !== 'title') echo ' displayNone';?>">
 				<div class="col6">
@@ -270,7 +270,7 @@ echo template::formOpen('themeMenuForm'); ?>
 							]); ?>
 				</div>
 			</div>
-			<div id="themeMenuBurgerLogoId1" class="row <?php if( $this->getData(['theme', 'menu', 'burgerContent']) !== 'oneIcon' 
+			<div id="themeMenuBurgerLogoId1" class="row <?php if( $this->getData(['theme', 'menu', 'burgerContent']) !== 'oneIcon'
 						&&  $this->getData(['theme', 'menu', 'burgerContent']) !== 'twoIcon' ) echo ' displayNone';?>">
 				<div class="col6">
 					<?php
@@ -336,7 +336,7 @@ echo template::formOpen('themeMenuForm'); ?>
                             'value' => $this->getData(['theme', 'menu', 'burgerIconBgColor'])
                         ]); ?>
                 </div>
-            </div>			
+            </div>
             <div class="row">
                 <div class="col4">
                     <?php echo template::text('themeMenuBurgerTextMenuColor', [
@@ -436,7 +436,7 @@ echo template::formOpen('themeMenuForm'); ?>
 						'class' => 'classThemeMenuTextPreview'
 					]); ?>
 				</div>
-			</div>			
+			</div>
         </div>
     </div>
 </div>

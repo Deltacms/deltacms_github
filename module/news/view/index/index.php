@@ -1,10 +1,10 @@
 <?php
 // Lexique
-include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_news.php');
+include('./module/news/lang/'. $_SESSION['langAdmin'] . '/lex_news.php');
 
 if($module::$news):
 	// Mémorisation da la page active
-	$_SESSION['pageActive'] = $this->getUrl(); 
+	$_SESSION['pageActive'] = $this->getUrl();
 	if( function_exists('datefmt_create') && function_exists('datefmt_format') && extension_loaded('intl') ){
 		// Pour les dates suivant la langue de rédaction du site (langue principale ou langue de traduction rédigée)
 		if( isset( $_SESSION['langFrontEnd']) && isset( $_SESSION['translationType']) && $_SESSION['translationType'] === 'site' ){
@@ -18,8 +18,8 @@ if($module::$news):
 			IntlDateFormatter::SHORT,
 			'Europe/Paris',
 			IntlDateFormatter::GREGORIAN
-		); 
-	} ?>	
+		);
+	} ?>
 	<?php if( $this->getData(['module', $this->getUrl(0), 'config', 'sameHeight']) === true){ ?>
 		<div class="row" style="display: flex; flex-wrap: wrap;">
 	<?php } else { ?>
@@ -40,11 +40,11 @@ if($module::$news):
 					<div class="newsContent">
 						<?php echo $news['content']; ?>
 					</div>
-					<div class="newsSignature">	
+					<div class="newsSignature">
 						<?php if( function_exists('datefmt_create') && function_exists('datefmt_format') && extension_loaded('intl') ){
-							echo datefmt_format($fmt, strtotime( date('Y/m/d H:i:s',$news['publishedOn']))); 
+							echo datefmt_format($fmt, strtotime( date('Y/m/d H:i:s',$news['publishedOn'])));
 						} else {
-							echo mb_detect_encoding(date('d/m/Y', $news['publishedOn']), 'UTF-8', true)? 
+							echo mb_detect_encoding(date('d/m/Y', $news['publishedOn']), 'UTF-8', true)?
 								date('d/m/Y', $news['publishedOn'])
 								: helper::utf8Encode(date('d/m/Y', $news['publishedOn']));
 						}
@@ -80,7 +80,7 @@ if($module::$news):
 		</div>
 	<?php endif; ?>
 <?php else: ?>
-	<?php 
+	<?php
 	$textNoNews = null === $this->getData(['module', $this->getUrl(0), 'config', 'texts', 'noNews']) ? $text['news_view']['config'][20] : $this->getData(['module', $this->getUrl(0), 'config', 'texts', 'noNews']);
 	echo template::speech($textNoNews); ?>
 <?php endif; ?>

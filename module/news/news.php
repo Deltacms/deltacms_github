@@ -19,7 +19,7 @@
 
 class news extends common {
 
-	const VERSION = '5.6';
+	const VERSION = '5.7';
 	const REALNAME = 'News';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -109,17 +109,17 @@ class news extends common {
 	 * Ajout d'un article
 	 */
 	public function add() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < news::$actions['add'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
-			include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_news.php');
+			include('./module/news/lang/'. $_SESSION['langAdmin'] . '/lex_news.php');
 			// Soumission du formulaire
 			if($this->isPost()) {
 				// Crée la news
@@ -173,17 +173,17 @@ class news extends common {
 	 * Configuration
 	 */
 	public function config() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < news::$actions['config'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
-			include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_news.php');
+			include('./module/news/lang/'. $_SESSION['langAdmin'] . '/lex_news.php');
 			// Soumission du formulaire
 			if($this->isPost()) {
 
@@ -208,17 +208,17 @@ class news extends common {
 				$style_invert .= '}';
 				$style_invert .= '.newsFrame a{ color:'. helper::invertColor($this->getInput('newsThemeLinkColor')) .'}';
 				$style_invert .= '.newsFrame h1,.newsFrame h2,.newsFrame h3,.newsFrame h4,.newsFrame h5,.newsFrame h6{ color:'. helper::invertColor($this->getInput('newsThemeTitleColor')) .'}';
-				$style_invert .= '.newsSignature { color:' . helper::invertColor($this->getInput('newsThemeSignatureColor')) . ';';				
+				$style_invert .= '.newsSignature { color:' . helper::invertColor($this->getInput('newsThemeSignatureColor')) . ';';
 				// Dossier de l'instance
 				$dircss = self::DATA_DIR.self::$i18n.'/data_module/news/'. $this->getUrl(0);
 				if( !is_dir($dircss)) mkdir($dircss, 0755, true);
 				$success = file_put_contents($dircss . '/theme.css', $style );
-				$success = file_put_contents($dircss . '/theme_invert.css', $style_invert );				
+				$success = file_put_contents($dircss . '/theme_invert.css', $style_invert );
 				// Fin feuille de style
 
 				$this->setData(['module', $this->getUrl(0), 'theme',[
 					'style'       => $success ? $dircss . '/theme.css' : '',
-					'style_invert' => $success ? $dircss . '/theme_invert.css' : '', 
+					'style_invert' => $success ? $dircss . '/theme_invert.css' : '',
 					'borderColor' => $this->getInput('newsThemeBorderColor'),
 					'borderWidth'	  => $this->getInput('newsThemeBorderWidth',helper::FILTER_STRING_SHORT),
 					'backgroundColor' => $this->getInput('newsThemeBackgroundColor'),
@@ -264,7 +264,7 @@ class news extends common {
 				// News en fonction de la pagination
 				// Pour les dates suivant la langue d'administration
 				if( function_exists('datefmt_create') && function_exists('datefmt_create') && extension_loaded('intl') ){
-					$lang = $text['news']['config'][4]; 
+					$lang = $text['news']['config'][4];
 					$zone = $text['news']['config'][5];
 					$fmt = datefmt_create(
 						$lang,
@@ -297,7 +297,7 @@ class news extends common {
 							$dateOff .=	$text['news']['config'][3];
 							$dateOff .= mb_detect_encoding(date('H:i',  $this->getData(['data_module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOff'])), 'UTF-8', true)
 								? date('H:i', $this->getData(['data_module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOff']))
-								: helper::utf8Encode(date('H:i', $this->getData(['data_module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOff'])));						
+								: helper::utf8Encode(date('H:i', $this->getData(['data_module', $this->getUrl(0),'posts', $newsIds[$i], 'publishedOff'])));
 						}
 					} else {
 						$dateOff = $text['news']['config'][1];
@@ -335,17 +335,17 @@ class news extends common {
 	 * Suppression
 	 */
 	public function delete() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < news::$actions['delete'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
-			include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_news.php');		
+			include('./module/news/lang/'. $_SESSION['langAdmin'] . '/lex_news.php');
 			// La news n'existe pas
 			if($this->getData(['data_module', $this->getUrl(0),'posts', $this->getUrl(2)]) === null) {
 				// Valeurs en sortie
@@ -378,17 +378,17 @@ class news extends common {
 	 * Édition
 	 */
 	public function edit() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < news::$actions['edit'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
-			include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_news.php');	
+			include('./module/news/lang/'. $_SESSION['langAdmin'] . '/lex_news.php');
 			// Jeton incorrect
 			if ($this->getUrl(3) !== $_SESSION['csrf']) {
 				// Valeurs en sortie
@@ -466,7 +466,7 @@ class news extends common {
 	 */
 	public function index() {
 		// Lexique
-		include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_news.php');
+		include('./module/news/lang/'. $_SESSION['langAdmin'] . '/lex_news.php');
 
 		// Mise à jour des données de module ou initialisation à la création de la page
 		if( null === $this->getData(['module', $this->getUrl(0), 'config', 'versionData']) || version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), self::VERSION, '<') ) $this->update();
@@ -548,18 +548,18 @@ class news extends common {
 					} elseif( strpos($value, '<p') !== false && strpos($value, '</p>') !== false ){
 						$arrayType[$key] = 'P';
 					} else {
-						$arrayType[$key] = 'A';	
+						$arrayType[$key] = 'A';
 					}
-				}				
+				}
 				self::$news[$newsIds[$i]]['content'] = '';
 				$charDisplay = 0; $mediaDisplay=0;
 				for( $key=0; $key<count($arrayContent); $key++){
 					//Paragraphe avec media autorisé ( img, iframe, video, figure)
-					if( ($arrayType[$key] === 'IM' || $arrayType[$key] === 'IF' || $arrayType[$key] === 'V'  || $arrayType[$key] === 'F' ) 
+					if( ($arrayType[$key] === 'IM' || $arrayType[$key] === 'IF' || $arrayType[$key] === 'V'  || $arrayType[$key] === 'F' )
 						&& ( $mediaDisplay === 0 || $this->getData(['module', $this->getUrl(0), 'config', 'height']) === -1) && $this->getData(['module', $this->getUrl(0), 'config', 'hideMedia']) === false ){
 						// Modification des balises pour supprimer les marges
 						if( $this->getData(['module', $this->getUrl(0), 'config', 'noMargin']) === true){
-							$arrayContent[$key] = str_replace('</p>', '', $arrayContent[$key]); 
+							$arrayContent[$key] = str_replace('</p>', '', $arrayContent[$key]);
 							if( strpos( $arrayContent[$key], '<p>') !== false){
 								$arrayContent[$key] = str_replace('<p>', '', $arrayContent[$key]);
 							} elseif( strpos( $arrayContent[$key], 'figure class=') === false) {
@@ -577,7 +577,7 @@ class news extends common {
 						$mediaDisplay++;
 					} elseif( $arrayType[$key] === 'P') {
 						//Paragraphe à abréger
-						if ( $this->getData(['module', $this->getUrl(0), 'config', 'height']) !== -1){	
+						if ( $this->getData(['module', $this->getUrl(0), 'config', 'height']) !== -1){
 							$charRemain = $this->getData(['module', $this->getUrl(0), 'config', 'height']) - $charDisplay;
 							if( $charRemain > 0){
 								if ( strlen( $arrayContent[$key] ) >= $charRemain ) {
@@ -586,13 +586,13 @@ class news extends common {
 									$arrayContent[$key] = '<p>'.substr( $arrayContent[$key], 0, $charRemain).'</p>';
 									$arrayContent[$key] .= '<p> ... <a href="'. helper::baseUrl(true) . $this->getUrl(0) . '/' . $newsIds[$i] . '"><span class="newsSuite">'.$this->getData(['module', $this->getUrl(0), 'config','texts', 'readmore']).'</span></a></p>' ;
 									$charDisplay = $charDisplay + 1000;
-								} 
+								}
 								self::$news[$newsIds[$i]]['content'] .= $arrayContent[$key];
-								$charDisplay = $charDisplay + strlen( strip_tags( $arrayContent[$key]) );						
+								$charDisplay = $charDisplay + strlen( strip_tags( $arrayContent[$key]) );
 							}
 						} else {
 							self::$news[$newsIds[$i]]['content'] .= $arrayContent[$key];
-						}	 
+						}
 					} elseif ( $arrayType[$key] === 'A' && $this->getData(['module', $this->getUrl(0), 'config', 'height']) === -1) {
 						self::$news[$newsIds[$i]]['content'] .= $arrayContent[$key];
 					}
@@ -601,11 +601,11 @@ class news extends common {
 				// Mise en forme de la signature
 				self::$news[$newsIds[$i]]['userId'] = $this->signature($this->getData(['data_module', $this->getUrl(0), 'posts', $newsIds[$i], 'userId']));
 			}
-			if( isset( $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] ) && $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] === 'true' ) { 
+			if( isset( $_SESSION['ACC_INVERTCOLOR'] ) && $_SESSION['ACC_INVERTCOLOR'] === true ) {
 				$style = 'style_invert';
 			} else {
 				$style = 'style';
-			} 
+			}
 			// Valeurs en sortie
 			$this->addOutput([
 				'showBarEditButton' => true,
@@ -645,7 +645,7 @@ class news extends common {
 	 */
 	private function update() {
 		// Lexique
-		include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_news.php');
+		include('./module/news/lang/'. $_SESSION['langAdmin'] . '/lex_news.php');
 
 		$versionData = $this->getData(['module',$this->getUrl(0),'config', 'versionData' ]);
 
@@ -661,19 +661,19 @@ class news extends common {
 				$this->setData(['module',$this->getUrl(0),'theme', 'borderRadius', '0px' ]);
 				$this->setData(['module',$this->getUrl(0),'theme', 'borderShadows', '0px 0px 0px' ]);
 				$this->deleteData(['module',$this->getUrl(0),'theme', 'borderStyle' ]);
-				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '4.1' ]);	
+				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '4.1' ]);
 			}
 			// Mise à jour 4.2
 			if (version_compare($versionData, '4.2', '<') ) {
 				// Mettre à jour la version
 				$this->setData(['module',$this->getUrl(0),'config', 'noMargin', true ]);
-				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '4.2' ]);	
+				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '4.2' ]);
 			}
 			// Mise à jour 4.5
 			if (version_compare($versionData, '4.5', '<') ) {
 				// Mettre à jour la version
 				$this->setData(['module',$this->getUrl(0),'config', 'hideMedia', false ]);
-				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '4.5' ]);	
+				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '4.5' ]);
 			}
 			// Mise à jour 4.8
 			if (version_compare($versionData, '4.8', '<') ) {
@@ -683,15 +683,15 @@ class news extends common {
 				$this->setData(['module', $this->getUrl(0), 'theme','titleColor', $this->getData(['theme', 'title', 'textColor' ]) ]);
 				$this->setData(['module', $this->getUrl(0), 'theme','signatureColor', $this->getData(['theme', 'text', 'textColor' ]) ]);
 				// Mettre à jour la version
-				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '4.8' ]);	
+				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '4.8' ]);
 			}
 			// Mise à jour 5.0
 			if (version_compare($versionData, '5.0', '<') ) {
-				// Déplacement des 'posts' de module.json vers data_module/nomdelapage.json		
+				// Déplacement des 'posts' de module.json vers data_module/nomdelapage.json
 				$this->setData(['data_module', $this->getUrl(0), 'posts', $this->getData(['module', $this->getUrl(0), 'posts']) ]);
 				$this->deleteData(['module', $this->getUrl(0), 'posts']);
 				// Mettre à jour la version
-				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '5.0' ]);	
+				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '5.0' ]);
 			}
 			// Mise à jour 5.2
 			if (version_compare($versionData, '5.2', '<') ) {
@@ -699,7 +699,7 @@ class news extends common {
 				if( is_dir( self::DATA_DIR.'/news')){
 					// Pour toutes les langues du site
 					foreach( $this->getData(['config', 'i18n' ]) as $lang=>$state ){
-						if( $state === 'site') $this->copyDir( self::DATA_DIR.'news', self::DATA_DIR.$lang.'/data_module/news');						
+						if( $state === 'site') $this->copyDir( self::DATA_DIR.'news', self::DATA_DIR.$lang.'/data_module/news');
 					}
 					$this->copyDir( self::DATA_DIR.'news', self::DATA_DIR.'base/data_module/news');
 				}
@@ -708,11 +708,11 @@ class news extends common {
 				$this->setData(['module', $this->getUrl(0), 'config', 'texts', 'back', $text['news_view']['config'][42] ]);
 				$this->setData(['module', $this->getUrl(0), 'config', 'texts', 'noNews', $text['news_view']['config'][43] ]);
 				// Mettre à jour la version
-				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '5.2' ]);	
+				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '5.2' ]);
 			}
-			// Mise à jour 5.6
-			if (version_compare($versionData, '5.6', '<') ) {
-				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '5.6' ]);	
+			// Mise à jour 5.7
+			if (version_compare($versionData, '5.7', '<') ) {
+				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '5.7' ]);
 			}
 		}
 	}
@@ -721,14 +721,14 @@ class news extends common {
 	 * Initialisation du thème d'un nouveau module
 	 */
 	private function init() {
-		
+
 		// Lexique
-		include('./module/news/lang/'. helper::lexlang($this->getData(['config', 'i18n', 'langBase']) , $this->getData(['config', 'i18n', 'langAdmin'])) . '/lex_news.php');
-		
+		include('./module/news/lang/'. helper::lexlang($this->getData(['config', 'i18n', 'langBase']) , $_SESSION['langAdmin']) . '/lex_news.php');
+
 		$dircss = self::DATA_DIR . self::$i18n . '/data_module/news/' . $this->getUrl(0);
 		// Création du dossier pour le thème associé à tinymce
 		if( !is_dir( self::DATADIRECTORY  )) mkdir( self::DATADIRECTORY, 0755, true );
-		
+
 		// Données du module absentes
 		require_once('module/news/ressource/defaultdata.php');
 		if ($this->getData(['module', $this->getUrl(0), 'config' ]) === null) {
@@ -739,7 +739,7 @@ class news extends common {
 			$this->setData(['module', $this->getUrl(0), 'theme', init::$defaultTheme]);
 			$this->setData(['module', $this->getUrl(0), 'theme', 'style', $dircss . '/theme.css' ]);
 		}
-		
+
 		// Couleurs initialisées à celles du site
 		$this->setData(['module', $this->getUrl(0), 'theme', 'backgroundColor', $this->getData(['theme', 'site', 'backgroundColor' ]) ]);
 		$this->setData(['module', $this->getUrl(0), 'theme', 'textColor', $this->getData(['theme', 'text', 'textColor' ]) ]);
@@ -761,13 +761,13 @@ class news extends common {
 			$style .= '.newsFrame a{ color:'. $this->getData(['module', $this->getUrl(0), 'theme', 'linkColor' ]) .'}';
 			$style .= '.newsFrame h1,.newsFrame h2,.newsFrame h3,.newsFrame h4,.newsFrame h5,.newsFrame h6{ color:'. $this->getData(['module', $this->getUrl(0), 'theme', 'titleColor' ]) .'}';
 			$style .= '.newsSignature { color:' . $this->getData(['module', $this->getUrl(0), 'theme', 'signatureColor' ]) . ';';
-			
+
 			// Sauver la feuille de style
 			file_put_contents( $dircss. '/theme.css' , $style );
 			// Stocker le nom de la feuille de style
 			$this->setData(['module',  $this->getUrl(0), 'theme', 'style', $dircss . '/theme.css']);
 		}
-		
+
 		// Textes initialisés dans la langue d'administration
 		$this->setData(['module', $this->getUrl(0), 'config', 'texts', 'readmore', $text['news_view']['config'][41] ]);
 		$this->setData(['module', $this->getUrl(0), 'config', 'texts', 'back', $text['news_view']['config'][42] ]);

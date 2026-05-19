@@ -149,7 +149,7 @@ if ($this->getData(['core', 'dataVersion']) < 4501) {
 	$this->setData(['config', 'i18n', 'scriptGoogle', false]);
 	$this->setData(['config', 'i18n', 'showCredits', false]);
 	$this->setData(['config', 'i18n', 'autoDetect', false]);
-	switch ( $this->getData(['config', 'i18n', 'langAdmin']) ){
+	switch ( $_SESSION['langAdmin'] ){
 		case 'fr':
 			$groupWhoIs = [ 0=>'Visiteur', 1=>'Membre', 2=>'Editeur', 3=>'Modérateur', 4=>'Administrateur' ];
 		break;
@@ -215,7 +215,7 @@ if ($this->getData(['core', 'dataVersion']) < 5002) {
 if ($this->getData(['core', 'dataVersion']) < 5003) {
 	// Label initial de la checkbox rgpdCheck
 	$param='';
-	include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
+	include('./core/module/config/lang/'. $_SESSION['langAdmin'] . '/lex_config.php');
 	$this->setDataAllLocale(['locale', 'questionnaireAccept', $text['core_config_view']['locale'][62]]);
 	$this->setData(['core', 'dataVersion', 5003]);
 }
@@ -233,7 +233,7 @@ if ($this->getData(['core', 'dataVersion']) < 5102) {
 	}
 	// Ajout de variables locales pour toutes les langues
 	$param='';
-	include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
+	include('./core/module/config/lang/'. $_SESSION['langAdmin'] . '/lex_config.php');
 	$this->setDataAllLocale(['locale', 'mandatoryText', $text['core_config_view']['locale'][64] ]);
 	$this->setDataAllLocale(['locale', 'impossibleText', $text['core_config_view']['locale'][65] ]);
 	$this->setDataAllLocale(['locale', 'pageComment', 'submitted', $text['core_config_view']['locale'][66] ]);
@@ -242,7 +242,7 @@ if ($this->getData(['core', 'dataVersion']) < 5102) {
 }
 if ($this->getData(['core', 'dataVersion']) < 5201) {
 	// Localisation avec ordre de locales : langue Admin puis les 2 autres
-	$this->localisation($this->getData(['config', 'i18n', 'langAdmin' ]));
+	$this->localisation($this->getData(['config', 'i18n', 'langAdmin']));
 	if( null !== $this->getData(['core', 'localisation']) ){
 		setlocale(LC_ALL, $this->getData(['core', 'localisation' ]), 'fr_FR.utf8','fr_Fr', 'french');
 	} else {
@@ -272,7 +272,7 @@ if ($this->getData(['core', 'dataVersion']) < 5401) {
 	$this->setData(['config', 'connect', 'trust', false]);
 	// Texte initial de l'aide pour le captcha additions
 	$param='';
-	include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
+	include('./core/module/config/lang/'. $_SESSION['langAdmin'] . '/lex_config.php');
 	$this->setDataAllLocale(['locale', 'captchaAddition', $text['core_config_view']['locale'][70]]);
 	$this->setData(['core', 'dataVersion', 5401]);
 }
@@ -294,7 +294,9 @@ if ($this->getData(['core', 'dataVersion']) < 6001) {
 	}
 	$this->setData(['core', 'dataVersion', 6001]);
 }
-if ($this->getData(['core', 'dataVersion']) < 6003) {
-	$this->setData(['core', 'dataVersion', 6003]);
+if ($this->getData(['core', 'dataVersion']) < 6004) {
+	$this->setData(['config', 'mailDomainNameAuto', $this->getDomainName($_SERVER['HTTP_HOST'])]);
+	$this->setData(['admin', 'colorLink', 'rgba(228, 14, 23, 1)']);
+	$this->setData(['core', 'dataVersion', 6004]);
 }
 ?>

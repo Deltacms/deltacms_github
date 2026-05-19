@@ -1,6 +1,6 @@
 <?php
 // Lexique
-include('./module/redirection/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_redirection.php');
+include('./module/redirection/lang/'. $_SESSION['langAdmin'] . '/lex_redirection.php');
 
 echo template::formOpen('redirectionConfig'); ?>
 	<div class="row">

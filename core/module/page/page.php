@@ -55,7 +55,7 @@ class page extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/page/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_page.php');
+			include('./core/module/page/lang/'. $_SESSION['langAdmin'] . '/lex_page.php');
 			// Adresse sans le token
 			$url = explode('&',$this->getUrl(2));
 			// La page n'existe pas
@@ -147,7 +147,7 @@ class page extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/page/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_page.php');
+			include('./core/module/page/lang/'. $_SESSION['langAdmin'] . '/lex_page.php');
 			$pageTitle = $text['core_page']['add'][0];
 			$pageId = helper::increment(helper::filter($pageTitle, helper::FILTER_ID), $this->getData(['page']));
 			$this->setData([
@@ -212,7 +212,7 @@ class page extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/page/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_page.php');
+			include('./core/module/page/lang/'. $_SESSION['langAdmin'] . '/lex_page.php');
 			// $url prend l'adresse sans le token
 			$url = explode('&',$this->getUrl(2));
 			// La page n'existe pas
@@ -440,7 +440,7 @@ class page extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/page/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_page.php');
+			include('./core/module/page/lang/'. $_SESSION['langAdmin'] . '/lex_page.php');
 			// Jeton incorrect
 			if ($this->getUrl(4) !== $_SESSION['csrf']) {
 				// Valeurs en sortie
@@ -497,7 +497,7 @@ class page extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/page/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_page.php');
+			include('./core/module/page/lang/'. $_SESSION['langAdmin'] . '/lex_page.php');
 			// Jeton incorrect
 			if ($this->getUrl(4) !== $_SESSION['csrf']) {
 				// Valeurs en sortie
@@ -542,7 +542,7 @@ class page extends common {
 				'access' => false
 			]);
 		} else {
-			include('./core/module/page/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_page.php');
+			include('./core/module/page/lang/'. $_SESSION['langAdmin'] . '/lex_page.php');
 			// Jeton incorrect
 			if ($this->getUrl(3) !== $_SESSION['csrf']) {
 				// Valeurs en sortie
@@ -589,7 +589,7 @@ class page extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/page/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_page.php');
+			include('./core/module/page/lang/'. $_SESSION['langAdmin'] . '/lex_page.php');
 			// Jeton incorrect
 			if ($this->getUrl(3) !== $_SESSION['csrf']) {
 				// Valeurs en sortie
@@ -644,7 +644,7 @@ class page extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/page/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_page.php');
+			include('./core/module/page/lang/'. $_SESSION['langAdmin'] . '/lex_page.php');
 			// Soumission du formulaire
 			$dataPlugin = $this->getData(['plugin']);
 			$pageId = $this->getUrl(2);
@@ -740,7 +740,7 @@ class page extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/page/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_page.php');
+			include('./core/module/page/lang/'. $_SESSION['langAdmin'] . '/lex_page.php');
 			// Jeton incorrect
 			if ($this->getUrl(4) !== $_SESSION['csrf']) {
 				// Valeurs en sortie
@@ -792,7 +792,7 @@ class page extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/page/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_page.php');
+			include('./core/module/page/lang/'. $_SESSION['langAdmin'] . '/lex_page.php');
 			// La page n'existe pas
 			if($this->getData(['page', $this->getUrl(2)]) === null) {
 				// Valeurs en sortie

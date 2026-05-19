@@ -31,7 +31,7 @@ class statislite extends common {
 		'conversionTime' => self::GROUP_VISITOR
 	];
 	
-	const VERSION = '5.5';	
+	const VERSION = '5.6';	
 	const REALNAME = 'Statislite';
 	const DELETE = true;
 	const UPDATE = '2.6';
@@ -122,9 +122,9 @@ class statislite extends common {
 			copy('./module/statislite/ressource/tmp/.htaccess', self::DATA_DIR.'base/data_module/statislite/tmp/.htaccess');
 			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','5.2']);
 		}
-		// Version 5.5
-		if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '5.5', '<') ) {	
-			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','5.5']);
+		// Version 5.6
+		if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '5.6', '<') ) {	
+			$this->setData(['module', $this->getUrl(0), 'config', 'versionData','5.6']);
 		}
 	}
 	
@@ -142,7 +142,7 @@ class statislite extends common {
 			]);	
 		} else {
 			// Lexique
-			include('./module/statislite/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_statislite.php');	
+			include('./module/statislite/lang/'. $_SESSION['langAdmin'] . '/lex_statislite.php');	
 			// Détection d'un changement de nom de la page statistique pour mettre à jour listeQS
 			if( is_file( self::$fichiers_json.'filtre_primaire.json')){
 				$json = file_get_contents(self::$fichiers_json.'filtre_primaire.json');
@@ -280,7 +280,7 @@ class statislite extends common {
 			]);	
 		} else {
 			// Lexique
-			include('./module/statislite/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_statislite.php');
+			include('./module/statislite/lang/'. $_SESSION['langAdmin'] . '/lex_statislite.php');
 			// Liste des pages du site
 			$i=0;
 			foreach($this->getData(['page']) as $key=>$page){
@@ -447,7 +447,7 @@ class statislite extends common {
 			]);	
 		} else {
 			// Lexique
-			include('./module/statislite/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_statislite.php');
+			include('./module/statislite/lang/'. $_SESSION['langAdmin'] . '/lex_statislite.php');
 			// Jeton incorrect
 			if ($this->getUrl(2) !== $_SESSION['csrf']) {
 				// Valeurs en sortie
@@ -491,7 +491,7 @@ class statislite extends common {
 			]);	
 		} else {
 			// Lexique
-			include('./module/statislite/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_statislite.php');
+			include('./module/statislite/lang/'. $_SESSION['langAdmin'] . '/lex_statislite.php');
 			// Sauvegarde des fichiers json
 			$this->sauvegardeJson();
 			// Valeurs en sortie
@@ -517,7 +517,7 @@ class statislite extends common {
 			]);	
 		} else {
 			// Lexique
-			include('./module/statislite/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_statislite.php');
+			include('./module/statislite/lang/'. $_SESSION['langAdmin'] . '/lex_statislite.php');
 
 			// Jeton incorrect
 			if ($this->getUrl(2) !== $_SESSION['csrf']) {
@@ -544,7 +544,7 @@ class statislite extends common {
 	 */
 	public function index() {
 		// Lexique
-		include('./module/statislite/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_statislite.php');
+		include('./module/statislite/lang/'. $_SESSION['langAdmin'] . '/lex_statislite.php');
 		if( !isset($_SESSION['translationType']) || $_SESSION['translationType'] ==='none' ) {
 			// Si le module n'existe pas, copie des ressources, on le crée avec des valeurs par défaut et on demande une validation de la configuration
 			if( $this->getData(['module', $this->getUrl(0), 'config', 'config']) !== true){

@@ -17,7 +17,7 @@
 
 class search extends common {
 
-	const VERSION = '3.9';
+	const VERSION = '4.0';
 	const REALNAME = 'Recherche';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -56,7 +56,7 @@ class search extends common {
 		if ($versionData === NULL || !file_exists(self::DATADIRECTORY . $this->getUrl(0)  . '/theme.css')){
 			$this->init();
 		} else {
-			include('./module/search/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_search.php');
+			include('./module/search/lang/'. $_SESSION['langAdmin'] . '/lex_search.php');
 			// Mise à jour 2.2
 			if (version_compare($versionData, '2.2', '<') ) {
 				if (is_dir(self::DATADIRECTORY . 'pages/')) {
@@ -92,9 +92,9 @@ class search extends common {
 				$this->setData(['module', $this->getUrl(0), 'config', 'commentMatches', $text['search']['init'][10] ]);
 				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '3.7' ]);
 			}
-			// Mise à jour 3.8
-			if (version_compare($versionData, '3.9', '<') ) {
-				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '3.9' ]);
+			// Mise à jour 4.0
+			if (version_compare($versionData, '4.0', '<') ) {
+				$this->setData(['module',$this->getUrl(0),'config', 'versionData', '4.0' ]);
 			}
 		}
 	}
@@ -103,7 +103,7 @@ class search extends common {
 	 * Initialisation du module
 	 */
 	private function init(){
-		include('./module/search/lang/'. helper::lexlang($this->getData(['config', 'i18n', 'langBase']) , $this->getData(['config', 'i18n', 'langAdmin'])) . '/lex_search.php');
+		include('./module/search/lang/'. helper::lexlang($this->getData(['config', 'i18n', 'langBase']) , $_SESSION['langAdmin']) . '/lex_search.php');
 
 		$fileCSS = self::DATADIRECTORY . $this->getUrl(0) . '/theme.css' ;
 		$fileCSSInvert = self::DATADIRECTORY . $this->getUrl(0) . '/theme_invert.css' ;
@@ -157,7 +157,7 @@ class search extends common {
 			]);	
 		} else {
 			// Lexique
-			include('./module/search/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_search.php');
+			include('./module/search/lang/'. $_SESSION['langAdmin'] . '/lex_search.php');
 			if($this->isPost())  {
 				// Générer la feuille de CSS
 				$style = '.keywordColor {background:' . $this->getInput('searchKeywordColor') . ';}';
@@ -328,7 +328,7 @@ class search extends common {
 					self::$resultList= implode("", $r);
 				}
 			}
-			if( isset( $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] ) && $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] === 'true' ) { 
+			if( isset( $_SESSION['ACC_INVERTCOLOR'] ) && $_SESSION['ACC_INVERTCOLOR'] === true ) {
 				$style = 'style_invert';
 			} else {
 				$style = 'style';
@@ -355,7 +355,7 @@ class search extends common {
 	// Renvoie le résultat sous forme de chaîne
 	private function occurrence($url, $titre, $contenu, $motclef, $motentier) {
 		// Lexique
-		include('./module/search/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_search.php');
+		include('./module/search/lang/'. $_SESSION['langAdmin'] . '/lex_search.php');
 
 		// Nettoyage de $contenu : on enlève tout ce qui est inclus entre < et >
 		$contenu = preg_replace ('/<[^>]*>/', ' ', $contenu);

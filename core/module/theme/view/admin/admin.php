@@ -1,6 +1,6 @@
 <?php
 // Lexique
-include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
+include('./core/module/theme/lang/'. $_SESSION['langAdmin'] . '/lex_theme.php');
 
 echo template::formOpen('configAdminForm'); ?>
 	<div class="row">
@@ -41,7 +41,7 @@ echo template::formOpen('configAdminForm'); ?>
 			<div class="block">
 					<div class="blockTitle"><?php echo $text['core_theme_view']['admin'][5]; ?></div>
 				<div class="row">
-					<div class="col4">
+					<div class="col3">
 						<?php echo template::text('adminBackgroundColor', [
 							'class' => 'colorPicker',
 							'help' => $text['core_theme_view']['admin'][6],
@@ -49,7 +49,7 @@ echo template::formOpen('configAdminForm'); ?>
 							'value' => $this->getData(['admin', 'backgroundColor'])
 						]); ?>
 					</div>
-					<div class="col4">
+					<div class="col3">
 						<?php echo template::text('adminColorTitle', [
 							'class' => 'colorPicker',
 							'help' => $text['core_theme_view']['admin'][6],
@@ -57,7 +57,7 @@ echo template::formOpen('configAdminForm'); ?>
 							'value' => $this->getData(['admin', 'colorTitle'])
 						]); ?>
 					</div>
-					<div class="col4">
+					<div class="col3">
 						<?php echo template::text('adminColorText', [
 							'class' => 'colorPicker',
 							'help' => $text['core_theme_view']['admin'][6],
@@ -65,9 +65,17 @@ echo template::formOpen('configAdminForm'); ?>
 							'value' => $this->getData(['admin', 'colorText'])
 						]); ?>
 					</div>
+					<div class="col3">
+						<?php echo template::text('adminColorLink', [
+							'class' => 'colorPicker',
+							'help' => $text['core_theme_view']['admin'][24],
+							'label' => $text['core_theme_view']['admin'][23],
+							'value' => $this->getData(['admin', 'colorLink'])
+						]); ?>
+					</div>
 				</div>
 				<div class="row">
-					<div class="col4">
+					<div class="col3">
 						<?php echo template::text('adminBackGroundBlockColor', [
 							'class' => 'colorPicker',
 							'help' => $text['core_theme_view']['admin'][7],
@@ -75,7 +83,7 @@ echo template::formOpen('configAdminForm'); ?>
 							'value' => $this->getData(['admin', 'backgroundBlockColor'])
 						]); ?>
 					</div>
-					<div class="col4">
+					<div class="col3">
 						<?php echo template::text('adminBorderBlockColor', [
 							'class' => 'colorPicker',
 							'help' => $text['core_theme_view']['admin'][6],
@@ -83,7 +91,7 @@ echo template::formOpen('configAdminForm'); ?>
 							'value' => $this->getData(['admin', 'borderBlockColor'])
 						]); ?>
 					</div>
-					<div class="col3 offset1">
+					<div class="col3 offset3">
 						<?php echo template::text('adminColorHelp', [
 							'class' => 'colorPicker',
 							'help' => $text['core_theme_view']['admin'][6],
@@ -135,7 +143,7 @@ echo template::formOpen('configAdminForm'); ?>
 					<div class="blockTitle"><?php echo $text['core_theme_view']['admin'][18]; ?></div>
 					<div class="row">
 						<div class="col4">
-							<?php asort($module::$fonts); 
+							<?php asort($module::$fonts);
 							echo template::select('adminFontText', $module::$fonts, [
 								'label' => $text['core_theme_view']['admin'][19],
 								'selected' => $this->getData(['admin', 'fontText']),

@@ -15,11 +15,10 @@ $suffix = $this->getData(['page', $this->getUrl(0), 'moduleId']) === 'templatesw
 		<link rel="stylesheet" href="core/layout/varcss.css.php">
 		<link rel="stylesheet" href="core/layout/common.css">
 		<link rel="stylesheet" href="<?=self::DATA_DIR.'theme.css'.$suffix?>">
-		<?php if( isset( $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] ) && $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] === 'true' ) echo '<link rel="stylesheet" href="'.self::DATA_DIR.'theme_invert.css">'.PHP_EOL;
-		if( isset( $_COOKIE['DELTA_COOKIE_FONTSIZE'] ) && $_COOKIE['DELTA_COOKIE_FONTSIZE']  !== '0') {
+		<?php if( isset( $_SESSION['ACC_INVERTCOLOR'] ) && $_SESSION['ACC_INVERTCOLOR'] === true ) echo '<link rel="stylesheet" href="'.self::DATA_DIR.'theme_invert.css">'.PHP_EOL;
+		if( isset( $_SESSION['ACC_FONTSIZE'] ) && $_SESSION['ACC_FONTSIZE'] !== 0 ) {
 			$originalVal = (int) substr($this->getData(['theme', 'text', 'fontSize']), 0, -2);
-			$cookieVal = (int) $_COOKIE['DELTA_COOKIE_FONTSIZE'];
-			$newVal = $originalVal + 2*$cookieVal;
+			$newVal = $originalVal + 2*$_SESSION['ACC_FONTSIZE'];
 			$fontSize = (string) $newVal .'px';
 			echo '<style> section, section .row > div {font-size: '.$fontSize.';}</style>'.PHP_EOL;
 		}

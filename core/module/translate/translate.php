@@ -50,7 +50,7 @@ class translate extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/translate/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_translate.php');
+			include('./core/module/translate/lang/'. $_SESSION['langAdmin'] . '/lex_translate.php');
 			// Tableau des pages, sous-pages et barres
 			$pagesList = $this->getData(['page']);
 			foreach($pagesList as $page => $pageId) {
@@ -254,7 +254,7 @@ class translate extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/translate/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_translate.php');
+			include('./core/module/translate/lang/'. $_SESSION['langAdmin'] . '/lex_translate.php');
 
 			// Soumission du formulaire
 			if($this->isPost()) {
@@ -312,8 +312,9 @@ class translate extends common {
 
 				]]);
 
-				// Mise à jour de la localisation
-				$this->localisation($this->getData(['config', 'i18n', 'langAdmin' ]));
+				// Mise à jour de la localisation et de la variable de session
+				$this->localisation($this->getData(['config', 'i18n', 'langAdmin']));
+				$_SESSION['langAdmin'] = $this->getData(['config', 'i18n', 'langAdmin']);
 
 				// Valeurs en sortie
 				$this->addOutput([

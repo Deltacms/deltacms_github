@@ -20,7 +20,7 @@
         "captchaSimpleHelp": "Cochez cette case pour prouver que vous êtes humain",
 		"questionnaireAccept":  "J'accepte les conditions d'utilisation de mes données personnelles",
         "cookies": {
-            "cookiesDeltaText": "Ce site utilise des cookies nécessaires à son fonctionnement, ils permettent de fluidifier son fonctionnement par exemple en mémorisant les données de connexion, la langue que vous avez choisie ou la validation de ce message.",
+            "cookiesDeltaText": "Ce site utilise des cookies nécessaires à son fonctionnement, ils permettent de fluidifier son fonctionnement par exemple en mémorisant les données de connexion ou la validation de ce message.",
             "cookiesExtText": "",
             "cookiesTitleText": "Gérer les cookies",
             "cookiesLinkMlText": "Consulter  les mentions légales",

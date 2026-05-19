@@ -1,5 +1,24 @@
 # Changelog
 
+## Version 6.0.04 de Deltacms
+- Modifications :
+	- Agenda 7.8 : Chaque destinataire des courriels liés aux évènements reçoit un courriel individuel, SMTP est fonctionnel,
+	- Envoi de courriels : le nom de domaine utilisé pour leur envoi est déterminé automatiquement, la saisie est possible en cas d'échec,
+	- Gestion des modules : affichage de la dernière version disponible pour les modules disponibles au téléchargement, avec un lien,
+	- Théme / Administration : ajout du choix de la couleur des liens,
+	- Module Album en version 6.1 :
+		- déplacement de la librairie leaflet
+		- amélioration de la présentation des messages lors de la réorientation ou du redimensionnement des photos
+		- traductions en langues admin des messages et des annexes
+	- Coeur : améliorations de la sécurité des sessions et de la gestion des langues d'administration,
+	- Cookie : suppression des cookies utilisés par les boutons taille des caractères et inversion des couleurs.
+- Corrections :
+	- Configuration / Réseau / SMTP : la transmission smtp avec des paramètres explicites est désormais pleinement fonctionnelle,
+	- Sécurité / Captcha : une variable, non initialisée, pouvait provoquer un warning,
+	- Configuration / Configuration : remplacement d'un code obsolète associé au bouton 'Copier'.
+- Sur le site :
+	- Bonus -> Plugin : blocEditable permet d'afficher dans vos pages des blocs éditables par les éditeurs et copiables par les visiteurs et les membres
+
 ## Version 6.0.03 de Deltacms
 - Modifications :
 	- Des pages en traduction rédigée peuvent être atteintes par un lien externe, de même on peut placer dans une langue un lien vers une page rédigée dans une autre langue,

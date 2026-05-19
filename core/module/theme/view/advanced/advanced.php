@@ -1,6 +1,6 @@
 <?php
 // Lexique
-include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
+include('./core/module/theme/lang/'. $_SESSION['langAdmin'] . '/lex_theme.php');
 
 echo template::formOpen('themeAdvancedForm'); ?>
 	<div class="row">
@@ -49,7 +49,7 @@ echo template::formOpen('themeAdvancedForm'); ?>
 				'class' => 'colorPicker',
 				'label' => $text['core_theme_view']['advanced'][5],
 				'value' => 'rgba(245,245,245,1)'
-			]); ?>		
+			]); ?>
 		</div>
 	</div>
 <?php echo template::formClose(); ?>

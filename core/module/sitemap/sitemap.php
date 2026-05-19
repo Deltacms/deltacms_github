@@ -30,7 +30,7 @@ class sitemap extends common
      */
     public function index() {
 		// Lexique
-		include('./core/module/sitemap/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_sitemap.php');
+		include('./core/module/sitemap/lang/'. $_SESSION['langAdmin'] . '/lex_sitemap.php');
 
         $items = '<ul>';
 

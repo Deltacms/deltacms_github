@@ -1,7 +1,7 @@
 <?php
 // Lexique
 $param='';
-include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
+include('./core/module/config/lang/'. $_SESSION['langAdmin'] . '/lex_config.php');
 
 // drapeau pour la langue d'origine ou la langue en traduction rédigée
 $flag = $this->flagLang();
@@ -354,7 +354,7 @@ $flag = $this->flagLang();
 				</div>
 			</div>
 		</div>
-	</div>	
+	</div>
 	<div class="row">
 		<div class="col12">
 			<div class="block">

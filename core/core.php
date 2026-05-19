@@ -51,7 +51,7 @@ class common {
 
 	// Numéro de version
 	const DELTA_UPDATE_URL = 'https://github.com/Deltacms/deltacms_update/raw/refs/heads/main/master/';
-	const DELTA_VERSION = '6.0.03';
+	const DELTA_VERSION = '6.0.04';
 	const DELTA_UPDATE_CHANNEL = "v6";
 	const DELTA_BRAND = "RGVsdGFjbXM=";
 
@@ -252,7 +252,7 @@ class common {
 		'comment' =>'',
 		'plugin' => ''
 	];
-	
+
 	// Feuilles de style à injecter dans Tinymce
 	public static array $tinymceContentCss = [];
 
@@ -289,9 +289,9 @@ class common {
 			]);
 		}
 
-
-		// Initialisation de $_SESSION['langFrontEnd']
+		// Initialisation de $_SESSION['langFrontEnd'] et de $_SESSION['langAdmin']
 		if(!isset($_SESSION['langFrontEnd'])) $_SESSION['langFrontEnd'] = $this->getData(['config','i18n','langBase']);
+		if(!isset($_SESSION['langAdmin'])) $_SESSION['langAdmin'] = $this->getData(['config','i18n','langAdmin']);
 
 		// Installation fraîche, initialisation des modules manquants
 		// La langue d'installation par défaut est base
@@ -316,6 +316,9 @@ class common {
 			$_SESSION['humanBot'] = 'bot';
 			if( !empty($_SERVER['HTTP_ACCEPT_LANGUAGE']) ) $_SESSION['humanBot'] = 'human';
 		}
+
+		// Initialisation captcha
+		if( !isset( $_SESSION['captcha'] )) $_SESSION['captcha'] = "";
 
 		// Construit la liste des pages parents/enfants
 		if($this->hierarchy['all'] === []) {
@@ -460,7 +463,7 @@ class common {
 	 */
 	public function addRequiredInputNotices($key) {
 		// Lexique
-		include('./core/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_core.php');
+		include('./core/lang/'. $_SESSION['langAdmin'] . '/lex_core.php');
 		// La clef est un tableau
 		if(preg_match('#\[(.*)\]#', $key, $secondKey)) {
 			$firstKey = explode('[', $key)[0];
@@ -930,7 +933,7 @@ class common {
 	*/
     public function pages2Json() {
 	// Lexique
-	include('./core/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_core.php');
+	include('./core/lang/'. $_SESSION['langAdmin'] . '/lex_core.php');
     // Sauve la liste des pages pour TinyMCE
 		$parents = [];
         $rewrite = (helper::checkRewrite()) ? '' : '?';
@@ -1209,11 +1212,20 @@ class common {
 		$mail = new PHPMailer\PHPMailer\PHPMailer;
 		$mail->CharSet = 'UTF-8';
 		// Langage par défaut : en
-		if( $this->getData(['config', 'i18n', 'langAdmin']) === 'fr')$mail->setLanguage('fr', 'core/class/phpmailer/phpmailer.lang-fr.php');
+		if( $_SESSION['langAdmin'] === 'fr')$mail->setLanguage('fr', 'core/class/phpmailer/phpmailer.lang-fr.php');
+		// Nom de domaine saisi ou auto
+		if(null !== $this->getData(['config', 'mailDomainName']) &&  $this->getData(['config', 'mailDomainName']) !==''){
+			$host = $this->getData(['config', 'mailDomainName']);
+		} else {
+			$host = $this->getData(['config', 'mailDomainNameAuto']);
+		}
 		// Mail
 		try{
 			// Paramètres SMTP
 			if ($this->getdata(['config','smtp','enable'])) {
+				//$mail->Debugoutput = function($str, $level) {
+				//	file_put_contents('site/file/source/smtp_debug.log', "$level: $str\n", FILE_APPEND);
+				//};
 				//$mail->SMTPDebug = PHPMailer\PHPMailer\SMTP::DEBUG_SERVER;
 				$mail->isSMTP();
 				$mail->SMTPAutoTLS = false;
@@ -1225,6 +1237,7 @@ class common {
 					$mail->SMTPAuth = $this->getData(['config','smtp','auth']);
 					$mail->SMTPSecure = $this->getData(['config','smtp','secure']);
 					$mail->setFrom($this->getData(['config','smtp','username']));
+					$mail->Sender = $this->getData(['config','smtp','username']);
 					if (is_null($replyTo)) {
 						$mail->addReplyTo($this->getData(['config','smtp','username']));
 					} else {
@@ -1233,12 +1246,8 @@ class common {
 				}
 			// Fin SMTP
 			} else {
-				if(null !== $this->getData(['config', 'mailDomainName']) &&  $this->getData(['config', 'mailDomainName']) !==''){
-					$host = $this->getData(['config', 'mailDomainName']);
-				} else {
-					$host = str_replace('www.', '', $_SERVER['HTTP_HOST']);
-				}
 				$mail->setFrom('no-reply@' . $host, $this->getData(['locale', 'title']));
+				$mail->Sender = 'php_deltacms@' . $host;
 				if (is_null($replyTo)) {
 					$mail->addReplyTo('no-reply@' . $host, $this->getData(['locale', 'title']));
 				} else {
@@ -1404,6 +1413,55 @@ class common {
 			echo $item;
 		}
 
+	}
+
+	/*
+	* Détermine le nom de domaine en extrayant un éventuel sous-domaine et en prenant en compte les extensions composées
+	*/
+	public function getDomainName($host) {
+		//Préparation de la liste des extensions composées fournies par https://publicsuffix.org/list/public_suffix_list.dat
+		$multiTlds=[];
+		$dir = 'core/module/install/ressource/';
+		if(is_file($dir.'public_suffix_list.dat.gz')){
+			// extraction gz
+			file_put_contents($dir.'public_suffix_list.dat', gzdecode(file_get_contents($dir.'public_suffix_list.dat.gz')));
+			foreach (file($dir.'public_suffix_list.dat', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+				$line = trim($line);
+				// Ignorer commentaires et lignes vides
+				if (strpos($line, '//') === 0 || $line === '') {
+					continue;
+				}
+				// Ignore wildcard ou exceptions
+				if ($line[0] === '*' || $line[0] === '!') {
+					continue;
+				}
+				// Séparer par point, si >1 segment => extension composée
+				if (substr_count($line, '.') >= 1) {
+					$multiTlds[] = $line;
+				}
+			}
+			// trier et supprimer doublons
+			$multiTlds = array_unique($multiTlds);
+			sort($multiTlds);
+		} else {
+			// petite roue de secours
+			$multiTlds = ['asso.fr','com.fr','nom.fr','prd.fr','tm.fr','co.uk','org.uk','ac.uk','net.uk'];
+		}
+		$host = str_replace('www.', '', $host);
+		$host = strtolower(trim($host));
+		$parts = explode('.', $host);
+		$count = count($parts);
+
+		if ($count >= 2) {
+		  $lastTwo = $parts[$count-2] . '.' . $parts[$count-1];
+		  $lastThree = ($count >= 3) ? $parts[$count-3] . '.' . $lastTwo : null;
+		  if (in_array($lastTwo, $multiTlds) && $lastThree) {
+			$host =  $lastThree;
+		  } else {
+			$host = $lastTwo;
+		  }
+		}
+		return $host;
 	}
 
 	/*
@@ -1877,7 +1935,7 @@ class common {
 	 */
 	public function showMenu( $position ='') {
 		// Lexique
-		include('./core/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_core.php');
+		include('./core/lang/'. $_SESSION['langAdmin'] . '/lex_core.php');
 		$menuClass = ''; $burgerclass =''; $burgerclassshort ='';
 		// Groupe du client connecté (1, 2, 3, 4) ou non connecté (0)
 		$groupUser = $this->getUser('group') === false ? 0 : $this->getUser('group');
@@ -2177,11 +2235,11 @@ class common {
 		}
 		// Inversion des couleurs du site si option sélectionnée
 		if( $this->getData(['theme', 'menu', 'invertColor' ]) === true ){
-			$itemsRight .= '<li class="smallScreenInline"><a class="invertColorButton" href="'.helper::baseUrl().$this->getUrl().'"><img alt="" src="'. helper::baseUrl(false) .self::FILE_DIR.'source/icones/invertcolor.gif" style="height:'.($heightLogo).'px; width:auto;"></a></li>';
+			$itemsRight .= '<li class="smallScreenInline"><a class="invertColorButton" href="'.helper::baseUrl().'theme/invertColor/'.$this->getUrl().'"><img alt="" src="'. helper::baseUrl(false) .self::FILE_DIR.'source/icones/invertcolor.gif" style="height:'.($heightLogo).'px; width:auto;"></a></li>';
 		}
 		// Augmentation de font-size
 		if( $this->getData(['theme', 'menu', 'changeFontSize' ]) === true ){
-			$itemsRight .= '<li class="smallScreenInline"><a class="increaseFontBtn" href="'.helper::baseUrl().$this->getUrl().'"><img alt="" src="'. helper::baseUrl(false) .self::FILE_DIR.'source/icones/fontsize.gif" style="height:'.($heightLogo).'px; width:auto;"></a></li>';
+			$itemsRight .= '<li class="smallScreenInline"><a class="increaseFontBtn" href="'.helper::baseUrl().'theme/fontSize/'.$this->getUrl().'"><img alt="" src="'. helper::baseUrl(false) .self::FILE_DIR.'source/icones/fontsize.gif" style="height:'.($heightLogo).'px; width:auto;"></a></li>';
 		}
 
 		// Affichage du menu
@@ -2336,7 +2394,7 @@ class common {
 	 */
 	public function showNotification() {
 		// Lexique
-		include('./core/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_core.php');
+		include('./core/lang/'. $_SESSION['langAdmin'] . '/lex_core.php');
 
 		if (common::$importNotices) {
 			$notification = common::$importNotices [0];
@@ -2376,7 +2434,7 @@ class common {
 	 */
 	public function showBar() {
 		// Lexique
-		include('./core/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_core.php');
+		include('./core/lang/'. $_SESSION['langAdmin'] . '/lex_core.php');
 
 		if($this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD')) {
 			// Items de gauche
@@ -2600,7 +2658,7 @@ class common {
 	 */
 	public function showScript() {
 		// Lexique
-		include('./core/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_core.php');
+		include('./core/lang/'. $_SESSION['langAdmin'] . '/lex_core.php');
 		?><script>var textUpdating = <?php echo '"'.$text['core_js'][0].'"'; ?>; var textSelectFile = <?php echo '"'.$text['core_js'][1].'"'; ?>; var textLogout = <?php echo '"'.$text['core_js'][2].'"'; ?>; var textCheckMail = <?php echo '"'.$text['core_js'][3].'"'; ?>; var textPageDelete = <?php echo '"'.$text['core_js'][4].'"'; ?>; var textConfirmYes = <?php echo '"'.$text['core_js'][5].'"'; ?>; var textConfirmNo = <?php echo '"'.$text['core_js'][6].'"'; ?>; </script><?php
 		ob_start();
 		require 'core/core.js.php';
@@ -2731,7 +2789,7 @@ class common {
 		include('./core/include/trust.inc.php');
 		return $trust_score;
 	}
-	
+
 	/**
 	 * Ajoute une feuille de style dans TinyMCE
 	 */
@@ -2785,10 +2843,8 @@ class core extends common {
 		}
 
 		// Initialisation des paramètres d'accessibilité
-		if( $this->getData(['config', 'cookieConsent'])===false || isset( $_COOKIE['DELTA_COOKIE_CONSENT'])){
-			if( $this->getData(['theme','menu','invertColor'])===true && !isset( $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] )) setcookie( 'DELTA_COOKIE_INVERTCOLOR', 'false',['expires' => 0, 'path' => '/', 'samesite' => 'Strict']);
-			if( $this->getData(['theme','menu','changeFontSize'])===true && !isset( $_COOKIE['DELTA_COOKIE_FONTSIZE'] )) setcookie( 'DELTA_COOKIE_FONTSIZE', '0',['expires' => 0, 'path' => '/', 'samesite' => 'Strict']);
-		}
+		if( !isset($_SESSION['ACC_INVERTCOLOR']) && $this->getData(['theme','menu','invertColor'])===true ) $_SESSION['ACC_INVERTCOLOR'] = false;
+		if( !isset($_SESSION['ACC_FONTSIZE']) && $this->getData(['theme','menu','changeFontSize'])===true ) $_SESSION['ACC_FONTSIZE'] = 0;
 
 		// Fuseau horaire
 		self::$timezone = $this->getData(['config', 'timezone']); // Utile pour transmettre le timezone à la classe helper
@@ -2889,6 +2945,7 @@ class core extends common {
 			$css .= '#site{background-color:' . $colors['normal']. ';}';
 			$css .= '.row > div {font:' . $this->getData(['admin','fontSize']) . ' "' . $this->getData(['fonts', $this->getData(['admin', 'fontText']), 'name']) . '";}';
 			$css .= 'body h1, h2, h3, .block > h4, .blockTitle, h5, h6 {font-family:' .   $this->getData(['fonts', $this->getData(['admin', 'fontTitle']), 'name']) . ';color:' . $this->getData(['admin','colorTitle' ]) . ';}';
+			$css .= 'a { color:'. $this->getData(['admin','colorLink']) .';}';
 
 			// TinyMCE
 			$css .= 'body:not(.editorWysiwyg),span .delta-ico-help {color:' . $this->getData(['admin','colorText']) . ';}';
@@ -3321,7 +3378,7 @@ class core extends common {
 
 		/* Erreurs, si la page locale est présente on n'invoque pas http_response_code
 		Lexique */
-		include('./core/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_core.php');
+		include('./core/lang/'. $_SESSION['langAdmin'] . '/lex_core.php');
 
 		if($access === 'login') {
 			http_response_code(302);

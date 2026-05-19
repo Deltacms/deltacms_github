@@ -34,6 +34,7 @@ class init extends common {
 				'enable' => false,
 			],
 			'mailDomainName' => '',
+			'mailDomainNameAuto' => '',
 			'statislite' => [
 				'enable' => false,
 			],
@@ -78,7 +79,7 @@ class init extends common {
 			]
 		],
 		'core' => [
-			'dataVersion' => 6003,
+			'dataVersion' => 6004,
 			'lastBackup' => 0,
 			'lastClearTmp' => 0,
 			'lastAutoUpdate' => 0,
@@ -106,7 +107,7 @@ class init extends common {
 			'captchaSimpleHelp' => 'Cochez cette case pour prouver que vous êtes humain',
 			'questionnaireAccept' => 'J\'accepte les conditions d\'utilisation de mes données personnelles',
 			'cookies' => [
-				'cookiesDeltaText' => 'Ce site utilise des cookies nécessaires à son fonctionnement, ils permettent de fluidifier son fonctionnement par exemple en mémorisant les données de connexion, la langue que vous avez choisie ou la validation de ce message.',
+				'cookiesDeltaText' => 'Ce site utilise des cookies nécessaires à son fonctionnement, ils permettent de fluidifier son fonctionnement par exemple en mémorisant les données de connexion ou la validation de ce message.',
 				'cookiesExtText' => '',
 				'cookiesTitleText' => 'Gérer les cookies',
 				'cookiesLinkMlText' => 'Consulter  les mentions légales',
@@ -465,6 +466,7 @@ class init extends common {
 			'fontTitle' => 'liberation-sans',
 			'colorText' => 'rgba(33, 34, 35, 1)',
 			'colorTitle' => 'rgba(74, 105, 189, 1)',
+			'colorLink' => 'rgba(228, 14, 23, 1)',
 			'backgroundColorButton' => 'rgba(74, 105, 189, 1)',
 			'backgroundColorButtonGrey' => 'rgba(170, 180, 188, 1)',
 			'backgroundColorButtonRed' => 'rgba(217, 95, 78, 1)',

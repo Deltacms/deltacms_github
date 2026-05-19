@@ -1,7 +1,7 @@
 <?php
 // Lexique
 $param='';
-include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
+include('./core/module/config/lang/'. $_SESSION['langAdmin'] . '/lex_config.php');
 ?>
 <div id="networkContainer">
 	<div class="row">
@@ -69,38 +69,30 @@ include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdm
 						<div  class="col2">
 							<?php echo template::text('smtpPort', [
 									'label' => $text['core_config_view']['network'][8],
-									'placeholder' => '589',
+									'placeholder' => '465',
 									'value' => $this->getData(['config', 'smtp','port'])
 							]); ?>
 						</div>
 						<div  class="col2">
-							<?php echo template::select('smtpAuth', $SMTPauth, [
-								'label' => $text['core_config_view']['network'][9],
-								'selected' => $this->getData(['config', 'smtp','auth'])
+							<?php echo template::select('smtpSecure', $SMTPEnc	, [
+								'label' => $text['core_config_view']['network'][12],
+								'selected' => $this->getData(['config', 'smtp','secure'])
 							]); ?>
 						</div>
 					</div>
-					<div id="smtpAuthParam">
-						<div class="row">
-							<div  class="col5">
-								<?php echo template::text('smtpUsername', [
-									'label' => $text['core_config_view']['network'][10],
-									'value' => $this->getData(['config', 'smtp','username' ])
-								]); ?>
-							</div>
-							<div  class="col5">
-								<?php echo template::password('smtpPassword', [
-									'label' => $text['core_config_view']['network'][11],
-									'autocomplete' => 'off',
-									'value' => $this->getData(['config', 'smtp','username' ]) ? helper::decrypt ($this->getData(['config', 'smtp','username' ]),$this->getData(['config','smtp','password'])) : ''
-								]); ?>
-							</div>
-							<div  class="col2">
-								<?php echo template::select('smtpSecure', $SMTPEnc	, [
-									'label' => $text['core_config_view']['network'][12],
-									'selected' => $this->getData(['config', 'smtp','secure'])
-								]); ?>
-							</div>
+					<div class="row">
+						<div class="col5">
+							<?php echo template::text('smtpUsername', [
+								'label' => $text['core_config_view']['network'][10],
+								'value' => $this->getData(['config', 'smtp','username' ])
+							]); ?>
+						</div>
+						<div class="col5">
+							<?php echo template::password('smtpPassword', [
+								'label' => $text['core_config_view']['network'][11],
+								'autocomplete' => 'off',
+								'value' => $this->getData(['config', 'smtp','username' ]) ? helper::decrypt ($this->getData(['config', 'smtp','username' ]),$this->getData(['config','smtp','password'])) : ''
+							]); ?>
 						</div>
 					</div>
 				</div>
@@ -123,6 +115,13 @@ include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdm
 							'label' => $text['core_config_view']['mail'][1],
 							'value' => $this->getData(['config', 'mailDomainName']),
 							'help' => $text['core_config_view']['mail'][2]
+						]); ?>
+					</div>
+					<div  class="col4">
+						<?php echo template::text('configMailDomainNameAuto', [
+							'label' => $text['core_config_view']['mail'][3],
+							'value' => $this->getData(['config', 'mailDomainNameAuto']),
+							'readonly' => true
 						]); ?>
 					</div>
 				</div>

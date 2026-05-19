@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="<?=$this->getData(['config', 'i18n', 'langAdmin'])?>">
+<html lang="<?=$_SESSION['langAdmin']?>">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width">

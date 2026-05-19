@@ -1,6 +1,6 @@
 <?php
 // Lexique
-include('./core/module/page/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_page.php');
+include('./core/module/page/lang/'. $_SESSION['langAdmin'] . '/lex_page.php');
 
 $initSnipcart = false;
 if ($this->getData(['page', $this->getUrl(2), 'moduleId']) === 'snipcart' ) $initSnipcart = true;
@@ -191,8 +191,8 @@ else {
 		</div>
 	</div>
 	</div>
-	
-<?php // Plugins ?>	
+
+<?php // Plugins ?>
 	<div class="row">
 	<div class="col12" >
 		<div class="block">
@@ -216,7 +216,7 @@ else {
 							]); ?>
 						</div>
 						<div class="col2 offset2">
-							<?php 
+							<?php
 							echo template::hidden('pageEditPluginManageSubmit');
 							echo template::button('pageEditPluginManage', [
 								'href' => helper::baseUrl() . 'page/plugin/' . $this->getUrl(2),
@@ -229,7 +229,7 @@ else {
 		</div>
 	</div>
 	</div>
-	
+
 	<div class="row">
 		<div class="col12" id="pageEditBlockLayout">
 			<div class="block">
@@ -395,7 +395,7 @@ else {
 							]); ?>
 						</div>
 						<div class='col4'>
-							<?php 
+							<?php
 							$selectedId = $this->getData(['page', $this->getUrl(2), 'member' ]);
 							if( $selectedId === 'allMembers'){
 								$selected = 0;

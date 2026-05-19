@@ -17,17 +17,6 @@ $( document).ready(function() {
         $("#smtpParam").removeClass("disabled");
         $("#smtpParam").slideUp();
     }
-    /**
-     * Afficher et masquer options Auth
-     */
-
-    if ($("select[name=smtpAuth]").val() == true) {
-        $("#smtpAuthParam").addClass("disabled");
-        $("#smtpAuthParam").slideDown();
-    } else {
-        $("#smtpAuthParam").removeClass("disabled");
-        $("#smtpAuthParam").slideUp();
-    }
 
     var configLayout = getCookie("configLayout");
     if (configLayout == null) {
@@ -276,17 +265,27 @@ function capitalizeFirstLetter(string) {
 }
 
 // Copie dans le presse papier les informations de debug
-$("#buttonHtmlToClipboard").on("click", function() {
-	var data = "[quote]" + $("#modulesPhp1").text() + "\r\n\r\n";
-	data += $("#modulesPhp2").text() + "\r\n\r\n";
-	data += $("#directivesFunctionsPhp").text() + "\r\n\r\n";
-	data += $("#modulesDeltacms").text() + "[/quote]";
-    var infoTextarea = document.createElement("textarea");
-    document.body.appendChild(infoTextarea);
-    infoTextarea.value = data;
-    infoTextarea.select();
-    document.execCommand("copy");
-    document.body.removeChild(infoTextarea);
+$("#buttonHtmlToClipboard").on("click", async function() {
+    var data = "[quote]" + $("#modulesPhp1").text() + "\r\n\r\n";
+    data += $("#modulesPhp2").text() + "\r\n\r\n";
+    data += $("#directivesFunctionsPhp").text() + "\r\n\r\n";
+    data += $("#modulesDeltacms").text() + "[/quote]";
+
+    if (navigator.clipboard && window.isSecureContext) {
+        try {
+            await navigator.clipboard.writeText(data);
+        } catch (err) {
+            console.error(err);
+        }
+    } else {
+        // fallback si http
+        var infoTextarea = document.createElement("textarea");
+        document.body.appendChild(infoTextarea);
+        infoTextarea.value = data;
+        infoTextarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(infoTextarea);
+    }
 });
 
 // Confirmation d'update

@@ -1,7 +1,7 @@
 <?php
 // Lexique
 $param = 'blog_view';
-include('./module/blog/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_blog.php');
+include('./module/blog/lang/'. $_SESSION['langAdmin'] . '/lex_blog.php');
 
 // drapeau pour la langue d'origine ou la langue en traduction rédigée
 $flag = $this->flagLang();
@@ -92,7 +92,7 @@ echo template::formOpen('blogTexts'); ?>
 							'label' => $text['blog_view']['texts'][11],
 							'value' => $this->getData(['module', $this->getUrl(0), 'texts', 'ArticleNoComment'])
 						]); ?>
-					</div>				
+					</div>
 					<div class="col4">
 						<?php echo template::text('blogTextsConnection', [
 							'label' => $text['blog_view']['texts'][13],
@@ -132,7 +132,7 @@ echo template::formOpen('blogTexts'); ?>
 							'label' => $text['blog_view']['texts'][19],
 							'value' => $this->getData(['module', $this->getUrl(0), 'texts', 'TinymceCara'])
 						]); ?>
-					</div>				
+					</div>
 					<div class="col4">
 						<?php echo template::text('blogTextsTinymceExceed', [
 							'label' => $text['blog_view']['texts'][20],

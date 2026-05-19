@@ -167,31 +167,31 @@ class helper {
 					$class_constants = $class_reflex->getConstants();
 					// Constante REALNAME
 					if (array_key_exists('REALNAME', $class_constants)) {
-							$realName = $value::REALNAME;
+							$realName = $class_constants['REALNAME'];
 					} else {
 							$realName = ucfirst($value);
 					}
 					// Constante VERSION
 					if (array_key_exists('VERSION', $class_constants)) {
-							$version = $value::VERSION;
+							$version = $class_constants['VERSION'];
 					} else {
 							$version = '0.0';
 					}
 					// Constante UPDATE
 					if (array_key_exists('UPDATE', $class_constants)) {
-							$update = $value::UPDATE;
+							$update = $class_constants['UPDATE'];
 					} else {
 							$update = '0.0';
 					}
 					// Constante DELETE
 					if (array_key_exists('DELETE', $class_constants)) {
-							$delete = $value::DELETE;
+							$delete = $class_constants['DELETE'];
 					} else {
 							$delete = true;
 					}
 					// Constante DATADIRECTORY
 					if ( array_key_exists('DATADIRECTORY', $class_constants)) {
-							$dataDirectory = $value::DATADIRECTORY;
+							$dataDirectory = $class_constants['DATADIRECTORY'];
 					} else {
 							$dataDirectory = '';
 					}

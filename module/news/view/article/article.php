@@ -1,6 +1,6 @@
 <?php
 // Lexique
-include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_news.php');
+include('./module/news/lang/'. $_SESSION['langAdmin'] . '/lex_news.php');
 ?>
 <div class="row">
     <div class="col12">
@@ -28,7 +28,7 @@ include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) .
 		}
 		echo $module::$articleSignature . ' - ';?>
 		<?php if( function_exists('datefmt_create') && function_exists('datefmt_format') && extension_loaded('intl') ){
-			echo datefmt_format($fmt, strtotime( date('Y/m/d H:i:s',$this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn'])))); 
+			echo datefmt_format($fmt, strtotime( date('Y/m/d H:i:s',$this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn']))));
 		} else {
 			$date = mb_detect_encoding(date('d/m/Y', $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn'])), 'UTF-8', true)
 					? date('d/m/Y', $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn']))
@@ -36,9 +36,9 @@ include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) .
 			$heure =  mb_detect_encoding(date('H:i', $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn'])), 'UTF-8', true)
 					? date('H:i', $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn']))
 					:  helper::utf8Encode(date('H:i', $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'publishedOn'])));
-			echo $date .' - '. $heure; 
+			echo $date .' - '. $heure;
 		} ?>
-			
+
 		<!-- Bloc edition -->
         <?php if (
             $this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD')
@@ -57,23 +57,23 @@ include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) .
 			<div id="rssFeed">
 				<a type="application/rss+xml" href="<?php echo helper::baseUrl() . $this->getUrl(0) . '/rss'; ?>" target="_blank">
 					<img  src='module/news/ressource/feed-icon-16.gif' />
-					<?php 
+					<?php
 						echo '<p>' . $this->getData(['module',$this->getUrl(0), 'config', 'feedsLabel']) . '</p>' ;
 					?>
 				</a>
 			</div>
 		<?php endif; ?>
 	</div>
-	
+
 	<!--Bouton Retour sur la page active-->
-	<div class="col2">	
-		<?php 
-		$backUrl = isset($_SESSION['pageActive']) ? $_SESSION['pageActive'] : $this->getUrl(0);		
+	<div class="col2">
+		<?php
+		$backUrl = isset($_SESSION['pageActive']) ? $_SESSION['pageActive'] : $this->getUrl(0);
 		echo template::button('newsArticleBack', [
 			'href' => helper::baseUrl() . $backUrl,
 			'ico' => 'left',
 			'value' => $this->getData(['module', $this->getUrl(0), 'config', 'texts', 'back'])
 		]); ?>
 	</div>
-	
+
 </div>

@@ -1,6 +1,6 @@
 <?php
 // Lexique
-include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
+include('./core/module/theme/lang/'. $_SESSION['langAdmin'] . '/lex_theme.php');
 // Passage de la langue d'administration à Tinymce et de la class utilisée par tinymce dans le body de l'iframe
 ?>
 <script> var lang_admin = "<?php echo $lang_admin; ?>"; var bodyIframe = "editorWysiwygHeader"; </script>

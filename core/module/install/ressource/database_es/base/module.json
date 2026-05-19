@@ -6,7 +6,7 @@
                 "feedsLabel": "Sindicación RSS",
                 "itemsperPage": 6,
 				"previewSize" : 400,
-                "versionData": "7.7"
+                "versionData": "7.8"
             },
             "texts": {
                 "NoComment": "Aún no hay comentarios",
@@ -41,7 +41,7 @@
                 "resultHideContent": false,
                 "placeHolder": "Una o más palabras",
                 "submitText": "Buscar",
-                "versionData": "3.9",
+                "versionData": "4.0",
                 "nearWordText": "Palabras relacionadas",
                 "successTitle": "Resultado de tu busqueda",
                 "failureTitle": "ningún resultado",
@@ -60,7 +60,7 @@
                 "placeHolder": "Una o más palabras",
                 "resultHideContent": false,
                 "previewLength": 100,
-                "versionData": "3.9",
+                "versionData": "4.0",
                 "nearWordText": "Palabras relacionadas",
                 "successTitle": "Resultado de tu busqueda",
                 "failureTitle": "ningún resultado",
@@ -86,7 +86,7 @@
                 "logoUrl": "",
                 "logoWidth": "40",
                 "maxSizeUpload": "500000",
-                "versionData": "6.8",
+                "versionData": "6.9",
                 "uploadJpg": true,
                 "uploadPng": true,
                 "uploadPdf": false,
@@ -173,7 +173,7 @@
                 "order": []
             },
 			"config": {
-				"versionData": "6.0",
+				"versionData": "6.1",
 				"texts": {
 					"backButton": "Atrás",
 					"geolocation": "Geolocalización",

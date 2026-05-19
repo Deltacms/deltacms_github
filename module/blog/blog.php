@@ -20,7 +20,7 @@
 
 class blog extends common {
 
-	const VERSION = '7.7';
+	const VERSION = '7.8';
 	const REALNAME = 'Blog';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -60,7 +60,7 @@ class blog extends common {
 	public static $commentsSignature = [];
 	public static $pages;
 	public static $users = [];
-	
+
 	// Boutons suivant et précédent dans les articles
 	public static $urlPreviousArticle = '';
 	public static $urlNextArticle = '';
@@ -69,14 +69,14 @@ class blog extends common {
 	 * Mise à jour du module
 	 * Appelée par les fonctions index et config
 	 */
-	private function update() {	
-	
+	private function update() {
+
 		if( null === $this->getData(['module', $this->getUrl(0), 'config', 'versionData']) ) {
 			$this->init();
 		} else {
 			// Lexique
 			$param = 'blog';
-			include('./module/blog/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_blog.php');		
+			include('./module/blog/lang/'. $_SESSION['langAdmin'] . '/lex_blog.php');
 			// Version 5.0
 			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '5.0', '<') ) {
 				$this->setData(['module', $this->getUrl(0), 'config', 'itemsperPage', 6]);
@@ -84,7 +84,7 @@ class blog extends common {
 			}
 			// Version 6.0
 			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '6.0', '<') ) {
-				if( $this->getData(['config', 'i18n', 'langAdmin']) === 'en'){
+				if( $_SESSION['langAdmin'] === 'en'){
 					$this->setData(['module', $this->getUrl(0), 'texts',[
 						'NoComment'  => 'No comment yet',
 						'Write'  => 'Write a comment',
@@ -102,7 +102,7 @@ class blog extends common {
 						'TinymceMaxi' => 'You have reached the maximum of',
 						'TinymceCara' => 'characters left',
 						'TinymceExceed' => 'You were about to exceed the maximum of '
-					]]);			
+					]]);
 				}
 				else{
 					$this->setData(['module', $this->getUrl(0), 'texts',[
@@ -147,9 +147,9 @@ class blog extends common {
 				$this->setData(['module', $this->getUrl(0), 'config', 'previewSize', 400]);
 				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','7.4']);
 			}
-			// Version 7.7
-			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '7.7', '<') ) {
-				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','7.7']);
+			// Version 7.8
+			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '7.8', '<') ) {
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','7.8']);
 			}
 		}
 	}
@@ -160,7 +160,7 @@ class blog extends common {
 	private function init(){
 		// Lexique
 		$param = 'blog';
-		include('./module/blog/lang/'. helper::lexlang($this->getData(['config', 'i18n', 'langBase']) , $this->getData(['config', 'i18n', 'langAdmin'])) . '/lex_blog.php');
+		include('./module/blog/lang/'. helper::lexlang($this->getData(['config', 'i18n', 'langBase']) , $_SESSION['langAdmin']) . '/lex_blog.php');
 		$this->setData(['module', $this->getUrl(0), 'config',[
 			'feeds' 	 => false,
 			'feedsLabel' => '',
@@ -188,7 +188,7 @@ class blog extends common {
 			'ReadMore' => $text['blog']['index'][26],
 			'Back' => $text['blog']['index'][27],
 			'Comments' => $text['blog']['index'][28]
-		]]);	
+		]]);
 	}
 
 	/**
@@ -253,26 +253,26 @@ class blog extends common {
 			'view' => 'rss'
 		]);
 	}
-	
+
 	/**
 	 * Configuration des textes visibles par l'utiliateur
 	 */
 	public function texts() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < blog::$actions['texts'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
-		} else {		
+			]);
+		} else {
 			// Lexique
 			$param = 'blog';
-			include('./module/blog/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_blog.php');
+			include('./module/blog/lang/'. $_SESSION['langAdmin'] . '/lex_blog.php');
 
 			// Soumission du formulaire
-			if($this->isPost()) {	
+			if($this->isPost()) {
 				$this->setData(['module', $this->getUrl(0), 'texts',[
 					'NoComment'  => $this->getInput('blogTextsNoComment',helper::FILTER_STRING_SHORT),
 					'Write'  => $this->getInput('blogTextsWrite',helper::FILTER_STRING_SHORT),
@@ -294,14 +294,14 @@ class blog extends common {
 					'Back' => $this->getInput('blogTextsBack',helper::FILTER_STRING_SHORT),
 					'Comments' => $this->getInput('blogTextsComments',helper::FILTER_STRING_SHORT)
 				]]);
-			
+
 				$this->addOutput([
 					'redirect' => helper::baseUrl() . $this->getUrl(0) . '/config',
 					'notification' => $text['blog']['texts'][1],
 					'state' => true
 				]);
 			}
-			
+
 			$this->addOutput([
 				'title' => $text['blog']['texts'][2],
 				'view' => 'texts',
@@ -312,18 +312,18 @@ class blog extends common {
 	 * Édition
 	 */
 	public function add() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < blog::$actions['add'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			$param = 'blog';
-			include('./module/blog/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_blog.php');
+			include('./module/blog/lang/'. $_SESSION['langAdmin'] . '/lex_blog.php');
 
 			// Soumission du formulaire
 			if($this->isPost()) {
@@ -391,18 +391,18 @@ class blog extends common {
 	 * Liste des commentaires
 	 */
 	public function comment() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < blog::$actions['comment'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			$param = 'blog';
-			include('./module/blog/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_blog.php');
+			include('./module/blog/lang/'. $_SESSION['langAdmin'] . '/lex_blog.php');
 
 			$comments = $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(2),'comment']);
 			self::$commentsDelete =	template::button('blogCommentDeleteAll', [
@@ -421,7 +421,7 @@ class blog extends common {
 			$pagination = helper::pagination($commentIds, $this->getUrl(),$this->getData(['module', $this->getUrl(0), 'config', 'itemsperPage']) );
 			// Liste des pages
 			self::$pages = $pagination['pages'];
-			// Commentaires en fonction de la pagination	
+			// Commentaires en fonction de la pagination
 			for($i = $pagination['first']; $i < $pagination['last']; $i++) {
 				// Met en forme le tableau
 				$comment = $comments[$commentIds[$i]];
@@ -469,18 +469,18 @@ class blog extends common {
 	 * Edition de commentaire
 	 */
 	public function commentEdit() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < blog::$actions['commentEdit'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			$param = 'blog';
-			include('./module/blog/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_blog.php');
+			include('./module/blog/lang/'. $_SESSION['langAdmin'] . '/lex_blog.php');
 
 			// Le commentaire n'existe pas
 			if($this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(2), 'comment', $this->getUrl(3)]) === null) {
@@ -531,18 +531,18 @@ class blog extends common {
 	 * Suppression de commentaire
 	 */
 	public function commentDelete() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < blog::$actions['commentDelete'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			$param = 'blog';
-			include('./module/blog/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_blog.php');
+			include('./module/blog/lang/'. $_SESSION['langAdmin'] . '/lex_blog.php');
 
 			// Le commentaire n'existe pas
 			if($this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(2), 'comment', $this->getUrl(3)]) === null) {
@@ -576,18 +576,18 @@ class blog extends common {
 	 * Suppression de tous les commentaires de l'article $this->getUrl(2)
 	 */
 	public function commentDeleteAll() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < blog::$actions['commentDeleteAll'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			$param = 'blog';
-			include('./module/blog/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_blog.php');
+			include('./module/blog/lang/'. $_SESSION['langAdmin'] . '/lex_blog.php');
 
 			// Jeton incorrect
 			if ($this->getUrl(3) !== $_SESSION['csrf']) {
@@ -614,18 +614,18 @@ class blog extends common {
 	 * Approbation oou désapprobation de commentaire
 	 */
 	public function commentApprove() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < blog::$actions['commentApprove'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			$param = 'blog';
-			include('./module/blog/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_blog.php');
+			include('./module/blog/lang/'. $_SESSION['langAdmin'] . '/lex_blog.php');
 
 			// Le commentaire n'existe pas
 			if($this->getData(['data_module', $this->getUrl(0),  'posts', $this->getUrl(2), 'comment', $this->getUrl(3)]) === null) {
@@ -667,18 +667,18 @@ class blog extends common {
 	 * Configuration
 	 */
 	public function config() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < blog::$actions['config'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			$param = 'blog';
-			include('./module/blog/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_blog.php');
+			include('./module/blog/lang/'. $_SESSION['langAdmin'] . '/lex_blog.php');
 			// Soumission du formulaire
 			if($this->isPost()) {
 				$this->setData(['module', $this->getUrl(0), 'config',[
@@ -783,18 +783,18 @@ class blog extends common {
 	 * Suppression
 	 */
 	public function delete() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < blog::$actions['delete'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			$param = 'blog';
-			include('./module/blog/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_blog.php');
+			include('./module/blog/lang/'. $_SESSION['langAdmin'] . '/lex_blog.php');
 
 			if($this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(2)]) === null) {
 				// Valeurs en sortie
@@ -827,19 +827,19 @@ class blog extends common {
 	 * Édition
 	 */
 	public function edit() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < blog::$actions['edit'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
 			$param = 'blog';
-			include('./module/blog/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_blog.php');
-			
+			include('./module/blog/lang/'. $_SESSION['langAdmin'] . '/lex_blog.php');
+
 			// Jeton incorrect
 			if ($this->getUrl(3) !== $_SESSION['csrf']) {
 				// Valeurs en sortie
@@ -935,7 +935,7 @@ class blog extends common {
 	public function index() {
 		// Lexique
 		$param = 'blog';
-		include('./module/blog/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_blog.php');
+		include('./module/blog/lang/'. $_SESSION['langAdmin'] . '/lex_blog.php');
 		// Installation ou mise à jour
 		if( null === $this->getData(['module', $this->getUrl(0), 'config', 'versionData']) || version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), self::VERSION, '<') ) $this->update();
 		// Affichage d'un article
@@ -952,10 +952,10 @@ class blog extends common {
 				]);
 			}
 			// L'article existe
-			else {				
+			else {
 				// Soumission du formulaire
 				if($this->isPost()) {
-				
+
 					// Sauve le contenu dans un brouillon
 					// $this->setData(['data_module', $this->getUrl(0),  'posts', $this->getUrl(1), 'comment', $commentId, 'draft', 'content', $this->getInput('blogArticleContent', false) ]);
 					$_SESSION['commentAuthor'] = $this->getInput('blogArticleAuthor', false);
@@ -976,7 +976,7 @@ class blog extends common {
 								$time2 = $_COOKIE['evtH'] - $_COOKIE['evtO']; // temps entre click checkbox et ouverture de la page
 								$time3 = $_COOKIE['evtV'] - $_COOKIE['evtH']; // temps entre validation formulaire et click checkbox
 								$time4 = $_COOKIE['evtS'] - $_COOKIE['evtA']; // temps passé sur la checkbox
-								if( $time1 >= 5000 && $time2 >= 1000 && $time3 >=300 
+								if( $time1 >= 5000 && $time2 >= 1000 && $time3 >=300
 									&& $time4 >=100 && $this->getInput('blogInputBlue')==='' ) $detectBot = 'human';
 							}
 							// Bot présumé
@@ -1048,7 +1048,7 @@ class blog extends common {
 							'redirect' => helper::baseUrl() . $this->getUrl() . '#comment',
 							'notification' => $text['blog']['index'][25],
 							'state' => false
-						]);					
+						]);
 					}
 				}
 				// Ids des commentaires approuvés par ordre de publication
@@ -1085,12 +1085,12 @@ class blog extends common {
 						self::$comments[$commentIds[$i]] = $this->getData(['data_module', $this->getUrl(0), 'posts', $this->getUrl(1), 'comment', $commentIds[$i]]);
 					}
 				}
-				
+
 				// Boutons précédent et suivant par ordre de parution
 				// Ids des articles par ordre de publication
 				$articleIds = $this->listPublishedArticles();
 				// Liste classée avec insertion d'une clef numérique et numéro de l'article visionné
-				$orderedListArticles = []; 
+				$orderedListArticles = [];
 				$numberArticle = '';
 				foreach( $articleIds as $key=>$title ){
 				  $orderedListArticles[$key][$title] = $this->getData(['data_module', $this->getUrl(0), 'posts', $title ]);
@@ -1099,8 +1099,8 @@ class blog extends common {
 				// Bouton article précédent
 				if( $numberArticle!=='' && $numberArticle > 0 ) self::$urlPreviousArticle = helper::baseUrl().$this->getUrl(0).'/'.key($orderedListArticles[$numberArticle -1]);
 				// Bouton article suivant
-				if( $numberArticle!=='' && $numberArticle < count ($articleIds) -1 ) self::$urlNextArticle = helper::baseUrl().$this->getUrl(0).'/'.key($orderedListArticles[$numberArticle + 1]); 			
-				
+				if( $numberArticle!=='' && $numberArticle < count ($articleIds) -1 ) self::$urlNextArticle = helper::baseUrl().$this->getUrl(0).'/'.key($orderedListArticles[$numberArticle + 1]);
+
 				// Valeurs en sortie (activation de tinymce déporté dans article.php)
 				$this->addOutput([
 					'showBarEditButton' => true,

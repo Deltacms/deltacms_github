@@ -3,7 +3,7 @@
  * script original, version 4 du 7 mai 2023
 */
 // Lexique
-include('./core/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_core.php');
+include('./core/lang/'. $_SESSION['langAdmin'] . '/lex_core.php');
 $du=$this->getInput('DELTA_USER_ID');
 if(isset($du)){
 	$container = 'site/file/source/membersDirectory/';

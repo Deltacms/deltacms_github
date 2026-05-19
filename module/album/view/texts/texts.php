@@ -1,7 +1,7 @@
 <?php
 // Lexique
 $param = 'blog_view';
-include('./module/album/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_album.php');
+include('./module/album/lang/'. $_SESSION['langAdmin'] . '/lex_album.php');
 
 // drapeau pour la langue d'origine ou la langue en traduction rédigée
 $flag = $this->flagLang();

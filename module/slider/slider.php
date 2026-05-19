@@ -25,7 +25,7 @@ class slider extends common {
 		'index' => self::GROUP_VISITOR
 	];
 	
-	const VERSION = '6.8';	
+	const VERSION = '6.9';	
 	const REALNAME = 'Slider';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -117,9 +117,9 @@ class slider extends common {
 				$this->setData(['module', $this->getUrl(0), 'config', 'sliderBorder', false]);
 				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','6.6']);
 			}
-			// Version 6.7
-			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '6.7', '<') ) {
-				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','6.7']);
+			// Version 6.9
+			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '6.9', '<') ) {
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','6.9']);
 			}
 		}		
 	}	
@@ -146,7 +146,7 @@ class slider extends common {
 			]);	
 		} else {
 			// Lexique
-			include('./module/slider/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_slider.php');
+			include('./module/slider/lang/'. $_SESSION['langAdmin'] . '/lex_slider.php');
 			// Liste des dossiers dans site/file/source triés et non vides
 			$filter = ['jpg', 'jpeg', 'png', 'gif', 'tiff', 'ico', 'webp'];
 			self::$listDirs = helper::scanDir(self::FILE_DIR.'source', $filter);

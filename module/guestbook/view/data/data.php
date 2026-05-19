@@ -1,7 +1,7 @@
 <?php
 // Lexique
 $param = '';
-include('./module/guestbook/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_guestbook.php');
+include('./module/guestbook/lang/'. $_SESSION['langAdmin'] . '/lex_guestbook.php');
 ?>
 <div class="row">
 	<div class="col2">

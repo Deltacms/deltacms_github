@@ -1,6 +1,6 @@
 <?php
 // Lexique
-include('./core/module/addon/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_addon.php');
+include('./core/module/addon/lang/'. $_SESSION['langAdmin'] . '/lex_addon.php');
 
 echo template::formOpen('configModulesUpload'); ?>
 	<div class="row">

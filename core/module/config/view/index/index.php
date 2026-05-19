@@ -1,7 +1,7 @@
 <?php
 // Lexique
 $param='';
-include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
+include('./core/module/config/lang/'. $_SESSION['langAdmin'] . '/lex_config.php');
 // drapeau pour la langue d'origine ou la langue en traduction rédigée
 $flag = $this->flagLang();
 
@@ -25,7 +25,7 @@ echo template::formOpen('configForm');?>
 			]); ?>
 		</div>
 	<div class="col2 offset6">
-		<?php echo template::submit('Submit', [ 
+		<?php echo template::submit('Submit', [
 			'value' => $text['core_config_view']['index'][3]
 		]); ?>
 	</div>

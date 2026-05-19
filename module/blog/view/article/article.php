@@ -1,7 +1,7 @@
 <?php
 // Lexique
 $param = 'blog_view';
-include('./module/blog/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_blog.php');
+include('./module/blog/lang/'. $_SESSION['langAdmin'] . '/lex_blog.php');
 
 // Adaptation de la langue dans tinymce pour la rédaction d'un commentaire en fonction de la langue de la page, originale ou en traduction rédigée
 $lang = $this->getData(['config', 'i18n', 'langBase']);
@@ -201,7 +201,7 @@ $pictureBlog = $this->getData(['data_module', $this->getUrl(0), 'posts', $this->
 			</div>
 			<div id="blogArticleContentAlarm"> </div>
 			<?php if($this->getUser('password') !== $this->getInput('DELTA_USER_PASSWORD')): ?>
-				<?php if( $_SESSION['humanBot']==='bot' || $this->getData(['config', 'connect', 'captchaBot'])=== false 
+				<?php if( $_SESSION['humanBot']==='bot' || $this->getData(['config', 'connect', 'captchaBot'])=== false
 				|| ( $this->getData(['config', 'cookieConsent'])===true && !isset( $_COOKIE['DELTA_COOKIE_CONSENT']))) { ?>
 					<div class="row">
 						<div class="col12">

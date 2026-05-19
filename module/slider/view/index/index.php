@@ -1,6 +1,6 @@
 <?php 
 // Lexique
-include('./module/slider/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_slider.php');
+include('./module/slider/lang/'. $_SESSION['langAdmin'] . '/lex_slider.php');
 
 /*
 Création automatique du slider avec les images du dossier sélectionné en configuration du module

@@ -19,7 +19,7 @@
 
 class form extends common {
 
-	const VERSION = '6.8';
+	const VERSION = '6.9';
 	const REALNAME = 'Formulaire';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -98,7 +98,7 @@ class form extends common {
 			if( version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '6.2', '<') ){
 				// Nouvelles variables pour internationalisation
 				$param='';
-				include('./module/form/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_form.php');
+				include('./module/form/lang/'. $_SESSION['langAdmin'] . '/lex_form.php');
 				$button = $this->getData(['module', $this->getUrl(0), 'config', 'button']) !== "" ? $this->getData(['module', $this->getUrl(0), 'config', 'button']) : $text['form_view']['index'][0];
 				$this->setData(['module', $this->getUrl(0), 'texts',
 					[
@@ -118,7 +118,7 @@ class form extends common {
 			}
 			if( version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '6.5', '<') ){
 				$param='';
-				include('./module/form/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_form.php');
+				include('./module/form/lang/'. $_SESSION['langAdmin'] . '/lex_form.php');
 				$this->setData(['module', $this->getUrl(0), 'texts', 'noTrust', $text['form']['init'][13] ]);
 				$this->setData(['module', $this->getUrl(0), 'config', 'trustLimit', "80"]);
 				$this->setData(['module', $this->getUrl(0), 'config', 'versionData', '6.5']);
@@ -129,6 +129,9 @@ class form extends common {
 				$this->setData(['module', $this->getUrl(0), 'config', 'uploadGif',false]);
 				$this->setData(['module', $this->getUrl(0), 'config', 'versionData', '6.8']);
 			}
+			if( version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '6.9', '<') ){
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData', '6.9']);
+			}
 		}
 	}
 
@@ -137,7 +140,7 @@ class form extends common {
 	 */
 	private function init() {
 		$param='';
-		include('./module/form/lang/'. helper::lexlang($this->getData(['config', 'i18n', 'langBase']) , $this->getData(['config', 'i18n', 'langAdmin'])) . '/lex_form.php');
+		include('./module/form/lang/'. helper::lexlang($this->getData(['config', 'i18n', 'langBase']) , $_SESSION['langAdmin']) . '/lex_form.php');
 		$this->setData([
 			'module',
 			$this->getUrl(0),
@@ -202,7 +205,7 @@ class form extends common {
 		} else {
 			// Lexique
 			$param = '';
-			include('./module/form/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_form.php');
+			include('./module/form/lang/'. $_SESSION['langAdmin'] . '/lex_form.php');
 			// Liste des utilisateurs
 			$userIdsFirstnames = helper::arrayCollumn($this->getData(['user']), 'firstname');
 			ksort($userIdsFirstnames);
@@ -298,7 +301,7 @@ class form extends common {
 		} else {
 			// Lexique
 			$param = '';
-			include('./module/form/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_form.php');
+			include('./module/form/lang/'. $_SESSION['langAdmin'] . '/lex_form.php');
 			// Soumission du formulaire
 			if($this->isPost()) {
 				$this->setData(['module', $this->getUrl(0), 'texts',[
@@ -349,7 +352,7 @@ class form extends common {
 		} else {
 			// Lexique
 			$param = '';
-			include('./module/form/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_form.php');
+			include('./module/form/lang/'. $_SESSION['langAdmin'] . '/lex_form.php');
 			$data = $this->getData(['data_module', $this->getUrl(0), 'data']);
 			if($data) {
 				// Pagination
@@ -398,7 +401,7 @@ class form extends common {
 		} else {
 			// Lexique
 			$param = '';
-			include('./module/form/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_form.php');
+			include('./module/form/lang/'. $_SESSION['langAdmin'] . '/lex_form.php');
 			// Jeton incorrect
 			if ($this->getUrl(2) !== $_SESSION['csrf']) {
 				// Valeurs en sortie
@@ -456,7 +459,7 @@ class form extends common {
 		} else {
 			// Lexique
 			$param = '';
-			include('./module/form/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_form.php');
+			include('./module/form/lang/'. $_SESSION['langAdmin'] . '/lex_form.php');
 			// Jeton incorrect
 			if ($this->getUrl(2) !== $_SESSION['csrf']) {
 				// Valeurs en sortie
@@ -502,7 +505,7 @@ class form extends common {
 		} else {
 			// Lexique
 			$param = '';
-			include('./module/form/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_form.php');
+			include('./module/form/lang/'. $_SESSION['langAdmin'] . '/lex_form.php');
 			// Jeton incorrect
 			if ($this->getUrl(3) !== $_SESSION['csrf']) {
 				// Valeurs en sortie
@@ -544,7 +547,7 @@ class form extends common {
 		// Lexique
 		$param = '';
 		$detectBot ='';
-		include('./module/form/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_form.php');
+		include('./module/form/lang/'. $_SESSION['langAdmin'] . '/lex_form.php');
 		// Création du brouillon s'il n'existe pas
 		if( !isset($_SESSION['draft'])){
 			$_SESSION['draft'] = [];

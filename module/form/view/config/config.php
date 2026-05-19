@@ -1,7 +1,7 @@
 <?php
 // Lexique
 $param = 'form_view';
-include('./module/form/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_form.php');
+include('./module/form/lang/'. $_SESSION['langAdmin'] . '/lex_form.php');
 // drapeau pour la langue d'origine ou la langue en traduction rédigée
 $flag = $this->flagLang();
 ?>

@@ -1,6 +1,6 @@
 <?php
 // Lexique
-include('./core/module/install/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_install.php');
+include('./core/module/install/lang/'. $_SESSION['langAdmin'] . '/lex_install.php');
 ?>
 <p><strong><?php echo $text['core_install_view']['update'][0] . self::DELTA_VERSION . $text['core_install_view']['update'][1] . $module::$newVersion; ?>.</strong></p>
 <p><?php echo $text['core_install_view']['update'][2]; ?></p>

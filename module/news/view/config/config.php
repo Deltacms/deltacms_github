@@ -1,6 +1,6 @@
 <?php
 // Lexique
-include('./module/news/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_news.php');
+include('./module/news/lang/'. $_SESSION['langAdmin'] . '/lex_news.php');
 // drapeau pour la langue d'origine ou la langue en traduction rédigée
 $flag = $this->flagLang();
 
@@ -106,7 +106,7 @@ echo template::formOpen('newsConfig'); ?>
 			</div>
 		</div>
 	</div>
-	
+
 	<div class="row">
 	<div class="col12">
 		<div class="block">
@@ -134,7 +134,7 @@ echo template::formOpen('newsConfig'); ?>
 		</div>
 	</div>
 	</div>
-	
+
 	<div class="row <?php if($this->getUser('group') < self::GROUP_MODERATOR) echo 'displayNone'; ?> ">
 		<div class="col12">
 			<div class="block">

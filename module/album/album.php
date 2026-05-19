@@ -7,7 +7,7 @@
  */
 setlocale(LC_NUMERIC,'English','en_US','en_US.UTF-8');
 class album extends common {
-	const VERSION = '6.0';
+	const VERSION = '6.1';
 	const REALNAME = 'Album Photo';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -41,7 +41,7 @@ class album extends common {
 	private function update() {
 		// Lexique
 		$param = '';
-		include('./module/album/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_album.php');
+		include('./module/album/lang/'. $_SESSION['langAdmin'] . '/lex_album.php');
 		// Versions < 4.4 : versionData absent ou données module absentes
 		if( null === $this->getData(['module', $this->getUrl(0), 'config', 'versionData']) ) {
 			$this->init();
@@ -52,6 +52,14 @@ class album extends common {
 				$this->setData(['module', $this->getUrl(0), 'config', 'texts', 'geolocation', $text['album']['init'][1]]);
 				$this->setData(['module', $this->getUrl(0), 'config', 'texts', 'noAlbum', $text['album']['init'][2]]);
 				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','4.7']);
+			}
+			// Version 6.1
+			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '6.1', '<') ) {
+				$leaflet_dir = 'module/album/plugins/leaflet/';
+				if (is_dir($leaflet_dir)) {
+					// Suppression du dossier leaflet inclus dans le module
+					$this->removeDir($leaflet_dir);
+				}
 			}
 			// Mise à jour de la version du module
 			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), self::VERSION, '<') ) {
@@ -66,7 +74,7 @@ class album extends common {
 	private function init() {
 		// Lexique
 		$param = '';
-		include('./module/album/lang/'. helper::lexlang($this->getData(['config', 'i18n', 'langBase']) , $this->getData(['config', 'i18n', 'langAdmin'])) . '/lex_album.php');
+		include('./module/album/lang/'. helper::lexlang($this->getData(['config', 'i18n', 'langBase']) , $_SESSION['langAdmin']) . '/lex_album.php');
 		$this->setData(['module', $this->getUrl(0), 'config', 'versionData', self::VERSION]);
 		$this->setData(['module', $this->getUrl(0), 'config', 'texts', 'backButton', $text['album']['init'][0]]);
 		$this->setData(['module', $this->getUrl(0), 'config', 'texts', 'geolocation', $text['album']['init'][1]]);
@@ -121,7 +129,7 @@ class album extends common {
 		} else {
 			// Lexique
 			$param = '';
-			include('./module/album/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_album.php');
+			include('./module/album/lang/'. $_SESSION['langAdmin'] . '/lex_album.php');
 
 			// Soumission du formulaire
 			if($this->isPost()) {
@@ -196,7 +204,7 @@ class album extends common {
 		} else {
 			// Lexique
 			$param = '';
-			include('./module/album/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_album.php');
+			include('./module/album/lang/'. $_SESSION['langAdmin'] . '/lex_album.php');
 			//Affichage de l'album triée sauf le faux tableau 'config'
 			$g = $this->getData(['module', $this->getUrl(0)]);
 			unset($g['config']);
@@ -288,7 +296,7 @@ class album extends common {
 		} else {
 			// Lexique
 			$param = '';
-			include('./module/album/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_album.php');
+			include('./module/album/lang/'. $_SESSION['langAdmin'] . '/lex_album.php');
 
 			// $url prend l'adresse sans le token
 			// La galerie n'existe pas
@@ -355,7 +363,7 @@ class album extends common {
 		} else {
 			// Lexique
 			$param = '';
-			include('./module/album/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_album.php');
+			include('./module/album/lang/'. $_SESSION['langAdmin'] . '/lex_album.php');
 
 		// Jeton incorrect
 		if ($this->getUrl(3) !== $_SESSION['csrf']) {
@@ -490,6 +498,28 @@ class album extends common {
 	* Accueil
 	*/
 	public function index() {
+		// messages lors de la manipulation des photos
+		switch ($_SESSION['langAdmin']) {
+			case 'en':
+				$rotate_msg = 'Rotating the photo ';
+				$resize_msg = 'Resizing the photo ';
+				$rename_msg = 'Renaming the photo ';
+				break;
+			case 'es':
+				$rotate_msg = 'Rotación de la foto ';
+				$resize_msg = 'Cambiar el tamaño de la foto ';
+				$rename_msg = 'Cambiar el nombre de la foto ';
+				break;
+			case 'fr':
+				$rotate_msg = 'Réorientation de la photo ';
+				$resize_msg = 'Redimensionnement de la photo ';
+				$rename_msg = 'Renommage de la photo ';
+				break;
+			}
+		$_SESSION['rotate'] = $rotate_msg;
+		$_SESSION['resize'] = $resize_msg;
+		$_SESSION['rename'] = $rename_msg;
+
 		// Mise à jour des données de module
 		if ( null===$this->getData(['module', $this->getUrl(0), 'config', 'versionData']) || version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), self::VERSION, '<') ) $this->update();
 		// Images d'une galerie
@@ -590,9 +620,12 @@ class album extends common {
 			]);
 		}
 	}
-}
-/* ********************** albumHelper ********************** */
+} // album common
 
+define('EXIT_START', '<div style="position: absolute; top: 0; left: 0; width: 100vw; min-width: 100vw; max-width: 100vw; height: 100vh; background-color: rgb(0 0 0/ 0.9);"><span style="display: block; width: 95%; margin: 45px auto; color: #eee; font-size: 1rem;">');
+define('EXIT_STOP', '</span></div>');
+
+/* ********************** albumHelper ********************** */
 class albumHelper extends helper {
 
 	// création des dossiers
@@ -695,7 +728,7 @@ class albumHelper extends helper {
 				imagejpeg($image, self::renamePic($foto), 80);
 				self::backUp($foto);
 				echo '<script>document.location.reload(false);</script>';
-				exit('Réorientation de la photo '.basename($foto));
+				exit(EXIT_START.$_SESSION['rotate'].basename($foto).EXIT_STOP);
 				}
 			}
 		}
@@ -728,7 +761,7 @@ class albumHelper extends helper {
 				imagedestroy($im);
 		}
 			echo '<script>document.location.reload(false);</script>';
-			exit('Redimension de la photo '.basename($foto));
+			exit(EXIT_START.$_SESSION['resize'].basename($foto).EXIT_STOP);
 		}
 	}
 
@@ -743,7 +776,7 @@ class albumHelper extends helper {
 				$nommage = self::formate($foto);
 				$foto = rename($foto,$nommage);
 				echo '<script>document.location.reload(false);</script>';
-				exit('Renommage de la photo '.basename($foto));
+				exit(EXIT_START.$_SESSION['rename'].basename($foto).EXIT_STOP);
 			} else {
 				self::reorientation($foto);
 				self::redimension($foto);

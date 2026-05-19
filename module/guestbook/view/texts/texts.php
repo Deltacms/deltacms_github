@@ -1,7 +1,7 @@
 <?php
 // Lexique
 $param = 'guestbook_view';
-include('./module/guestbook/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_guestbook.php');
+include('./module/guestbook/lang/'. $_SESSION['langAdmin'] . '/lex_guestbook.php');
 // drapeau pour la langue d'origine ou la langue en traduction rédigée
 $flag = $this->flagLang();
 

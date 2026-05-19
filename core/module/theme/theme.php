@@ -36,7 +36,9 @@ class theme extends common {
 		'manage' => self::GROUP_ADMIN,
 		'export' => self::GROUP_ADMIN,
 		'import' => self::GROUP_ADMIN,
-		'save' => self::GROUP_ADMIN
+		'save' => self::GROUP_ADMIN,
+		'invertColor' => self::GROUP_VISITOR,
+		'fontSize' => self::GROUP_VISITOR
 	];
 
 	public static $siteFontSizes = [
@@ -77,14 +79,14 @@ class theme extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
+			include('./core/module/theme/lang/'. $_SESSION['langAdmin'] . '/lex_theme.php');
 			// Soumission du formulaire
 			if($this->isPost()) {
 				$this->setData(['admin', [
 					'backgroundColor' 	=> $this->getInput('adminBackgroundColor'),
 					'colorTitle' 		=> $this->getInput('adminColorTitle'),
 					'colorText'			=> $this->getInput('adminColorText'),
-					'colorButtonText' 	=> $this->getInput('adminColorButtonText'),
+					'colorLink'			=> $this->getInput('adminColorLink'),
 					'backgroundColorButton' 	=> $this->getInput('adminColorButton'),
 					'backgroundColorButtonGrey'	=> $this->getInput('adminColorGrey'),
 					'backgroundColorButtonRed'	=> $this->getInput('adminColorRed'),
@@ -130,7 +132,7 @@ class theme extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
+			include('./core/module/theme/lang/'. $_SESSION['langAdmin'] . '/lex_theme.php');
 			// Soumission du formulaire
 			if($this->isPost()) {
 				// Enregistre le CSS
@@ -168,7 +170,7 @@ class theme extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
+			include('./core/module/theme/lang/'. $_SESSION['langAdmin'] . '/lex_theme.php');
 			// Préparation du tableau d'affichage des polices
 			$fontsName = helper::arrayCollumn($this->getData(['fonts']), 'name');
 			ksort($fontsName);
@@ -214,7 +216,7 @@ class theme extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
+			include('./core/module/theme/lang/'. $_SESSION['langAdmin'] . '/lex_theme.php');
 			// Retour du formulaire
 			if($this->isPost()) {
 				if( $this->getInput('typeEditFont') === 'file' && $this->getInput('fileEditFont') === $text['core_theme']['editFonts'][0]){
@@ -286,7 +288,7 @@ class theme extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
+			include('./core/module/theme/lang/'. $_SESSION['langAdmin'] . '/lex_theme.php');
 			//Suppression de la police passée en paramètre
 			$this->deleteData(['fonts', $this->getUrl(2)]);
 			// Force une maj de admin.css
@@ -314,7 +316,7 @@ class theme extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
+			include('./core/module/theme/lang/'. $_SESSION['langAdmin'] . '/lex_theme.php');
 			// Retour du formulaire
 			if($this->isPost()) {
 				if( $this->getInput('typeAddFont') === 'file' && $this->getInput('fileAddFont') === $text['core_theme']['addFonts'][0]){
@@ -386,7 +388,7 @@ class theme extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
+			include('./core/module/theme/lang/'. $_SESSION['langAdmin'] . '/lex_theme.php');
 			// Soumission du formulaire
 			if($this->isPost()) {
 				$this->setData([ 'theme', 'update', true]);
@@ -430,7 +432,7 @@ class theme extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
+			include('./core/module/theme/lang/'. $_SESSION['langAdmin'] . '/lex_theme.php');
 			// Soumission du formulaire
 			if($this->isPost()) {
 				$this->setData([ 'theme', 'update', true]);
@@ -521,7 +523,7 @@ class theme extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
+			include('./core/module/theme/lang/'. $_SESSION['langAdmin'] . '/lex_theme.php');
 			// Liste des dossiers dans site/file/source triés et non vides
 			$filter = ['jpg', 'jpeg', 'png', 'gif', 'tiff', 'ico', 'webp'];
 			self::$listDirs = helper::scanDir(self::FILE_DIR.'source', $filter);
@@ -643,7 +645,7 @@ class theme extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
+			include('./core/module/theme/lang/'. $_SESSION['langAdmin'] . '/lex_theme.php');
 			// Valeurs en sortie
 			$this->addOutput([
 				'title' => $text['core_theme']['index'][0],
@@ -666,7 +668,7 @@ class theme extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
+			include('./core/module/theme/lang/'. $_SESSION['langAdmin'] . '/lex_theme.php');
 			// Soumission du formulaire
 			if($this->isPost()) {
 				// Filtrage de la position si le menu est superposé à la bannière
@@ -774,7 +776,7 @@ class theme extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
+			include('./core/module/theme/lang/'. $_SESSION['langAdmin'] . '/lex_theme.php');
 			// $url prend l'adresse sans le token
 			$url = explode('&',$this->getUrl(2));
 
@@ -830,7 +832,7 @@ class theme extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
+			include('./core/module/theme/lang/'. $_SESSION['langAdmin'] . '/lex_theme.php');
 			// Soumission du formulaire
 			if($this->isPost()) {
 				$this->setData([ 'theme', 'update', true]);
@@ -903,7 +905,7 @@ class theme extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
+			include('./core/module/theme/lang/'. $_SESSION['langAdmin'] . '/lex_theme.php');
 
 			if($this->isPost() ) {
 				if( isset( $_POST['themeSaveTheme'])){
@@ -953,7 +955,7 @@ class theme extends common {
 	public function import($zipName = '') {
 		// Pas de sécurité car cette fonction est utilisée à l'installation
 		// Lexique
-		include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
+		include('./core/module/theme/lang/'. $_SESSION['langAdmin'] . '/lex_theme.php');
 
 		if ($zipName !== '' &&
 			file_exists($zipName)) {
@@ -1062,7 +1064,7 @@ class theme extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
+			include('./core/module/theme/lang/'. $_SESSION['langAdmin'] . '/lex_theme.php');
 			// Make zip
 			$zipFilename = $this->zipTheme($modele, $name);
 			// Téléchargement du ZIP
@@ -1275,6 +1277,31 @@ class theme extends common {
 		} else {
 			return $swiperContent;
 		}
+	}
+	
+	/*
+	* Appelé sur appui du bouton d'inversion des couleurs
+	*/
+	public function invertColor() {
+		// Inversion de la variable de session
+		$_SESSION['ACC_INVERTCOLOR'] = ! $_SESSION['ACC_INVERTCOLOR'];
+		// Valeurs en sortie
+		$this->addOutput([
+			'redirect' 	=> 	helper::baseUrl().$this->getUrl(2)
+		]);
+	}
+	
+	/*
+	* Appelé sur appui du bouton de modification de taille des caractères
+	*/
+	public function fontSize() {
+		// modification de la taille des caractères
+		$_SESSION['ACC_FONTSIZE']++;
+		if( $_SESSION['ACC_FONTSIZE'] > 2) $_SESSION['ACC_FONTSIZE']=0;
+		// Valeurs en sortie
+		$this->addOutput([
+			'redirect' 	=> 	helper::baseUrl().$this->getUrl(2)
+		]);
 	}
 
 }

@@ -1,8 +1,8 @@
 <?php
 // Lexique
-include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
+include('./core/module/user/lang/'. $_SESSION['langAdmin'] . '/lex_user.php');
 
-echo template::formOpen('userLoginForm'); 
+echo template::formOpen('userLoginForm');
 ?>
 	<div class="row humanBot">
 		<div class="col6">
@@ -12,7 +12,7 @@ echo template::formOpen('userLoginForm');
 			]); ?>
 		</div>
 		<div class="col6">
-			<?php 
+			<?php
 			if( $this->getData(['config', 'connect', 'passwordVisibility']) === true){
 				$passwordLabel = '<span id="passwordLabel">'. $text['core_user_view']['login'][1] .'</span><span id="passwordIcon">' .  template::ico('eye') . '</span>';
 			} else {

@@ -1,6 +1,6 @@
 <?php
 // Lexique
-include('./module/agenda/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_agenda.php');
+include('./module/agenda/lang/'. $_SESSION['langAdmin'] . '/lex_agenda.php');
 ?>
 <script>
 var lang_admin = "<?php echo $lang_admin; ?>";

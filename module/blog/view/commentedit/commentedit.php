@@ -1,7 +1,7 @@
 <?php
 // Lexique
 $param = 'blog_view';
-include('./module/blog/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_blog.php');
+include('./module/blog/lang/'. $_SESSION['langAdmin'] . '/lex_blog.php');
 
 // Passage de la langue d'administration à Tinymce et flatpickr
 $lang_admin = $text['blog_view']['edit'][24];

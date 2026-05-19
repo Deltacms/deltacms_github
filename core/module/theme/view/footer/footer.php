@@ -1,6 +1,6 @@
 <?php
 // Lexique
-include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
+include('./core/module/theme/lang/'. $_SESSION['langAdmin'] . '/lex_theme.php');
 
 // Passage de la langue d'administration à Tinymce
 ?>
@@ -119,7 +119,7 @@ echo template::formOpen('themeFooterForm');
                             'checked' => $this->getData(['theme', 'footer', 'displayWhois']),
                             'help' => $text['core_theme_view']['footer'][48]
                         ]); ?>
-                </div>			
+                </div>
                 <div class="col3">
                     <?php echo template::checkbox('themeFooterLoginLink', true, $text['core_theme_view']['footer'][18], [
                             'checked' => $this->getData(['theme', 'footer', 'loginLink']),

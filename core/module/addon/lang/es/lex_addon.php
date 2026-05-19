@@ -10,6 +10,7 @@ $text['core_addon_view']['index'][6] = 'Página(s)';
 $text['core_addon_view']['index'][7] = 'Quitar';
 $text['core_addon_view']['index'][10] = 'Ningún complemento instalado.';
 $text['core_addon_view']['index'][11] = "¿Está seguro de que desea eliminar este complemento?";
+$text['core_addon_view']['index'][12] = "Última versión";
 $text['core_addon_view']['upload'][0] = 'Atrás';
 $text['core_addon_view']['upload'][1] = 'Ayuda';
 $text['core_addon_view']['upload'][2] = 'Validar';

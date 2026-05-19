@@ -1,7 +1,7 @@
 <?php
 // Lexique
 $param = '';
-include('./module/guestbook/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_guestbook.php');
+include('./module/guestbook/lang/'. $_SESSION['langAdmin'] . '/lex_guestbook.php');
 
 // Flatpickr dans la langue en frontend si elle est connue de Flatpickr, y compris en traduction auto
 $arrayFlatpickr = ['fr', 'es', 'pt', 'el', 'it'];

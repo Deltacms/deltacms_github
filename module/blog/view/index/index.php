@@ -1,7 +1,7 @@
 <?php
 // Lexique
 $param = 'blog_view';
-include('./module/blog/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_blog.php');
+include('./module/blog/lang/'. $_SESSION['langAdmin'] . '/lex_blog.php');
 // Pour les dates suivant la langue de rédaction du site (langue principale ou langue de traduction rédigée)
 if( function_exists('datefmt_create') && function_exists('datefmt_format') && extension_loaded('intl') ){
 	if( isset( $_SESSION['langFrontEnd']) && isset( $_SESSION['translationType']) && $_SESSION['translationType'] === 'site' ){

@@ -64,6 +64,7 @@ class install extends common {
 				$langBase = $this->getInput('installLangBase');
 				$this->setData(['config', 'i18n', 'langAdmin', $langAdmin]);
 				$this->setData(['config', 'i18n', 'langBase', $langBase]);
+				$_SESSION['langAdmin'] = $this->getData(['config', 'i18n', 'langAdmin']);
 
 				// Localisation avec ordre de locales : $langAdmin puis les 2 autres
 				$this->localisation($langAdmin);
@@ -87,10 +88,11 @@ class install extends common {
 				]);
 
 				// Lexique
-				include('./core/module/install/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_install.php');
+				include('./core/module/install/lang/'. $_SESSION['langAdmin'] . '/lex_install.php');
 				// Compte créé, envoi du mail et création des données du site
 				if ($success) { // Formulaire complété envoi du mail
-					// Envoie le mail
+					// Détermination du nom de domaine
+					$this->setData(['config', 'mailDomainNameAuto', $this->getDomainName($_SERVER['HTTP_HOST'])]);
 					// Sent contient true si réussite sinon code erreur d'envoi en clair
 					$sent = $this->sendMail(
 						$userMail,
@@ -365,7 +367,7 @@ class install extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/install/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_install.php');
+			include('./core/module/install/lang/'. $_SESSION['langAdmin'] . '/lex_install.php');
 			// Nouvelle version
 			self::$newVersion = helper::urlGetContents(common::DELTA_UPDATE_URL . common::DELTA_UPDATE_CHANNEL . '/version');
 			// Valeurs en sortie

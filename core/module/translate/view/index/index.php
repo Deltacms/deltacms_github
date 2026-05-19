@@ -1,6 +1,6 @@
 <?php echo template::formOpen('translateForm');
 // Lexique
-include('./core/module/translate/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_translate.php');
+include('./core/module/translate/lang/'. $_SESSION['langAdmin'] . '/lex_translate.php');
 ?>
 	<div class="row">
 		<div class="col2">

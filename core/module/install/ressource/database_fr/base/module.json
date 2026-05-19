@@ -6,7 +6,7 @@
                 "feedsLabel": "Syndication RSS",
                 "itemsperPage": 4,
 				"previewSize" : 400,
-                "versionData": "7.7"
+                "versionData": "7.8"
             },
             "texts": {
                 "NoComment": "Pas encore de commentaire",
@@ -48,7 +48,7 @@
                 "logoUrl": "",
                 "logoWidth": "40",
                 "maxSizeUpload": "1000000",
-                "versionData": "6.8",
+                "versionData": "6.9",
                 "uploadJpg": true,
                 "uploadPng": true,
                 "uploadPdf": false,
@@ -109,7 +109,7 @@
                 "resultHideContent": false,
                 "placeHolder": "Un ou plusieurs mots-clés",
                 "submitText": "Rechercher",
-                "versionData": "3.9",
+                "versionData": "4.0",
                 "nearWordText": "Mots approchants",
                 "successTitle": "Résultat de votre recherche",
                 "failureTitle": "Aucun résultat",
@@ -154,7 +154,7 @@
                 "order": []
             },
             "config": {
-                "versionData": "6.0",
+                "versionData": "6.1",
 				"texts": {
 					"backButton": "Retour",
 					"geolocation": "Géolocalisation",
@@ -168,7 +168,7 @@
                 "resultHideContent": false,
                 "placeHolder": "Un ou plusieurs mots-clés",
                 "submitText": "Rechercher",
-                "versionData": "3.9",
+                "versionData": "4.0",
                 "nearWordText": "Mots approchants",
                 "successTitle": "Résultat de votre recherche",
                 "failureTitle": "Aucun résultat",

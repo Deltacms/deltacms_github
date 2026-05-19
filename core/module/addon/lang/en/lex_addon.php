@@ -10,6 +10,7 @@ $text['core_addon_view']['index'][6] = 'Page(s)';
 $text['core_addon_view']['index'][7] = 'Delete';
 $text['core_addon_view']['index'][10] = 'No module installed.';
 $text['core_addon_view']['index'][11] = "Are you sure you want to delete this module ?";
+$text['core_addon_view']['index'][12] = "Latest version";
 $text['core_addon_view']['upload'][0] = 'Back';
 $text['core_addon_view']['upload'][1] = 'Help';
 $text['core_addon_view']['upload'][2] = 'Validate';

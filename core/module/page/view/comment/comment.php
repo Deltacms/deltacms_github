@@ -1,6 +1,6 @@
 <?php
 // Lexique
-include('./core/module/page/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_page.php');
+include('./core/module/page/lang/'. $_SESSION['langAdmin'] . '/lex_page.php');
 ?>
 <div class="row">
 	<div class="col2">
@@ -16,7 +16,7 @@ include('./core/module/page/lang/'. $this->getData(['config', 'i18n', 'langAdmin
 			'class' => 'formDataDeleteAll buttonRed',
 			'href' => helper::baseUrl() . 'page/commentAllDelete/' . $this->getUrl(2) . '/' . $_SESSION['csrf'],
 			'ico' => 'cancel',
-			'value' => $text['core_page_view']['comment'][4] 
+			'value' => $text['core_page_view']['comment'][4]
 		]); ?>
 	</div>
 	<div class="col2">

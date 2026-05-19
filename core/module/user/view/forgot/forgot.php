@@ -1,6 +1,6 @@
-<?php echo template::formOpen('userForgotForm'); 
+<?php echo template::formOpen('userForgotForm');
 // Lexique
-include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
+include('./core/module/user/lang/'. $_SESSION['langAdmin'] . '/lex_user.php');
 
 echo template::text('userForgotId', [
 		'label' => $text['core_user_view']['forgot'][0]

@@ -1,7 +1,7 @@
 <?php
 // Lexique
 $param='';
-include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
+include('./core/module/config/lang/'. $_SESSION['langAdmin'] . '/lex_config.php');
 
 echo template::formOpen('configScript'); ?>
     <div class="row">

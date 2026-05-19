@@ -1,6 +1,6 @@
 <?php echo template::formOpen('searchForm');
 // Lexique
-include('./module/search/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_search.php');
+include('./module/search/lang/'. $_SESSION['langAdmin'] . '/lex_search.php');
 ?>
 	<div class="row">
 		<div class="col10 offset1">

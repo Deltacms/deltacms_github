@@ -28,7 +28,7 @@ class maintenance extends common {
 	 */
 	public function index() {
 		// Lexique
-		include('./core/module/maintenance/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_maintenance.php');
+		include('./core/module/maintenance/lang/'. $_SESSION['langAdmin'] . '/lex_maintenance.php');
 
 		// Redirection vers l'accueil après rafraîchissement et que la maintenance est terminée.
 		if($this->getData(['config', 'maintenance']) == False){

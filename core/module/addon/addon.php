@@ -45,7 +45,7 @@ class addon extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/addon/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_addon.php');
+			include('./core/module/addon/lang/'. $_SESSION['langAdmin'] . '/lex_addon.php');
 
 			// Jeton incorrect
 			if ($this->getUrl(3) !== $_SESSION['csrf']) {
@@ -86,11 +86,11 @@ class addon extends common {
 
 	/***
 	 * Installation d'un module
-	 * Fonction utilisée par upload et storeUpload
+	 * Fonction utilisée par upload
 	 */
 	private function install ($moduleName, $checkValid){
 		// Lexique
-		include('./core/module/addon/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_addon.php');
+		include('./core/module/addon/lang/'. $_SESSION['langAdmin'] . '/lex_addon.php');
 		$tempFolder = 'datamodules';//uniqid();
 		$zip = new ZipArchive();
 		if ($zip->open($moduleName) === TRUE) {
@@ -213,7 +213,7 @@ class addon extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/addon/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_addon.php');
+			include('./core/module/addon/lang/'. $_SESSION['langAdmin'] . '/lex_addon.php');
 
 			// Soumission du formulaire
 			if($this->isPost()) {
@@ -254,7 +254,7 @@ class addon extends common {
 			]);
 		} else {
 			// Lexique
-			include('./core/module/addon/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_addon.php');
+			include('./core/module/addon/lang/'. $_SESSION['langAdmin'] . '/lex_addon.php');
 
 			// Lister les modules
 			// $infoModules[nom_module]['realName'], ['version'], ['update'], ['delete'], ['dataDirectory']
@@ -266,15 +266,34 @@ class addon extends common {
 				$inPagesTitle[ $this->getData(['page', $key, 'title' ]) ] = $value;
 			}
 
+			// Lecture du ficher site_modules.json pour afficher les dernières versions des modules site, avec protections
+			$json = @file_get_contents('https://deltacms.fr/site/file/source/modules/site_modules.json');
+			if ($json === false) {
+				$infoSiteModules = [];
+			} else {
+				$tabjson = json_decode($json, true);
+				$infoSiteModules = is_array($tabjson) && isset($tabjson['modules'])	? $tabjson['modules'] : [];
+			}
+
+			// Valeur '' pour les modules zip
+			$zipModules=['agenda', 'album', 'blog', 'form', 'guestbook', 'news', 'redirection', 'search', 'slider', 'statislite'];
+			foreach($zipModules as $k=>$val){
+				$infoSiteModules[$val]['version'] = '';
+				$infoSiteModules[$val]['link'] = '';
+			}
+
 			// Parcourir les données des modules
 			foreach ($infoModules as $key=>$value) {
+				// Sécurité pour des modules présents mais non distribués
+				if( !isset($infoSiteModules[$key]['link'])) $infoSiteModules[$key]['link']='';
+				if( !isset($infoSiteModules[$key]['version'])) $infoSiteModules[$key]['version']='';
 				// Construire le tableau de sortie
 				self::$modInstal[] = [
 					$key,
 					$infoModules[$key]['realName'],
 					$infoModules[$key]['version'],
+					'<a href="'. $infoSiteModules[$key]['link'] .'" target=_blank">'. $infoSiteModules[$key]['version'] .'</a>',
 					implode(', ', array_keys($inPagesTitle,$key)),
-					//|| ('delete',$infoModules[$key]) && $infoModules[$key]['delete'] === true && implode(', ',array_keys($inPages,$key)) === ''
 					$infoModules[$key]['delete'] === true  && implode(', ',array_keys($inPages,$key)) === ''
 												? template::button('moduleDelete' . $key, [
 														'class' => 'moduleDelete buttonRed',

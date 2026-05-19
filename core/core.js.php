@@ -716,6 +716,27 @@ $(document).ready(function(){
 		}
 	});
 	
+	/*
+	* Modification de l'opacité du menu superposé et fixe après scroll
+	*/
+	if( $(window).width() > 799 ){
+		<?php if( $this->getData(['theme','menu','position' ]) === "superimposed" && $this->getData(['theme','menu','fixed' ]) === true ){ ?>
+			$(window).on('scroll', function () {
+				let rgba = "<?php echo $this->getData(['theme','menu','backgroundColor']); ?>";
+				let rgbaMod = rgba.replace(/[\d.]+\)$/, '0.9)');
+				if ($(window).scrollTop() > 100) {
+					$('#superimposed').css('background', rgbaMod);
+					$('#navfixedconnected').css('background', rgbaMod);
+					$('#navfixedlogout').css('background', rgbaMod);
+				} else {
+					$('#superimposed').css('background', rgba );
+					$('#navfixedconnected').css('background', rgba );
+					$('#navfixedlogout').css('background', rgba );
+				}
+			});
+		<?php } ?>
+	}
+	
 	/**
 	 * Chargement paresseux des images et des iframes sauf tinymce
 	 */
@@ -891,33 +912,6 @@ $(document).ready(function(){
 			document.cookie = "evtV = " +  time  + ";path=/" + ";SameSite=Strict";
 		});
 	<?php } ?>
-
-	/* Inversion des couleurs du site par chargement dans main.php de theme_invert.css */
-	$('.invertColorButton').on('click', function() {
-		var cook =  document.cookie.split('; ');
-		cook.forEach((item, index) => {
-		  if(item ==='DELTA_COOKIE_INVERTCOLOR=true'){
-			document.cookie = "DELTA_COOKIE_INVERTCOLOR=false" + ";path=/" + ";SameSite=Strict";
-		  }
-		  if(item ==='DELTA_COOKIE_INVERTCOLOR=false'){
-			document.cookie = "DELTA_COOKIE_INVERTCOLOR=true" + ";path=/" +  ";SameSite=Strict";
-		  }
-		});
-	});
-
-	/* Modification de la taille des caractères */
-	$('.increaseFontBtn').on('click', function() {
-		var cook =  document.cookie.split('; ');
-		cook.forEach((item, index) => {
-		  if(item.includes('DELTA_COOKIE_FONTSIZE')){
-			var value = parseInt(item.split('=')[1]);
-			// incrémenter la valeur du cookie et le mémoriser
-			value++;
-			if(value > 2 ) value=0;
-			document.cookie = "DELTA_COOKIE_FONTSIZE=" + value + ";path=/" +  ";SameSite=Strict";
-		  }
-		});
-	});
 
 	/*
 	* Effacement du bouton d'aide avec ? cerclé sur les terminaux mobiles

@@ -1,6 +1,6 @@
 <?php
 // Lexique
-include('./module/statislite/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_statislite.php');
+include('./module/statislite/lang/'. $_SESSION['langAdmin'] . '/lex_statislite.php');
 
 echo template::formOpen('advancedForm'); ?>
 

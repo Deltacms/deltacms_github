@@ -74,8 +74,8 @@ $("section")
  * Affiche le bouton zones cachées en grand écran et en petit écran
  */
  let tinyHidden = "<?php echo $this->getData(['theme', 'header', 'tinyHidden']); ?>" ;
- <?php 
- include('./core/module/theme/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_theme.php');
+ <?php
+ include('./core/module/theme/lang/'. $_SESSION['langAdmin'] . '/lex_theme.php');
  if( $this->getData(['theme', 'header', 'position']) === 'hide'
 	OR $this->getData(['theme', 'menu', 'position']) === 'hide'
 	OR $this->getData(['theme', 'footer', 'position']) === 'hide' ) { ?>

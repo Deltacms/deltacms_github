@@ -195,7 +195,7 @@ class config extends common {
 		} else {
 			// Lexique
 			$param='';
-			include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
+			include('./core/module/config/lang/'. $_SESSION['langAdmin'] . '/lex_config.php');
 
 			// Mettre à jour le site map
 			$successSitemap=$this->createSitemap();
@@ -227,7 +227,7 @@ class config extends common {
 		} else {
 			// Lexique
 			$param='';
-			include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
+			include('./core/module/config/lang/'. $_SESSION['langAdmin'] . '/lex_config.php');
 
 			// Soumission du formulaire
 			if($this->isPost()) {
@@ -272,7 +272,7 @@ class config extends common {
 		} else {
 			// Lexique
 			$param='';
-			include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
+			include('./core/module/config/lang/'. $_SESSION['langAdmin'] . '/lex_config.php');
 
 			$texte='';
 			if( isset($_SESSION['screenshot']) && $_SESSION['screenshot'] === 'on'){
@@ -307,7 +307,7 @@ class config extends common {
 		} else {
 			// Lexique
 			$param='';
-			include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
+			include('./core/module/config/lang/'. $_SESSION['langAdmin'] . '/lex_config.php');
 
 			// Soumission du formulaire
 			if($this->isPost() ) {
@@ -395,7 +395,7 @@ class config extends common {
 		} else {
 			// Lexique
 			$param='';
-			include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
+			include('./core/module/config/lang/'. $_SESSION['langAdmin'] . '/lex_config.php');
 
 			// Liste des utilisateurs
 			$userIdsFirstnames = helper::arrayCollumn($this->getData(['user']), 'firstname');
@@ -404,6 +404,9 @@ class config extends common {
 			foreach($userIdsFirstnames as $userId => $userFirstname) {
 				self::$listUsers [] =  $userId;
 			}
+
+			// Détermination du nom de domaine
+			$this->setData(['config', 'mailDomainNameAuto', $this->getDomainName($_SERVER['HTTP_HOST'])]);
 
 			// Soumission du formulaire
 			if($this->isPost()) {
@@ -491,6 +494,7 @@ class config extends common {
 					}
 				}
 
+				$username = $this->getInput('smtpUsername',helper::FILTER_STRING_SHORT,$this->getInput('smtpEnable',helper::FILTER_BOOLEAN));
 				// Sauvegarder la configuration
 				$this->setData([
 					'config',
@@ -507,6 +511,7 @@ class config extends common {
 						'proxyUrl' => $this->getInput('configProxyUrl'),
 						'proxyPort' => $this->getInput('configProxyPort',helper::FILTER_INT),
 						'mailDomainName' => $this->getInput('configMailDomainName', helper::FILTER_STRING_SHORT),
+						'mailDomainNameAuto' => $this->getData(['config', 'mailDomainNameAuto']),
 						'social' => [
 							'facebookId' => $this->getInput('socialFacebookId'),
 							'linkedinId' => $this->getInput('socialLinkedinId'),
@@ -529,10 +534,10 @@ class config extends common {
 							'enable' => $this->getInput('smtpEnable',helper::FILTER_BOOLEAN),
 							'host' => $this->getInput('smtpHost',helper::FILTER_STRING_SHORT,$this->getInput('smtpEnable',helper::FILTER_BOOLEAN)),
 							'port' => $this->getInput('smtpPort',helper::FILTER_INT,$this->getInput('smtpEnable',helper::FILTER_BOOLEAN)),
-							'auth' => $this->getInput('smtpAuth',helper::FILTER_BOOLEAN),
-							'secure' => $this->getInput('smtpSecure',helper::FILTER_BOOLEAN),
-							'username' => $this->getInput('smtpUsername',helper::FILTER_STRING_SHORT,$this->getInput('smtpAuth',helper::FILTER_BOOLEAN)),
-							'password' =>helper::encrypt($this->getData(['config','smtp','username']),$this->getInput('smtpPassword',null,$this->getInput('smtpAuth',helper::FILTER_BOOLEAN))),
+							'auth' => true, //$this->getInput('smtpAuth',helper::FILTER_BOOLEAN),
+							'secure' => $this->getInput('smtpSecure',helper::FILTER_STRING_SHORT),
+							'username' => $username,
+							'password' =>helper::encrypt($username,$this->getInput('smtpPassword',null,$this->getInput('smtpEnable',helper::FILTER_BOOLEAN))),
 							'sender' => $this->getInput('smtpSender',helper::FILTER_MAIL)
 						],
 						'seo' => [
@@ -688,7 +693,7 @@ class config extends common {
 		} else {
 			// Lexique
 			$param='';
-			include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
+			include('./core/module/config/lang/'. $_SESSION['langAdmin'] . '/lex_config.php');
 
 			// Soumission du formulaire
 			if($this->isPost()) {
@@ -737,7 +742,7 @@ class config extends common {
 		} else {
 			// Lexique
 			$param='';
-			include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
+			include('./core/module/config/lang/'. $_SESSION['langAdmin'] . '/lex_config.php');
 
 			if ( file_exists(self::DATA_DIR . 'journal.log') ) {
 				unlink(self::DATA_DIR . 'journal.log');
@@ -780,7 +785,7 @@ class config extends common {
 		} else {
 			// Lexique
 			$param='';
-			include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
+			include('./core/module/config/lang/'. $_SESSION['langAdmin'] . '/lex_config.php');
 
 			$fileName = self::DATA_DIR . 'journal.log';
 			if (file_exists($fileName)) {
@@ -819,7 +824,7 @@ class config extends common {
 		} else {
 			// Lexique
 			$param='';
-			include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
+			include('./core/module/config/lang/'. $_SESSION['langAdmin'] . '/lex_config.php');
 
 			ob_start();
 			$fileName = self::TEMP_DIR . 'blacklist.log';
@@ -871,7 +876,7 @@ class config extends common {
 		} else {
 			// Lexique
 			$param='';
-			include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
+			include('./core/module/config/lang/'. $_SESSION['langAdmin'] . '/lex_config.php');
 
 			if ( file_exists(self::DATA_DIR . 'blacklist.json') ) {
 				$this->setData(['blacklist',[]]);
@@ -909,7 +914,7 @@ class config extends common {
 		} else {
 			// Lexique
 			$param='';
-			include('./core/module/config/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_config.php');
+			include('./core/module/config/lang/'. $_SESSION['langAdmin'] . '/lex_config.php');
 
 			// Créer le répertoire manquant
 			if (!is_dir(self::FILE_DIR.'source/backup')) {

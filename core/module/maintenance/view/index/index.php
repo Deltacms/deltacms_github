@@ -1,6 +1,6 @@
 <?php
 	// Lexique
-	include('./core/module/maintenance/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_maintenance.php');
+	include('./core/module/maintenance/lang/'. $_SESSION['langAdmin'] . '/lex_maintenance.php');
 ?>
 <p><?php echo $text['core_maintenance']['index'][1]; ?></p>
 

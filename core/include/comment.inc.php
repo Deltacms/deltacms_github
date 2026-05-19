@@ -1,6 +1,6 @@
 <?php // Commentaires de page, fichier inclus dans showComment()
 // Style lié au thème du site
-if( isset( $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] ) && $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] === 'true' ) {
+if( isset( $_SESSION['ACC_INVERTCOLOR'] ) && $_SESSION['ACC_INVERTCOLOR'] === true ) {
 	$borderColor = helper::invertColor($this->getData(['theme', 'block', 'borderColor']));
 } else {
 	$borderColor = $this->getData(['theme', 'block', 'borderColor']);
@@ -11,7 +11,7 @@ $(':root').css('--dataNameDate_font', '<?=$this->getData(['theme', 'text', 'font
 </script>
 <?php
 // Lexique
-include('./core/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_core.php');
+include('./core/lang/'. $_SESSION['langAdmin'] . '/lex_core.php');
 
 // Pour les dates suivant la langue de rédaction du site (langue principale ou langue de traduction rédigée)
 if( function_exists('datefmt_create') && function_exists('datefmt_format') && extension_loaded('intl') ){

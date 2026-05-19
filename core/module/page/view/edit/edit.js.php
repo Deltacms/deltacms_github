@@ -543,12 +543,12 @@ $("#pageEditParentPageId").on("change", function() {
 	var text1="";
 	var text2="";
 	var text3="";
-	<?php if( $this->getData(['config', 'i18n', 'langAdmin' ]) === 'fr'){
+	<?php if ($_SESSION['langAdmin'] === 'fr'){
 		echo 'text1 = "Ne pas afficher";' ;
 		echo 'text2 = "Au début";' ;
 		echo 'text3 = "Après \"";' ;
 	}
-	elseif( $this->getData(['config', 'i18n', 'langAdmin' ]) === 'en'){
+	elseif ($_SESSION['langAdmin'] === 'en'){
 		echo 'text1 = "Do not display";' ;
 		echo 'text2 = "At the beginning";' ;
 		echo 'text3 = "After \"";' ;

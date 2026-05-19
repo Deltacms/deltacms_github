@@ -1,7 +1,7 @@
 <!-- Configuration du module agenda -->
 <?php
 // Lexique
-include('./module/agenda/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_agenda.php');
+include('./module/agenda/lang/'. $_SESSION['langAdmin'] . '/lex_agenda.php');
 // drapeau pour la langue d'origine ou la langue en traduction rédigée
 $flag = $this->flagLang();
 if(! is_dir(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0))){ $readonly = true;}else{ $readonly = false;}
@@ -175,11 +175,11 @@ else {
 if( null === $this->getData(['module', $this->getUrl(0), 'texts', 'configTextButtonBack']) 
 	|| null === $this->getData(['module', $this->getUrl(0), 'texts', 'configTextDateStart'])
 	|| null === $this->getData(['module', $this->getUrl(0), 'texts', 'configTextDateEnd']) ){
-	include('./module/agenda/lang/'. helper::lexlang($this->getData(['config', 'i18n', 'langBase']) , $this->getData(['config', 'i18n', 'langAdmin'])) . '/lex_agenda.php');
+	include('./module/agenda/lang/'. helper::lexlang($this->getData(['config', 'i18n', 'langBase']) , $_SESSION['langAdmin']) . '/lex_agenda.php');
 	$this->setData(['module', $this->getUrl(0), 'texts', 'configTextButtonBack', $text['agenda_view']['config'][0]]);
 	$this->setData(['module', $this->getUrl(0), 'texts', 'configTextDateStart', $text['agenda_view']['config'][33]]);
 	$this->setData(['module', $this->getUrl(0), 'texts', 'configTextDateEnd', $text['agenda_view']['config'][34]]);
-	include('./module/agenda/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_agenda.php');
+	include('./module/agenda/lang/'. $_SESSION['langAdmin'] . '/lex_agenda.php');
 }
 ?>
 <div class="block">

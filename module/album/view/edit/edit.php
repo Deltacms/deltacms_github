@@ -1,7 +1,7 @@
 <?php
 // Lexique
 $param = "album_view";
-include('./module/album/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_album.php');
+include('./module/album/lang/'. $_SESSION['langAdmin'] . '/lex_album.php');
 
 echo template::formOpen('galleryEditForm'); ?>
 	<div class="row">

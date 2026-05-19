@@ -52,7 +52,7 @@ $( "#formFileReset" ).click(function() {
 
 /* Affecter la couleur de bordure des blocs aux class formOuter et formInputFile */
 $(document).ready(function(){
-	<?php if( isset( $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] ) && $_COOKIE['DELTA_COOKIE_INVERTCOLOR'] === 'true' ) {?>
+	<?php if( isset( $_SESSION['ACC_INVERTCOLOR'] ) && $_SESSION['ACC_INVERTCOLOR'] === true ) {?>
 		borderColor = "<?php echo helper::invertColor($this->getData(['theme', 'block', 'borderColor'])); ?>";
 		bgColor = "<?php echo helper::invertColor($this->getData(['theme', 'site', 'backgroundColor'])); ?>";	
 	<?php } else { ?>

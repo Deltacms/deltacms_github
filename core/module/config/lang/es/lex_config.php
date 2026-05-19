@@ -81,7 +81,7 @@ $text['core_config_view']['locale'][28] = 'Título de la ventana';
 $text['core_config_view']['locale'][29] = 'Administrar cookies';
 $text['core_config_view']['locale'][30] = 'Ingrese el mensaje para las cookies depositadas por DeltaCMS, necesarias para la operación y que no requieren consentimiento.';
 $text['core_config_view']['locale'][31] = 'Cookies Deltacms';
-$text['core_config_view']['locale'][32] = 'Este sitio utiliza cookies necesarias para su funcionamiento, facilitan su funcionamiento, por ejemplo, memorizando datos de conexión, el idioma que ha elegido o la validación de este mensaje.';
+$text['core_config_view']['locale'][32] = 'Este sitio utiliza cookies necesarias para su funcionamiento, facilitan su funcionamiento, por ejemplo, memorizando datos de conexión o la validación de este mensaje.';
 $text['core_config_view']['locale'][33] = 'Ingrese el texto del enlace a los avisos legales, la página debe estar definida en la configuración del sitio.';
 $text['core_config_view']['locale'][34] = 'Enlace a la página de aviso legal.';
 $text['core_config_view']['locale'][35] = 'Consultar los avisos legales';
@@ -126,7 +126,7 @@ $text['core_config_view']['network'][2] = 'Dirección de proxy';
 $text['core_config_view']['network'][3] = 'Puerto proxy';
 $text['core_config_view']['network'][4] = 'SMTP';
 $text['core_config_view']['network'][5] = 'Habilitar SMTP';
-$text['core_config_view']['network'][6] = 'Configuraciones para usar cuando su host no ofrece la funcionalidad para enviar correo.';
+$text['core_config_view']['network'][6] = 'Configuración a utilizar cuando su proveedor de alojamiento no ofrece la funcionalidad de envío de correo electrónico o si su proveedor de alojamiento bloquea sus correos electrónicos después de los controles de seguridad.';
 $text['core_config_view']['network'][7] = 'Dirección SMTP';
 $text['core_config_view']['network'][8] = 'Puerto SMTP';
 $text['core_config_view']['network'][9] = 'Autenticación';
@@ -135,7 +135,8 @@ $text['core_config_view']['network'][11] = 'Contraseña';
 $text['core_config_view']['network'][12] = 'Seguridad';
 $text['core_config_view']['mail'][0] = 'Nombre de dominio utilizado por los correos electrónicos';
 $text['core_config_view']['mail'][1] = 'Parte principal del nombre de dominio como "deltacms.fr"';
-$text['core_config_view']['mail'][2] = 'Esta opción es útil si su sitio está en un subdominio y sus correos electrónicos están bloqueados por su servidor (spam). Déjelo en blanco o lea la documentación.';
+$text['core_config_view']['mail'][2] = 'Esta opción es útil si falla la determinación automática. Déjela en blanco o consulte la documentación.';
+$text['core_config_view']['mail'][3] = 'Determinación automática del nombre de dominio';
 $text['core_config_view']['restore'][0] = 'Atrás';
 $text['core_config_view']['restore'][1] = 'Restaurar';
 $text['core_config_view']['restore'][2] = 'Archivo para restaurar';
@@ -262,9 +263,8 @@ $SMTPauth = [
 ];
 // Encryptation SMTP
 $SMTPEnc = [
-	'' => 'Ninguno',
-	'tls' => 'START TLS',
-	'ssl' => 'SSL/TLS'
+	'ssl' => 'SSL/TLS',
+	'tls' => 'START TLS'
 ];
 // Sécurité de la  connexion - tentative max avant blocage
 $connectAttempt = [

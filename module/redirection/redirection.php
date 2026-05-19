@@ -17,7 +17,7 @@
 
 class redirection extends common {
 
-	const VERSION = '2.3';
+	const VERSION = '2.4';
 	const REALNAME = 'Redirection';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -33,17 +33,17 @@ class redirection extends common {
 	 * Configuration
 	 */
 	public function config() {
-		// Autorisation 
+		// Autorisation
 		$group = $this->getUser('group');
 		if ($group === false ) $group = 0;
 		if( $group < redirection::$actions['config'] ) {
 			// Valeurs en sortie
 			$this->addOutput([
 				'access' => false
-			]);	
+			]);
 		} else {
 			// Lexique
-			include('./module/redirection/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_redirection.php');
+			include('./module/redirection/lang/'. $_SESSION['langAdmin'] . '/lex_redirection.php');
 
 			// Soumission du formulaire
 			if($this->isPost()) {

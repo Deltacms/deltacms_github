@@ -20,7 +20,13 @@
  /**
  * Initialisation de Deltacms
  */
-ini_set('session.use_trans_sid', FALSE);
+ini_set('session.use_trans_sid', '0');
+ini_set('session.use_strict_mode', '1');
+ini_set('session.cookie_httponly', '1');
+if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443 || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')){
+    ini_set('session.cookie_secure', '1');
+}
+ini_set('session.cookie_samesite', 'Strict');
 session_start();
 
 /**

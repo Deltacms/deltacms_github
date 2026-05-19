@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="<?php echo $this->getData(['config', 'i18n', 'langAdmin']);?>">
+<html lang="<?php echo $_SESSION['langAdmin'];?>">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,7 +12,7 @@
 	<link rel="stylesheet" href="core/layout/mediaqueries.css">
 	<link rel="stylesheet" href="core/layout/blank.css">
 	<link rel="stylesheet" href="<?php echo self::DATA_DIR; ?>theme.css">
-	<?php $this->showStyle(); 
+	<?php $this->showStyle();
 	$this->showSharedVariables();
 	$this->sortVendor();
 	$this->showVendor('css');?>

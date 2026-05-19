@@ -35,7 +35,7 @@ class agenda extends common {
 		'index' => self::GROUP_VISITOR
 	];
 
-	const VERSION = '7.7';	
+	const VERSION = '7.8';	
 	const REALNAME = 'Agenda';
 	const DELETE = true;
 	const UPDATE = '4.1';
@@ -156,9 +156,9 @@ class agenda extends common {
 				if(is_file('./module/agenda/view/index/index.css')) unlink('./module/agenda/view/index/index.css');
 				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','7.5']);
 			}
-			// Mise à jour vers la version 7.7
-			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '7.7', '<') ) {	
-				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','7.7']);
+			// Mise à jour vers la version 7.8
+			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '7.8', '<') ) {	
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','7.8']);
 			}
 		}
 	}
@@ -177,7 +177,7 @@ class agenda extends common {
 			]);	
 		} else {
 			// Lexique
-			include('./module/agenda/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_agenda.php');
+			include('./module/agenda/lang/'. $_SESSION['langAdmin'] . '/lex_agenda.php');
 			// Soumission du formulaire
 			if($this->isPost()) {
 				$notification = $text['agenda']['config'][6];
@@ -398,7 +398,7 @@ class agenda extends common {
 			]);	
 		} else {
 			// Lexique
-			include('./module/agenda/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_agenda.php');
+			include('./module/agenda/lang/'. $_SESSION['langAdmin'] . '/lex_agenda.php');
 			$json_initial = $json;
 			//$pos1 et $pos2 sont les délimiteurs de la partie à supprimer
 			$pos1 = strpos($json, '{"id":'.$lid);
@@ -473,7 +473,7 @@ class agenda extends common {
 			]);	
 		} else {
 			// Lexique
-			include('./module/agenda/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_agenda.php');
+			include('./module/agenda/lang/'. $_SESSION['langAdmin'] . '/lex_agenda.php');
 			//Sauvegarde dans data de l'agenda actuel bien qu'il soit déjà sauvegardé dans data_sauve
 			$json = file_get_contents(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'/events.json');
 			file_put_contents(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'/events_'.date('YmdHis').'.json', $json);
@@ -505,7 +505,7 @@ class agenda extends common {
 			]);	
 		} else {
 			// Lexique
-			include('./module/agenda/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_agenda.php');
+			include('./module/agenda/lang/'. $_SESSION['langAdmin'] . '/lex_agenda.php');
 			// Soumission du formulaire
 			if($this->isPost()) {
 				
@@ -588,7 +588,7 @@ class agenda extends common {
 			]);	
 		} else {
 			// Lexique
-			include('./module/agenda/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_agenda.php');		
+			include('./module/agenda/lang/'. $_SESSION['langAdmin'] . '/lex_agenda.php');		
 			$json = file_get_contents(self::DATAMODULE.'categories/categories.json');
 			$tabcat = json_decode($json,true);
 			$name = $tabcat[$this->getUrl(2)]['name'];
@@ -615,7 +615,7 @@ class agenda extends common {
 	 */
 	public function creation() {
 		// Lexique
-		include('./module/agenda/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_agenda.php');	
+		include('./module/agenda/lang/'. $_SESSION['langAdmin'] . '/lex_agenda.php');	
 		// Soumission du formulaire
 		if($this->isPost()) {	
 			$categorie = '';
@@ -768,7 +768,7 @@ class agenda extends common {
 	 */
 	public function edition($lid) {
 		// Lexique
-		include('./module/agenda/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_agenda.php');
+		include('./module/agenda/lang/'. $_SESSION['langAdmin'] . '/lex_agenda.php');
 		//Préparation avant l'édition de l'évènement
 		self::$evenement['id'] = $lid;
 		$json = file_get_contents(self::DATA_DIR. self::$i18n.'/data_module/agenda/'.$this->getUrl(0).'/events.json');
@@ -893,7 +893,7 @@ class agenda extends common {
 	 */
 	public function index() {
 		// Lexique
-		include('./module/agenda/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_agenda.php');
+		include('./module/agenda/lang/'. $_SESSION['langAdmin'] . '/lex_agenda.php');
 		// Mise à jour des données de module
 		if (null === $this->getData(['module', $this->getUrl(0), 'config', 'versionData']) || version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), self::VERSION, '<')) $this->update();
 		//Pour récupération des données ajax jquery date ou id 
@@ -1198,7 +1198,7 @@ class agenda extends common {
 	*/
 	private function vue_debut($url,$idda) {
 		// Lexique
-		include('./module/agenda/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_agenda.php');
+		include('./module/agenda/lang/'. $_SESSION['langAdmin'] . '/lex_agenda.php');
 		$pos1 = strpos($url,$idda);
 		$pos2 = strpos($url,'vue:');
 		$pos3 = strpos($url,'deb:');
@@ -1258,7 +1258,7 @@ class agenda extends common {
 	*/
 	private function mailing($evenement_texte, $date_debut, $date_fin, $mailing_val, $mailing_adresses){
 		// Lexique
-		include('./module/agenda/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_agenda.php');
+		include('./module/agenda/lang/'. $_SESSION['langAdmin'] . '/lex_agenda.php');
 		$adresses = file_get_contents(self::DATAMODULE.'adresses/'.$mailing_adresses);
 		if( strpos( $adresses, '@' ) !== false){
 			// Conversion $adresses en tableau
@@ -1289,45 +1289,72 @@ class agenda extends common {
 		ob_start();
 		include './core/layout/mail.php';
 		$layout = ob_get_clean();
+		// Nom de domaine saisi ou auto
+		if(null !== $this->getData(['config', 'mailDomainName']) &&  $this->getData(['config', 'mailDomainName']) !==''){
+			$host = $this->getData(['config', 'mailDomainName']);
+		} else {
+			$host = $this->getData(['config', 'mailDomainNameAuto']);
+		}
 		// Mail
 		try{
 			$mail = new PHPMailer\PHPMailer\PHPMailer;
 			$mail->CharSet = 'UTF-8';
-			if(null !== $this->getData(['config', 'mailDomainName']) &&  $this->getData(['config', 'mailDomainName']) !==''){
-				$host = $this->getData(['config', 'mailDomainName']);
-			} else {
-				$host = str_replace('www.', '', $_SERVER['HTTP_HOST']);
-			}
-			$mail->setFrom('no-reply@' . $host, $this->getData(['config', 'title']));
-			$mail->addReplyTo('no-reply@' . $host, $this->getData(['config', 'title']));
-			if(is_array($to)) {
-					foreach($to as $userMail) {
-						if ( $mode == 'bcc' ){
-							$mail->addBCC($userMail);
-						}
-						else{
-							$mail->addAddress($userMail);
-						}	
+			// Paramètres SMTP
+			if ($this->getdata(['config','smtp','enable'])) {
+				$mail->isSMTP();
+				$mail->SMTPAutoTLS = false;
+				$mail->Host = $this->getdata(['config','smtp','host']);
+				$mail->Port = (int) $this->getdata(['config','smtp','port']);
+				if ($this->getData(['config','smtp','auth'])) {
+					$mail->Username = $this->getData(['config','smtp','username']);
+					$mail->Password = helper::decrypt($this->getData(['config','smtp','username']),$this->getData(['config','smtp','password']));
+					$mail->SMTPAuth = $this->getData(['config','smtp','auth']);
+					$mail->SMTPSecure = $this->getData(['config','smtp','secure']);
+					$mail->setFrom($this->getData(['config','smtp','username']));
+					$mail->Sender = $this->getData(['config','smtp','username']);
+					if (is_null($replyTo)) {
+						$mail->addReplyTo($this->getData(['config','smtp','username']));
+					} else {
+						$mail->addReplyTo($replyTo);
 					}
-			}
-			else {
-				if ( $mode == 'bcc' ){
-					$mail->addBCC($to);
 				}
-				else{
-					$mail->addAddress($to);
+			// Fin SMTP
+			} else {
+				$mail->setFrom('no-reply@' . $host, $this->getData(['locale', 'title']));
+				$mail->Sender = 'php_deltacms@' . $host;
+				if (is_null($replyTo)) {
+					$mail->addReplyTo('no-reply@' . $host, $this->getData(['locale', 'title']));
+				} else {
+					$mail->addReplyTo($replyTo);
 				}
 			}
-			$mail->isHTML(true);
-			$mail->Subject = $subject;
-			$mail->addCustomHeader('List-Unsubscribe', '<mailto:no-reply@'.$host.'>');
-			$mail->Body = $layout;
-			$mail->AltBody = strip_tags($content);
-			if($mail->send()) {
-					return true;
-			}
-			else {
-					return $mail->ErrorInfo;
+			if (is_array($to)) {
+				foreach ($to as $userMail) {
+					$mail->clearAddresses();
+					$mail->clearBCCs();
+					$mail->addAddress($userMail);
+					$mail->isHTML(true);
+					$mail->Subject = $subject;
+					$mail->addCustomHeader(
+						'List-Unsubscribe',
+						'<mailto:no-reply@' . $host . '>'
+					);
+					$mail->Body = $layout;
+					$mail->AltBody = strip_tags($content);
+					if (!$mail->send()) return $mail->ErrorInfo;
+				}
+				return true;
+			} else {
+				$mail->addAddress($to);
+				$mail->isHTML(true);
+				$mail->Subject = $subject;
+				$mail->addCustomHeader(
+					'List-Unsubscribe',
+					'<mailto:no-reply@' . $host . '>'
+				);
+				$mail->Body = $layout;
+				$mail->AltBody = strip_tags($content);
+				return $mail->send() ? true : $mail->ErrorInfo;
 			}
 		} catch (phpmailerException $e) {
 			return $e->errorMessage();

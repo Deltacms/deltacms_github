@@ -1,6 +1,6 @@
 <?php echo template::formOpen('userAddForm');
 // Lexique
-include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
+include('./core/module/user/lang/'. $_SESSION['langAdmin'] . '/lex_user.php');
 ?>
 	<div class="row">
 		<div class="col2">

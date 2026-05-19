@@ -1,6 +1,6 @@
 <?php echo template::formOpen('userEditForm');
 // Lexique
-include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin']) . '/lex_user.php');
+include('./core/module/user/lang/'. $_SESSION['langAdmin'] . '/lex_user.php');
 ?>
 	<div class="row">
 		<div class="col2">
@@ -122,7 +122,7 @@ include('./core/module/user/lang/'. $this->getData(['config', 'i18n', 'langAdmin
 				<?php echo template::password('userEditConfirmPassword', [
 					'autocomplete' => 'off',
 					'label' => $text['core_user_view']['edit'][24]
-				]); 
+				]);
 				if($this->getUser('group') === self::GROUP_ADMIN) {
 					echo template::checkbox('userEditChangePw', true, $text['core_user_view']['edit'][36], [
 						'checked' => $this->getData(['user', $this->getUrl(2), 'changePw']) ?? false,
