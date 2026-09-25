@@ -550,7 +550,7 @@ class user extends common {
 					$expire = $this->getInput('userLoginLongTime') ? strtotime("+1 year") : 0;
 					$c = $this->getInput('userLoginLongTime', helper::FILTER_BOOLEAN) === true ? 'true' : 'false';
 					setcookie('DELTA_USER_ID', $userId, $expire, helper::baseUrl(false, false)  , '', helper::isHttps(), true);
-					setcookie('DELTA_USER_PASSWORD', $this->getData(['user', $userId, 'password']), $expire, helper::baseUrl(false, false), '', helper::isHttps(), true);
+					setcookie('DELTA_USER_PASSWORD', $this->getData(['user', $userId, 'password']), 0, helper::baseUrl(false, false), '', helper::isHttps(), true);
 					setcookie('DELTA_USER_LONGTIME', $c, $expire, helper::baseUrl(false, false), '', helper::isHttps(), true);
 					// Variable de session pour filemanager
 					$_SESSION['DELTA_USER_ID']=$userId;

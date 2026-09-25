@@ -43,6 +43,15 @@ include('./core/module/config/lang/'. $_SESSION['langAdmin'] . '/lex_config.php'
 								]); ?>
 							</div>
 						</div>
+						<div class="row">
+							<div class="col12">
+								<?php $robotsTxt = file_exists('robots.txt') ? file_get_contents('robots.txt') : '';
+								echo template::textarea('seoFileRobotsTxt', [
+									'label' => $text['core_config_view']['social'][44],
+									'value' => $robotsTxt
+								]); ?>
+							</div>
+						</div>
 					</div>
 					<div class="col6 offset1">
 						<?php if (file_exists(self::FILE_DIR.'source/screenshot.jpg')){ ?>
@@ -125,7 +134,27 @@ include('./core/module/config/lang/'. $_SESSION['langAdmin'] . '/lex_config.php'
 			</div>
 		</div>
 	</div>
-
+	<div class="row">
+		<div class="col12">
+			<div class="block">
+				<div class="blockTitle"><?php echo $text['core_config_view']['social'][41]; ?>
+					<span id="specialeHelpButton" class="helpDisplayButton">
+						<a href="https://doc.deltacms.fr/referencement" target="_blank">
+							<?php echo template::ico('help', 'left');?>
+						</a>
+					</span>
+				</div>
+				<div class="row">
+					<div class="col4">
+						<?php echo template::checkbox('socialConfigSeo', true, $text['core_config_view']['social'][42], [
+							'checked' => $this->getData(['config', 'social', 'seo']),
+							'help' => $text['core_config_view']['social'][43]
+						]); ?>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 	<div class="row">
 		<div class="col12">
 			<div class="block">

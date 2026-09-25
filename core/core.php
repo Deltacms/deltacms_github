@@ -51,7 +51,7 @@ class common {
 
 	// Numéro de version
 	const DELTA_UPDATE_URL = 'https://github.com/Deltacms/deltacms_update/raw/refs/heads/main/master/';
-	const DELTA_VERSION = '6.0.04';
+	const DELTA_VERSION = '6.1.01';
 	const DELTA_UPDATE_CHANNEL = "v6";
 	const DELTA_BRAND = "RGVsdGFjbXM=";
 
@@ -105,6 +105,7 @@ class common {
 		'notification' => '',
 		'redirect' => '',
 		'script' => '',
+		'scriptEditor' => '',
 		'showBarEditButton' => false,
 		'showPageContent' => false,
 		'state' => false,
@@ -303,8 +304,8 @@ class common {
 			}
 		}
 
-		// Utilisateur connecté
-		if($this->user === []) {
+		// Tableau user vide et utilisateur connecté on remplit $user
+		if( empty($this->user) && $this->getData(['user', $this->getInput('DELTA_USER_ID'), 'password']) === $this->getInput('DELTA_USER_PASSWORD')) {
 			$this->user = $this->getData(['user', $this->getInput('DELTA_USER_ID')]);
 		}
 
@@ -412,7 +413,6 @@ class common {
 			);
 			stream_context_set_default($context);
 		}
-
 	}
 
 	/**
@@ -789,14 +789,6 @@ class common {
 		}
 	}
 
-	/*
-	* Dummy function
-	* Compatibilité des modules avec v8 et v9
-	*/
-	public function saveData() {
-		return;
-	}
-
 	/**
 	 * Accède à la liste des pages parents et de leurs enfants
 	 * @param int $parentId Id de la page parent
@@ -904,7 +896,7 @@ class common {
 	 * @return string|null
 	 */
 	public function getUser($key) {
-		if(is_array($this->user) === false) {
+		if(empty($this->user)) {
 			return false;
 		}
 		elseif($key === 'id') {
@@ -917,6 +909,25 @@ class common {
 			return false;
 		}
 	}
+	
+	/**
+	 * Retourne la signature d'un utilisateur
+	 */
+	public function signature($userId) {
+		switch ($this->getData(['user', $userId, 'signature'])){
+			case 2:
+				return $this->getData(['user', $userId, 'pseudo']);
+				break;
+			case 3:
+				return $this->getData(['user', $userId, 'firstname']) . ' ' . $this->getData(['user', $userId, 'lastname']);
+				break;
+			case 4:
+				return $this->getData(['user', $userId, 'lastname']) . ' ' . $this->getData(['user', $userId, 'firstname']);
+				break;
+			default:
+				return $this->getData(['user', $userId, 'pseudo']);
+		}
+	}	
 
 	/**
 	 * Check qu'une valeur est transmise par la méthode _POST
@@ -1018,58 +1029,44 @@ class common {
 	/**
 	 * Génère un fichier sitemap.xml
 	 * https://github.com/icamys/php-sitemap-generator
-	 * $command valeurs possible
-	 * all : génère un site map complet
-	 * Sinon contient id de la page à créer
+	 * @param string $command all : génère un site map complet
+	 * @param boolean $robots true : génère robots.txt
 	*/
 
-	public function createSitemap($command = "all") {
+	public function createSitemap($command = "all", $robots = false) {
 
 		//require_once "core/vendor/sitemap/SitemapGenerator.php";
-
 		$timezone = $this->getData(['config','timezone']);
 		$outputDir = getcwd();
 		$sitemap = new \Icamys\SitemapGenerator\SitemapGenerator(helper::baseurl(false),$outputDir);
-
-		// will create also compressed (gzipped) sitemap : option buguée
-		// $sitemap->enableCompression();
-
-		// determine how many urls should be put into one file
-		// according to standard protocol 50000 is maximum value (see http://www.sitemaps.org/protocol.html)
 		$sitemap->setMaxUrlsPerSitemap(50000);
-
-		// sitemap file name
 		$sitemap->setSitemapFileName( 'sitemap.xml') ;
-
-
-		// Set the sitemap index file name
 		$sitemap->setSitemapIndexFileName( 'sitemap-index.xml');
 
-		$datetime = new DateTime(date('c'));
-		$datetime->format(DateTime::ATOM); // Updated ISO8601
+		$datetime = new DateTime('now', new DateTimeZone($timezone));
 
 		if ($this->getData(['config','seo', 'robots']) === true) {
 			foreach($this->getHierarchy(null, null, null) as $parentPageId => $childrenPageIds) {
 				// Exclure les barres,les pages non publiques et les pages orphelines
 				if ($this->getData(['page',$parentPageId,'group']) !== 0  ||
 					$this->getData(['page', $parentPageId, 'block']) === 'bar' ||
-					$this->getData(['page', $parentPageId, 'position']) === 0 )  {
+					$this->getData(['page', $parentPageId, 'position']) === 0 ) {
 					continue;
 				}
 				// Page désactivée, traiter les sous-pages sans prendre en compte la page parente.
 				if ($this->getData(['page', $parentPageId, 'disable']) !== true ) {
-					// Cas de la page d'accueil ne pas dupliquer l'URL
-					$pageId = ($parentPageId !== $this->getData(['locale', 'homePageId'])) ? $parentPageId : '';
-					$sitemap->addUrl ('/' . $pageId, $datetime);
-				}
-				// Articles du blog
-				if ($this->getData(['page', $parentPageId, 'moduleId']) === 'blog' &&
-					!empty($this->getData(['module',$parentPageId])) ) {
-					foreach($this->getData(['module',$parentPageId,'posts']) as $articleId => $article) {
-						if($this->getData(['module',$parentPageId,'posts',$articleId,'state']) === true) {
-							$date = $this->getData(['module',$parentPageId,'posts',$articleId,'publishedOn']);
-							$sitemap->addUrl('/' .  $parentPageId . '/' . $articleId , new DateTime("@{$date}",new DateTimeZone($timezone)));
-						}
+					// Cas de la page d'accueil ne pas dupliquer l'URL et ne jamais mettre de ?
+					if( $parentPageId === $this->getData(['locale', 'homePageId']) ){
+						$pageId = '';
+						$start ='/';
+					} else {
+						$pageId = $parentPageId;
+						$start = helper::checkRewrite() === false ? '/?':'/';
+					}
+					if( null !== $this->getData(['page',$parentPageId,'date'])){
+						$sitemap->addUrl( $start . $pageId, (new DateTime("@{$this->getData(['page',$parentPageId,'date'])}"))->setTimezone(new DateTimeZone($timezone)));
+					} else {
+						$sitemap->addUrl ($start . $pageId, $datetime); 
 					}
 				}
 				// Sous-pages
@@ -1077,48 +1074,41 @@ class common {
 					if ($this->getData(['page',$childKey,'group']) !== 0 || $this->getData(['page', $childKey, 'disable']) === true)  {
 						continue;
 					}
-					// Cas de la page d'accueil ne pas dupliquer l'URL
-					$pageId = ($childKey !== $this->getData(['locale', 'homePageId'])) ? $childKey : '';
-					$sitemap->addUrl('/' . $childKey,$datetime);
-
-					// La sous-page est un blog
-					if ($this->getData(['page', $childKey, 'moduleId']) === 'blog' &&
-					   !empty($this->getData(['module',$childKey])) ) {
-						foreach($this->getData(['module',$childKey,'posts']) as $articleId => $article) {
-							if($this->getData(['module',$childKey,'posts',$articleId,'state']) === true) {
-								$date = $this->getData(['module',$childKey,'posts',$articleId,'publishedOn']);
-								$sitemap->addUrl( '/' . $childKey . '/' . $articleId , new DateTime("@{$date}",new DateTimeZone($timezone)));
-							}
-						}
+					// Cas de la page d'accueil
+					if( $childKey === $this->getData(['locale', 'homePageId']) ){
+						$pageId = '';
+						$start ='/';
+					} else {
+						$pageId = $childKey;
+						$start = helper::checkRewrite() === false ? '/?':'/';
+					}
+					if( null !== $this->getData(['page',$parentPageId,'date'])){
+						$sitemap->addUrl( $start . $pageId, (new DateTime("@{$this->getData(['page',$parentPageId,'date'])}"))->setTimezone(new DateTimeZone($timezone)));
+					} else {
+						$sitemap->addUrl ($start . $pageId, $datetime); 
 					}
 				}
-
 			}
 		}
 		else{
 			$sitemap->addUrl ('/', $datetime);
 		}
-
-		// Flush all stored urls from memory to the disk and close all necessary tags.
 		$sitemap->flush();
-
-		// Move flushed files to their final location. Compress if the option is enabled.
 		$sitemap->finalize();
 
-		// Update robots.txt file in output directory
-
-		if ($this->getData(['config','seo', 'robots']) === true) {
-			if(file_exists('robots.txt')) unlink('robots.txt');
-			$sitemap->updateRobots();
-		} else {
-			file_put_contents('robots.txt','User-agent: *' .  PHP_EOL . 'Disallow: /');
+		// Génère robots.txt
+		if ($robots===true || !file_exists('robots.txt')){
+			if ($this->getData(['config','seo', 'robots']) === true) {
+				$sitemap->updateRobots();
+			} else {
+				file_put_contents('robots.txt','User-agent: *' .  PHP_EOL . 'Disallow: /');
+			}
 		}
 
 		// Submit your sitemaps
 		if (empty ($this->getData(['config','proxyType']) . $this->getData(['config','proxyUrl']) . ':' . $this->getData(['config','proxyPort'])) ) {
 			$sitemap->submitSitemap();
 		}
-
 		return(file_exists('sitemap.xml') && file_exists('robots.txt'));
 
 	}
@@ -1202,9 +1192,12 @@ class common {
 	 * @param string|array $to Destinataire
 	 * @param string $subject Sujet
 	 * @param string $content Contenu
+	 * @param string $replyTo Retour
+	 * @param string $file_name Fichier joint
+	 * @param bool $separate Envoi de courriels individuels
 	 * @return bool
 	 */
-	public function sendMail($to, $subject, $content, $replyTo = null, $file_name = '') {
+	public function sendMail($to, $subject, $content, $replyTo = null, $file_name = '', $separate = false) {
 		// Layout
 		ob_start();
 		include 'core/layout/mail.php';
@@ -1247,35 +1240,41 @@ class common {
 			// Fin SMTP
 			} else {
 				$mail->setFrom('no-reply@' . $host, $this->getData(['locale', 'title']));
-				$mail->Sender = 'php_deltacms@' . $host;
 				if (is_null($replyTo)) {
 					$mail->addReplyTo('no-reply@' . $host, $this->getData(['locale', 'title']));
 				} else {
 					$mail->addReplyTo($replyTo);
 				}
 			}
-			if(is_array($to)) {
-					foreach($to as $userMail) {
-							$mail->addAddress($userMail);
-					}
-			}
-			else {
-					$mail->addAddress($to);
-			}
 			$mail->isHTML(true);
 			$mail->Subject = $subject;
-			$mail->addCustomHeader('List-Unsubscribe', '<mailto:no-reply@'.$host.'>');
-			//$mail->addCustomHeader('X-Mailer', 'PHPmailer');
 			$mail->Body = $layout;
 			$mail->AltBody = strip_tags($content);
 			if($file_name !== '') $mail->addAttachment( self::FILE_DIR.'uploads/'.$file_name);
-
-			if($mail->send()) {
+			if (is_array($to)) {
+				if($separate === true){
+					foreach ($to as $userMail) {
+						$userMail = trim($userMail);
+						if (!filter_var($userMail, FILTER_VALIDATE_EMAIL)) continue;
+						$mail->clearAddresses();
+						$mail->addAddress($userMail);
+						if (!$mail->send()) return $mail->ErrorInfo;
+					}
 					return true;
-			}
-			else {
-					return $mail->ErrorInfo;
-			}
+				} else {
+					foreach($to as $userMail) {
+						$userMail = trim($userMail);
+						if (!filter_var($userMail, FILTER_VALIDATE_EMAIL)) continue;
+						$mail->addAddress($userMail);
+					}
+					return $mail->send() ? true : $mail->ErrorInfo;
+				}
+			} else {
+				$to = trim($to);
+				if (!filter_var($to, FILTER_VALIDATE_EMAIL)) return false;
+				$mail->addAddress($to);
+				return $mail->send() ? true : $mail->ErrorInfo;
+			}			
 		} catch (Exception $e) {
 			echo $e->errorMessage();
 		} catch (\Exception $e) {
@@ -1596,14 +1595,13 @@ class common {
 	 * @param Page par défaut
 	 */
 	public function showContent() {
-		if ($this->output['title']
-			AND (
+		if ($this->output['title'] && strpos( $this->output['content'], '<h1>') === false){
+			$display = (
 				$this->getData(['page', $this->getUrl(0)]) === null
 				OR $this->getData(['page', $this->getUrl(0), 'hideTitle']) === false
 				OR $this->getUrl(1) === 'config'
-			)
-		) {
-			echo '<h1 id="sectionTitle">' . $this->output['title'] . '</h1>';
+			) ? '' : 'style="display: none;"';
+			echo '<h1 id="sectionTitle" '. $display .'>' . $this->output['title'] . '</h1>';
 		}
 		if (file_exists(self::DATA_DIR . 'pluginbody.inc.php') && null === $this->getUrl(1)) {
 			$pluginBodyPosition = 'up';
@@ -1954,8 +1952,8 @@ class common {
 				$burgerclassshort = 'navburgerconnected';
 			}
 		}
-		// Ajoute un id si le menu est toujours visible
-		if ( $this->getData(['theme', 'menu', 'fixed']) === true ){
+		// Ajoute un id si le menu est toujours visible sauf en édition de page
+		if ( $this->getData(['theme', 'menu', 'fixed']) === true && !($this->getUrl(0)==='page' && $this->getUrl(1)==='edit')){
 			if( $groupUser >= 2 && $this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD')) {
 				$fixed  = 'id="navfixedconnected" ';
 			} else {
@@ -2372,11 +2370,12 @@ class common {
 	* La suppression ou la modification de ces lignes rend le cms inutilisable
     */
     public function showMetaTitle() {
+	$link =  $this->getUrl(0) === $this->getData(['locale', 'homePageId']) ? helper::baseUrl(false) :  helper::baseUrl(true).$this->getUrl();
 	echo '<title>' . $this->output['metaTitle'] . '</title>'.'
 		<meta name="description" content="' . $this->output['metaDescription'] . '">'.'
 		<meta name="generator" content="'. base64_decode(common::DELTA_BRAND) .' '. common::DELTA_VERSION .'">'.'
-		<base href="'.helper::baseUrl(true).'">'.'
-		<link rel="canonical" href="'. helper::baseUrl(true).$this->getUrl() .'">'.PHP_EOL;
+		<base href="'.helper::baseUrl(false).'">'.'
+		<link rel="canonical" href="'. $link .'">'.PHP_EOL;
     }
 
     /**
@@ -2511,6 +2510,10 @@ class common {
 							$leftItems .= '<li><a id="pageDelete" href="' . helper::baseUrl() . 'page/delete/' . $this->getUrl(0) . '&csrf=' . $_SESSION['csrf'] . '" data-tippy-content="'.$text['core']['showBar'][8].'">' . template::ico('trash') . '</a></li>';
 						}
 					}
+					// Droits pour volet SEO
+					if( $this->getData(['config','social','seo']) === true && (null == $this->getData(['page', $this->getUrl(0), 'groupEdit']) || $this->getUser('group') >= $this->getData(['page', $this->getUrl(0), 'groupEdit']))){
+						$leftItems .= '<li><span data-tippy-content="SEO" class="seoBarButton"><img src="core/vendor/delta-ico/svg/robot.svg" alt="Outils SEO" style="height: 20px;"></span></li>';
+					}
 				}
 			}
 			// Items de droite
@@ -2559,6 +2562,7 @@ class common {
 			echo '<div id="bar"><div class="container"><ul id="barLeft">' . $leftItems . '</ul><ul id="barRight">' . $rightItems . '</ul></div></div>';
 		}
 	}
+	
 
 	/**
 	 * Affiche la bannière
@@ -2654,7 +2658,7 @@ class common {
 	}
 
 	/**
-	 * Affiche le script
+	 * Affiche les scripts
 	 */
 	public function showScript() {
 		// Lexique
@@ -2664,6 +2668,12 @@ class common {
 		require 'core/core.js.php';
 		$coreScript = ob_get_clean();
 		echo '<script>' . helper::minifyJs($coreScript . $this->output['script']) . '</script>';
+		if( $this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD') && $this->getUser('group') >= self::GROUP_EDITOR ){
+			ob_start();
+			require 'core/core_editor.js.php';
+			$coreScriptEditor = ob_get_clean();
+			echo '<script>' . helper::minifyJs($coreScriptEditor . $this->output['scriptEditor']) . '</script>';			
+		}
 	}
 
 	/**
@@ -2863,8 +2873,6 @@ class core extends common {
 			}
 			// Date de la dernière suppression
 			$this->setData(['core', 'lastClearTmp', $lastClearTmp]);
-			// Enregistre les données
-			//$this->SaveData();
 		}
 		// Backup automatique des données
 		$lastBackup = mktime(0, 0, 0);
@@ -3063,6 +3071,19 @@ class core extends common {
 			header('Location:' . helper::baseUrl() . 'maintenance');
 			exit();
 		}
+		
+		// Créer sitemap.xml et robots.txt à la première connexion
+
+		if( !is_file('sitemap.xml') && $this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD')){
+			$time = time();
+			foreach( $this->getData(['page']) as $key=>$value){
+				if(null=== $this->getData(['page', $key,'date'])) $this->setData(['page', $key,'date',$time]);
+			}
+			$this->setData(['config','seo','robots', true]);
+			$val = !is_file('robots.txt')? true : false;
+			$this->createSitemap('all',$val);
+		}
+
 		// Check l'accès à la page
 		$access = null;
 		$accessInfo['userName'] = '';
@@ -3266,8 +3287,8 @@ class core extends common {
 							}
 							// Redirection
 							if($output['redirect']) {
-								http_response_code(301);
-								header('Location:' . $output['redirect']);
+								$code = $_SERVER['REQUEST_METHOD'] === 'POST' ? 303 : 302;
+								header('Location:' . $output['redirect'], true, $code);
 								exit();
 							}
 						}

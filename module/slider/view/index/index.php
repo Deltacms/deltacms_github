@@ -49,7 +49,7 @@ else{
 }
 ?>
 <!--Pour liaison entre variables php et javascript-->
-<script>
+<script data-deltacms="module">
 	// Integer: largeur MAXI du diaporama, en pixels. Par exemple : 800, 920, 500
 	var maxwidth=<?php echo $this->getData(['module', $this->getUrl(0), 'config','maxiWidth']); ?>;
 	// Integer: Vitesse de transition entre 2 diapositives (fading) : de 500 à 3500

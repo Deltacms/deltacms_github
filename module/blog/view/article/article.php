@@ -25,7 +25,7 @@ switch ($lang) {
 if( ! file_exists( 'core/vendor/tinymce/langs/'.$lang_page.'.js' )){
 	$lang_page = $text['blog_view']['article'][0];
 }
-echo '<script> var lang_admin = "'.$lang_page.'"; </script>';
+echo '<script data-deltacms="module"> var lang_admin = "'.$lang_page.'"; </script>';
 
 // Pour les dates suivant la langue de rédaction du site (langue principale ou langue de traduction rédigée)
 if( function_exists('datefmt_create') && function_exists('datefmt_format') && extension_loaded('intl') ){
@@ -260,7 +260,7 @@ $pictureBlog = $this->getData(['data_module', $this->getUrl(0), 'posts', $this->
 	</div>
 </div>
 <?php echo $module::$pages; ?>
-<script>
+<script data-deltacms="module">
 	tinymcemaxi = "<?= $this->getData(['module', $this->getUrl(0), 'texts', 'TinymceMaxi']); ?>";
 	tinymcecara = "<?= $this->getData(['module', $this->getUrl(0), 'texts', 'TinymceCara']); ?>";
 	tinymceexceed = "<?= $this->getData(['module', $this->getUrl(0), 'texts', 'TinymceExceed']); ?>";

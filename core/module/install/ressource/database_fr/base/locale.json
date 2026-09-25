@@ -44,6 +44,6 @@
         },
 		"mandatoryText": "Saisie obligatoire",
 		"impossibleText": "Impossible de soumettre le formulaire, car il contient des erreurs",
-		"captchaAddition": "Additionner les chiffres"
+		"captchaAddition": "Inscrivez la somme"
     }
 }

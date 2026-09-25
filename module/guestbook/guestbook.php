@@ -13,7 +13,7 @@
 
 class guestbook extends common {
 
-	const VERSION = '2.7';
+	const VERSION = '2.8';
 	const REALNAME = 'Livre d\'or';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -96,8 +96,8 @@ class guestbook extends common {
 				$this->setData(['module', $this->getUrl(0), 'config', 'signature', 'text']);
 				$this->setData(['module', $this->getUrl(0), 'config', 'versionData', '2.5']);
 			}
-			if( version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '2.7', '<') ){
-				$this->setData(['module', $this->getUrl(0), 'config', 'versionData', '2.7']);
+			if( version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '2.8', '<') ){
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData', '2.8']);
 			}			
 		}
 	}

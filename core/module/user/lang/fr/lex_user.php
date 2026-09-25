@@ -105,6 +105,7 @@ $text['core_user_view']['login'][2] = 'Annuler';
 $text['core_user_view']['login'][3] = 'Connexion';
 $text['core_user_view']['login'][4] = 'Se souvenir de mon identifiant';
 $text['core_user_view']['login'][5] = 'Mot de passe perdu';
+$text['core_user_view']['login'][6] = 'Ne jamais utiliser cette option sur un poste partagé !';
 $text['core_user_view']['reset'][0] = 'Nouveau mot de passe';
 $text['core_user_view']['reset'][1] = 'Confirmation';
 $text['core_user_view']['reset'][2] = 'Valider';
@@ -173,7 +174,6 @@ $text['core_user']['export'][1] = 'Un problème est survenu';
 // Selects
 //Paramètres pour choix de la signature
 $signature = [
-	core::SIGNATURE_ID => 'Identifiant',
 	core::SIGNATURE_PSEUDO => 'Pseudo',
 	core::SIGNATURE_FIRSTLASTNAME => 'Prénom Nom',
 	core::SIGNATURE_LASTFIRSTNAME => 'Nom Prénom'

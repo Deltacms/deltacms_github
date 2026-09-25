@@ -20,7 +20,7 @@
 
 class blog extends common {
 
-	const VERSION = '7.8';
+	const VERSION = '7.9';
 	const REALNAME = 'Blog';
 	const DELETE = true;
 	const UPDATE = '0.0';
@@ -147,9 +147,9 @@ class blog extends common {
 				$this->setData(['module', $this->getUrl(0), 'config', 'previewSize', 400]);
 				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','7.4']);
 			}
-			// Version 7.8
-			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '7.8', '<') ) {
-				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','7.8']);
+			// Version 7.9
+			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '7.9', '<') ) {
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','7.9']);
 			}
 		}
 	}
@@ -506,7 +506,7 @@ class blog extends common {
 					$this->setData(['data_module',$this->getUrl(0), 'posts', $this->getUrl(2), 'comment', $this->getUrl(3), 'content', $content ]);
 					// Valeurs en sortie
 					$this->addOutput([
-						'redirect' => helper::baseUrl()  . 'blog/comment/' . $this->getUrl(2).'/'.$_SESSION['pageBlogComment'],
+						'redirect' => helper::baseUrl()  . $this->getUrl(0) . '/comment/' . $this->getUrl(2).'/'.$_SESSION['pageBlogComment'],
 						'notification' => $text['blog']['commentEdit'][0],
 						'state' => true
 					]);
@@ -1145,27 +1145,5 @@ class blog extends common {
 			}
 		}
 		return $articleIds;
-	}
-
-	/**
-	 * Retourne la signature d'un utilisateur
-	 */
-	private function signature($userId) {
-		switch ($this->getData(['user', $userId, 'signature'])){
-			case 1:
-				return $userId;
-				break;
-			case 2:
-				return $this->getData(['user', $userId, 'pseudo']);
-				break;
-			case 3:
-				return $this->getData(['user', $userId, 'firstname']) . ' ' . $this->getData(['user', $userId, 'lastname']);
-				break;
-			case 4:
-				return $this->getData(['user', $userId, 'lastname']) . ' ' . $this->getData(['user', $userId, 'firstname']);
-				break;
-			default:
-				return $this->getData(['user', $userId, 'firstname']);
-		}
 	}
 }

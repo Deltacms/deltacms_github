@@ -170,7 +170,7 @@ core.noticeRemove = function(id) {
  * Scripts à exécuter en premier
  */
 core.start = function() {
-
+	
 	/* Décalage en petit écran de la bannière ou de la section si le menu burger est fixe et non caché
 	* dans le cas d'une bannière affichée uniquement en page d'accueil
 	*/
@@ -394,9 +394,9 @@ core.start = function() {
 	});
 
 	/**
-	 * Iframes et vidéos responsives
+	 * Iframe embed object responsives
 	 */
-	var elementDOM = $("iframe, video, embed, object");
+	var elementDOM = $("iframe, embed, object");
 	// Calcul du ratio et suppression de la hauteur / largeur des iframes
 	elementDOM.each(function() {
 		var _this = $(this);
@@ -437,18 +437,7 @@ core.start = function() {
 			}
 		}
 	}).trigger("resize");
-
-	/* Positionnement vertical du bandeau du menu burger si il est fixe et si un utilisateur est connecté
-	*/
-	$(window).on("resize", function() {
-		if($(window).width() < 800) {
-			<?php if( $this->getData(['theme','menu', 'burgerFixed'])=== true){ ?>
-				var barHeight = $(" #bar ").css("height");
-				$(".navfixedburgerconnected").css("top",barHeight);
-			<?php } ?>
-		}
-	}).trigger("resize");
-
+	
 	/* En petit écran, affichage / masquage des items du sous-menu
 	* ou signalisation que la page est désactivée par ouverture du sous-menu
 	*/
@@ -800,25 +789,14 @@ $(document).ready(function(){
 
 	/**
 	 * Active le système d'aide interne
-	 *
 	 */
-
 	$(".buttonHelp").click(function() {
 			$(".helpDisplayContent").slideToggle();
-			/**
-			if( $(".buttonHelp").css('opacity') > '0.75'){
-				$(".buttonHelp").css('opacity','0.5');
-			}
-			else{
-				$(".buttonHelp").css('opacity','1');
-			}
-			*/
 	});
-
 	$(".helpDisplayContent").click(function() {
 		$(".helpDisplayContent").slideToggle();
 	});
-
+	
 	/**
 	* Remove ID Facebook from URL
 	 */
@@ -971,6 +949,18 @@ $(document).ready(function(){
 		setInterval(updateTrustScore, 3000);
 		updateTrustScore();
 	<?php } ?>
+	
+	/* Calcul de max-height pour overlay-text des gabarits video ou image avec texte superposé*/
+	$(".videoText-container .overlay-text, .imageText-container .overlay-text")
+	.each(function () {
+		let style = $(this).attr("style") || "";
+		let match = style.match(/top\s*:\s*([\d.]+)%/);
+		if (match) {
+			let top = parseFloat(match[1]);
+			let overlayTextMaxHeight = (95 - top) + "%";
+			$(this).css("max-height", overlayTextMaxHeight);
+		}
+	});
 });
 
 

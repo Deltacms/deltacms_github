@@ -24,7 +24,8 @@ class init extends common {
 					'subject' => '',
 					'captcha' => true,
 					'nbItemPage' => '3'
-				]
+				],
+				'seo' => true
 			],
 			'timezone' => 'Europe/Paris',
 			'proxyUrl' => '',
@@ -79,7 +80,7 @@ class init extends common {
 			]
 		],
 		'core' => [
-			'dataVersion' => 6004,
+			'dataVersion' => 6101,
 			'lastBackup' => 0,
 			'lastClearTmp' => 0,
 			'lastAutoUpdate' => 0,
@@ -131,7 +132,7 @@ class init extends common {
 			],
 			'mandatoryText' => 'Saisie obligatoire',
 			'impossibleText' => 'Impossible de soumettre le formulaire, car il contient des erreurs',
-			'captchaAddition' => 'Additionner les chiffres'
+			'captchaAddition' => 'Inscrivez la somme'
 		],
 		'page' => [
 			'accueil' => [

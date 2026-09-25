@@ -67,15 +67,12 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col2">
-			<?php echo template::checkbox('installDefaultData',true , '', [
+		<div class="col6">
+			<?php echo template::checkbox('installDefaultData',true , 'Sans exemple de site', [
 				'checked' => false
 			]);
 			?>
-		</div>
-		<div class="col10">
-			<div id="m8f">Sans exemple de site </div><div id="m8e">Without an example site </div><div id="m8s">Sin ejemplo de sitio </div>
-		</div>
+		</div>>
 	</div>
 	<div class="row">
 		<div class="col6">
@@ -98,7 +95,7 @@
 		</div>
 	</div>	
 	<div class="row">
-		<div class="col8">
+		<div class="col12">
 			<?php $listMod = get_loaded_extensions();
 			natcasesort($listMod);
 			$listModText = '';
@@ -130,6 +127,15 @@
 				<div id="m12s"><p><a href="https://deltacms.fr/installer" target="_blank">Ver guía de instalación</a></div>
 			<?php } ?>
 		</div>
+	</div>
+	<div class="row">
+		<div class="col7 offset1">
+			<?php echo template::checkbox('installThank',true , 'Merci Deltacms', [
+				'checked' => true,
+				'help' => 'Si la case est cochée un courriel sera envoyé à Deltacms à des fins statistiques. Il contiendra uniquement l\'adresse de votre site.'
+			]);
+			?>
+		</div>	
 		<div class="col3 offset1">
 			<?php echo template::submit('installSubmit', [
 				'value' => 'OK',
@@ -137,4 +143,5 @@
 			]); ?>
 		</div>
 	</div>
+	
 <?php echo template::formClose(); ?>

@@ -11,7 +11,7 @@ if( isset( $_SESSION['langFrontEnd'])){
 	$lang_base = $this->getData(['config', 'i18n', 'langBase']);
 }
 $lang_flatpickr = in_array($lang_base, $arrayFlatpickr) ? $lang_base : 'default';
-?><script>var lang_flatpickr = "<?php echo $lang_flatpickr; ?>";</script><?php
+?><script data-deltacms="module">var lang_flatpickr = "<?php echo $lang_flatpickr; ?>";</script><?php
 
 // Adaptation de la langue dans tinymce pour la rédaction d'un message en fonction de la langue de la page, originale ou en traduction rédigée
 $lang = $this->getData(['config', 'i18n', 'langBase']);
@@ -35,7 +35,7 @@ switch ($lang) {
 if( ! file_exists( 'core/vendor/tinymce/langs/'.$lang_page.'.js' )){
 	$lang_page = $lang_admin;
 }
-echo '<script> var lang_admin = "'.$lang_page.'"; </script>';
+echo '<script data-deltacms="module"> var lang_admin = "'.$lang_page.'"; </script>';
 ?>
 <div class="row">
     <div class="col4 offset4">

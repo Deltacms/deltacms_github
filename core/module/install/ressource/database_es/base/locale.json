@@ -44,6 +44,6 @@
         },
 		"mandatoryText": "Entrada obligatoria",
 		"impossibleText": "El formulario no se puede enviar porque contiene errores",
-		"captchaAddition": "Suma los números"
+		"captchaAddition": "Escribe la suma"
     }
 }

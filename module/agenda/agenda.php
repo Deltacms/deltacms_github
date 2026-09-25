@@ -35,7 +35,7 @@ class agenda extends common {
 		'index' => self::GROUP_VISITOR
 	];
 
-	const VERSION = '7.8';	
+	const VERSION = '8.0';	
 	const REALNAME = 'Agenda';
 	const DELETE = true;
 	const UPDATE = '4.1';
@@ -156,9 +156,9 @@ class agenda extends common {
 				if(is_file('./module/agenda/view/index/index.css')) unlink('./module/agenda/view/index/index.css');
 				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','7.5']);
 			}
-			// Mise à jour vers la version 7.8
-			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '7.8', '<') ) {	
-				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','7.8']);
+			// Mise à jour vers la version 8.0
+			if (version_compare($this->getData(['module', $this->getUrl(0), 'config', 'versionData']), '8.0', '<') ) {	
+				$this->setData(['module', $this->getUrl(0), 'config', 'versionData','8.0']);
 			}
 		}
 	}
@@ -711,8 +711,8 @@ class agenda extends common {
 			$administrateurs = substr($administrateurs, 0, -1);
 			$inscrits = substr($inscrits, 0, -1);
 			//Placer les listes dans un fichier txt et sauvegarder dans le dossier self::DATAMODULE.adresses
-			file_put_contents(self::DATAMODULE.'adresses/editeurs_administrateurs.txt', $editeurs.','.$moderateurs.', '.$administrateurs);
-			file_put_contents(self::DATAMODULE.'adresses/moderateurs_administrateurs.txt', $moderateurs.', '.$administrateurs);
+			file_put_contents(self::DATAMODULE.'adresses/editeurs_administrateurs.txt', $editeurs.','.$moderateurs.','.$administrateurs);
+			file_put_contents(self::DATAMODULE.'adresses/moderateurs_administrateurs.txt', $moderateurs.','.$administrateurs);
 			file_put_contents(self::DATAMODULE.'adresses/administrateurs.txt', $administrateurs);
 			file_put_contents(self::DATAMODULE.'adresses/tous_inscrits.txt', $inscrits);
 			
@@ -1259,107 +1259,23 @@ class agenda extends common {
 	private function mailing($evenement_texte, $date_debut, $date_fin, $mailing_val, $mailing_adresses){
 		// Lexique
 		include('./module/agenda/lang/'. $_SESSION['langAdmin'] . '/lex_agenda.php');
-		$adresses = file_get_contents(self::DATAMODULE.'adresses/'.$mailing_adresses);
-		if( strpos( $adresses, '@' ) !== false){
-			// Conversion $adresses en tableau
-			$to=[];
-			$to = explode(',',$adresses);
-			//filtrage des éléments du tableau $to qui ne contiennent pas @ pour fichiers txt ou csv
-			$num = count($to);
-			for ($c=0; $c < $num; $c++) {
-				if (strrchr($to[$c], '@') === false){
-					unset($to[$c]);
-				}
+		$to=[];
+		if( is_file(self::DATAMODULE.'adresses/'.$mailing_adresses)) {
+			$handle = fopen(self::DATAMODULE.'adresses/'.$mailing_adresses,'r');
+			while (($data = fgetcsv($handle, 0, ',')) !== false) {
+			  foreach($data as $key=>$value){
+				if (filter_var($value, FILTER_VALIDATE_EMAIL)) $to[] = $value;
+			  }
 			}
+			fclose($handle);
 			// Modification de l'aspect des dates : 2020-12-04T08:00 vers 04/12/2020 à 08:00
 			$date_debut = $this->change_date($date_debut);
 			$date_fin = $this->change_date($date_fin);
 			$subject = self::$sujet_mailing;
 			$content = $text['agenda']['mailing'][0].$evenement_texte.'<br/>'.$text['agenda']['mailing'][1].' -> '.$date_debut.'<br/><br/>'.$text['agenda']['mailing'][2].' -> '.$date_fin;
-			$mode = 'bcc';
-			$this->envoyerMail($to, $subject, $content, $mode);
-		}
-	}
-	
-	
-	/* Fonction envoyerMail($to, $subject, $content, $mode)
-	/* Copie de la fonction sendMail() de core.php avec en plus l'argument $mode pour cacher ou non les destinataires*/
-	private function envoyerMail($to, $subject, $content, $mode){
-		// Layout
-		ob_start();
-		include './core/layout/mail.php';
-		$layout = ob_get_clean();
-		// Nom de domaine saisi ou auto
-		if(null !== $this->getData(['config', 'mailDomainName']) &&  $this->getData(['config', 'mailDomainName']) !==''){
-			$host = $this->getData(['config', 'mailDomainName']);
-		} else {
-			$host = $this->getData(['config', 'mailDomainNameAuto']);
-		}
-		// Mail
-		try{
-			$mail = new PHPMailer\PHPMailer\PHPMailer;
-			$mail->CharSet = 'UTF-8';
-			// Paramètres SMTP
-			if ($this->getdata(['config','smtp','enable'])) {
-				$mail->isSMTP();
-				$mail->SMTPAutoTLS = false;
-				$mail->Host = $this->getdata(['config','smtp','host']);
-				$mail->Port = (int) $this->getdata(['config','smtp','port']);
-				if ($this->getData(['config','smtp','auth'])) {
-					$mail->Username = $this->getData(['config','smtp','username']);
-					$mail->Password = helper::decrypt($this->getData(['config','smtp','username']),$this->getData(['config','smtp','password']));
-					$mail->SMTPAuth = $this->getData(['config','smtp','auth']);
-					$mail->SMTPSecure = $this->getData(['config','smtp','secure']);
-					$mail->setFrom($this->getData(['config','smtp','username']));
-					$mail->Sender = $this->getData(['config','smtp','username']);
-					if (is_null($replyTo)) {
-						$mail->addReplyTo($this->getData(['config','smtp','username']));
-					} else {
-						$mail->addReplyTo($replyTo);
-					}
-				}
-			// Fin SMTP
-			} else {
-				$mail->setFrom('no-reply@' . $host, $this->getData(['locale', 'title']));
-				$mail->Sender = 'php_deltacms@' . $host;
-				if (is_null($replyTo)) {
-					$mail->addReplyTo('no-reply@' . $host, $this->getData(['locale', 'title']));
-				} else {
-					$mail->addReplyTo($replyTo);
-				}
-			}
-			if (is_array($to)) {
-				foreach ($to as $userMail) {
-					$mail->clearAddresses();
-					$mail->clearBCCs();
-					$mail->addAddress($userMail);
-					$mail->isHTML(true);
-					$mail->Subject = $subject;
-					$mail->addCustomHeader(
-						'List-Unsubscribe',
-						'<mailto:no-reply@' . $host . '>'
-					);
-					$mail->Body = $layout;
-					$mail->AltBody = strip_tags($content);
-					if (!$mail->send()) return $mail->ErrorInfo;
-				}
-				return true;
-			} else {
-				$mail->addAddress($to);
-				$mail->isHTML(true);
-				$mail->Subject = $subject;
-				$mail->addCustomHeader(
-					'List-Unsubscribe',
-					'<mailto:no-reply@' . $host . '>'
-				);
-				$mail->Body = $layout;
-				$mail->AltBody = strip_tags($content);
-				return $mail->send() ? true : $mail->ErrorInfo;
-			}
-		} catch (phpmailerException $e) {
-			return $e->errorMessage();
-		} catch (Exception $e) {
-			return $e->getMessage();
+			// envoi de courriel individuel pour chaque membre d'un fichier csv
+			$separate = strtolower(pathinfo($mailing_adresses, PATHINFO_EXTENSION)) === 'csv' ? true : false;
+			if( $to !== []) $this->sendMail($to, $subject, $content,'','', $separate);
 		}
 	}
 	

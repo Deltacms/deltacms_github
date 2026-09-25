@@ -62,7 +62,7 @@ if (window.tinymceContentCss) {
     contentCss = contentCss.concat(window.tinymceContentCss);
 }
 
-var pluginsList = "advlist anchor autolink autosave autoresize codemirror fullscreen hr image link lists media nonbreaking paste searchreplace tabfocus table template";
+var pluginsList = "advlist anchor autolink autosave autoresize codemirror fullscreen hr image link lists media nonbreaking paste searchreplace selectcontainer tabfocus table template";
 var toolbarList = "restoredraft | undo redo | formatselect bold italic underline forecolor backcolor | fontsizeselect | alignleft aligncenter alignright alignjustify | bullist numlist | table template | image media link | code fullscreen";
 // Vocabulaire pour templates nom et description
 switch (lang_admin) {
@@ -88,6 +88,14 @@ switch (lang_admin) {
 		var desimagewide = "Image sans marge quelque soit l'écran.";
 		var videowide = "Video pleine largeur";
 		var desvideowide = "Video sans marge quelque soit l'écran, cover, paramétrage de sa hauteur et de sa position en petit écran.";
+		var imagetext = "Image avec texte superposé";
+		var desimagetext = "Image avec texte superposé, paramétrages du texte et de l'image.";
+		var desimagetextwide = "Image avec texte superposé, sans marge quelque soit l'écran, paramétrages du texte et de l'image.";
+		var imagetextwide = "Image avec texte superposé pleine largeur";
+		var videotext = "Vidéo avec texte superposé";
+		var desvideotext = "Vidéo avec texte superposé, paramètrages du texte et de la vidéo.";
+		var videotextwide = "Vidéo avec texte superposé pleine largeur";
+		var desvideotextwide = "Vidéo avec texte superposé, sans marge quelque soit l'écran, paramètrages du texte et de la vidéo.";
     break;
 	case 'en_GB':
 		var blocktext = "Text Block";
@@ -111,6 +119,14 @@ switch (lang_admin) {
 		var desimagewide = "Borderless image whatever the screen.";
 		var videowide = "Full width video";
 		var desvideowide = "Borderless video regardless of screen size, cover, height and position settings for small screens.";
+		var imagetext = "Image with overlay text"; 
+		var desimagetext = "Image with overlay text, text and image settings."; 
+		var desimagetextwide = "Image with overlay text, edge-to-edge on all screens, text and image settings."; 
+		var imagetextwide = "Full-width image with overlay text"; 
+		var videotext = "Video with overlay text"; 
+		var desvideotext = "Video with overlay text, text and video settings."; 
+		var videotextwide = "Full-width video with overlay text"; 
+		var desvideotextwide = "Video with overlay text, edge-to-edge on all screens, text and video settings.";
     break;
 	case 'es':
 		var blocktext = "Bloque de texto";
@@ -134,6 +150,14 @@ switch (lang_admin) {
 		var desimagewide = "Imagen sin bordes en cualquier pantalla.";
 		var videowide = "Vídeo de ancho completo";
 		var desvideowide = "Vídeo sin bordes independientemente del tamaño de la pantalla, altura y posición para pantallas pequeñas.";
+		var imagetext = "Imagen con texto superpuesto";
+		var desimagetext = "Imagen con texto superpuesto, configuración de texto e imagen.";
+		var desimagetextwide = "Imagen con texto superpuesto, sin márgenes independientemente del tamaño de la pantalla, configuración de texto e imagen.";
+		var imagetextwide = "Imagen de ancho completo con texto superpuesto";
+		var videotext = "Vídeo con texto superpuesto";
+		var desvideotext = "Vídeo con texto superpuesto, configuración de texto y vídeo.";
+		var videotextwide = "Vídeo de ancho completo con texto superpuesto";
+		var desvideotextwide = "Vídeo con texto superpuesto, sin márgenes independientemente del tamaño de la pantalla, configuración de texto y vídeo.";
     break;
 }
 var templatesList = [
@@ -183,9 +207,27 @@ var templatesList = [
 			description: desimagewide
 		},
 		{
+			title: imagetext,
+			url: baseUrl + "core/vendor/tinymce/templates/" + lang_admin + "/imageText.html",
+			description: desimagetext
+		},		{
+			title: imagetextwide,
+			url: baseUrl + "core/vendor/tinymce/templates/" + lang_admin + "/imageTextFullWidth.html",
+			description: desimagetextwide
+		},
+		{
 			title: videowide,
 			url: baseUrl + "core/vendor/tinymce/templates/" + lang_admin + "/videofullwidth.html",
 			description: desvideowide
+		},
+		{
+			title: videotext,
+			url: baseUrl + "core/vendor/tinymce/templates/" + lang_admin + "/videoText.html",
+			description: desvideotext
+		},		{
+			title: videotextwide,
+			url: baseUrl + "core/vendor/tinymce/templates/" + lang_admin + "/videoTextFullWidth.html",
+			description: desvideotextwide
 		},		
 		{
 			title: accordion +"2",
@@ -210,6 +252,11 @@ var templatesList = [
 		{
 			title: symgrid +"4 - 4 - 4",
 			url: baseUrl + "core/vendor/tinymce/templates/" + lang_admin + "/col444.html",
+			description: desgrid
+		},
+		{
+			title: symgrid +"3 - 6 - 3",
+			url: baseUrl + "core/vendor/tinymce/templates/" + lang_admin + "/col363.html",
 			description: desgrid
 		},
 		{
@@ -273,6 +320,19 @@ tinymce.init({
 			}
 		  }
 		});
+		// pour gabarits video ou image avec texte superposé
+		ed.on('SetContent', function () {
+			$(ed.getDoc()).find(".videoText-container .overlay-text, .imageText-container .overlay-text")
+				.each(function () {
+					let style = $(this).attr("style") || "";
+					let match = style.match(/top\s*:\s*([\d.]+)%/);
+					if (match) {
+						let top = parseFloat(match[1]);
+						let overlayTextMaxHeight = (95 - top) + "%";
+						$(this).css("max-height", overlayTextMaxHeight);
+					}
+				})
+		});
 	},
 	// Mode d'affichage de la barre d'outils
 	toolbar_mode: 'wrap',
@@ -289,7 +349,7 @@ tinymce.init({
 	menubar: 'file edit insert view format tools',
 	menu: {
 		file: { title: 'File', items: 'newdocument restoredraft | preview | export print | deleteallconversations' },
-		edit: { title: 'Edit', items: 'undo redo | cut copy paste pastetext | selectall | searchreplace' },
+		edit: { title: 'Edit', items: 'undo redo | cut copy paste pastetext | selectall | selectcontainer | searchreplace' },
 		view: { title: 'View', items: 'code | visualaid visualchars visualblocks | spellchecker | preview fullscreen | showcomments' },
 		insert: { title: 'Insert', items: 'image link media addcomment pageembed template codesample inserttable | charmap hr | pagebreak nonbreaking anchor tableofcontents | insertdatetime' },
 		format: { title: 'Format', items: 'bold italic underline strikethrough superscript subscript codeformat | blocks align | forecolor backcolor | language | removeformat' },
@@ -353,7 +413,7 @@ tinymce.init({
 		{title: 'clicked_link_count', value: 'clicked_link_count'}
 	],
 	// Contenu du menu contextuel
-	contextmenu: "selectall searchreplace | hr | media image  link anchor nonbreaking  | insertable  cell row column deletetable",
+	contextmenu: "selectall selectcontainer searchreplace | hr | media image  link anchor nonbreaking  | insertable  cell row column deletetable",
 	// Fichiers CSS à intégrer à l'éditeur
 	content_css: contentCss,
 	// Classe à ajouter à la balise body dans l'iframe

@@ -1054,6 +1054,9 @@ th.col12 {
 	text-align: center;
 	margin: auto auto auto 2em;
 }
+.captcha > p {
+	margin: 5px 0;
+}
 /* Couleur des icônes + et - */
 .delta-ico-minus-circled,
 .delta-ico-plus-circled {
@@ -1088,6 +1091,91 @@ th.col12 {
 .helpDisplayButton {
 	cursor: pointer;
 }
+
+/* Bouton seo dans la barre d'administration */
+.seoBarButton {
+	cursor: pointer;
+	margin-left: 40px;
+	color: white;
+}
+.seoBarButton img {
+  vertical-align: -5px;
+}
+
+/* Fenêtre de résultats SEO */
+.seo-lity .lity-content {
+    max-width: 1000px;
+	background: rgba(0, 0, 0, 0.8);
+}
+.lity.seo-lity {
+	background: rgba(0, 0, 0, 0.4);
+}
+.seo-dialog {
+    width: min(1000px, 90vw);
+    max-height: 85vh;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow: hidden;
+	color: white;
+}
+/* Titre */
+.seo-dialog h2 {
+    margin: 0 0 15px;
+    font-size: 1.3em;
+    text-align: center;
+	color : orange;
+}
+/* Zone de contenu */
+.seo-dialog-content {
+    max-height: calc(85vh - 70px);
+    overflow-y: auto;
+    line-height: 1.5;
+    word-break: break-word;
+}
+/* Titres de sections */
+.seoTitle {
+	color : orange;
+    display: block;
+    margin: 15px 0 8px;
+    padding-bottom: 4px;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+/* Les URL longues ne débordent pas */
+.seo-dialog-content a,
+.seo-dialog-content span,
+.seo-dialog-content div {
+    word-break: break-word;
+}
+/* Menu seo */
+.seo-tabs {
+    display: flex;
+	flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 15px;
+	color: rgba(74, 105, 189, 1);
+}
+
+.seo-tabs span {
+    cursor: pointer;
+    padding: 8px 12px;
+}
+
+.seo-tabs span:hover {
+    background: rgba(0,0,0,.1);
+}
+
+.seo-content {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+.seoLastMod {
+	text-align : right;
+	margin-top: 10px;
+	font-style: italic;
+}
+
+
 /* Bouton screenshot */
 .buttonScreenshot {
 	position: absolute;
@@ -1169,4 +1257,32 @@ body.editorWysiwyg > .blockFullWidth {
     cursor: pointer;
     margin: 0;
 }
-/**/
+/* video responsive */
+video {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Gabarits Tinymce image, vidéo avec texte et image, vidéo pleine largeur avec texte */
+.imageText-wrapper, .videoText-wrapper {
+  display: flex;
+}
+.imageText-container, .videoText-container {
+  position: relative;
+}
+.imageText-container img {
+  display: block;
+}
+.imageText-container .overlay-text, .videoText-container .overlay-text {
+  position: absolute;
+  transform: translate(-50%);
+  color: white;
+  padding: 0 10px;
+  border-radius: 10px;
+  text-align: center;
+  box-sizing: border-box;
+  max-height: 25%;/*adapté à top dans core.js.php et dans tinymce*/
+  overflow: auto;
+}
+
+

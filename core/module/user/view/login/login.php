@@ -33,7 +33,8 @@ echo template::formOpen('userLoginForm');
 	<div class="row">
 		<div class="col6">
 			<?php echo template::checkbox('userLoginLongTime', true, $text['core_user_view']['login'][4], [
-				'checked' => $module::$userLongtime
+				'checked' => $module::$userLongtime,
+				'help' => $text['core_user_view']['login'][6]
 			]);	?>
 		</div>
 		<div class="col6 textAlignRight">

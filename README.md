@@ -1,5 +1,5 @@
 
-# DeltaCMS 6.0.04
+# DeltaCMS 6.1.01
 
 DeltaCMS est un CMS sans base de données (flat-file) qui permet de créer et gérer facilement un site web sans aucune connaissance en programmation.
 L'administration du site est trilingue espagnol (castillan), anglais ou français, le site peut être rédigé dans une langue quelconque.
@@ -69,6 +69,7 @@ En cas de difficulté avec la nouvelle version, il suffira de téléverser la sa
   [R] vendor               Librairies extérieures
   [F] core.js.php          Cœur javascript
   [F] core.php             Cœur PHP
+  [F] core_editor.js.php   Cœur javascript pour éditeurs et plus
 
 [R] module                 Modules de page
   [R] agenda	           Agenda

@@ -1,7 +1,7 @@
 @font-face {
   font-family: 'delta-ico';
-  src: url('../font/delta-ico.woff2?69575111') format('woff2');
-  src: url('../font/delta-ico.woff?69575111') format('woff');
+  src: url('../font/delta-ico.woff2?85620249') format('woff2'),
+       url('../font/delta-ico.woff?85620249') format('woff');
   font-weight: normal;
   font-style: normal;
 }
@@ -10,6 +10,7 @@
   font-family: "delta-ico";
   font-style: normal;
   font-weight: normal;
+  speak: never;
   display: inline-block;
   text-decoration: inherit;
   width: 1em;
@@ -69,6 +70,9 @@
 .delta-ico-flag:before { content: '\e823'; } /* '' */
 .delta-ico-search:before { content: '\e824'; } /* '' */
 .delta-ico-up:before { content: '\e825'; } /* '' */
+.delta-ico-certificate-outline:before { content: '\e826'; } /* '' */
+.delta-ico-tags:before { content: '\e827'; } /* '' */
+.delta-ico-certificate:before { content: '\e828'; } /* '' */
 .delta-ico-spin:before { content: '\e831'; } /* '' */
 .delta-ico-twitter:before { content: '\f099'; } /* '' */
 .delta-ico-facebook:before { content: '\f09a'; } /* '' */

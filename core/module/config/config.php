@@ -197,13 +197,11 @@ class config extends common {
 			$param='';
 			include('./core/module/config/lang/'. $_SESSION['langAdmin'] . '/lex_config.php');
 
-			// Mettre à jour le site map
-			$successSitemap=$this->createSitemap();
+			// Mettre à jour sitemap.xml seulement
+			$successSitemap=$this->createSitemap('all', false);
 
 			// Valeurs en sortie
 			$this->addOutput([
-				/*'title' => 'Configuration',
-				'view' => 'index',*/
 				'redirect' => helper::baseUrl() . 'config',
 				'notification' => $successSitemap ? $text['core_config']['generateFiles'][0] : $text['core_config']['generateFiles'][1],
 				'state' => $successSitemap
@@ -528,7 +526,8 @@ class config extends common {
 								'subject' => $this->getInput('socialConfigSubject'),
 								'captcha' => $this->getInput('socialConfigCaptcha', helper::FILTER_BOOLEAN),
 								'nbItemPage' => $this->getInput('socialConfigNbItemPage')
-							]
+							],
+							'seo' => $this->getInput('socialConfigSeo', helper::FILTER_BOOLEAN)
 						],
 						'smtp' => [
 							'enable' => $this->getInput('smtpEnable',helper::FILTER_BOOLEAN),
@@ -585,6 +584,11 @@ class config extends common {
 						]
 					]
 				]);
+				
+				// Sauvegarder le fichier robots.txt
+				$robotsTxt = $this->getInput('seoFileRobotsTxt', helper::FILTER_STRING_LONG);
+				$robotsTxt = preg_replace("/\r\n|\r/", "\n", $robotsTxt);
+				file_put_contents( 'robots.txt',$robotsTxt);
 
 				// Efface les fichiers de backup lorsque l'option est désactivée
 				if ($this->getInput('configFileBackup', helper::FILTER_BOOLEAN) === false) {

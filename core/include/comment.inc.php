@@ -5,7 +5,7 @@ if( isset( $_SESSION['ACC_INVERTCOLOR'] ) && $_SESSION['ACC_INVERTCOLOR'] === tr
 } else {
 	$borderColor = $this->getData(['theme', 'block', 'borderColor']);
 } ?>
-<script>
+<script data-deltacms="core">
 $(':root').css('--borderColor', '<?=$borderColor?>');
 $(':root').css('--dataNameDate_font', '<?=$this->getData(['theme', 'text', 'font'])?>');
 </script>
@@ -246,7 +246,7 @@ switch ($lang) {
 if( ! file_exists( 'core/vendor/tinymce/langs/'.$lang_page.'.js' )){
 	$lang_page = $text['core']['showComment'][7];
 }
-echo '<script> var lang_admin = "'.$lang_page.'"; </script>';
+echo '<script data-deltacms="core"> var lang_admin = "'.$lang_page.'"; </script>';
 // Vendor tinymce ?>
 <script src="core/vendor/tinymce/tinymce.min.js"></script><script src="core/vendor/tinymce/init.js"></script>
 <div class="row">
@@ -268,7 +268,7 @@ echo template::formOpenFile('commentPageFormForm', $action);
 		if( $_SESSION[$this->getUrl()]['draft']['text'] !== "" ) {
 			$valueName = $_SESSION[$this->getUrl()]['draft']['text'];
 		} elseif($this->getUser('password') === $this->getInput('DELTA_USER_PASSWORD') ) {
-			$valueName = $this->getUser('id');
+			$valueName = $this->signature($this->getUser('id'));
 		}
 		echo template::text('commentPageFormInput[0]', [
 			'id' => 'commentPageFormInput_0',

@@ -59,7 +59,7 @@ if ($subdir == "") {
 	}
 }
 //remember last position
-setcookie('last_position', $subdir, time() + (86400 * 7));
+setcookie('last_position', $subdir, 0);
 
 if ($subdir == "/") { $subdir = ""; }
 

@@ -1,5 +1,41 @@
 # Changelog
 
+## Version 6.1.01 de Deltacms
+- Modifications :
+	- Configuration / Social :
+		- nouvelle gestion des fichiers SEO sitemap.xml et robots.tx, robots.txt est initialisé à l'installation puis personnalisable dans un textearea, sitemap.xml est mis à jour à chaque édition de page avec datation,
+		- nouvelle option de validation d'outils SEO, utilisée une nouvelle icône apparaît dans la barre d'administration, elle ouvre un volet contenant 4 outils SEO :
+			- HTML : lien vers le service de validation W3C pour vérifier la conformité html5 et le temps de chargement de la page,
+			- META : copie des éléments pertinents de votre page dans le presse papier pour soumission à une IA ou à un site spécialisé qui proposera un meta-titre et une meta-description de la page,
+			- LIENS : lancement d'un test de vérification des liens contenus dans la page,
+			- RESSOURCES : affiche les problèmes d'accessibilité, les risques potentiels et signale les ressources de pods important,
+			- un bouton permet de copier dans le presse-papiers le rapport affiché,
+			- affichage de la date de dernière modification de la page et de son temps de chargement.
+	- Utilisateurs / Signature : l'identifiant n'est plus proposé afin de ne pas l'exposer, à la mise à jour de version une signature réglée sur identifiant sera automatiquement positionnée sur pseudo,
+	- Edition de pages :
+			- nouveaux gabarits de page :
+				- grille symétrique 3-6-3,
+				- image avec texte superposé,
+				- image avec texte superposé pleine largeur,
+				- vidéo avec texte superposé,
+				- vidéo avec texte superposé pleine largeur,
+				- les 4 derniers gabarits sont paramétrables dans Tinymce, en wysiwyg pour l'image et le texte, en code source pour d'autres paramètres.
+			- l'affichage du titre est optimisé pour respecter les règles HTML5,
+			- nouveau plugin Tinymce 'Sélectionner le conteneur' pour aligner horizontalement les media (vidéo, iframe,etc),
+	- Coeur : amélioration des redirections après la validation des formulaires,
+	- Captcha : la consigne pour le captcha addition est affichée de manière permanente, le texte est modifiable dans Configuration du site / Localisation,
+	- Agenda 7.9 / Configuration : l'ajout d'un carnet d'adresse au format txt est obsolète, utilisez le format csv avec séparateur virgule,
+	- Connexion : un message avertit qu'il ne faut pas utiliser l'option "Se souvenir de mon identifiant" sur un poste partagé,
+	- Installation : une option permet d'envoyer l'url du site à Deltacms à des fins de statistiques,
+- Corrections :
+	- Module Blog : correction d'une erreur qui intervenait après la modification d'un commentaire de blog,
+	- Coeur : en cas d'uitlisation de l'option de connexion "Se souvenir de mon identifiant", l'identifiant de la dernière personne connectée pouvait être exposé,
+	- Conformité W3C : suppression de l'avertissement si le titre de la page est masqué,
+- Sur le site :
+	- Bonus -> Plugin deltachat 1.8 : saisie du message dans un textarea, saisie facultative d'un pseudo,
+	- Bonus -> Modules sondage 2.8, geophoto 3.5b, photolocation 2.2b, video 2.1  : mise à jour conseillée,
+	- Bonus -> Plugins : mise à jour conseillée pour Html2pdf 1.1, Animated Slides 2.4, Blocedit 1.9 et Blocedit CM 1.9
+
 ## Version 6.0.04 de Deltacms
 - Modifications :
 	- Agenda 7.8 : Chaque destinataire des courriels liés aux évènements reçoit un courriel individuel, SMTP est fonctionnel,

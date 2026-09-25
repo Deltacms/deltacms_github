@@ -179,7 +179,9 @@ class page extends common {
 					'displayMenu' => '0',
 					'hideMenuSide' => false,
 					'hideMenuHead' => false,
-					'hideMenuChildren' => false
+					'hideMenuChildren' => false,
+					'commentEnable' => false,
+					'date' => time()
 				]
 			]);
 			// Creation du contenu de la page
@@ -188,7 +190,7 @@ class page extends common {
 			}
 			$this->setPage($pageId, '<p>'.$text['core_page']['add'][1].'</p>', self::$i18n);
 			// Met à jour le site map
-			// $this->createSitemap('all');
+			$this->createSitemap('all', false);
 			// Valeurs en sortie
 			$this->addOutput([
 				'redirect' => helper::baseUrl() . $pageId,
@@ -352,7 +354,7 @@ class page extends common {
 					if(empty($value)) $this->deleteData(['plugin',$key]);
 				}
 				// Met à jour le site map
-				// $this->createSitemap('all');
+				$this->createSitemap('all', false);
 				// Met à jour 'config', 'statislite', 'enable' si aucume page n'utilise le module Statislite dans la langue de base
 				$inPages = helper::arrayCollumn($this->getData(['page']),'moduleId', 'SORT_DESC');
 				if( (!isset($_SESSION['translationType']) || $_SESSION['translationType']==='none') && ! in_array('statislite',$inPages)) $this->setData(['config', 'statislite', 'enable', false ]);
@@ -967,7 +969,8 @@ class page extends common {
 								'hideMenuSide' => $this->getinput('pageEditHideMenuSide', helper::FILTER_BOOLEAN),
 								'hideMenuHead' => $this->getinput('pageEditHideMenuHead', helper::FILTER_BOOLEAN),
 								'hideMenuChildren' => $this->getinput('pageEditHideMenuChildren', helper::FILTER_BOOLEAN),
-								'commentEnable' => $this->getinput('pageEditBlock') !== 'bar' ? $this->getinput('pageEditCommentEnable', helper::FILTER_BOOLEAN) : false
+								'commentEnable' => $this->getinput('pageEditBlock') !== 'bar' ? $this->getinput('pageEditCommentEnable', helper::FILTER_BOOLEAN) : false,
+								'date' => time()
 							]
 						]);
 						// Creation du contenu de la page
@@ -997,7 +1000,7 @@ class page extends common {
 							}
 						}
 						// Met à jour le site map
-						// $this->createSitemap('all');
+						$this->createSitemap('all', false);
 						// Plugin
 						// Décompression du zip dans un dossier temporaire
 						$zipFilename =	$this->getInput('pageEditPluginInstallation', helper::FILTER_STRING_SHORT);

@@ -299,4 +299,14 @@ if ($this->getData(['core', 'dataVersion']) < 6004) {
 	$this->setData(['admin', 'colorLink', 'rgba(228, 14, 23, 1)']);
 	$this->setData(['core', 'dataVersion', 6004]);
 }
+if ($this->getData(['core', 'dataVersion']) < 6101) {
+	// Modification de la signature si id
+	$tab = $this->getData(['user']);
+	foreach( $tab as $key=>$value){
+		if( $tab[$key]['signature'] === 1) $this->setData(['user', $key, 'signature', 2]);
+	}
+	// Outils SEO
+	$this->setData(['config', 'social', 'seo', true]);
+	$this->setData(['core', 'dataVersion', 6101]);
+}
 ?>

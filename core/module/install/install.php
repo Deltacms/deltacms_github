@@ -101,7 +101,7 @@ class install extends common {
 						$text['core_install']['index'][2].'<br><br>' .
 						'<strong>'.$text['core_install']['index'][3].' : </strong> <a href="' . helper::baseUrl(false) . '" target="_blank">' . helper::baseUrl(false) . '</a><br>' .
 						'<strong>'.$text['core_install']['index'][4].' : </strong> ' . $this->getInput('installId') . '<br>',
-						null
+						null,'',false
 					);
 
 					// Installation du site de test en français, le site light est installé par défaut pour la langue de rédaction fr
@@ -153,8 +153,6 @@ class install extends common {
 					unlink(self::TEMP_DIR . 'files.tar');
 					// Stocker le dossier d'installation
 					$this->setData(['core', 'baseUrl', helper::baseUrl(false,false) ]);
-					// Créer sitemap
-					$this->createSitemap();
 
 					// Installation du thème sélectionné
 					$dataThemes = file_get_contents('core/module/install/ressource/themes/themes.json');
@@ -203,6 +201,7 @@ class install extends common {
 						$json = json_encode($theme);
 						file_put_contents(self::DATA_DIR.'theme.json',$json);
 					}
+					if($sent && $this->getInput('installThank',helper::FILTER_BOOLEAN) === true) $result = $this->sendMail($text['core_install']['index'][10],$text['core_install']['index'][11].core::DELTA_VERSION,$text['core_install']['index'][12].helper::baseUrl(false),null,'',false);
 
 					// Valeurs en sortie
 					$this->addOutput([

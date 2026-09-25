@@ -335,10 +335,10 @@
 	nav li {
 	   display: block;
 	}
+	/*top: dans core.js.php*/
 	.navfixedburgerconnected  {
 		position: fixed;
 		z-index: 11;
-		/*top: dans core.js.php*/
 		padding: 0px;
 		width:100%;
 	}
@@ -470,6 +470,10 @@
 /* bouton d'aide par ? cerclé */
 	span .delta-ico-help {
 		display: none;
+	}
+/* Fenêtre de résultats SEO */
+	.seo-dialog {
+		width: 100%;
 	}
 }
 

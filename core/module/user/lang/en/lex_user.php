@@ -105,6 +105,7 @@ $text['core_user_view']['login'][2] = 'Cancel';
 $text['core_user_view']['login'][3] = 'Connection';
 $text['core_user_view']['login'][4] = 'Remember my ID';
 $text['core_user_view']['login'][5] = 'Lost password';
+$text['core_user_view']['login'][6] = 'Never use this option on a shared machine!';
 $text['core_user_view']['reset'][0] = 'New password';
 $text['core_user_view']['reset'][1] = 'Confirmation';
 $text['core_user_view']['reset'][2] = 'Validate';
@@ -172,7 +173,6 @@ $text['core_user']['export'][1] = 'A problem has occurred';
 // Selects
 //Paramètres pour choix de la signature
 $signature = [
-	self::SIGNATURE_ID => 'Identifier',
 	self::SIGNATURE_PSEUDO => 'Username',
 	self::SIGNATURE_FIRSTLASTNAME => 'First name Name',
 	self::SIGNATURE_LASTFIRSTNAME => 'Name First name'

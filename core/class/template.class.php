@@ -41,9 +41,10 @@ class template {
 		$textInput = $_SESSION['captchaAddition'] ?? 'addition';
 		$html = '<div id="' . $nameId . 'Wrapper" class="captcha inputWrapper ' . $classWrapper. '">';
 		$html .= '<img src="core/vendor/captcha/captcha.php" alt="Captcha" id="captcha">';
-		$html .= '<input name="codeCaptcha" type="text" size="9" style="position:relative;top:-40px;left:-10px;" data-tippy-content="'.$textInput.'">';
+		$html .= '<input name="codeCaptcha" type="text" size="9" style="position:relative;top:-40px;left:-10px;">';
 		$html .= '<img src="core/vendor/captcha/reload.png" alt="" style="cursor:pointer;position:relative;top:-30px;left:10px;width:24px;height:auto;"';
 		$html .= ' onclick="document.images.captcha.src=\'core/vendor/captcha/captcha.php?id=\'+Math.round(Math.random(0)*1000)">';
+		$html .= '<p>'.$textInput.'</p>';
 		$html .= '</div>';
 
         // Retourne le html

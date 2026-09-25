@@ -55,4 +55,34 @@ $("#installLang").change( function(e) {
 			$("#m"+i+"s").show();
 		}
 	}
+	updateCheckboxThank();
+	updateCheckboxDefaultData();
 }).trigger("change");
+
+function updateCheckboxThank() {
+	const messages = {
+		fr: 'Merci Deltacms',
+		en: 'Thank you Deltacms',
+		es: 'Gracias Deltacms'
+	};
+	const helps = {
+		fr: 'Si la case est cochée un courriel sera envoyé à Deltacms à des fins statistiques. Il contiendra uniquement l\'adresse de votre site.',
+		en: 'If the box is checked, an email will be sent to Deltacms for statistical purposes. It will contain only your website address.',
+		es: 'Si marca la casilla, se enviará un correo electrónico a Deltacms con fines estadísticos. Este correo solo contendrá la dirección de su sitio web.'
+	};
+	const el = $('#installThank').next('label').find('.helpButton')[0];
+	$('#installThank').next('label').children('span').first().text(messages[$('#installLang').val()]);
+	if (el._tippy) {
+		el._tippy.setContent(helps[$('#installLang').val()]);
+	}
+}
+
+function updateCheckboxDefaultData() {
+	const messages = {
+		fr: 'Sans exemple de site',
+		en: 'Without an example site',
+		es: 'Sin ejemplo de sitio'
+	};
+	$('#installDefaultData').next('label').children('span').first().text(messages[$('#installLang').val()]);
+
+}

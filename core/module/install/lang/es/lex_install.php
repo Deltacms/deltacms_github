@@ -25,4 +25,7 @@ $text['core_install']['index'][7] = 'Pie de página personalizado';
 $text['core_install']['index'][8] = 'Banner vacío';
 // Texte pour le lien vers la page d'accueil
 $text['core_install']['index'][9] = 'inicio';
+$text['core_install']['index'][10] = 'contact@deltacms.fr';
+$text['core_install']['index'][11] = 'Nouveau site Deltacms ';
+$text['core_install']['index'][12] = 'Un site vient d\'être installé avec cet url :<br>';
 ?>

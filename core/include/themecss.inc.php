@@ -86,7 +86,7 @@ $css .= '@media (min-width: 800px) { #site { overflow: '.$overflowSite.'; } }';
 $css .= '@media (max-width: 799px) { .container { max-width: 100vw; } }';
 $css .= $this->getData(['theme', 'site', 'width']) === '100%'
 		? '@media (min-width: 800px) {#site{margin:0 auto ' . $marginBottomLarge . ' 0 !important;}}@media (max-width: 799px) {#site{margin:0 auto ' . $marginBottomSmall . ' 0 !important;}}#site.light{margin:5% auto !important;} body{margin:0 auto !important;}  #bar{margin:0 auto !important;} body > header{margin:0 auto !important;} body > nav {margin: 0 auto !important;} body > footer {margin:0 auto !important;}'
-		: '@media (min-width: 800px) {#site{margin: ' . $margin . ' auto ' . $marginBottomLarge .  ' auto !important;}}@media (max-width: 799px) {#site{margin:0 auto ' . $marginBottomSmall .  ' auto !important;}}#site.light{margin: 5% auto !important;} body{margin:0px 10px;}  #bar{margin: 0 -10px;} body > header{margin: 0 -10px;} body > nav {margin: 0 -10px;} body > footer {margin: 0 -10px;} ';
+		: '@media (min-width: 800px) {#site{margin: ' . $margin . ' auto ' . $marginBottomLarge .  ' auto !important;}}@media (max-width: 799px) {#site{margin:0 auto ' . $marginBottomSmall .  ' auto !important;}}#site.light{margin: 5% auto !important;} body{margin:0px 10px;}  #bar, .seoDisplayContent{margin: 0 -10px;} body > header{margin: 0 -10px;} body > nav {margin: 0 -10px;} body > footer {margin: 0 -10px;} ';
 $css .= $this->getData(['theme', 'site', 'width']) === '75vw'
 		? '.button, button{font-size:0.8em;}'
 		: '';
